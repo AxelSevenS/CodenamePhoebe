@@ -1,0 +1,54 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace SeleneGame {
+
+    public class MaskMovement : MonoBehaviour{
+        
+        public Entity entity;
+        private RaycastHit MaskPosHit;
+        private Animator animator;
+        
+        [SerializeField] private float maskPosT = 1f;
+        private Vector3 rightPosition => entity._t.rotation * new Vector3(1.2f, 1.3f, -0.8f);
+        private Vector3 leftPosition => entity._t.rotation * new Vector3(-1.2f, 1.3f, -0.8f);
+        private Vector3 relativePos => onRight ? rightPosition : leftPosition;
+        private bool positionBlocked(Vector3 position) => Physics.SphereCast(entity._t.position, 0.35f, position, out MaskPosHit, position.magnitude, Global.GroundMask);
+        private Vector3 flyingPosition;
+
+        private bool onFace => entity != null && (entity.shifting || entity.inWater || entity.currentState is SittingState || entity.focusing || (positionBlocked(leftPosition) && positionBlocked(rightPosition)));
+        private bool onRight;
+
+        void Awake(){
+            animator = GetComponent<Animator>();
+        }
+
+        void Start(){
+            onRight = true;
+        }
+
+        void FixedUpdate(){
+            if (entity == null) return;
+            if (!onFace && (positionBlocked(relativePos)))
+                onRight = !onRight;
+
+            flyingPosition = Vector3.Lerp(flyingPosition, entity._t.position + relativePos, 15f * Time.deltaTime);
+            maskPosT = Mathf.MoveTowards(maskPosT, System.Convert.ToSingle(onFace), 4f * Time.deltaTime);
+
+            animator.SetBool("OnFace", onFace);
+            animator.SetFloat("OnRight", onRight ? 1f : 0f);
+        }
+        void LateUpdate(){
+            if (entity == null) return;
+            Mathfs.BezierCurve currentCurve = new Mathfs.BezierCurve(
+                flyingPosition, 
+                entity["head"].transform.position,
+                flyingPosition + (entity["head"].transform.position - flyingPosition)/2f,
+                entity["head"].transform.position + entity["head"].transform.forward
+            );
+            transform.position = currentCurve.GetPoint(maskPosT).position;
+            transform.rotation = Quaternion.Slerp(entity._t.rotation,entity["head"].transform.rotation,maskPosT);
+        }
+    }
+}

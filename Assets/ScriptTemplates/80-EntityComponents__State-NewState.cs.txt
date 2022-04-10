@@ -1,0 +1,47 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+// Don't forget to create an instance of this ScriptableObject in the folder Resources/Data/States or the game won't be able to find it.
+[CreateAssetMenu(fileName = "new #SCRIPTNAME# Instance", menuName = "State/#SCRIPTNAME#")]
+public class #SCRIPTNAME# : State{
+
+    // These variables define specific things that an Entity in that state can do; for example canJump, if true, means that the Entity can Jump when the Jump() method is called on it.
+    public override bool canJump => false;
+    public override bool canEvade => false;
+    public override bool canTurn => false;
+    public override bool canRotate => false;
+    public override bool useGravity => false;
+    public override bool shifting => false;
+
+    // This Value defines where, in relation to the Entity, the Player's camera should sit.
+    public override Vector3 cameraRelativePosition() => _entity.currentWeapon.cameraPosition();
+
+    // StateUpdate works like Update but is only called when an Entity is in that specific state.
+    public override void StateUpdate(){
+    #NOTRIM#
+    }
+
+    // StateFixedUpdate works like FixedUpdate but is only called when an Entity is in that specific state.
+    public override void StateFixedUpdate(){
+    #NOTRIM#
+        // These default Method calls are an easy way to start a new State.
+        _entity.camRotation = Quaternion.FromToRotation(_entity.camRotation * Vector3.up, -_entity.gravityDown) * _entity.camRotation;
+        _entity.Gravity();
+        _entity.Evading();
+        _entity.Sliding();
+        
+        if (_entity.moveDirection.magnitude > 0f) 
+            _entity.Move(_entity.ToGround(_entity.moveDirection), _entity.moveSpeed * _entity.moveCurve * (Vector3.Dot( _entity.gravityDown, _entity.ToGround(_entity.moveDirection) ) /5f+1f));
+    }
+
+    // HandleInput Handles the different data the Player class will send to an Entity.
+    public override void HandleInput(Vector3 groundDirection, Vector3 groundDirection3D, Vector3 camRelativeDirection, Vector3 camRelativeDirection3D, Vector3 rawInput = default(Vector3)){
+        _entity.moveDirection = groundDirection;
+    }
+
+    // EntityApparentUp returns the Direction in which the Entity's head will point up, as a Vector3.
+    public override Vector3 EntityUp(){
+        return -_entity.gravityDown;
+    }
+}

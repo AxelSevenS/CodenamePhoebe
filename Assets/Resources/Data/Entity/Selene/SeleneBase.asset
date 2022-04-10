@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c57bfd30e1b089b45824a21e2f291205, type: 3}
+  m_Name: SeleneBase
+  m_EditorClassIdentifier: 
+  neutralFace: {fileID: 21300000, guid: a7a68dfd0d3a8ac4481cfd90773b59fd, type: 3}
+  determinedFace: {fileID: 21300000, guid: a7a68dfd0d3a8ac4481cfd90773b59fd, type: 3}
+  hesitantFace: {fileID: 21300000, guid: a7a68dfd0d3a8ac4481cfd90773b59fd, type: 3}
+  shockedFace: {fileID: 21300000, guid: a7a68dfd0d3a8ac4481cfd90773b59fd, type: 3}
+  disgustedFace: {fileID: 21300000, guid: a7a68dfd0d3a8ac4481cfd90773b59fd, type: 3}
+  sadFace: {fileID: 21300000, guid: a7a68dfd0d3a8ac4481cfd90773b59fd, type: 3}
+  happyFace: {fileID: 21300000, guid: a7a68dfd0d3a8ac4481cfd90773b59fd, type: 3}
+  model: {fileID: 9017866458577193853, guid: 3c2f095885227bc4ba50e092190e4604, type: 3}
+  limbsPaths:
+  - valueOne: head
+    valueTwo: Armature/DEF-spine/DEF-spine.001/DEF-spine.002/DEF-spine.003/DEF-spine.004/DEF-spine.005/DEF-spine.006
+  - valueOne: handRight
+    valueTwo: Armature/DEF-spine/DEF-spine.001/DEF-spine.002/DEF-spine.003/DEF-shoulder.R/DEF-upper_arm.R/DEF-upper_arm.R.001/DEF-forearm.R/DEF-forearm.R.001/DEF-hand.R
+  - valueOne: handLeft
+    valueTwo: Armature/DEF-spine/DEF-spine.001/DEF-spine.002/DEF-spine.003/DEF-shoulder.L/DEF-upper_arm.L/DEF-upper_arm.L.001/DEF-forearm.L/DEF-forearm.L.001/DEF-hand.L
+  - valueOne: footRight
+    valueTwo: Armature/DEF-spine/DEF-thigh.R/DEF-thigh.R.001/DEF-shin.R/DEF-shin.R.001/DEF-foot.R
+  - valueOne: footLeft
+    valueTwo: Armature/DEF-spine/DEF-thigh.L/DEF-thigh.L.001/DEF-shin.L/DEF-shin.L.001/DEF-foot.L
+  - valueOne: weaponRight
+    valueTwo: Armature/DEF-spine/DEF-spine.001/DEF-spine.002/DEF-spine.003/DEF-shoulder.R/DEF-upper_arm.R/DEF-upper_arm.R.001/DEF-forearm.R/DEF-forearm.R.001/DEF-hand.R
+  - valueOne: weaponLeft
+    valueTwo: Armature/DEF-spine/DEF-spine.001/DEF-spine.002/DEF-spine.003/DEF-shoulder.L/DEF-upper_arm.L/DEF-upper_arm.L.001/DEF-forearm.L/DEF-forearm.L.001/DEF-hand.L

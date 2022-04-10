@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8142b91e7b686df45910e21d0c45e684, type: 3}
+  m_Name: GravityBikeCaca
+  m_EditorClassIdentifier: 
+  _entity: {fileID: 0}
+  model: {fileID: 0}
+  maxHealth: 0
+  size: {x: 0.5, y: 2, z: 0.5}
+  stepHeight: 0.5
+  moveIncrement: 10
+  weight: 15
+  jumpHeight: 20
+  baseSpeed: 15
+  slowSpeed: 0.4
+  sprintSpeed: 2
+  swimSpeed: 0
+  evadeDuration: 0
+  evadeCooldown: 0
+  evadeCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  limbsPaths: []
+  costume: {fileID: 11400000, guid: 99793ed8a8b4b9046a71eca92f0b7cdf, type: 2}
+  controller: {fileID: 9100000, guid: 080e304828b097b4cac678d0babd1671, type: 2}

@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb2abe37dc7273d49b64ce42e46c35de, type: 3}
+  m_Name: GravityBike
+  m_EditorClassIdentifier: 
+  displayName: Gravity Bicycle
+  costume: {fileID: 11400000, guid: 99793ed8a8b4b9046a71eca92f0b7cdf, type: 2}
+  maxHealth: 0
+  size: {x: 1, y: 1, z: 1}
+  stepHeight: 1
+  moveIncrement: 20
+  weight: 15
+  jumpHeight: 1
+  baseSpeed: 1
+  slowSpeed: 1
+  swimSpeed: 0
+  evadeDuration: 0
+  evadeCooldown: 0
+  evadeCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  controller: {fileID: 9100000, guid: 080e304828b097b4cac678d0babd1671, type: 2}

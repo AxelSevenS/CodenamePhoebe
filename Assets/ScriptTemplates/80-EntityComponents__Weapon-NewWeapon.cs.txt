@@ -1,0 +1,44 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+// Don't forget to create an instance of this ScriptableObject in the folder Resources/Data/Weapons or the game won't be able to find it.
+[CreateAssetMenu(fileName = "new #SCRIPTNAME# Instance", menuName = "Data/Weapons/#SCRIPTNAME#")]
+public class #SCRIPTNAME# : Weapon{
+
+    // WeightModifier defines the strength of gravity that the Entity wielding this weapon is experiencing.
+    public override float weightModifier() => 1f;
+
+    // These variables define specific things that the Entity wielding this weapon can do; for example cannotTurn, if true, will prevent the Entity to rotate in any way.
+    public override bool canJump() => false;
+    public override bool canEvade() => false;
+    public override bool cannotTurn() => false;
+    public override bool noGravity() => false;
+    public override bool Shifting() => false;
+
+    public override Vector3 cameraPosition(){
+#NOTRIM#
+    }
+
+    // OnSwitch is run whenever the Entity that has this Weapon instance switches to that weapon (i.e. the first frame when that weapon is Equipped).
+    public override void OnSwitch(){
+#NOTRIM#
+    }
+
+    // UpdateAlways is run on every frame, whether or not this specific weapon instance is equipped.
+    public override void UpdateAlways(){
+#NOTRIM#
+    }
+
+    // UpdateEquipped is run on every frame, if this specific weapon instance is equipped.
+    public override void UpdateEquipped(){
+#NOTRIM#
+    }
+
+    // OnLanded is run whenever the Entity has landed, whether or not this specific weapon instance is equipped.
+    public override void OnLanded(){
+#NOTRIM#
+    }
+    
+}
+
