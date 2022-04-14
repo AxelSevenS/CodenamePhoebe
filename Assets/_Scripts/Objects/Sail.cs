@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using SeleneGame.Core;
 
 namespace SeleneGame {
     
@@ -19,17 +20,17 @@ namespace SeleneGame {
             }
         }
 
-        public void Grab(Entity entity) {
+        public void Grab() {
             // bodyVelocity = Vector3.Cross(Vector3.down, Camera.main.transform.right).normalized;
             // sailTimer = 10f;
             
             //rigidbody.AddForce(bodyVelocity/Time.deltaTime, ForceMode.Impulse);
         }
 
-        public void Grabbed(Entity entity){
+        public void Grabbed(){
         }
 
-        public void Hold(Entity entity) {
+        public void Hold() {
         }
     }
 

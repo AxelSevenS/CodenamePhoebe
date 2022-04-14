@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace SeleneGame {
+namespace SeleneGame.Core {
     
     public abstract class ObjectFollower : MonoBehaviour{
 

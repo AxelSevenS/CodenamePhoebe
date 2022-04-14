@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using SeleneGame.Core;
+using SeleneGame.Entities;
+using SeleneGame.States;
 
 namespace SeleneGame {
 

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace SeleneGame {
+namespace SeleneGame.Core {
     
     public class ReadOnlyAttribute : PropertyAttribute{
     }

@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using SeleneGame.Entities;
 
-namespace SeleneGame {
+namespace SeleneGame.Core {
     
     public interface IInteractable {
 

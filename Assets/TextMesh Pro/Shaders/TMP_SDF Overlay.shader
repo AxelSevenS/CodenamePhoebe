@@ -127,7 +127,7 @@ SubShader {
 		#include "TMPro_Properties.cginc"
 		#include "TMPro.cginc"
 
-		struct vertex_t {
+		struct vertex_transform {
 			UNITY_VERTEX_INPUT_INSTANCE_ID
 			float4	position		: POSITION;
 			float3	normal			: NORMAL;
@@ -137,7 +137,7 @@ SubShader {
 		};
 
 
-		struct pixel_t {
+		struct pixel_transform {
 			UNITY_VERTEX_INPUT_INSTANCE_ID
 			UNITY_VERTEX_OUTPUT_STEREO
 			float4	position		: SV_POSITION;
@@ -158,11 +158,11 @@ SubShader {
 		float4 _FaceTex_ST;
 		float4 _OutlineTex_ST;
 
-		pixel_t VertShader(vertex_t input)
+		pixel_transform VertShader(vertex_transform input)
 		{
-			pixel_t output;
+			pixel_transform output;
 
-			UNITY_INITIALIZE_OUTPUT(pixel_t, output);
+			UNITY_INITIALIZE_OUTPUT(pixel_transform, output);
 			UNITY_SETUP_INSTANCE_ID(input);
 			UNITY_TRANSFER_INSTANCE_ID(input,output);
 			UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
@@ -233,7 +233,7 @@ SubShader {
 		}
 
 
-		fixed4 PixShader(pixel_t input) : SV_Target
+		fixed4 PixShader(pixel_transform input) : SV_Target
 		{
 			UNITY_SETUP_INSTANCE_ID(input);
 

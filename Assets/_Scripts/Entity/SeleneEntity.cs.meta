@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 2dd0b07425b20d34b8c0f1f46f4ce4fa
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - _t: {instanceID: 0}
+  - _rb: {instanceID: 0}
+  - _physicsComponent: {instanceID: 0}
+  - _animator: {instanceID: 0}
+  - model: {instanceID: 0}
+  - data: {fileID: 11400000, guid: c3f56a8f9bc7b0a40a0fe3c07dbc08aa, type: 2}
+  - currentState: {instanceID: 0}
+  - currentWeapon: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

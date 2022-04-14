@@ -1,9 +1,9 @@
 using UnityEngine;
 using UnityEditor;
 
-namespace SeleneGame {
+namespace SeleneGame.EditorUI {
 
-    [CustomPropertyDrawer( typeof( ValuePair ), true )]
+    [CustomPropertyDrawer( typeof( SeleneGame.Core.ValuePair ), true )]
     public class ValuePairDrawer : PropertyDrawer {
 
         public override void OnGUI( Rect position, SerializedProperty property, GUIContent label ) {

@@ -336,7 +336,7 @@ Texture2D:
   m_LightmapFormat: 0
   m_ColorSpace: 0
   image data: 0
-  _typelessdata: 
+  _transformypelessdata: 
   m_StreamData:
     offset: 0
     size: 0

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using SeleneGame.Core;
 
 namespace SeleneGame {
 
@@ -11,13 +12,13 @@ namespace SeleneGame {
         private Animator animator;
         
         [SerializeField] private float maskPosT = 1f;
-        private Vector3 rightPosition => entity._t.rotation * new Vector3(1.2f, 1.3f, -0.8f);
-        private Vector3 leftPosition => entity._t.rotation * new Vector3(-1.2f, 1.3f, -0.8f);
+        private Vector3 rightPosition => entity._transform.rotation * new Vector3(1.2f, 1.3f, -0.8f);
+        private Vector3 leftPosition => entity._transform.rotation * new Vector3(-1.2f, 1.3f, -0.8f);
         private Vector3 relativePos => onRight ? rightPosition : leftPosition;
-        private bool positionBlocked(Vector3 position) => Physics.SphereCast(entity._t.position, 0.35f, position, out MaskPosHit, position.magnitude, Global.GroundMask);
+        private bool positionBlocked(Vector3 position) => Physics.SphereCast(entity._transform.position, 0.35f, position, out MaskPosHit, position.magnitude, Global.GroundMask);
         private Vector3 flyingPosition;
 
-        private bool onFace => entity != null && (entity.shifting || entity.inWater || entity.currentState is SittingState || entity.focusing || (positionBlocked(leftPosition) && positionBlocked(rightPosition)));
+        private bool onFace => entity != null && (entity.masked || entity.inWater || entity.focusing || (positionBlocked(leftPosition) && positionBlocked(rightPosition)));
         private bool onRight;
 
         void Awake(){
@@ -33,7 +34,7 @@ namespace SeleneGame {
             if (!onFace && (positionBlocked(relativePos)))
                 onRight = !onRight;
 
-            flyingPosition = Vector3.Lerp(flyingPosition, entity._t.position + relativePos, 15f * Time.deltaTime);
+            flyingPosition = Vector3.Lerp(flyingPosition, entity._transform.position + relativePos, 15f * Time.deltaTime);
             maskPosT = Mathf.MoveTowards(maskPosT, System.Convert.ToSingle(onFace), 4f * Time.deltaTime);
 
             animator.SetBool("OnFace", onFace);
@@ -48,7 +49,7 @@ namespace SeleneGame {
                 entity["head"].transform.position + entity["head"].transform.forward
             );
             transform.position = currentCurve.GetPoint(maskPosT).position;
-            transform.rotation = Quaternion.Slerp(entity._t.rotation,entity["head"].transform.rotation,maskPosT);
+            transform.rotation = Quaternion.Slerp(entity._transform.rotation,entity["head"].transform.rotation,maskPosT);
         }
     }
 }

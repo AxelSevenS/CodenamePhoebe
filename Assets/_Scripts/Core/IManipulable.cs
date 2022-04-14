@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace SeleneGame {
+namespace SeleneGame.Core {
     
     public interface IManipulable{
-        void Grab(Entity entity);
-        void Grabbed(Entity entity);
-        void Hold(Entity entity);
+        void Grab();
+        void Grabbed();
+        void Hold();
     }
 }

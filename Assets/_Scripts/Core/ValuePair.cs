@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace SeleneGame {
+namespace SeleneGame.Core {
     
     [System.Serializable]
     public abstract class ValuePair{
@@ -14,21 +14,21 @@ namespace SeleneGame {
         public T2 valueTwo;
     }
 
-    [System.Serializable]
-    public class ValuePairStringGameObject : ValuePair<string, GameObject>{
+    // [System.Serializable]
+    // public class ValuePairStringGameObject : ValuePair<string, GameObject>{
 
-        public ValuePairStringGameObject(string one, GameObject two){
-            valueOne = one;
-            valueTwo = two;
-        }
-    }
+    //     public ValuePairStringGameObject(string one, GameObject two){
+    //         valueOne = one;
+    //         valueTwo = two;
+    //     }
+    // }
 
-    [System.Serializable]
-    public class StringPair : ValuePair<string, string>{
+    // [System.Serializable]
+    // public class StringPair : ValuePair<string, string>{
 
-        public StringPair(string one, string two){
-            valueOne = one;
-            valueTwo = two;
-        }
-    }
+    //     public StringPair(string one, string two){
+    //         valueOne = one;
+    //         valueTwo = two;
+    //     }
+    // }
 }

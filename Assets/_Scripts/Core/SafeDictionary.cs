@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace SeleneGame {
+namespace SeleneGame.Core {
     
     [System.Serializable]
     public class SafeDictionary<TKey, TVal>{

@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using SeleneGame.Core;
+using SeleneGame.Entities;
+using SeleneGame.States;
 
 namespace SeleneGame {
     
@@ -79,17 +82,15 @@ namespace SeleneGame {
             entity.SetState("Sitting");
             ((SittingState)entity.currentState).seat = this;
 
-            entity._collider.enabled = false;
             entity.AnimatorTrigger("Sit");
         }
 
         private void StopSitting(Entity entity){
             seatOccupant = null;
 
-            entity._t.SetParent(previousAnchor);
+            entity._transform.SetParent(previousAnchor);
 
             entity.SetState("Walking");
-            entity._collider.enabled = true;
         }
 
         protected virtual string seatedInteractionText => ""; 

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using SeleneGame.Core;
 
 namespace SeleneGame {
 
@@ -87,11 +88,6 @@ namespace SeleneGame {
                 physicsComponent.isNearWater = true;
             }
         }
-        // private void OnTriggerStay(Collider col){
-        //     if (col.attachedRigidbody.TryGetComponent<CustomPhysicsComponent>(out var physicsComponent)) {
-        //         physicsComponent.isNearWater = true;
-        //     }
-        // }
         private void OnTriggerExit(Collider col){
             if (col.attachedRigidbody.TryGetComponent<CustomPhysicsComponent>(out var physicsComponent)) {
                 physicsComponent.isNearWater = false;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using SeleneGame.Core;
 
 namespace SeleneGame {
 
@@ -37,16 +38,6 @@ namespace SeleneGame {
             // Focus
             aimCursor.SetActive(Player.current.entity.focusing);
             
-            
-            // Falling
-            bool shiftFalling = Player.current.entity.currentState is ShiftingState && Player.current.entity.sliding;
-            bool hitGround = Physics.Raycast(Player.current.entity._t.position, Player.current.entity.moveDirection, out RaycastHit fallCursorHit, Global.GroundMask);
-            bool inLineOfSight = Vector3.Dot(Player.current.camera.transform.forward, Player.current.entity.moveDirection) > 0;
-
-            landCursor.SetActive(shiftFalling && hitGround && inLineOfSight);
-            if( shiftFalling && hitGround && inLineOfSight){
-                landCursor.transform.position = Player.current.camera.WorldToScreenPoint(fallCursorHit.point);
-            }
             
         }
 

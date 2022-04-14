@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using SeleneGame.Core;
 
-namespace SeleneGame {
+namespace SeleneGame.EditorUI {
 
     [CustomEditor(typeof(ObjectManager))]
     public class ObjectManagerEditor : Editor{

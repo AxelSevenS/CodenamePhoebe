@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-namespace SeleneGame {
+namespace SeleneGame.EditorUI {
 
     [CanEditMultipleObjects]
     [CustomEditor(typeof(Spline))]

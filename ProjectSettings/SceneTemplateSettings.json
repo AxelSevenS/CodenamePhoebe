@@ -158,7 +158,7 @@
     ],
     "defaultDependencyTypeInfo": {
         "userAdded": false,
-        "type": "<default_scene_template_dependencies>",
+        "type": "<default_scene_transformemplate_dependencies>",
         "ignore": false,
         "defaultInstantiationMode": 1,
         "supportsModification": true

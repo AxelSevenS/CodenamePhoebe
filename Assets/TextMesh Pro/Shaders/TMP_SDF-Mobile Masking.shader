@@ -99,7 +99,7 @@ SubShader {
 		#include "UnityUI.cginc"
 		#include "TMPro_Properties.cginc"
 
-		struct vertex_t {
+		struct vertex_transform {
 			float4	vertex			: POSITION;
 			float3	normal			: NORMAL;
 			fixed4	color			: COLOR;
@@ -107,7 +107,7 @@ SubShader {
 			float2	texcoord1		: TEXCOORD1;
 		};
 
-		struct pixel_t {
+		struct pixel_transform {
 			float4	vertex			: SV_POSITION;
 			fixed4	faceColor		: COLOR;
 			fixed4	outlineColor	: COLOR1;
@@ -125,7 +125,7 @@ SubShader {
 		fixed4 _MaskEdgeColor;
 		bool _MaskInverse;
 
-		pixel_t VertShader(vertex_t input)
+		pixel_transform VertShader(vertex_transform input)
 		{
 			float bold = step(input.texcoord1.y, 0);
 
@@ -178,7 +178,7 @@ SubShader {
 			float2 maskUV = (vert.xy - clampedRect.xy) / (clampedRect.zw - clampedRect.xy);
 
 			// Structure for pixel shader
-			pixel_t output = {
+			pixel_transform output = {
 				vPosition,
 				faceColor,
 				outlineColor,
@@ -196,7 +196,7 @@ SubShader {
 
 
 		// PIXEL SHADER
-		fixed4 PixShader(pixel_t input) : SV_Target
+		fixed4 PixShader(pixel_transform input) : SV_Target
 		{
 			half d = tex2D(_MainTex, input.texcoord0.xy).a * input.param.x;
 			half4 c = input.faceColor * saturate(d - input.param.w);
