@@ -9,9 +9,11 @@ namespace SeleneGame.Core {
     }
 
     [System.Serializable]
-    public class Map<TKey, TVal> : Map{
+    public class Map<TKey, TVal> : Map, IEnumerator, IEnumerable{
 
         [SerializeField] private List< ValuePair<TKey, TVal> > pairs = new List< ValuePair<TKey, TVal> >();
+
+        private int position;
 
         public TVal this[TKey key]{
             get {
@@ -33,6 +35,10 @@ namespace SeleneGame.Core {
             }
         }
 
+        public bool Exists(TKey key){
+            return GetIndex(key) != -1;
+        }
+
         public void Clear() => pairs = new List< ValuePair<TKey, TVal> >();
 
         private int GetIndex(TKey key){
@@ -40,5 +46,21 @@ namespace SeleneGame.Core {
                 if ( EqualityComparer<TKey>.Default.Equals(key, pairs[i].valueOne) ) return i;
             return -1;
         }
+
+        public IEnumerator GetEnumerator() => (IEnumerator)this;
+        
+        public bool MoveNext(){
+            position++;
+
+            bool notDone = position < pairs.Count;
+            if (!notDone) Reset();
+            return notDone;
+        }
+        
+        public object Current => pairs[position];
+
+
+        // Deprecated but it wasn't removed from the Interface :)
+        public void Reset() => position = -1;
     }
 }

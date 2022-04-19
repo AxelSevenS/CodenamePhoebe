@@ -58,6 +58,8 @@ namespace SeleneGame.Core {
             playerControls["SecondaryWeapon"].performed += ctx => OnSwitchWeapon(1);
             playerControls["TertiaryWeapon"].performed += ctx => OnSwitchWeapon(2);
 
+            playerControls["Interact"].performed += ctx => OnPlayerValidate();
+
             debugControls["DebugKeyBindMenu"].performed += ctx => GameEvents.ToggleMenu();
             debugControls["SaveSlot1"].performed += ctx => SavingSystem.SavePlayerData(1);
             debugControls["SaveSlot2"].performed += ctx => SavingSystem.SavePlayerData(2);
@@ -76,6 +78,8 @@ namespace SeleneGame.Core {
             playerControls["SecondaryWeapon"].performed -= ctx => OnSwitchWeapon(1);
             playerControls["TertiaryWeapon"].performed -= ctx => OnSwitchWeapon(2);
 
+            playerControls["Interact"].performed -= ctx => OnPlayerValidate();
+
             debugControls["DebugKeyBindMenu"].performed -= ctx => GameEvents.ToggleMenu();
             debugControls["SaveSlot1"].performed -= ctx => SavingSystem.SavePlayerData(1);
             debugControls["SaveSlot2"].performed -= ctx => SavingSystem.SavePlayerData(2);
@@ -90,24 +94,21 @@ namespace SeleneGame.Core {
         }
         
         private void Update(){
+
             Physics.Raycast(entity.bottom, entity.gravityDown, out landingHit, Global.GroundMask);
 
-            // Player Input        
+            EntityControl();
+
+        }
+
+        private void EntityControl(){
+            // Player Input
             if (canPlay){
 
                 SafeDictionary<string, bool> inputDict = new SafeDictionary<string, bool>();
                 foreach(string key in inputKeys){
                     inputDict[key] = playerControls[key].IsActuated();
                 }
-                // inputDict["LightAttack"] = playerControls["LightAttack"].IsActuated();
-                // inputDict["HeavyAttack"] = playerControls["HeavyAttack"].IsActuated();
-                // inputDict["Jump"] = playerControls["Jump"].IsActuated();
-                // inputDict["Interact"] = playerControls["Interact"].IsActuated();
-                // inputDict["Evade"] = playerControls["Evade"].IsActuated();
-                // inputDict["Walk"] = playerControls["Walk"].IsActuated();
-                // inputDict["Crouch"] = playerControls["Crouch"].IsActuated();
-                // inputDict["Focus"] = playerControls["Focus"].IsActuated();
-                // inputDict["Shift"] = playerControls["Shift"].IsActuated();
 
                 float jump = System.Convert.ToSingle(inputDict["Jump"]) - System.Convert.ToSingle(inputDict["Crouch"]);
                 Quaternion lookRotation = UpdateCameraRotation( entity.lookRotationData.currentValue );
@@ -158,8 +159,8 @@ namespace SeleneGame.Core {
         private void ObjectInteraction(){
             if ( !menu && !talking && !entity.walkingTo ){
 
-                if (entity.currentState is SittingState){
-                    interactionCandidate = ((SittingState)entity.currentState).seat;
+                if (entity.state is SittingState){
+                    interactionCandidate = ((SittingState)entity.state).seat;
 
                 }else{
                     interactionCandidate = null;
@@ -181,8 +182,6 @@ namespace SeleneGame.Core {
 
 
         private void OnInteract(){
-            OnPlayerValidate();
-
             if (canInteract){
                 interactionCandidate.Interact(entity);
                 Debug.Log("Interact");
@@ -191,7 +190,7 @@ namespace SeleneGame.Core {
 
         private void OnSwitchWeapon(int value){
             if (canPlay)
-                entity.SwitchWeapon(value);
+                entity.weapons.Switch(value);
         }
         private void OnPlayerValidate(){
             GameEvents.PlayerInput();

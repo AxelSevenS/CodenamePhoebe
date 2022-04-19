@@ -34,33 +34,34 @@ namespace SeleneGame.Core {
         public float jumpCount;
         public float evadeCount = 1f;
 
-        public virtual void StateAwake(){;}
-
-        public virtual void StateEnable(){;}
-
-        public virtual void StateDisable(){;}
-
-        public virtual void StateDestroy(){;}
-
-        public virtual void StateUpdate(){;}
-
-        public virtual void StateFixedUpdate(){;}
+        protected virtual void StateAwake(){;}
+        protected virtual void StateStart(){;}
+        protected virtual void StateEnable(){;}
+        protected virtual void StateDisable(){;}
+        protected virtual void StateDestroy(){;}
+        protected virtual void StateUpdate(){;}
+        protected virtual void StateFixedUpdate(){;}
 
         public virtual void StateAnimation(){;}
 
         private void Awake(){
-            Reset();
             StateAwake();
+            Reset();
+        }
+        private void Start(){
+            StateStart();
         }
 
         private void OnEnable(){
-            Reset();
             StateEnable();
+            entity.lightAttackInputData.started += ParryCheck;
+            entity.heavyAttackInputData.started += ParryCheck;
         }
 
         private void OnDisable(){
-            Reset();
             StateDisable();
+            entity.lightAttackInputData.started -= ParryCheck;
+            entity.heavyAttackInputData.started -= ParryCheck;
         }
 
         private void OnDestroy(){
@@ -73,9 +74,7 @@ namespace SeleneGame.Core {
 
         private void FixedUpdate(){
             UpdateMoveSpeed();
-
             StateFixedUpdate();
-
         }
 
         private void Reset(){
@@ -101,24 +100,15 @@ namespace SeleneGame.Core {
                 
         }
 
-        public virtual void UpdateMoveSpeed(){ 
-            float newSpeed = entity.walkSpeed != Entity.WalkSpeed.idle ? entity.data.baseSpeed : 0f;
-            if (entity.walkSpeed != Entity.WalkSpeed.run) 
-                newSpeed *= entity.walkSpeed == Entity.WalkSpeed.sprint ? /* entity.data.sprintSpeed */1f : entity.data.slowSpeed;
-            newSpeed = newSpeed * speedMultiplier;
-
-            if (entity.inWater) newSpeed = newSpeed*entity.data.swimSpeed;
-            
-            entity.moveSpeed = Mathf.MoveTowards(entity.moveSpeed, newSpeed, entity.data.moveIncrement * Time.deltaTime);
-
-        }
+        protected abstract void UpdateMoveSpeed();
         
         public void Jump(){
             if (!canJump) return;
             
             entity.AnimatorTrigger("Jump");
+            float gravityJumpMultiplier = (2 - (entity.gravityForce/15f));
             entity._rb.velocity = Vector3.ProjectOnPlane( entity._rb.velocity, -entity.gravityDown );
-            entity._rb.velocity += entity.currentState.jumpDirection * entity.data.jumpHeight + (entity.absoluteForward*entity.inertiaMultiplier) * (2 - (entity.gravityForce/15f));
+            entity._rb.velocity += entity.data.jumpHeight * gravityJumpMultiplier * entity.state.jumpDirection;
             entity.jumpCooldown = 0.4f;
 
             // insert Jump effects here
@@ -136,16 +126,21 @@ namespace SeleneGame.Core {
             }
         }
 
-        public virtual void HandleInput(){
-
-            // Handling Movement Input.
-            RawInputToGroundedMovement(entity, out Vector3 camRight, out Vector3 camForward, out Vector3 groundDirection, out Vector3 groundDirection3D);
-            entity.moveDirection = groundDirection;
-
-            if (entity.crouchInputData.currentValue) entity.SetWalkSpeed(Entity.WalkSpeed.crouch);
-            else if ((groundDirection.magnitude <= 0.25f || entity.walkInputData.currentValue) && entity.onGround) entity.SetWalkSpeed(Entity.WalkSpeed.walk);
-            else entity.SetWalkSpeed(Entity.WalkSpeed.run);
+        public virtual void Parry(){
+            Debug.Log("Parry");
+            entity.parryTimer = 0.15f;
         }
+
+        protected void ParryCheck(float timer){
+            bool lightActuated = entity.lightAttackInputData.trueTimer < 0.15f && entity.lightAttackInputData.currentValue;
+            bool heavyActuated = entity.heavyAttackInputData.trueTimer < 0.15f && entity.heavyAttackInputData.currentValue;
+            if (lightActuated && heavyActuated){
+                Parry();
+                return;
+            }
+        }
+
+        public abstract void HandleInput();
 
         protected void RotateEntity(Vector3 newRotation){
             

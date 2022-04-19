@@ -11,7 +11,7 @@ namespace SeleneGame {
         [SerializeField] private bool onGoing;
         [SerializeField] private bool goingForward = true;
         [SerializeField] private Spline spline;
-        private Mathfs.OrientedPoint splinePosition;
+        private OrientedPoint splinePosition;
         [Range(0, 1f)] [SerializeField] private float weight = 0.9995f;
         [Range(0, 1f)] [SerializeField] private float t;
         private float prevT;

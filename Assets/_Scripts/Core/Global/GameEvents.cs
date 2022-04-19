@@ -17,9 +17,8 @@ namespace SeleneGame.Core {
 
         public static event Action onPlayerInput;
         public static void PlayerInput(){
-            if (onPlayerInput != null){
+            if (onPlayerInput != null)
                 onPlayerInput(); 
-            }
         }
         public static event Action onToggleMenu;
         public static void ToggleMenu(){

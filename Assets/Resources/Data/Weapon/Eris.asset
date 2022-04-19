@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8cb3c44e17371cf43b9928bdcdd99eb5, type: 3}
   m_Name: Eris
   m_EditorClassIdentifier: 
-  name: WeaponData
   displayName: Eris
   costume: {fileID: 11400000, guid: 88d05d19418b5cb4eb2b9561a0f90b20, type: 2}
+  weaponType: 1

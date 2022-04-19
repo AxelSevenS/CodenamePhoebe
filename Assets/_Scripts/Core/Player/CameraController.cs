@@ -25,7 +25,7 @@ namespace SeleneGame.Core {
             Cursor.visible = Player.current.menu;
             Cursor.lockState = Cursor.visible ? CursorLockMode.None : CursorLockMode.Locked;
 
-            cameraRelativePosition = Player.current.entity.currentState.cameraPosition;
+            cameraRelativePosition = Player.current.entity.state.cameraPosition;
 
             cameraTargetVector = new Vector3( cameraRelativePosition.x, cameraRelativePosition.y, cameraRelativePosition.z * distanceToPlayer -additionalDistance);
             cameraVector = Vector3.Slerp(cameraVector, cameraTargetVector, 0.05f);

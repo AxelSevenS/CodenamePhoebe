@@ -21,7 +21,7 @@ namespace SeleneGame {
             filter = GetComponent<MeshFilter>();
             waterController = GetComponent<WaterController>();
 
-            filter.mesh = GenerateMesh();
+            filter.sharedMesh = GenerateMesh();
         }
 
         private void OnValidate(){

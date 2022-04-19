@@ -27,8 +27,6 @@ namespace SeleneGame.States {
 
         public override bool masked => true;
 
-        public override bool sliding => entity.evadeInputData.trueTimer > 0.125f;
-
         private float forwardMovement = 0f;
         private Vector3 startFallDirection = Vector3.forward;
         private Vector3 fallTurn = Vector3.zero;
@@ -44,24 +42,27 @@ namespace SeleneGame.States {
             entity.SetState("Walking");
         }
 
-        public override void StateEnable(){
-            entity.evadeInputData.startAction += OnEvadeInputStart;
-            entity.evadeInputData.stopAction += OnEvadeInputStop;
-        }
-        public override void StateDisable(){
-            entity.evadeInputData.startAction -= OnEvadeInputStart;
-            entity.evadeInputData.stopAction -= OnEvadeInputStop;
-        }
-
-        public override void StateAwake(){
-            landCursor = GameObject.Instantiate(Resources.Load("Prefabs/UI/LandCursor"), Global.ui.transform.GetChild(0)) as GameObject;
-        }
-
-        public override void StateDestroy(){
+        protected override void StateDestroy(){
             landCursor = Global.SafeDestroy(landCursor);
         }
 
-        public override void StateUpdate(){
+        protected override void StateEnable(){
+
+            entity.evadeInputData.started += OnEvadeInputStart;
+            entity.evadeInputData.stopped += OnEvadeInputStop;
+        }
+        protected override void StateDisable(){
+
+            entity.evadeInputData.started -= OnEvadeInputStart;
+            entity.evadeInputData.stopped -= OnEvadeInputStop;
+        }
+
+        protected override void StateAwake(){
+
+            landCursor = GameObject.Instantiate(Resources.Load("Prefabs/UI/LandCursor"), Global.ui.transform.GetChild(0)) as GameObject;
+        }
+
+        protected override void StateUpdate(){
 
             // Gravity Shifting Movement
             if ( entity.inWater || entity.shiftInputData.trueTimer > Player.current.holdDuration ){
@@ -76,14 +77,10 @@ namespace SeleneGame.States {
 
             additionalCameraDistance = (entity.focusing ? -0.7f : 0f) + (entity.walkSpeed == Entity.WalkSpeed.sprint ? 0.4f : 0f);
 
-            if (entity.shiftInputData.trueTimer > Player.current.holdDuration){
-                StopShifting(Vector3.down);
-            }
-
             UpdateLandCursorPos();
         }
 
-        public override void StateFixedUpdate(){
+        protected override void StateFixedUpdate(){
 
             if (entity.evading){
 
@@ -133,7 +130,7 @@ namespace SeleneGame.States {
 
         }
 
-        public override void UpdateMoveSpeed(){ 
+        protected override void UpdateMoveSpeed(){ 
             // float newSpeed = 0f;
             // switch ( entity.walkSpeed ){
             //     case Entity.WalkSpeed.sprint:
@@ -160,6 +157,12 @@ namespace SeleneGame.States {
                 entity.inertiaDirection = groundDirection;
                 forwardMovement = Mathf.Min(floatDirection.magnitude, 1f);
             }
+
+            if (entity.shiftInputData.trueTimer > Player.current.holdDuration){
+                StopShifting(Vector3.down);
+            }
+
+            entity.slidingData.SetVal( entity.evadeInputData.trueTimer > 0.125f );
         }
 
         protected void UpdateLandCursorPos(){
@@ -184,7 +187,9 @@ namespace SeleneGame.States {
         }
 
         private void OnEvadeInputStart(float timer){
-            entity.inertiaDirection = entity.lookRotationData.currentValue * Vector3.forward;
+            Vector3 dir = entity.rotation * entity.lookRotationData.currentValue * Vector3.forward;
+            Debug.DrawRay(entity._transform.position, 10f * dir, Color.red, 3f);
+            entity.inertiaDirection = dir;
             // entity.Evade();
         }
 

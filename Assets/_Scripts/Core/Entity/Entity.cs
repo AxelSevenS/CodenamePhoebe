@@ -33,15 +33,15 @@ namespace SeleneGame.Core {
 
         [Space(20)]
 
-        public State currentState;
+        public State state;
 
-        public Weapon[] weapons = new Weapon[1];
-        public Weapon currentWeapon;
+        public WeaponInventory weapons;
+        public Weapon currentWeapon => weapons.currentItem;
 
 
 
         public float currHealth;
-        public float evadeTimer;
+        public float evadeTimer, parryTimer;
         public float jumpCooldown, shiftCooldown;
 
 
@@ -79,7 +79,7 @@ namespace SeleneGame.Core {
         slidingData,
         evadingData = new BoolData();
 
-        [HideInInspector]
+        // [HideInInspector]
         public BoolData lightAttackInputData,
         heavyAttackInputData,
         jumpInputData,
@@ -89,8 +89,8 @@ namespace SeleneGame.Core {
         focusInputData,
         shiftInputData = new BoolData();
 
-        public ValueData<Vector3> moveInputData = new ValueData<Vector3>();
-        public ValueData<Quaternion> lookRotationData = new ValueData<Quaternion>();
+        public VectorData moveInputData = new VectorData();
+        public QuaternionData lookRotationData = new QuaternionData();
 
         public RaycastHit groundHit;
         public RaycastHit wallHit;
@@ -99,10 +99,10 @@ namespace SeleneGame.Core {
         public Vector3 bottom => transform.position - transform.up*_colliderBounds.extents.y;
         public float fallVelocity => Vector3.Dot(_rb.velocity, -gravityDown);
         public float gravityForce => data.weight * (currentWeapon?.weightModifier ?? 1f);
-        public Quaternion apparentRotation => Quaternion.FromToRotation(rotation * Vector3.up, currentState.entityUp) * rotation ;
+        public Quaternion apparentRotation => Quaternion.FromToRotation(rotation * Vector3.up, state.entityUp) * rotation ;
         public Quaternion groundOrientation => Quaternion.FromToRotation(-gravityDown, groundHit.normal);
 
-        public bool masked => currentState.masked;
+        public bool masked => state.masked;
         public bool inWater => _physicsComponent.inWater;
         public bool isOnWaterSurface => inWater && transform.position.y > (_physicsComponent.waterHeight - data.size.y);
         public bool evading => evadingData.currentValue;
@@ -121,7 +121,6 @@ namespace SeleneGame.Core {
         protected virtual void EntityDestroy(){;}
         protected virtual void EntityUpdate(){;}
         protected virtual void EntityFixedUpdate(){;}
-        protected virtual void EntityCustomBehaviour(){;}
 
 
         private void OnEnable(){
@@ -136,6 +135,7 @@ namespace SeleneGame.Core {
         }
 
         private void Awake(){
+            weapons = new WeaponInventory(gameObject);
             EntityAwake();
         }
 
@@ -163,7 +163,6 @@ namespace SeleneGame.Core {
             _physicsComponent = GetComponent<CustomPhysicsComponent>();
             _animator = GetComponent<Animator>();
 
-            data = UnitData.GetDataByName<EntityData>( GetType().Name.Replace("Entity","") );
             LoadModel();
             gameObject.name = name;
             gameObject.layer = 6;
@@ -178,12 +177,7 @@ namespace SeleneGame.Core {
             jumpCooldown = Mathf.MoveTowards( jumpCooldown, 0f, Time.deltaTime );
             shiftCooldown = Mathf.MoveTowards( shiftCooldown, 0f, Time.deltaTime );
             evadeTimer = Mathf.MoveTowards( evadeTimer, 0f, Time.deltaTime );
-
-            // if the Entity is not Player Controlled, then it uses its custom behaviour.
-            if (!isPlayer && Player.current.entity != this){
-                moveDirection = Vector3.Lerp(moveDirection, Vector3.zero, 0.01f);
-                EntityCustomBehaviour();
-            }
+            parryTimer = Mathf.MoveTowards( parryTimer, 0f, Time.deltaTime );
 
             _colliderBounds = new Bounds (_transform.position, Vector3.zero);
             foreach (Collider nextCollider in _colliders){
@@ -191,7 +185,6 @@ namespace SeleneGame.Core {
             }
 
             evadingData.SetVal( evadeTimer > data.evadeCooldown );
-            slidingData.SetVal( currentState.sliding );
             groundData.SetVal( this.GroundCheck(out groundHit) );
             wallData.SetVal( this.WallCheck(out wallHit) );
             
@@ -201,13 +194,13 @@ namespace SeleneGame.Core {
                 _animator.SetBool("OnGround", onGround);
                 _animator.SetBool("Falling", fallVelocity <= -20f);
                 _animator.SetBool("Idle", moveDirection.magnitude == 0f );
-                _animator.SetInteger("State", currentState.id);
-                _animator.SetFloat("WeaponType", (float)(currentWeapon?.weaponType ?? Weapon.WeaponType.sparring) );
+                _animator.SetInteger("State", state.id);
+                _animator.SetFloat("WeaponType", (float)(currentWeapon.data.weaponType) );
                 _animator.SetFloat("SubState", subState);
                 _animator.SetFloat("WalkSpeed", (float)walkSpeed);
                 _animator.SetFloat("DotOfForward", Vector3.Dot(absoluteForward, rotationForward));
                 _animator.SetFloat("ForwardRight", Vector3.Dot(absoluteForward, Vector3.Cross(-gravityDown, rotationForward)));
-                currentState?.StateAnimation();
+                state?.StateAnimation();
             }
         }
 
@@ -233,7 +226,7 @@ namespace SeleneGame.Core {
             moveInputData.Update();
             lookRotationData.Update();
 
-            currentState.HandleInput();
+            state.HandleInput();
 
             moveInputData.SetVal(Vector3.zero);
         }
@@ -250,8 +243,6 @@ namespace SeleneGame.Core {
             shiftInputData.SetVal( inputDictionary["Shift"] );
             moveInputData.SetVal( rawInput );
             lookRotationData.SetVal( camRotation );
-
-            currentState.HandleInput();
 
         }
         
@@ -288,15 +279,15 @@ namespace SeleneGame.Core {
             _transform.position += move;
         }
 
-        public void SwitchWeapon(int weaponIndex){
-            for ( int i = 0; i < weapons.Length; i++ )
-                weapons[i]?.Hide();
+        // public void SwitchWeapon(int weaponIndex){
+        //     for ( int i = 0; i < weapons.Length; i++ )
+        //         weapons[i]?.Hide();
 
-            currentWeapon = weapons[weaponIndex];
-            currentWeapon.Display();
+        //     currentWeapon = weapons[weaponIndex];
+        //     currentWeapon.Display();
 
-            Debug.Log($"Switched Weapon to {currentWeapon.name}.");
-        }
+        //     Debug.Log($"Switched Weapon to {currentWeapon.name}.");
+        // }
 
         public void LoadModel(){
             DestroyModel();
@@ -319,7 +310,7 @@ namespace SeleneGame.Core {
             _colliders = model.GetComponentsInChildren<Collider>();
             
             foreach ( Weapon weapon in weapons){
-                weapon?.LoadModel();
+                weapon.LoadModel();
             }
         }
 
@@ -354,35 +345,9 @@ namespace SeleneGame.Core {
 
         public void SetRotation(Vector3 newUp) => rotation = Quaternion.FromToRotation(rotation * Vector3.up, newUp) * rotation;
 
-        public void SetWeapon(int weaponIndex, string weaponName){
-            if (weapons == null || weapons.Length < weaponIndex + 1) {
-                Weapon[] tempWeapons = weapons;
-                weapons = new Weapon[weaponIndex + 1];
-                for ( int i = 0; i < weapons.Length; i++ ){
-                    if (i < tempWeapons.Length){
-                        weapons[i] = tempWeapons[i];
-                    }else{
-                        weapons[i] = gameObject.AddComponent( Weapon.GetWeaponTypeByName("Unarmed") ) as Weapon;
-                    }
-                }
-            }
-
-            // If Weapon is already equipped in this slot, replace it.
-            if (weapons[weaponIndex] is object){
-                weapons[weaponIndex].DestroyModel();
-                weapons[weaponIndex] = Global.SafeDestroy(weapons[weaponIndex]);
-            }
-
-            // Then, equip it in the desired slot.
-            weapons[weaponIndex] = gameObject.AddComponent( Weapon.GetWeaponTypeByName(weaponName) ) as Weapon;
-            weapons[weaponIndex].enabled = true;
-
-            if (currentWeapon == null) SwitchWeapon(weaponIndex);
-        }
-
         public void SetState(string stateName){
-            currentState = Global.SafeDestroy(currentState);
-            currentState = gameObject.AddComponent( State.GetStateTypeByName(stateName) ) as State;
+            state = Global.SafeDestroy(state);
+            state = gameObject.AddComponent( State.GetStateTypeByName(stateName) ) as State;
         }
         
 

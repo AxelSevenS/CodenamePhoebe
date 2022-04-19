@@ -42,7 +42,7 @@ namespace SeleneGame {
         }
         void LateUpdate(){
             if (entity == null) return;
-            Mathfs.BezierCurve currentCurve = new Mathfs.BezierCurve(
+            BezierCurve currentCurve = new BezierCurve(
                 flyingPosition, 
                 entity["head"].transform.position,
                 flyingPosition + (entity["head"].transform.position - flyingPosition)/2f,

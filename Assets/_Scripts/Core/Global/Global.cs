@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -50,6 +51,23 @@ namespace SeleneGame.Core {
                 Object.Destroy(obj);
             
             return null;
+        }
+
+        public static T GetPropertyValue<T>(this System.Type type, string name) {
+            if (type == null) return default(T);
+
+            BindingFlags flags = BindingFlags.Static | BindingFlags.Public;
+
+            PropertyInfo info = type.GetProperty(name, flags);
+
+            if (info == null) {
+                FieldInfo fieldInfo = type.GetField(name, flags);
+                if (fieldInfo == null) return default(T);
+
+                return (T)fieldInfo.GetValue(null);
+            }
+
+            return (T)info.GetValue(null, null);
         }
 
         // public static void SendIEntityMessage<T>(this GameObject gameObject, string methodName) where T : IMessageable{

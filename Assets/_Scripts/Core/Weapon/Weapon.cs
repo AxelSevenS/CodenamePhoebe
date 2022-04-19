@@ -5,9 +5,6 @@ namespace SeleneGame.Core {
     
     public abstract class Weapon : MonoBehaviour {
 
-        public enum WeaponType {lightSword, heavySword, spear, swordAndShield, sparring};
-        public virtual WeaponType weaponType => WeaponType.sparring;
-
         [Space(35)]
         [ReadOnly] public Entity entity;
         [ReadOnly] public WeaponData data;
@@ -37,32 +34,42 @@ namespace SeleneGame.Core {
 
         public virtual bool shifting => false;
 
-        protected virtual void OnEnableWeapon(){;}
-
-        protected virtual void OnDisableWeapon(){;}
-
+        protected virtual void WeaponStart(){;}
+        protected virtual void WeaponAwake(){;}
+        protected virtual void WeaponEnable(){;}
+        protected virtual void WeaponDisable(){;}
         protected virtual void UpdateAlways(){;}
-
         protected virtual void UpdateEquipped(){;}
 
+        private void SetData(){
+            if (data != null) return;
+
+            string dataName = GetType().Name.Replace("Weapon","");
+            data = UnitData.GetDataByName<WeaponData>( dataName );
+            Debug.Log(dataName);
+        }
+
+        private void Start(){
+            WeaponStart();
+        }
         private void Awake(){
+            SetData();
+            WeaponAwake();
             Reset();
             LoadModel();
         }
 
         private void Reset(){
             entity = GetComponent<Entity>();
-            string dataName = GetType().Name.Replace("Weapon","");
-            data = UnitData.GetDataByName<WeaponData>( dataName );
         }
 
         private void OnEnable(){
             data.changeCostume += LoadModel;
-            OnEnableWeapon();
+            WeaponEnable();
         }
         private void OnDisable(){
             data.changeCostume -= LoadModel;
-            OnDisableWeapon();
+            WeaponDisable();
         }
 
         private void OnDestroy(){
@@ -96,11 +103,8 @@ namespace SeleneGame.Core {
                 secondaryModel = Instantiate(data.costume.secondaryModel, leftWeapon.position, leftWeapon.rotation, leftWeapon);
                 secondaryModel.name = $"WeaponModel{data.name}";
             }
-
-            if (entity.currentWeapon == this)
-                Display();
-            else
-                Hide();
+            
+            Hide();
 
             // Debug.Log($"Loaded {entity.name}'s {data.name} model.");
         }

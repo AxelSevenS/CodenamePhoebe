@@ -9,20 +9,22 @@ using UnityEditor;
 namespace SeleneGame {
     
     [RequireComponent(typeof(MeshFilter))]
-    public class Spline : MonoBehaviour{
+    [RequireComponent(typeof(MeshCollider))]
+    public class Spline : MonoBehaviour {
 
         private Mesh mesh;
         public MeshFilter _meshFilter;
         public MeshCollider _meshCollider;
-        public Transform controlPoint1;
-        public Transform controlPoint2;
-        public Transform handle1;
-        public Transform handle2;
         public Spline prevSegment, nextSegment;
 
-        private Mathfs.BezierCurve splineCurve => new Mathfs.BezierCurve( controlPoint1, controlPoint2, handle1, handle2);
+        public OrientedPoint controlPoint1 => splineCurve.controlPoint1;
+        public OrientedPoint controlPoint2 => splineCurve.controlPoint2;
+        public OrientedPoint handle1 => splineCurve.handle1;
+        public OrientedPoint handle2 => splineCurve.handle2;
 
-        public Mathfs.OrientedPoint GetBezier(float tVal) => splineCurve.GetPoint(tVal);
+        public BezierCurve splineCurve;
+
+        public OrientedPoint GetBezier(float tVal) => splineCurve.GetPoint(tVal);
 
         public RepeatableMesh mesh2D;
         [Range(3, 128)]
@@ -30,16 +32,22 @@ namespace SeleneGame {
         public float scale = 1f;
         private int segNbr = 1;
 
+        public Vector3 oldPos;
 
         
         void OnEnable() => Global.objectManager.objectList.Add( this.gameObject );
         void OnDisable() => Global.objectManager.objectList.Remove( this.gameObject );
 
-        private void Awake(){
+        private void Awake() {
             UpdateMesh();
         }
 
         private void Reset(){
+            Vector3 cp1 = transform.position - Vector3.forward * 3;
+            Vector3 cp2 = transform.position + Vector3.forward * 3;
+            Vector3 h1 = transform.position - Vector3.forward * 2;
+            Vector3 h2 = transform.position + Vector3.forward * 2;
+            splineCurve = new BezierCurve(cp1, cp2, h1, h2);
             Awake();
         }
 
@@ -67,8 +75,8 @@ namespace SeleneGame {
             for (int ring = 0; ring < ringCount; ring++){
 
                 float t = ring / (ringCount-1f);
-                // Mathfs.OrientedPoint op = Mathfs.GetBezierCurve(new Mathfs.OrientedPoint(controlPoint1), new Mathfs.OrientedPoint(controlPoint2), new Mathfs.OrientedPoint(handle1), new Mathfs.OrientedPoint(handle2), t);
-                Mathfs.OrientedPoint op = splineCurve.GetPoint(t);
+                // OrientedPoint op = GetBezierCurve(new OrientedPoint(controlPoint1), new OrientedPoint(controlPoint2), new OrientedPoint(handle1), new OrientedPoint(handle2), t);
+                OrientedPoint op = GetBezier(t);
 
                 for (int j = 0; j < mesh2D.vertexCount; j++){
                     vertices.Add(op.position - this.transform.position + (op.rotation * mesh2D.vertices[j].point)*scale);
@@ -116,40 +124,47 @@ namespace SeleneGame {
         }
 
         public void UpdateOtherSegments(){
+            UpdateMesh();
             if(nextSegment != null){
-                nextSegment.controlPoint1.transform.position = controlPoint2.transform.position;
-                nextSegment.controlPoint1.transform.rotation = controlPoint2.transform.rotation;
-                nextSegment.handle1.transform.position = nextSegment.controlPoint1.transform.position + (controlPoint2.transform.position - handle2.transform.position);
+                nextSegment.controlPoint1.Set(controlPoint2);
+                nextSegment.handle1.Set(nextSegment.controlPoint1.position + (controlPoint2.position - handle2.position));
                 nextSegment.UpdateMesh();
             }
             if(prevSegment != null){
-                prevSegment.controlPoint2.transform.position = controlPoint1.transform.position;
-                prevSegment.controlPoint2.transform.rotation = controlPoint1.transform.rotation;
-                prevSegment.handle2.transform.position = prevSegment.controlPoint2.transform.position + (controlPoint1.transform.position - handle1.transform.position);
+                prevSegment.controlPoint2.Set(controlPoint1);
+                prevSegment.handle2.Set(prevSegment.controlPoint2.position + (controlPoint1.position - handle1.position));
                 prevSegment.UpdateMesh();
             }
-            UpdateMesh();
         }
 
         public void AddNext(){
-            var newSeg = Instantiate(gameObject, controlPoint2.transform.position + (controlPoint2.transform.position - transform.position), transform.rotation, transform.parent).GetComponent<Spline>();
-            newSeg.prevSegment = this;
-            nextSegment = newSeg;
-            newSeg.segNbr = segNbr + 1;
-            newSeg.gameObject.name = "Segment" + newSeg.segNbr;
+            Vector3 displacement = controlPoint2.position - controlPoint1.position;
+            nextSegment = Instantiate(gameObject, transform.position + displacement, transform.rotation, transform.parent).GetComponent<Spline>();
+            nextSegment.prevSegment = this;
+
+            nextSegment.splineCurve.Move(displacement);
+            nextSegment.segNbr = segNbr + 1;
+            nextSegment.gameObject.name = "Segment" + nextSegment.segNbr;
+
+            UpdateOtherSegments();
         }
-        public void RemoveNext(){
+        public void RemoveNext() {
             if (nextSegment.nextSegment != null)
                 nextSegment.nextSegment.prevSegment = null;
             Global.SafeDestroy(nextSegment.gameObject);
             nextSegment = null;
         }
+
         public void AddPrev(){
-            var newSeg = Instantiate(gameObject, controlPoint1.transform.position + (controlPoint1.transform.position - transform.position), transform.rotation, transform.parent).GetComponent<Spline>();
-            newSeg.nextSegment = this;
-            prevSegment = newSeg;
-            newSeg.segNbr = segNbr - 1;
-            newSeg.gameObject.name = "Segment" + newSeg.segNbr;
+            Vector3 displacement = controlPoint1.position - controlPoint2.position;
+            prevSegment = Instantiate(gameObject, transform.position + displacement, transform.rotation, transform.parent).GetComponent<Spline>();
+            prevSegment.nextSegment = this;
+
+            prevSegment.splineCurve.Move(displacement);
+            prevSegment.segNbr = segNbr - 1;
+            prevSegment.gameObject.name = "Segment" + prevSegment.segNbr;
+            
+            UpdateOtherSegments();
         }
         public void RemovePrev(){
             if (prevSegment.prevSegment != null)
@@ -160,32 +175,15 @@ namespace SeleneGame {
 
 
         #if UNITY_EDITOR
-        public void OnDrawGizmos(){
-            // Draw Gizmos only if Object or Child of Object is Selected
-            if (Selection.Contains(controlPoint1.gameObject) || Selection.Contains(controlPoint2.gameObject) || Selection.Contains(handle1.gameObject) || Selection.Contains(handle2.gameObject) || Selection.Contains(gameObject)){
-                DrawGizmos();
-                UpdateOtherSegments();
-                return;
-            }
-        }
-        
-        private void DrawGizmos(){
+        public void OnDrawGizmosSelected(){
 
-            Mathfs.BezierCurve currentBezier = splineCurve;
-
-            Gizmos.DrawSphere(currentBezier.controlPoint1.position, 0.3f);
-            Gizmos.DrawSphere(currentBezier.controlPoint2.position, 0.3f);
-            Gizmos.color = Color.blue;
-            Gizmos.DrawSphere(currentBezier.handle1.position, 0.3f);
-            Gizmos.DrawSphere(currentBezier.handle2.position, 0.3f);
-
-            Handles.DrawBezier( currentBezier.controlPoint1.position, currentBezier.controlPoint2.position, currentBezier.handle1.position, currentBezier.handle2.position, Color.white, EditorGUIUtility.whiteTexture, 1f );
+            Handles.DrawBezier( controlPoint1.position, controlPoint2.position, handle1.position, handle2.position, Color.white, EditorGUIUtility.whiteTexture, 1f );
 
 
             for (int i = 0; i < ringCount; i++){
-                Mathfs.OrientedPoint pointAlongTessel = currentBezier.GetPoint( (float)i/(float)ringCount );
-                // Vector3 velocityAlongTessel = currentBezier.GetVelocity( (float)i/(float)ringCount );
-                // Vector3 accelerationAlongTessel = currentBezier.GetAcceleration( (float)i/(float)ringCount );
+                OrientedPoint pointAlongTessel = GetBezier( (float)i/(float)ringCount );
+                // Vector3 velocityAlongTessel = GetVelocity( (float)i/(float)ringCount );
+                // Vector3 accelerationAlongTessel = GetAcceleration( (float)i/(float)ringCount );
 
                 // Gizmos.color = Color.magenta;
                 // Gizmos.DrawLine( pointAlongTessel.position, pointAlongTessel.position + velocityAlongTessel );
@@ -203,7 +201,23 @@ namespace SeleneGame {
                 
                 // Handles.PositionHandle(point.pos, point.rot);
             }
+
+            if ( transform.hasChanged ){
+                Vector3 movement = transform.position - oldPos;
+
+                splineCurve.Move(movement);
+                oldPos += movement;
+
+                transform.hasChanged = false;
+
+                UpdateOtherSegments();
+            }
         }
+
+        private void OnValidate(){
+            UpdateOtherSegments();
+        }
+
         #endif
     }
 }

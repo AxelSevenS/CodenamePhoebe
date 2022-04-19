@@ -69,13 +69,13 @@ namespace SeleneGame {
         }
 
         void ToggleMenu(){
+            if (Player.current.menu){
+                Player.current.playerControls.Enable();
+            }else{
+                Player.current.playerControls.Disable();
+            }
             Player.current.menu = !Player.current.menu;
             keyBindingMenu.SetActive(Player.current.menu);
-            if (Player.current.menu){
-                Player.current.playerControls.Disable();
-            }else{
-                Player.current.playerControls.Enable();
-            }
         }
 
         public void StartAssignment(Button button){

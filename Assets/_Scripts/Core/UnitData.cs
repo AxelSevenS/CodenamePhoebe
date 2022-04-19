@@ -17,7 +17,7 @@ namespace SeleneGame.Core {
             
             Debug.LogError($"A {type.ToString()} named {fileName} does not exist, make sure you spelled it right or it is implemented correctly.");
 
-            string defaultData = GetDefaultData(type);
+            string defaultData = type.GetPropertyValue<string>("defaultData");
             return Resources.Load<TData>($"{dataPath}/{defaultData}");
         }
 
@@ -25,19 +25,12 @@ namespace SeleneGame.Core {
             string folder = type.Name.Replace("Data", "");
             return $"Data/{folder}";
         }
-
-        protected static string GetDefaultData(System.Type type){
-            if (type is EntityData){
-                return "Selene";
-            }else if (type is WeaponData){
-                return "Unarmed";
-            }
-            return "Null";
-        }
         
     }
 
     public abstract class UnitData<TCostume> : UnitData where TCostume : UnitCostume{
+
+        public static string defaultData => "Null";
 
         public string displayName;
         

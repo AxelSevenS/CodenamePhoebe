@@ -17,7 +17,7 @@ namespace SeleneGame.Core {
         public static bool DirectionCheck( this Entity entity, Vector3 direction, out RaycastHit checkHit ) {
 
             foreach (Collider col in entity._colliders){
-                bool hasHitWall = col.ColliderCast( entity._transform.position + entity._transform.rotation * col.GetCenter(), direction, entity.data.stepHeight, out RaycastHit tempHit );
+                bool hasHitWall = col.ColliderCast( col.transform.position, direction, out RaycastHit tempHit );
                 if (!hasHitWall) continue;
 
                 checkHit = tempHit;

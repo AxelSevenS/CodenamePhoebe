@@ -29,17 +29,16 @@ namespace SeleneGame.States {
         private bool landed;
         public float coyoteTimer = 0f;
 
-        private void OnEnable(){
-            entity.groundData.startAction += OnEntityLand;
+        protected override void StateEnable(){
+
+            entity.groundData.started += OnEntityLand;
         }
-        private void OnDisable(){
-            entity.groundData.startAction -= OnEntityLand;
+        protected override void StateDisable(){
+
+            entity.groundData.started -= OnEntityLand;
         }
 
-        public override void StateUpdate(){;
-        }
-
-        public override void StateFixedUpdate(){
+        protected override void StateFixedUpdate(){
 
             Gravity(entity.gravityForce, entity.gravityDown);
 
@@ -49,11 +48,6 @@ namespace SeleneGame.States {
                 evadeCount = 1;
                 if( entity.jumpCooldown == 0 )
                     jumpCount = 1;
-            }
-            
-            // Jump if the Jump key is pressed.
-            if (entity.jumpInputData.currentValue){
-                Jump();
             }
 
 
@@ -84,10 +78,26 @@ namespace SeleneGame.States {
 
         }
 
+        protected override void UpdateMoveSpeed(){
+            float newSpeed = entity.walkSpeed != Entity.WalkSpeed.idle ? entity.data.baseSpeed : 0f;
+            if (entity.walkSpeed != Entity.WalkSpeed.run) 
+                newSpeed *= entity.walkSpeed == Entity.WalkSpeed.sprint ? /* entity.data.sprintSpeed */1f : entity.data.slowSpeed;
+
+            newSpeed = newSpeed * speedMultiplier;
+            
+            entity.moveSpeed = Mathf.MoveTowards(entity.moveSpeed, newSpeed, entity.data.moveIncrement * Time.deltaTime);
+        }
+
+
         public override void HandleInput(){
-            // Handle Movement Input.
+            
             moveAmount = entity.moveInputData.currentValue.z;
             turnDirection = entity.moveInputData.currentValue.x;
+            
+            // Jump if the Jump key is pressed.
+            if (entity.jumpInputData.currentValue){
+                Jump();
+            }
         }
 
         private void OnEntityLand(float timer){

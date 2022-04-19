@@ -18,10 +18,10 @@ namespace SeleneGame.Entities {
         private SpeedlinesEffect speedlines;
 
         protected override void EntityEnable(){
-            shiftInputData.stopAction += Shift;
+            shiftInputData.stopped += Shift;
         }
         protected override void EntityDisable(){
-            shiftInputData.stopAction -= Shift;
+            shiftInputData.stopped -= Shift;
         }
 
         protected override void EntityDestroy(){
@@ -31,8 +31,8 @@ namespace SeleneGame.Entities {
         protected override void EntityAwake(){
 
             SetState("Walking");
-            SetWeapon(0, "Hypnos");
-            SetWeapon(2, "Eris");
+            weapons.Set(1, Weapon.GetWeaponTypeByName("Hypnos"));
+            weapons.Set(2, Weapon.GetWeaponTypeByName("Eris"));
 
             GameObject speedlinesObject = GameObject.Instantiate(Resources.Load("Prefabs/Effects/Speedlines"), Global.effects.transform) as GameObject;
             speedlines = speedlinesObject.GetComponent<SpeedlinesEffect>();
@@ -55,7 +55,7 @@ namespace SeleneGame.Entities {
 
         private void Shift(float timer){
             if (timer >= Player.current.holdDuration) return;
-            if (currentState is WalkingState){
+            if (state is WalkingState){
                 if ( shiftCooldown == 0f){
                     shiftCooldown = 0.3f;
                     if (onGround) _rb.velocity += -gravityDown*3f;
@@ -66,8 +66,8 @@ namespace SeleneGame.Entities {
                         // var shiftParticle = Instantiate(Global.LoadParticle("ShiftParticles"), transform.position, Quaternion.FromToRotation(Vector3.up, transform.up));
                         // Destroy(shiftParticle, 2f);
                 }
-            }else if (currentState is ShiftingState){
-                ShiftingState shiftingState = currentState as ShiftingState;
+            }else if (state is ShiftingState){
+                ShiftingState shiftingState = state as ShiftingState;
                 shiftingState.StopShifting(Vector3.down);
             }
 

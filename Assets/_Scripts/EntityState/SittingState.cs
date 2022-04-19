@@ -15,27 +15,23 @@ namespace SeleneGame.States {
 
         [HideInInspector] public Seat seat;
 
-        private void OnEnable(){
-            entity.crouchInputData.startAction += OnCrouchInput;
-        }
-        private void OnDisable(){
-            entity.crouchInputData.startAction -= OnCrouchInput;
+        protected override void StateEnable(){
+            entity.crouchInputData.started += OnCrouchInput;
         }
 
+        protected override void StateDisable(){
+            entity.crouchInputData.started -= OnCrouchInput;
+        }
 
-        public override void StateFixedUpdate(){
 
+        protected override void StateFixedUpdate(){
             // Sitting
             entity._transform.rotation = Quaternion.LookRotation( Vector3.ProjectOnPlane(seat.transform.position - entity._transform.position, seat.transform.up), seat.transform.up);
             entity.absoluteForward = entity._transform.forward;
-            // entity.evadeDirection = Vector3.Lerp(entity.evadeDirection, entity.absoluteForward, 0.1f);
-            // entity.rotationForward = Vector3.Lerp(entity.rotationForward, entity.relativeForward, 0.7f).normalized;
             entity._transform.position = seat.sitPosition;
         }
 
-        private void OnCrouchInput(float timer){
-            seat.UnSit();
-        }
+        protected override void UpdateMoveSpeed(){;}
 
         public override void HandleInput(){
             if (seat.seatEntity == null) return;
@@ -50,6 +46,11 @@ namespace SeleneGame.States {
             inputDict[ "Shift" ] = entity.shiftInputData.currentValue;
 
             seat.seatEntity.EntityInput(entity.moveInputData.currentValue, entity.lookRotationData.currentValue, inputDict);
+        }
+
+
+        private void OnCrouchInput(float timer){
+            seat.UnSit();
         }
     }
 }

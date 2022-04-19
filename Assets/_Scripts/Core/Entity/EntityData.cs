@@ -6,6 +6,8 @@ namespace SeleneGame.Core {
     
     [CreateAssetMenu(fileName = "new Entity Data", menuName = "Data/Entity")]
     public class EntityData : UnitData<EntityCostume> {
+
+        public static string defaultData => "Selene";
         
         public float maxHealth;
         public Vector3 size = new Vector3(1f, 1f, 1f);

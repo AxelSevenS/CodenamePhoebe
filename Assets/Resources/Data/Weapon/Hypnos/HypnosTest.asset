@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae8b671cf5f012a41a2085be81f07a0b, type: 3}
   m_Name: HypnosTest
   m_EditorClassIdentifier: 
-  weaponPortrait: {fileID: 0}
-  leftModel: {fileID: 0}
-  rightModel: {fileID: 919132149155446097, guid: cb3acc14d724b644b91d3009f84bc9ee,
-    type: 3}
+  portrait: {fileID: 0}
+  model: {fileID: 919132149155446097, guid: 9552e0c883c950e489aecfca4256cb69, type: 3}
+  secondaryModel: {fileID: 0}

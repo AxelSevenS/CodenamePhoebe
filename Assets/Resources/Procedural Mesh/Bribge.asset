@@ -15,84 +15,87 @@ MonoBehaviour:
   vertices:
   - point: {x: 3, y: 0}
     normal: {x: 0, y: 1}
-    UCoord: 0.6
+    UCoord: 0.3529412
   - point: {x: 3, y: 0}
     normal: {x: -0.7071068, y: 0.70710677}
-    UCoord: 0.64
+    UCoord: 0.4117647
   - point: {x: 4, y: 1}
     normal: {x: -0.70710677, y: 0.70710677}
-    UCoord: 0.68
+    UCoord: 0.47058824
   - point: {x: 4, y: 1}
     normal: {x: 0, y: 1}
-    UCoord: 0.72
+    UCoord: 0.5294118
   - point: {x: 5, y: 1}
     normal: {x: 0, y: 1}
-    UCoord: 0.76
+    UCoord: 0.5294118
   - point: {x: 5, y: 1}
     normal: {x: 1, y: 0}
-    UCoord: 0.8
+    UCoord: 0.5882353
   - point: {x: 5, y: -1}
     normal: {x: 1, y: 0}
-    UCoord: 0.84
+    UCoord: 0.5882353
   - point: {x: 5, y: -1}
     normal: {x: 0, y: -1}
-    UCoord: 0.88
+    UCoord: 0.64705884
   - point: {x: 4, y: -1}
     normal: {x: 0, y: -1}
-    UCoord: 0.92
+    UCoord: 0.64705884
   - point: {x: 2, y: -1}
     normal: {x: 0, y: -1}
-    UCoord: 0.96
+    UCoord: 0.7058824
   - point: {x: 0, y: -1}
     normal: {x: 0, y: -1}
-    UCoord: 1
+    UCoord: 0.7058824
+  - point: {x: 0, y: -1}
+    normal: {x: 0, y: -1}
+    UCoord: 0.7647059
   - point: {x: -2, y: -1}
     normal: {x: 0, y: -1}
-    UCoord: 0
+    UCoord: 0.8235294
   - point: {x: -4, y: -1}
     normal: {x: 0, y: -1}
-    UCoord: 0.04
+    UCoord: 0.88235295
   - point: {x: -5, y: -1}
     normal: {x: 0, y: -1}
-    UCoord: 0.08
+    UCoord: 0.9411765
   - point: {x: -5, y: -1}
     normal: {x: -1, y: 0}
-    UCoord: 0.12
+    UCoord: 1
   - point: {x: -5, y: 1}
     normal: {x: -1, y: 0}
-    UCoord: 0.16
+    UCoord: 0
   - point: {x: -5, y: 1}
     normal: {x: 0, y: 1}
-    UCoord: 0.2
+    UCoord: 0
   - point: {x: -4, y: 1}
     normal: {x: 0, y: 1}
-    UCoord: 0.24
+    UCoord: 0.05882353
   - point: {x: -4, y: 1}
     normal: {x: 0.70710677, y: 0.70710677}
-    UCoord: 0.28
+    UCoord: 0.05882353
   - point: {x: -3, y: 0}
     normal: {x: 0.70710677, y: 0.70710677}
-    UCoord: 0.32
+    UCoord: 0.11764706
   - point: {x: -3, y: 0}
     normal: {x: 0, y: 1}
-    UCoord: 0.36
+    UCoord: 0.11764706
   - point: {x: -2, y: 0}
     normal: {x: 0, y: 1}
-    UCoord: 0.4
+    UCoord: 0.1764706
   - point: {x: -1, y: 0}
     normal: {x: 0, y: 1}
-    UCoord: 0.44
+    UCoord: 0.1764706
   - point: {x: 0, y: 0}
     normal: {x: 0, y: 1}
-    UCoord: 0.48
+    UCoord: 0.23529412
   - point: {x: 1, y: 0}
     normal: {x: 0, y: 1}
-    UCoord: 0.52
+    UCoord: 0.29411766
   - point: {x: 2, y: 0}
     normal: {x: 0, y: 1}
-    UCoord: 0.56
+    UCoord: 0.3529412
   segmentIndices:
-  - vert1: 25
+  - vert1: 26
     vert2: 0
   - vert1: 1
     vert2: 2
@@ -106,20 +109,20 @@ MonoBehaviour:
     vert2: 9
   - vert1: 9
     vert2: 10
-  - vert1: 10
-    vert2: 11
   - vert1: 11
     vert2: 12
   - vert1: 12
     vert2: 13
-  - vert1: 14
-    vert2: 15
+  - vert1: 13
+    vert2: 14
+  - vert1: 15
+    vert2: 16
   - vert1: 16
     vert2: 17
-  - vert1: 18
-    vert2: 19
-  - vert1: 20
-    vert2: 21
+  - vert1: 17
+    vert2: 18
+  - vert1: 19
+    vert2: 20
   - vert1: 21
     vert2: 22
   - vert1: 22
@@ -128,3 +131,6 @@ MonoBehaviour:
     vert2: 24
   - vert1: 24
     vert2: 25
+  - vert1: 25
+    vert2: 26
+  firstUVIndex: 11

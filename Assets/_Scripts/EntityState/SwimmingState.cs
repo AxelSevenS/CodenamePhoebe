@@ -9,9 +9,7 @@ namespace SeleneGame.States {
 
         public override int id => 1;
         protected override Vector3 GetCameraPosition() => entity.currentWeapon.cameraPosition;
-        protected override Vector3 GetEntityUp(){
-            return Vector3.Cross(entity.moveDirection, Vector3.Cross(entity.moveDirection, entity.gravityDown));
-        }
+        protected override Vector3 GetEntityUp() => Vector3.Cross(entity.moveDirection, Vector3.Cross(entity.moveDirection, entity.gravityDown));
 
         protected override bool canJump => entity.isOnWaterSurface && entity.jumpCooldown == 0;
         protected override bool canEvade => entity.evadeTimer == 0f;
@@ -21,14 +19,16 @@ namespace SeleneGame.States {
 
         public override bool masked => false;
 
-        private void OnEnable(){
-            entity.evadeInputData.startAction += OnEvadeInputStart;
+        protected override void StateEnable(){
+
+            entity.evadeInputData.started += OnEvadeInputStart;
         }
-        private void OnDisable(){
-            entity.evadeInputData.startAction -= OnEvadeInputStart;
+        protected override void StateDisable(){
+
+            entity.evadeInputData.started -= OnEvadeInputStart;
         }
 
-        public override void StateUpdate(){ 
+        protected override void StateUpdate(){
 
             if (entity.currentWeapon.weightModifier > 1f || !entity.inWater){
                 entity.SetState("Walking");
@@ -36,10 +36,8 @@ namespace SeleneGame.States {
 
         }
 
-        public override void StateFixedUpdate(){
+        protected override void StateFixedUpdate(){
 
-
-            // ---------------------------- When the Entity is Evading.
             if (entity.evading){
 
                 if (entity.evadeTimer > entity.data.evadeCooldown + entity.data.evadeDuration - 0.2f){
@@ -48,11 +46,6 @@ namespace SeleneGame.States {
 
                 entity.Move(entity.evadeDirection * Time.deltaTime * 24f * entity.data.evadeCurve.Evaluate( 1 - ( (entity.evadeTimer - entity.data.evadeCooldown) / entity.data.evadeDuration ) ));
 
-            }
-            
-            // Jump if the Jump key is pressed.
-            if (entity.jumpInputData.currentValue){
-                Jump();
             }
 
             entity.SetRotation(-entity.gravityDown);
@@ -71,9 +64,23 @@ namespace SeleneGame.States {
 
         }
 
+        protected override void UpdateMoveSpeed(){
+            float newSpeed = entity.walkSpeed != Entity.WalkSpeed.idle ? entity.data.baseSpeed : 0f;
+            if (entity.walkSpeed != Entity.WalkSpeed.run) 
+                newSpeed *= entity.walkSpeed == Entity.WalkSpeed.sprint ? /* entity.data.sprintSpeed */1f : entity.data.slowSpeed;
+
+            newSpeed = newSpeed * speedMultiplier * entity.data.swimSpeed;
+            
+            entity.moveSpeed = Mathf.MoveTowards(entity.moveSpeed, newSpeed, entity.data.moveIncrement * Time.deltaTime);
+        }
+
         public override void HandleInput(){
             
             entity.moveDirection = entity.lookRotationData.currentValue * entity.moveInputData.currentValue;
+            
+            if (entity.jumpInputData.currentValue){
+                Jump();
+            }
         }
 
         private void OnEvadeInputStart(float timer){

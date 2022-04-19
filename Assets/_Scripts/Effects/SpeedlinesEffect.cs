@@ -13,7 +13,7 @@ namespace SeleneGame {
         [SerializeField] private ParticleSystem weakLines;
         [SerializeField] private ParticleSystem strongLines;
 
-        private bool weakEnabled => entity != null && entity.currentState is ShiftingState && entity.sliding;
+        private bool weakEnabled => entity != null && entity.state is ShiftingState && entity.sliding;
         private bool strongEnabled => weakEnabled && entity.walkSpeed == Entity.WalkSpeed.sprint;
 
         public override void SetFollowedObject(GameObject newTarget) {

@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   displayName: Hypnos
   costume: {fileID: 11400000, guid: 01507fe7b51003a4ebc926fba9781970, type: 2}
+  weaponType: 2

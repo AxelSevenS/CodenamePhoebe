@@ -80,7 +80,7 @@ namespace SeleneGame {
             previousAnchor = seatOccupant.transform.parent;
             
             entity.SetState("Sitting");
-            ((SittingState)entity.currentState).seat = this;
+            ((SittingState)entity.state).seat = this;
 
             entity.AnimatorTrigger("Sit");
         }
