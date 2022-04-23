@@ -26,7 +26,7 @@ namespace SeleneGame {
             else
                 slowDown = 1f;
 
-            increment = (moveSpeed * slowDown / 10f * Time.deltaTime);
+            increment = (moveSpeed * slowDown / 10f * Global.timeDelta);
             
             t += increment;
 

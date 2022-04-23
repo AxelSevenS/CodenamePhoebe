@@ -19,7 +19,7 @@ namespace SeleneGame.Core {
         public InputActionMap debugControls;
     
         public IInteractable interactionCandidate;
-        public IManipulable ManipulationCandidate;
+        public IManipulable manipulationCandidate;
 
         private string[] inputKeys = new string[]{ "LightAttack", "HeavyAttack", "Jump", "Interact", "Evade", "Walk", "Crouch", "Focus", "Shift" };
 
@@ -102,6 +102,9 @@ namespace SeleneGame.Core {
         }
 
         private void EntityControl(){
+
+            Collider[] colliderBuffer = new Collider[5];
+
             // Player Input
             if (canPlay){
 
@@ -120,9 +123,9 @@ namespace SeleneGame.Core {
                 entity.EntityInput(moveDirection, lookRotation, inputDict);
             }
 
-            ObjectManipulation();
+            manipulationCandidate = GetManipulationCandidate(colliderBuffer);
 
-            ObjectInteraction();
+            interactionCandidate = GetInteractionCandidate(colliderBuffer);
         }
 
         private Quaternion UpdateCameraRotation(Quaternion currentRotation){
@@ -137,47 +140,47 @@ namespace SeleneGame.Core {
             return Quaternion.AngleAxis(mousePos.y, Vector3.up) * Quaternion.AngleAxis(mousePos.x, Vector3.right);
         }
 
-        private void ObjectManipulation(){
-            Ray cameraRay = camera.ScreenPointToRay(new Vector3(Screen.width/2f,Screen.height/2f,0f));
-            Physics.Raycast(cameraRay, out RaycastHit cameraHit, 15f, Global.ObjectEntityMask);
+        private IManipulable GetManipulationCandidate(Collider[] buffer){
+            // if ( !(entity.state is FocusState) ) return null;
 
-            if ( entity.focusing ){
-                
-                foreach ( Collider hit in Physics.OverlapSphere(entity._transform.position, 15f, Global.ObjectEntityMask) ){
-                    if (hit.TryGetComponent<IManipulable>(out var manipulationComponent)){
-                        Vector3 vectorToObject = (hit.transform.position - Camera.main.transform.position);
-                        Physics.Raycast(Camera.main.transform.position, vectorToObject, out RaycastHit ManipulationHit, 15f, Global.ObjectEntityMask);
-                        if (cameraHit.collider == hit || (Vector3.Dot(vectorToObject.normalized, Camera.main.transform.forward.normalized) > 87.5f/90f && ManipulationHit.collider == hit)){
+            Physics.OverlapSphereNonAlloc(entity._transform.position, 15f, buffer, Global.ObjectEntityMask);
+            foreach ( Collider hit in buffer ){
 
-                            ManipulationCandidate = manipulationComponent;
-                        }
-                    }
+                Rigidbody rb = hit?.attachedRigidbody ?? null;
+                if (rb == null || rb.transform == entity._transform) continue;
+
+                if ( rb.TryGetComponent<IManipulable>(out var manipulationComponent) ){
+                    Ray cameraRay = new Ray(camera.transform.position, camera.transform.forward);
+
+                    if ( hit.Raycast(cameraRay, out RaycastHit ManipulationHit, 15f) )
+                        return manipulationComponent;
                 }
             }
+
+            return null;
         }
 
-        private void ObjectInteraction(){
-            if ( !menu && !talking && !entity.walkingTo ){
+        private IInteractable GetInteractionCandidate(Collider[] buffer){
 
-                if (entity.state is SittingState){
-                    interactionCandidate = ((SittingState)entity.state).seat;
+            if ( menu || talking || entity.walkingTo ) return null;
 
-                }else{
-                    interactionCandidate = null;
+            if (entity.state is SittingState)
+                return ((SittingState)entity.state).seat;
 
-                    foreach ( Collider hit in Physics.OverlapSphere(entity._transform.position, 5f, Global.ObjectEntityMask) ){
+            Physics.OverlapSphereNonAlloc(entity._transform.position, 5f, buffer, Global.ObjectEntityMask);
+            foreach ( Collider hit in buffer ){
 
-                        Vector3 vectorToObject = (hit.transform.position - entity._transform.position);
-                        bool inFrontOfPlayer = (Vector3.Dot(vectorToObject.normalized, entity.absoluteForward) > 60f/90f);
+                Rigidbody rb = hit?.attachedRigidbody ?? null;
+                if (rb == null || rb.transform == entity._transform) continue;
 
-                        if ( hit.enabled && inFrontOfPlayer && hit.TryGetComponent<IInteractable>(out var interactionComponent) ){
-                            interactionCandidate = interactionComponent;
-                        }
-                    }
-                }
-            }else{
-                interactionCandidate = null;
+                Vector3 vectorToObject = (rb.transform.position - entity._transform.position);
+                bool inFrontOfPlayer = (Vector3.Dot(vectorToObject.normalized, entity.absoluteForward) > 60f/90f);
+
+                if ( inFrontOfPlayer && rb.TryGetComponent<IInteractable>(out var interactionComponent) )
+                    return interactionComponent;
             }
+
+            return null;
         }
 
 

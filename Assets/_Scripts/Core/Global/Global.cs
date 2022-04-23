@@ -28,6 +28,9 @@ namespace SeleneGame.Core {
         public static Conversation LoadConversation(string fileName) => Resources.Load<Conversation>($"Conversation/{fileName}");
         public static GameObject LoadParticle(string fileName) => Resources.Load<GameObject>($"Particle/{fileName}");
 
+        public static float timeDelta => Time.inFixedTimeStep ? Time.fixedDeltaTime : Time.deltaTime;
+        public static float timeUnscaledDelta => Time.inFixedTimeStep ? Time.fixedUnscaledDeltaTime : Time.unscaledDeltaTime;
+
 
         public static bool IsBindPressed(this InputActionMap controlMap, string bindName) => controlMap[bindName].ReadValue<float>() > 0;
         public static bool IsActuated(this InputAction action) => action.ReadValue<float>() > 0;
@@ -51,6 +54,14 @@ namespace SeleneGame.Core {
                 Object.Destroy(obj);
             
             return null;
+        }
+        
+        public static void SetLayerRecursively(this GameObject gameObject, int newLayer) {
+            gameObject.layer = newLayer;
+        
+            foreach ( Transform child in gameObject.transform ) {
+                SetLayerRecursively( child.gameObject, newLayer );
+            }
         }
 
         public static T GetPropertyValue<T>(this System.Type type, string name) {

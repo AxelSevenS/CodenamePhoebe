@@ -23,19 +23,30 @@ namespace SeleneGame {
         public Vector3 sitPosition { get {
                 if (seatOccupant != null ) 
                     return transform.position + transform.rotation*relativePos + seatOccupant.transform.up*( seatOccupant.data.size.y/2f - transform.localScale.y/2f );
-                else 
-                    return transform.position + transform.rotation*relativePos + transform.up*( 1.67f - transform.localScale.y/2f );
+
+                return transform.position + transform.rotation*relativePos + transform.up*( 1.67f - transform.localScale.y/2f );
             }
         }
 
         public string interactionDescription => seatOccupant == Player.current.entity ? seatedInteractionText : "Sit Down";
-
-        private void OnDestroy(){
-            UnSit();
+        public void Interact(Entity entity){
+            if (entity == seatOccupant){
+                SeatedInteract(entity);
+                return;
+            }
+            StartSitting(entity);
         }
+
+        protected virtual string seatedInteractionText => "";
+        protected virtual void SeatedInteract(Entity entity){;}
+
 
         private void Awake(){
             seatEntity = GetComponent<Entity>();
+        }
+
+        private void OnDestroy(){
+            StopSitting();
         }
 
         private void Update(){
@@ -48,27 +59,14 @@ namespace SeleneGame {
             Gizmos.DrawLine(transform.position, transform.position + transform.rotation * relativePos);
         }
 
-        public void UnSit(){
-            if (seatOccupant == null) return;
-            StopSitting(seatOccupant);
-        }
-
-        public void Interact(Entity entity){
-            if (entity == seatOccupant){
-                SeatedInteraction(entity);
-            }else{
-                StartSitting(entity);
-            }
-
-            entity.lastInteracted = this;
-        }
-
         private async void StartSitting(Entity entity){
             seatOccupant = entity;
-            entity.SetState("Walking");
+
             seatOccupant.transform.SetParent(this.transform);
+
+            entity.SetState("Walking");
             
-            CalculateClosestDirection();
+            CalculateClosestDirection(out Vector3 direction, out seatOccupant.subState);
 
             if (speed < 4){
                 seatOccupant.walkingTo = true;
@@ -80,32 +78,36 @@ namespace SeleneGame {
             previousAnchor = seatOccupant.transform.parent;
             
             entity.SetState("Sitting");
+            Global.SetLayerRecursively(entity.gameObject, 8);
             ((SittingState)entity.state).seat = this;
+
 
             entity.AnimatorTrigger("Sit");
         }
 
-        private void StopSitting(Entity entity){
+        public void StopSitting(){
+
+            if (seatOccupant == null) return;
+
+            seatOccupant._transform.SetParent(previousAnchor);
+
+            seatOccupant.SetState("Walking");
+            Global.SetLayerRecursively(seatOccupant.gameObject, 6);
+
             seatOccupant = null;
-
-            entity._transform.SetParent(previousAnchor);
-
-            entity.SetState("Walking");
         }
 
-        protected virtual string seatedInteractionText => ""; 
+        private void CalculateClosestDirection(out Vector3 finalDirection, out float subState){
+            finalDirection = (transform.position - seatOccupant.transform.position).normalized;
+            subState = 0f;
 
-        protected virtual void SeatedInteraction(Entity entity){;}
-
-        private void CalculateClosestDirection(){
-            relativePos = (transform.position - seatOccupant.transform.position).normalized;
             foreach (Vector4 currentDirection in Directions){
                 Vector3 direction = new Vector3( currentDirection.x, currentDirection.y, currentDirection.z ).normalized;
                 Vector3 directionToOccupant = (seatOccupant.transform.position - transform.position).normalized;
 
-                if ( Vector3.Dot( transform.rotation * direction, directionToOccupant) > Vector3.Dot( transform.rotation * relativePos, directionToOccupant ) ){
-                    relativePos = direction;
-                    seatOccupant.subState = currentDirection.w;
+                if ( Vector3.Dot( transform.rotation * direction, directionToOccupant) > Vector3.Dot( transform.rotation * finalDirection, directionToOccupant ) ){
+                    finalDirection = direction;
+                    subState = currentDirection.w;
                 }
             }
         }

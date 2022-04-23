@@ -9,7 +9,7 @@ namespace SeleneGame.States {
     public class SittingState : State{
         
         public override int id => 100;
-        protected override Vector3 GetCameraPosition() => new Vector3(0f, 1f, -4f);
+        protected override Vector3 GetCameraPosition() => seat.seatEntity.state.cameraPosition;
 
         public override bool masked => true;
 
@@ -27,8 +27,8 @@ namespace SeleneGame.States {
         protected override void StateFixedUpdate(){
             // Sitting
             entity._transform.rotation = Quaternion.LookRotation( Vector3.ProjectOnPlane(seat.transform.position - entity._transform.position, seat.transform.up), seat.transform.up);
-            entity.absoluteForward = entity._transform.forward;
             entity._transform.position = seat.sitPosition;
+            entity.absoluteForward = entity._transform.forward;
         }
 
         protected override void UpdateMoveSpeed(){;}
@@ -50,7 +50,7 @@ namespace SeleneGame.States {
 
 
         private void OnCrouchInput(float timer){
-            seat.UnSit();
+            seat.StopSitting();
         }
     }
 }

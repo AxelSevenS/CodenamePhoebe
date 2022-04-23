@@ -19,9 +19,10 @@ MonoBehaviour:
   stepHeight: 1
   moveIncrement: 20
   weight: 15
-  jumpHeight: 1
-  baseSpeed: 1
+  jumpHeight: 15
+  baseSpeed: 32
   slowSpeed: 1
+  crouchSpeed: 1
   swimSpeed: 0
   evadeDuration: 0
   evadeCooldown: 0

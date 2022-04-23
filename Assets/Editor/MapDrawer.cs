@@ -22,6 +22,7 @@ namespace SeleneGame.EditorUI {
 
             int count = pairList.CountInProperty();
             return (EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing) * (System.Math.Max(count, 3) + 0.5f);
+
         }
     }
 }

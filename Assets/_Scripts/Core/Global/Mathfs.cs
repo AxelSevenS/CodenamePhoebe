@@ -34,19 +34,80 @@ namespace SeleneGame.Core {
         }
 
         public static bool SkinnedCapsuleCast( this CapsuleCollider capsule, Vector3 position, Vector3 direction, float skinThickness, out RaycastHit hit){
-            Vector3 capsulePosition = position + capsule.transform.rotation * capsule.center;
-            float skinnedRadius = capsule.radius - Mathf.Min(skinThickness, capsule.radius - 0.01f);
-            float skinnedHalfHeight = capsule.height/2f - skinnedRadius;
+
+
+            Transform capsuleTransform = capsule.transform;
+            skinThickness = Mathf.Max(skinThickness, 0.01f);
 
             // depending on the collider's "direction" we set the direction of the capsule length; 
-            // if capsule.direction is 0, the capsule will extend in the right and left directions;
-            Vector3 capsuleDirection = capsule.direction == 0 ? capsule.transform.right : (capsule.direction == 1 ? capsule.transform.up : capsule.transform.forward);
+            // if capsule.direction is 0, the capsule will extend in the collider's right and left directions;
+            Vector3 capsuleDirection;
+            float heightScale;
+            float radiusScale;
+            switch (capsule.direction){
+                default:
+                    capsuleDirection = capsuleTransform.right;
+                    heightScale = capsuleTransform.localScale.x;
+                    radiusScale = Mathf.Max(capsuleTransform.localScale.y, capsuleTransform.localScale.z);
+                    break;
+                case 1:
+                    capsuleDirection = capsuleTransform.up;
+                    heightScale = capsuleTransform.localScale.y;
+                    radiusScale = Mathf.Max(capsuleTransform.localScale.x, capsuleTransform.localScale.z);
+                    break;
+                case 2:
+                    capsuleDirection = capsuleTransform.forward;
+                    heightScale = capsuleTransform.localScale.z;
+                    radiusScale = Mathf.Max(capsuleTransform.localScale.x, capsuleTransform.localScale.y);
+                    break;
+            }
 
-            Vector3 startPosOne = capsulePosition + capsuleDirection * skinnedHalfHeight; 
-            Vector3 startPosTwo = capsulePosition - capsuleDirection * skinnedHalfHeight;
+            Vector3 capsulePosition = position + capsuleTransform.rotation * Vector3.Scale(capsule.center, capsuleTransform.localScale);
+            float scaledRadius = (capsule.radius * radiusScale);
 
-            return Physics.CapsuleCast(startPosOne, startPosTwo, skinnedRadius, direction, out hit, direction.magnitude + skinnedRadius, Global.GroundMask);
+            float scaledHalfHeight = capsule.height/2f * heightScale;
+            Vector3 capsuleHalf = (scaledHalfHeight - scaledRadius) * capsuleDirection;
+
+            Vector3 startPos = capsulePosition + capsuleHalf; 
+            Vector3 endPos = capsulePosition - capsuleHalf;
+            float skinnedRadius = scaledRadius - skinThickness;
+
+            // Debug.DrawLine(startPos, endPos, Color.red);
+            // Debug.DrawLine(startPos, startPos + capsuleDirection * skinnedRadius, Color.blue);
+            // Debug.DrawLine(endPos, endPos - capsuleDirection * skinnedRadius, Color.blue);
+
+            var result = Physics.CapsuleCast(startPos, endPos, skinnedRadius, direction.normalized, out hit, direction.magnitude + skinThickness, Global.GroundMask);
+
+            return result;
         }
+
+        // public static bool SkinnedCapsuleCast( this CapsuleCollider capsule, Vector3 position, Vector3 direction, float skinThickness, out RaycastHit hit){
+        //     Transform capsuleTransform = capsule.transform;
+        //     skinThickness = Mathf.Max(skinThickness, 0.01f);
+        //     float totalScale = capsuleTransform.localScale.x * capsuleTransform.localScale.y * capsuleTransform.localScale.z;
+
+        //     // depending on the collider's "direction" we set the direction of the capsule length; 
+        //     // if capsule.direction is 0, the capsule will extend in the collider's right and left directions;
+        //     Vector3 capsuleDirection = (capsule.direction == 0 ? capsuleTransform.right : capsule.direction == 1 ? capsuleTransform.up : capsuleTransform.forward).normalized;
+        //     float heightScale = capsule.direction == 0 ? capsuleTransform.localScale.x : capsule.direction == 1 ? capsuleTransform.localScale.y : capsuleTransform.localScale.z;
+        //     float radiusScale = totalScale / heightScale;
+
+        //     Vector3 capsulePosition = position + capsuleTransform.rotation * Vector3.Scale(capsule.center, capsuleTransform.localScale);
+        //     float scaledRadius = (capsule.radius * radiusScale);
+
+        //     float scaledHalfHeight = capsule.height/2f * heightScale;
+        //     Vector3 capsuleHalf = (scaledHalfHeight - scaledRadius) * capsuleDirection;
+
+        //     Vector3 startPos = capsulePosition + capsuleHalf; 
+        //     Vector3 endPos = capsulePosition - capsuleHalf;
+        //     float skinnedRadius = scaledRadius - skinThickness;
+
+        //     // Debug.DrawLine(startPos, endPos, Color.red);
+        //     // Debug.DrawLine(startPos, startPos + capsuleDirection * skinnedRadius, Color.blue);
+        //     // Debug.DrawLine(endPos, endPos - capsuleDirection * skinnedRadius, Color.blue);
+
+        //     return Physics.CapsuleCast(startPos, endPos, skinnedRadius, direction.normalized, out hit, direction.magnitude + skinThickness, Global.GroundMask);
+        // }
 
         public static Vector3 GetSize( this Collider collider ){
             if ( collider is CapsuleCollider ){

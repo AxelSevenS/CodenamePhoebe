@@ -10,7 +10,7 @@ Material:
   m_Name: WaterURP
   m_Shader: {fileID: -6465566751694194690, guid: 9d591423a448753408d3bbd6bae87ecc,
     type: 3}
-  m_ShaderKeywords: _ADD_PRECOMPUTED_VELOCITY _ALPHATEST_ON _DOUBLESIDED_ON _ENABLE_FOG_ON_TRANSPARENT
+  m_ShaderKeywords: _ADD_PRECOMPUTED_VELOCITY _DOUBLESIDED_ON _ENABLE_FOG_ON_TRANSPARENT
     _SURFACE_TYPE_TRANSPARENT
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -83,11 +83,13 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - Vector1_2c2cfb5643de44f4b13441b1a1e0ea33: 1
     - Vector1_612f9485f34849e0b56ae94c53f2bb8b: 1
-    - Vector1_74ca7ed5c14b4ed087580befb16c5b2a: 0.015
+    - Vector1_74ca7ed5c14b4ed087580befb16c5b2a: 0.47
+    - Vector1_a84d805dfee645e6a5a7628f18eb9030: 0.06
     - _AddPrecomputedVelocity: 1
     - _AlphaClip: 0
-    - _AlphaCutoffEnable: 1
+    - _AlphaCutoffEnable: 0
     - _AlphaDstBlend: 10
     - _AlphaSrcBlend: 1
     - _AlphaToMask: 0
@@ -152,7 +154,7 @@ Material:
     - _UseShadowThreshold: 0
     - _WorkflowMode: 1
     - _ZTestDepthEqualForOpaque: 4
-    - _ZTestGBuffer: 3
+    - _ZTestGBuffer: 4
     - _ZTestTransparent: 4
     - _ZWrite: 1
     m_Colors:

@@ -9,12 +9,18 @@ namespace SeleneGame.Weapons {
     
     public class HypnosWeapon : Weapon{
 
-        [SerializeField] private bool wallStand;
-
-        private bool wallRun => wallRunData.currentValue;
         private Vector3 wallRunDir;
         private Vector3 wallRunNormal;
         [SerializeField] private float wallRunTimer = 4f;
+
+        public override bool shifting => wallRun;
+
+        [SerializeField] private BoolData wallStandData;
+        [SerializeField] private BoolData wallRunData;
+
+
+        private bool wallStand => wallStandData.currentValue;
+        private bool wallRun => wallRunData.currentValue;
 
 
         protected override float GetSpeedMultiplier(){
@@ -50,16 +56,9 @@ namespace SeleneGame.Weapons {
             return entity.relativeForward;
         }
 
-        public override bool canJump => wallStand;
-        public override bool canEvade => wallStand;
-        public override bool cannotTurn => wallRun;
-        public override bool noGravity => wallStand;
-
-        public override bool shifting => wallRun;
-
-        private BoolData wallRunData;
 
         protected override void WeaponAwake(){
+            wallStandData = new BoolData(OnStartWallStanding);
             wallRunData = new BoolData(OnStartWallRunning);
         }
 
@@ -73,31 +72,30 @@ namespace SeleneGame.Weapons {
         protected override void UpdateAlways(){;}
         
         protected override void UpdateEquipped(){
-
-            bool wallStandingThisFrame = entity.onWall && wallRunTimer > 0f && !entity.onGround;
-            // When Starting to WallStand
-            if (wallStandingThisFrame && !wallStand){
-
-                entity._rb.velocity = Vector3.ProjectOnPlane(entity._rb.velocity, -entity.gravityDown);
-                entity.evadeTimer = 0;
-                entity.state.evadeCount = 1;
-                entity.inertiaMultiplier = 3.5f;
-            }
-            wallStand = wallStandingThisFrame;
-
             
-            wallRunData.SetVal(entity.sliding && wallStand);
+            wallStandData.SetVal(entity.onWall && wallRunTimer > 0f && entity.groundData.falseTimer > 0.4f );
+            wallRunData.SetVal(entity.sliding && wallStand && entity.jumpCooldown == 0f);
 
+        }
 
+        private void LateUpdate() {
+            wallRunData.Update();
+        }
+
+        protected override void FixedUpdateEquipped(){
 
             // Wall-stand when standing against a wall. (Feather Grip)
             if ( wallStand ){
-
-                entity.Move( -entity.wallHit.normal * Time.deltaTime * (entity.wallHit.distance - 0.2f) );
+                entity._rb.velocity = entity._rb.velocity.NullifyInDirection(entity.gravityDown);
+                entity.Move( -entity.wallHit.normal * Global.timeDelta * (entity.wallHit.distance - 0.2f) );
             }
 
             // Wall-run when running against a wall. (Feather Grip)
             if ( wallRun ){
+                
+                entity.state.evadeCount = 1;
+                entity.state.jumpCount = 1;
+
                 Quaternion dirChange = Quaternion.FromToRotation( wallRunNormal, entity.wallHit.normal );
                 wallRunDir = dirChange * wallRunDir;
                 wallRunNormal = entity.wallHit.normal;
@@ -105,20 +103,24 @@ namespace SeleneGame.Weapons {
                 entity.inertiaMultiplier = Mathf.Max( entity.inertiaMultiplier, 10f );
                 // entity.evadeDirection = wallRunDir;
 
-                entity.GroundedMove(wallRunDir * Time.deltaTime * entity.data.baseSpeed * 0.45f);
 
-                wallRunTimer = Mathf.MoveTowards(wallRunTimer, 0f, Time.deltaTime);
+                wallRunTimer = Mathf.MoveTowards(wallRunTimer, 0f, Global.timeDelta);
+
+                entity.Move(wallRunDir * Global.timeDelta * entity.data.baseSpeed * 0.45f);
+
+                if ( entity.jumpInputData.currentValue )
+                    entity.Jump( (wallRunDir + entity.wallHit.normal*1.2f - entity.gravityDown*2f).normalized * 1.4f );
             }
         }
 
-        private void LateUpdate() {
-            wallRunData.Update();
+        private void OnStartWallStanding(){
+
+            entity._rb.velocity = entity._rb.velocity.NullifyInDirection(entity.gravityDown);
+            entity.evadeTimer = 0;
+            entity.inertiaMultiplier = Mathf.Max( entity.inertiaMultiplier, 12f );
         }
 
         private void OnStartWallRunning(){
-            if (entity.state is WalkingState){
-                ((WalkingState)entity.state).jumpCount = 1f;
-            }
             
             wallRunNormal = entity.wallHit.normal;
             wallRunDir = Vector3.ProjectOnPlane(entity.moveDirection, entity.wallHit.normal).normalized;

@@ -80,16 +80,16 @@ namespace SeleneGame.Core {
         }
 
         void Update(){
-            windDirection = Vector3.Slerp(windDirection, _windDirection, 2f * Time.deltaTime).normalized;
-            ambientLight = Color.Lerp(ambientLight, _ambientLight, 5f * Time.deltaTime);
-            snowAmount = Mathf.MoveTowards(snowAmount, System.Convert.ToSingle(snow && precipitation) * 2f, Mathf.Pow( 2f, Mathf.Min(snowAmount, 0.05f) ) * 0.01f * Time.deltaTime);
+            windDirection = Vector3.Slerp(windDirection, _windDirection, 2f * Global.timeDelta).normalized;
+            ambientLight = Color.Lerp(ambientLight, _ambientLight, 5f * Global.timeDelta);
+            snowAmount = Mathf.MoveTowards(snowAmount, System.Convert.ToSingle(snow && precipitation) * 2f, Mathf.Pow( 2f, Mathf.Min(snowAmount, 0.05f) ) * 0.01f * Global.timeDelta);
 
             SetGlobals();
 
             if(precipitation){
-                lightLevel = Mathf.MoveTowards(lightLevel, .85f*sunLight, Time.deltaTime);
+                lightLevel = Mathf.MoveTowards(lightLevel, .85f*sunLight, Global.timeDelta);
             }else{
-                lightLevel = Mathf.MoveTowards(lightLevel, 1f*sunLight, Time.deltaTime);
+                lightLevel = Mathf.MoveTowards(lightLevel, 1f*sunLight, Global.timeDelta);
             }
 
             foreach (ParticleSystem particle in snowParticles){
@@ -100,10 +100,10 @@ namespace SeleneGame.Core {
                 particle.enableEmission = precipitation && !snow;
             }
 
-            Vector3 deltaRotation = new Vector3(sunSpeed.x, sunSpeed.y, 0)*Time.deltaTime;
+            Vector3 deltaRotation = new Vector3(sunSpeed.x, sunSpeed.y, 0)*Global.timeDelta;
             sunRotation *= Quaternion.Euler(deltaRotation);
 
-            deltaRotation = new Vector3(moonSpeed.x, moonSpeed.y, 0)*Time.deltaTime;
+            deltaRotation = new Vector3(moonSpeed.x, moonSpeed.y, 0)*Global.timeDelta;
             moonRotation *= Quaternion.Euler(deltaRotation);
 
             // sun.intensity = lightLevel;

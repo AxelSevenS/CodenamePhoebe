@@ -10,33 +10,33 @@ namespace SeleneGame {
     public class UIController : MonoBehaviour{
         
         private float screenUIMargin = 50f;
+        public GameObject interactCursor;
         public GameObject interactGUI;
-        private RectTransform interactGUIRect;
-        private TextMeshProUGUI interactDescription;
-        private TextMeshProUGUI interactBind;
-        public GameObject landCursor;
+        [SerializeField] private RectTransform interactGUIRect;
+        [SerializeField] private TextMeshProUGUI interactDescription;
+        [SerializeField] private TextMeshProUGUI interactBind;
         public GameObject aimCursor;
         // Vector3 deltaRotation = new Vector3(0,0,0);
 
-        void Awake(){
-            interactGUIRect = interactGUI.GetComponent<RectTransform>();
-            interactDescription = interactGUI.transform.GetChild(0).GetComponentInChildren<TextMeshProUGUI>();
-            interactBind = interactGUI.transform.GetChild(1).GetComponentInChildren<TextMeshProUGUI>();
-        }
-
         void Update(){
-            // Interaction
-            if (interactGUI != null && Player.current.interactionCandidate != null){
-                var interactionCandidate = Player.current.interactionCandidate as MonoBehaviour;
-
-                interactDescription.text = Player.current.interactionCandidate.interactionDescription;
-                interactBind.text = Player.current.playerControls["Interact"].bindings[0].ToDisplayString();
-                interactGUI.transform.position = ScreenBoundItem(interactionCandidate.transform, interactGUIRect.rect.width, interactGUIRect.rect.height, screenUIMargin);
-            }
-            interactGUI.SetActive(Player.current.canInteract);
-
             // Focus
             aimCursor.SetActive(Player.current.entity.focusing);
+
+            // Interact
+            var interactCandidate = Player.current.interactionCandidate;
+
+            interactCursor.SetActive(Player.current.canInteract);
+            interactGUI.SetActive(Player.current.canInteract && interactCandidate.interactionDescription != "");
+
+            if ( interactCandidate == null ) return;
+
+            interactDescription.text = interactCandidate.interactionDescription;
+            interactBind.text = Player.current.playerControls["Interact"].bindings[0].ToDisplayString();
+                
+            var interactionCandidate = interactCandidate as MonoBehaviour;
+
+            interactCursor.transform.position = ScreenBoundItem(interactionCandidate.transform, interactGUIRect.rect.width, interactGUIRect.rect.height, screenUIMargin);
+
             
             
         }

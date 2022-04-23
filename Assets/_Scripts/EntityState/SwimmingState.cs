@@ -9,13 +9,6 @@ namespace SeleneGame.States {
 
         public override int id => 1;
         protected override Vector3 GetCameraPosition() => entity.currentWeapon.cameraPosition;
-        protected override Vector3 GetEntityUp() => Vector3.Cross(entity.moveDirection, Vector3.Cross(entity.moveDirection, entity.gravityDown));
-
-        protected override bool canJump => entity.isOnWaterSurface && entity.jumpCooldown == 0;
-        protected override bool canEvade => entity.evadeTimer == 0f;
-
-        protected override bool canTurn => (entity.evadeTimer < entity.data.evadeCooldown) && !entity.currentWeapon.cannotTurn;
-        protected override bool useGravity => false;
 
         public override bool masked => false;
 
@@ -37,30 +30,22 @@ namespace SeleneGame.States {
         }
 
         protected override void StateFixedUpdate(){
-
-            if (entity.evading){
-
-                if (entity.evadeTimer > entity.data.evadeCooldown + entity.data.evadeDuration - 0.2f){
-                    entity.evadeDirection = entity.absoluteForward;
-                }
-
-                entity.Move(entity.evadeDirection * Time.deltaTime * 24f * entity.data.evadeCurve.Evaluate( 1 - ( (entity.evadeTimer - entity.data.evadeCooldown) / entity.data.evadeDuration ) ));
-
-            }
+            if ( entity.EvadeUpdate(out float evadeSpeed) )
+                entity.Move( Global.timeDelta * evadeSpeed * entity.evadeDirection );
 
             entity.SetRotation(-entity.gravityDown);
 
             if (entity.moveDirection.magnitude > 0f){
 
                 entity.absoluteForward = entity.moveDirection.normalized;
+                if ( (entity.evadeTimer < entity.data.evadeCooldown) ){
+                    Vector3 up = Vector3.Cross(entity.moveDirection, Vector3.Cross(entity.moveDirection, entity.gravityDown));
+                    entity.RotateTowardsAbsolute(entity.absoluteForward, up);
+                }
 
-                if (canTurn)
-                    entity.rotationForward = Vector3.Lerp(entity.rotationForward, entity.relativeForward, 0.7f).normalized;
-
-                entity.Move(entity.moveDirection * Time.deltaTime * entity.moveSpeed);
+                entity.Move(entity.moveDirection * Global.timeDelta * entity.moveSpeed);
             }
 
-            RotateEntity(entity.rotationForward);
 
         }
 
@@ -71,20 +56,20 @@ namespace SeleneGame.States {
 
             newSpeed = newSpeed * speedMultiplier * entity.data.swimSpeed;
             
-            entity.moveSpeed = Mathf.MoveTowards(entity.moveSpeed, newSpeed, entity.data.moveIncrement * Time.deltaTime);
+            entity.moveSpeed = Mathf.MoveTowards(entity.moveSpeed, newSpeed, entity.data.moveIncrement * Global.timeDelta);
         }
 
         public override void HandleInput(){
             
             entity.moveDirection = entity.lookRotationData.currentValue * entity.moveInputData.currentValue;
             
-            if (entity.jumpInputData.currentValue){
-                Jump();
+            if (entity.jumpInputData.currentValue && entity.isOnWaterSurface){
+                entity.Jump( -entity.gravityDown );
             }
         }
 
         private void OnEvadeInputStart(float timer){
-            Evade();
+            entity.Evade(entity.absoluteForward);
         }
     }
 }

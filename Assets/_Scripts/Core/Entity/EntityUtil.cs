@@ -6,19 +6,12 @@ using UnityEngine;
 namespace SeleneGame.Core {
 
     public static class EntityUtil {
-        
-        public static bool GroundCheck( this Entity entity, out RaycastHit groundHitOut) {
-            float minRadius = Mathf.Min(entity._colliderBounds.extents.x, Mathf.Min(entity._colliderBounds.extents.y, entity._colliderBounds.extents.z));
-            float maxRadius = Mathf.Max(entity._colliderBounds.extents.x, Mathf.Max(entity._colliderBounds.extents.y, entity._colliderBounds.extents.z));
-            Debug.DrawLine(entity._transform.position, entity._transform.position + entity.gravityDown*maxRadius, Color.red);
-            return Physics.SphereCast( entity._transform.position, (minRadius - 0.05f), entity.gravityDown, out groundHitOut, maxRadius + 0.1f, Global.GroundMask, QueryTriggerInteraction.Ignore );
-        }
 
-        public static bool DirectionCheck( this Entity entity, Vector3 direction, out RaycastHit checkHit ) {
+        public static bool DirectionCheck( this Entity entity, Vector3 direction, out RaycastHit checkHit, float skinThickness = 0.05f ) {
 
             foreach (Collider col in entity._colliders){
-                bool hasHitWall = col.ColliderCast( col.transform.position, direction, out RaycastHit tempHit );
-                if (!hasHitWall) continue;
+                bool hasHitWall = col.ColliderCast( col.transform.position, direction, out RaycastHit tempHit, skinThickness );
+                if ( !hasHitWall || tempHit.collider == null ) continue;
 
                 checkHit = tempHit;
                 return true;
@@ -55,7 +48,7 @@ namespace SeleneGame.Core {
                     entity.moveDirection = dir.normalized;
                 }else{
                     entity.moveDirection = Vector3.zero;
-                    entity._transform.position = Vector3.Lerp(entity._transform.position, pos, Time.deltaTime);
+                    entity._transform.position = Vector3.Lerp(entity._transform.position, pos, Global.timeDelta);
                 }
                 await Task.Yield();
             }

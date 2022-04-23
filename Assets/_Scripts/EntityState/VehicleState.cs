@@ -8,41 +8,39 @@ namespace SeleneGame.States {
     public class VehicleState : State{
 
         public override int id => 7;
-        protected override Vector3 GetCameraPosition() => new Vector3(1f, 1f, -3.5f);
-        protected override Vector3 GetEntityUp(){
-            if ( Vector3.Dot(entity.groundOrientation * -entity.gravityDown, -entity.gravityDown) > 0.75f)
-                return entity.groundOrientation * -entity.gravityDown;
-            return -entity.gravityDown;
-        }
-
-        protected override bool canJump => (coyoteTimer > 0f && jumpCount > 0 && useGravity) && entity.jumpCooldown == 0;
-        protected override bool canEvade => (evadeCount > 0f && entity.evadeTimer == 0f);
-        
-        protected override bool canTurn => (entity.evadeTimer < entity.data.evadeCooldown);
-        protected override bool useGravity => true;
+        protected override Vector3 GetCameraPosition() => new Vector3(0.3f, 1.2f, -8.5f);
 
         public override bool masked => false;
 
-        private float moveAmount = 0f;
-        private float turnDirection = 0f;
+        private float accelerationLinger = 0f;
+        private Vector3 finalDirection = Vector3.zero;
+        private Vector3 inputDirection;
 
         private bool landed;
         public float coyoteTimer = 0f;
 
         protected override void StateEnable(){
 
+            entity.onJump += OnEntityJump;
+            entity.onEvade += OnEntityEvade;
             entity.groundData.started += OnEntityLand;
         }
         protected override void StateDisable(){
 
+            entity.onJump -= OnEntityJump;
+            entity.onEvade -= OnEntityEvade;
             entity.groundData.started -= OnEntityLand;
+        }
+
+        protected override void StateUpdate(){
+
+            coyoteTimer = Mathf.Max( Mathf.MoveTowards( coyoteTimer, 0f, Global.timeDelta ), (System.Convert.ToSingle(entity.onGround) * 0.4f) );
+
         }
 
         protected override void StateFixedUpdate(){
 
-            Gravity(entity.gravityForce, entity.gravityDown);
-
-            coyoteTimer = Mathf.Max( Mathf.MoveTowards( coyoteTimer, 0f, Time.deltaTime ), (System.Convert.ToSingle(entity.onGround) * 0.4f) );
+            entity.JumpGravity(entity.gravityForce, entity.gravityDown, entity.jumpInputData.currentValue);
             
             if ( entity.groundData.currentValue ){
                 evadeCount = 1;
@@ -51,53 +49,64 @@ namespace SeleneGame.States {
             }
 
 
-            // When the Entity is sliding
-            if (entity.sliding)
-                entity._rb.velocity += entity.groundOrientation * entity.evadeDirection *entity.data.baseSpeed * entity.inertiaMultiplier * Time.deltaTime;
+
+            entity.absoluteForward = Vector3.Slerp(entity.absoluteForward, inputDirection, Global.timeDelta * 3f).normalized;
+            entity.moveDirection = entity.absoluteForward;
+
+            entity.GroundedMove( entity.moveSpeed * Global.timeDelta * entity.moveDirection, false );
+
+            bool terrainFlatEnough = Vector3.Dot(entity.groundOrientation * -entity.gravityDown, -entity.gravityDown) > 0.75f;
+
+            Vector3 groundRelativeRotation = terrainFlatEnough ? entity.groundOrientation * -entity.gravityDown : -entity.gravityDown;
+            Vector3 rightDir = Vector3.Cross(entity.absoluteForward, groundRelativeRotation);
+            Vector3 finalRotation = (groundRelativeRotation*4f + (Vector3.Dot( inputDirection, rightDir ) * rightDir)).normalized;
+
+            entity.RotateTowardsAbsolute(entity.absoluteForward, finalRotation);
 
 
 
-            //  ---------------------------- When the Entity is Focusing
-            if ( entity.onGround && entity.focusing)
-                entity.gravityDown = Vector3.Lerp( entity.gravityDown, -entity.groundHit.normal, 0.1f );
-            
-            entity.SetRotation(-entity.gravityDown);
+            // // When the Entity is sliding
+            // if (entity.sliding)
+            //     entity._rb.velocity += entity.groundOrientation * entity.evadeDirection *entity.data.baseSpeed * entity.inertiaMultiplier * Global.timeDelta;
 
-            
-            
-            // Handling Tank Movement Logic.
-            float turningSpeed = (-(Mathf.Max(entity.moveSpeed, .1f)/entity.data.baseSpeed) + 2.5f)/1.25f;
-            
-            entity.relativeForward = Quaternion.AngleAxis(180f * turningSpeed * turnDirection * Time.deltaTime, Vector3.up) * entity.relativeForward;
-            entity.rotationForward = Vector3.Lerp(entity.rotationForward, entity.relativeForward, 0.7f).normalized;
-
-            entity.moveDirection = entity.absoluteForward * moveAmount;
-            entity.GroundedMove(entity.moveDirection * Time.deltaTime * entity.moveSpeed);
-            
-            RotateEntity(entity.rotationForward);
 
         }
 
         protected override void UpdateMoveSpeed(){
-            float newSpeed = entity.walkSpeed != Entity.WalkSpeed.idle ? entity.data.baseSpeed : 0f;
+
+            float newSpeed = Vector3.Dot(entity.moveDirection, inputDirection) * accelerationLinger * entity.data.baseSpeed;
             if (entity.walkSpeed != Entity.WalkSpeed.run) 
                 newSpeed *= entity.walkSpeed == Entity.WalkSpeed.sprint ? /* entity.data.sprintSpeed */1f : entity.data.slowSpeed;
 
             newSpeed = newSpeed * speedMultiplier;
             
-            entity.moveSpeed = Mathf.MoveTowards(entity.moveSpeed, newSpeed, entity.data.moveIncrement * Time.deltaTime);
+            entity.moveSpeed = Mathf.MoveTowards(entity.moveSpeed, newSpeed, entity.data.moveIncrement * Global.timeDelta);
         }
 
 
         public override void HandleInput(){
+
+            entity.RawInputToGroundedMovement(out Vector3 camRight, out Vector3 camForward, out Vector3 groundDirection, out Vector3 groundDirection3D);
+
+            if (groundDirection.magnitude != 0f)
+                inputDirection = groundDirection.normalized;
+
+            float newLinger = groundDirection.magnitude;
+            accelerationLinger = Mathf.Lerp(accelerationLinger, newLinger, Global.timeDelta * (newLinger > accelerationLinger ? 3f : 2f) );
             
-            moveAmount = entity.moveInputData.currentValue.z;
-            turnDirection = entity.moveInputData.currentValue.x;
+            // moveAmount = entity.moveInputData.currentValue.z;
+            // turnDirection = entity.moveInputData.currentValue.x;
             
             // Jump if the Jump key is pressed.
-            if (entity.jumpInputData.currentValue){
-                Jump();
-            }
+            if ( entity.jumpInputData.currentValue && jumpCount != 0 && coyoteTimer != 0f )
+                entity.Jump( -entity.gravityDown );
+        }
+
+        private void OnEntityJump(Vector3 jumpDirection){
+            jumpCount--;
+        }
+        private void OnEntityEvade(Vector3 evadeDirection){
+            evadeCount--;
         }
 
         private void OnEntityLand(float timer){

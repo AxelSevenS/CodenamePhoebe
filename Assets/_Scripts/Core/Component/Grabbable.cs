@@ -40,10 +40,9 @@ namespace SeleneGame.Core {
         }
 
         public void Grab(Entity entity){
+            if (entity.grabbedObjects.Count >= 4) return;
 
             _grabbed = true;
-
-            if (entity.grabbedObjects.Count >= 4) return;
 
             entity.grabbedObjects.Add(this);
             randomSpin = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized * 0.3f ;

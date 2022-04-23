@@ -27,11 +27,6 @@ namespace SeleneGame.Core {
         protected virtual Vector3 GetCameraPosition() => new Vector3(1f, 0f, -3.5f);
         protected virtual Vector3 GetOverrideRotation() => entity.relativeForward;
 
-        public virtual bool canJump => false;
-        public virtual bool canEvade => false;
-        public virtual bool cannotTurn => false;
-        public virtual bool noGravity => false;
-
         public virtual bool shifting => false;
 
         protected virtual void WeaponStart(){;}
@@ -40,12 +35,14 @@ namespace SeleneGame.Core {
         protected virtual void WeaponDisable(){;}
         protected virtual void UpdateAlways(){;}
         protected virtual void UpdateEquipped(){;}
+        protected virtual void FixedUpdateAlways(){;}
+        protected virtual void FixedUpdateEquipped(){;}
 
         private void SetData(){
             if (data != null) return;
 
             string dataName = GetType().Name.Replace("Weapon","");
-            data = UnitData.GetDataByName<WeaponData>( dataName );
+            data = DataGetter.GetData<WeaponData>( dataName );
             Debug.Log(dataName);
         }
 
@@ -64,11 +61,11 @@ namespace SeleneGame.Core {
         }
 
         private void OnEnable(){
-            data.changeCostume += LoadModel;
+            data.onChangeCostume += LoadModel;
             WeaponEnable();
         }
         private void OnDisable(){
-            data.changeCostume -= LoadModel;
+            data.onChangeCostume -= LoadModel;
             WeaponDisable();
         }
 
@@ -80,6 +77,11 @@ namespace SeleneGame.Core {
             UpdateAlways();
             if (entity.currentWeapon == this)
                 UpdateEquipped();
+        }
+        private void FixedUpdate(){
+            FixedUpdateAlways();
+            if (entity.currentWeapon == this)
+                FixedUpdateEquipped();
         }
 
         public static Type GetWeaponTypeByName(string weaponName){
@@ -110,8 +112,6 @@ namespace SeleneGame.Core {
         }
 
         public void DestroyModel(){
-            if (entity == null) return;
-
             model = Global.SafeDestroy(model);
             secondaryModel = Global.SafeDestroy(secondaryModel);
         }

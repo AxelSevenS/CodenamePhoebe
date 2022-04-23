@@ -10,18 +10,6 @@ namespace SeleneGame.States {
         protected override float GetSpeedMultiplier() => entity.currentWeapon.speedMultiplier;
         protected override Vector3 GetJumpDirection() => entity.currentWeapon.jumpDirection;
         protected override Vector3 GetCameraPosition() => entity.currentWeapon.cameraPosition - new Vector3(0,0,additionalCameraDistance);
-        protected override Vector3 GetEntityUp(){
-            if (entity.inWater && !useGravity)
-                return Vector3.Cross(entity.moveDirection, Vector3.Cross(entity.moveDirection, entity.gravityDown));
-            else
-                return -entity.gravityDown;
-        }
-
-        protected override bool canJump => ( (coyoteTimer > 0f && jumpCount > 0 && useGravity) || entity.currentWeapon.canJump) && entity.jumpCooldown == 0;
-        protected override bool canEvade => (evadeCount > 0f && entity.evadeTimer == 0f) || entity.currentWeapon.canEvade;
-
-        protected override bool canTurn => (entity.evadeTimer < entity.data.evadeCooldown) && !entity.turningTo && !entity.currentWeapon.cannotTurn;
-        protected override bool useGravity => !entity.currentWeapon.noGravity;
 
         public override bool masked => Vector3.Dot ( entity.gravityDown, Vector3.down ) < 0.95f || entity.inWater || entity.currentWeapon.shifting;
 
@@ -33,18 +21,23 @@ namespace SeleneGame.States {
 
         protected override void StateEnable(){
 
-            entity.groundData.started += OnEntityLand;
+            entity.onJump += OnEntityJump;
+            entity.onEvade += OnEntityEvade;
             entity.evadeInputData.started += OnEvadeInputStart;
+            entity.groundData.started += OnEntityLand;
             entity.evadingData.stopped += OnEntityEvadeStop;
         }
         protected override void StateDisable(){
 
-            entity.groundData.started -= OnEntityLand;
+            entity.onJump -= OnEntityJump;
+            entity.onEvade -= OnEntityEvade;
             entity.evadeInputData.started -= OnEvadeInputStart;
+            entity.groundData.started -= OnEntityLand;
             entity.evadingData.stopped -= OnEntityEvadeStop;
         }
         
         protected override void StateUpdate(){
+            coyoteTimer = entity.onGround ? 0.4f : Mathf.MoveTowards( coyoteTimer, 0f, Global.timeDelta );
 
             if (entity.inWater && entity.currentWeapon.weightModifier <= 1f){
                 entity.SetState("Swimming");
@@ -63,11 +56,16 @@ namespace SeleneGame.States {
         }
 
         protected override void StateFixedUpdate(){
-            
-            if (!entity.currentWeapon.noGravity)
-                Gravity(entity.gravityForce, entity.gravityDown);
 
-            coyoteTimer = entity.onGround ? 0.4f : Mathf.MoveTowards( coyoteTimer, 0f, Time.deltaTime );
+            entity.SetRotation(-entity.gravityDown);
+
+            entity.JumpGravity(entity.gravityForce, entity.gravityDown, entity.jumpInputData.currentValue);
+
+            // Move when evading
+            if ( entity.EvadeUpdate(out float evadeSpeed) )
+                entity.GroundedMove( Global.timeDelta * evadeSpeed * entity.evadeDirection );
+            
+
             
             if ( entity.groundData.currentValue ){
                 evadeCount = 1;
@@ -75,103 +73,52 @@ namespace SeleneGame.States {
                     jumpCount = 1;
             }
 
-            entity.inertiaDirection = Vector3.Lerp( entity.inertiaDirection, entity.absoluteForward, 3f*Time.deltaTime);
+            entity.inertiaDirection = Vector3.Lerp( entity.inertiaDirection, entity.groundOrientation * entity.absoluteForward, 3f*Global.timeDelta);
 
             // Gain Speed when moving downwards
-            float slopeMultiplier = Vector3.Dot( entity.gravityDown, entity.groundOrientation * entity.inertiaDirection ) * entity.moveSpeed;
+            float slopeMultiplier = Vector3.Dot( entity.gravityDown, entity.inertiaDirection ) * entity.moveSpeed;
             float fallMultiplier = Mathf.Min(Mathf.Max(-entity.fallVelocity, 0f), 1f);
-            float newInertia = Mathf.Pow( (entity.onGround ? slopeMultiplier : fallMultiplier), 1.5f );
+
+            float newInertia = entity.onGround ? slopeMultiplier : fallMultiplier;
+            newInertia = Mathf.Sign(newInertia) == 1f  ?  Mathf.Pow(newInertia,1.5f)  :  newInertia*0.8f ;
+            
             float inertiaChangeFactor = newInertia > entity.inertiaMultiplier ? 12.5f : 5f;
 
-            entity.inertiaMultiplier = Mathf.Min(Mathf.MoveTowards(entity.inertiaMultiplier, newInertia, inertiaChangeFactor * Time.deltaTime), 25f);
-            // Debug.Log(entity.inertiaMultiplier);
+            entity.inertiaMultiplier = Mathf.Min(Mathf.MoveTowards(entity.inertiaMultiplier, newInertia, inertiaChangeFactor * Global.timeDelta), 25f);
 
 
-
-            // --------------------------------------------------------------------------------------------------------------------------
-            // Evading
-            // --------------------------------------------------------------------------------------------------------------------------
-
-            if ( (entity.evadeTimer > entity.data.totalEvadeDuration - 0.1f || !entity.evading) && entity.moveDirection.magnitude > 0f){
-
-                // Change Evade Direction if it's still early in the Evade.
-                entity.evadeDirection = entity.absoluteForward;
-            }else if (!entity.evading && !entity.sliding && entity.onGround && entity.moveDirection.magnitude == 0f){
-
-                // Backstep when Evading while standing still.
-                entity.evadeDirection = -entity.absoluteForward;
-            }
-
-            if (entity.evading){
-
-                entity.inertiaDirection = entity.evadeDirection;
-                float evadeCurve = entity.data.evadeCurve.Evaluate( 1 - ( (entity.evadeTimer - entity.data.evadeCooldown) / entity.data.evadeDuration ) );
-                float evadeSpeed = 24f;
-                entity.GroundedMove( Time.deltaTime * evadeSpeed * evadeCurve * entity.evadeDirection );
-
-            }
-
-
-            // --------------------------------------------------------------------------------------------------------------------------
-            // Sliding
-            // --------------------------------------------------------------------------------------------------------------------------
-            
-
-            if (entity.sliding){
-                entity.absoluteForward = Vector3.Lerp( entity.absoluteForward, entity.moveDirection, Time.deltaTime);
-                entity.GroundedMove(Time.deltaTime * 2.5f * entity.inertia );
-            }
-
-
-
-            // --------------------------------------------------------------------------------------------------------------------------
-            // Crouching
-            // --------------------------------------------------------------------------------------------------------------------------
-
-
-
-
-
-            // --------------------------------------------------------------------------------------------------------------------------
-            // Movement and misc.
-            // --------------------------------------------------------------------------------------------------------------------------
-
-            entity.SetRotation(-entity.gravityDown);
-
-            Vector3 finalRotation = entity.currentWeapon != null ? entity.currentWeapon.overrideRotation : entity.relativeForward;
-            entity.rotationForward = Vector3.Lerp(entity.rotationForward, finalRotation, 0.7f).normalized;
 
             if (entity.moveDirection.magnitude > 0f && !entity.sliding){
 
                 entity.absoluteForward = entity.moveDirection.normalized;
 
-                float finalSpeed = entity.moveSpeed + Vector3.Dot(entity.moveDirection, entity.inertiaDirection) * entity.inertiaMultiplier;
+                float finalSpeed = entity.moveSpeed + entity.inertiaMultiplier * Vector3.Dot(entity.moveDirection, entity.inertiaDirection);
                 
-                entity.GroundedMove(finalSpeed * Time.deltaTime * entity.moveDirection, entity.onGround);
+                entity.GroundedMove(finalSpeed * Global.timeDelta * entity.moveDirection, entity.onGround);
+            }else if (entity.sliding){
+
+                entity.absoluteForward = Vector3.Lerp( entity.absoluteForward, entity.moveDirection, Global.timeDelta);
+
+                entity.GroundedMove(Global.timeDelta * 2.5f * entity.inertia );
             }
             
-
-            RotateEntity(entity.rotationForward);
-
-            // float newHeight = (entity.sliding || entity.walkSpeed == Entity.WalkSpeed.crouch) ? entity.data.size.y*2f/3f : entity.data.size.y;
-            // Vector3 newSize = new Vector3(entity.data.size.x, newHeight, entity.data.size.z);
-
-            // entity.SetSize( Vector3.Lerp( entity._collider.GetSize(), newSize, 10f * Time.deltaTime) );
+            Vector3 finalRotation = entity?.currentWeapon.overrideRotation ?? entity.relativeForward;
+            entity.RotateTowardsRelative(finalRotation, -entity.gravityDown);
         }
 
         protected override void UpdateMoveSpeed(){
-            float newSpeed = entity.walkSpeed != Entity.WalkSpeed.idle ? entity.data.baseSpeed : 0f;
+            float newSpeed = entity.moveInputData.currentValue.magnitude > 0f ? entity.data.baseSpeed : 0f;
             if (entity.walkSpeed != Entity.WalkSpeed.run) 
                 newSpeed *= entity.walkSpeed == Entity.WalkSpeed.sprint ? /* entity.data.sprintSpeed */1f : entity.data.slowSpeed;
 
             newSpeed = newSpeed * speedMultiplier;
             
-            entity.moveSpeed = Mathf.MoveTowards(entity.moveSpeed, newSpeed, entity.data.moveIncrement * Time.deltaTime);
+            entity.moveSpeed = Mathf.MoveTowards(entity.moveSpeed, newSpeed, entity.data.moveIncrement * Global.timeDelta);
         }
 
         public override void HandleInput(){
 
-            RawInputToGroundedMovement(entity, out Vector3 camRight, out Vector3 camForward, out Vector3 groundDirection, out Vector3 groundDirection3D);
+            entity.RawInputToGroundedMovement(out Vector3 camRight, out Vector3 camForward, out Vector3 groundDirection, out Vector3 groundDirection3D);
             entity.moveDirection = groundDirection;
 
             if (entity.crouchInputData.currentValue) entity.SetWalkSpeed(Entity.WalkSpeed.crouch);
@@ -180,24 +127,32 @@ namespace SeleneGame.States {
             
             entity.slidingData.SetVal( entity.evadeInputData.currentValue && !entity.evading && (entity.inertiaMultiplier > 2f | !entity.onGround) && !entity.inWater );
             
-            // Jump if the Jump key is pressed.
-            if (entity.jumpInputData.currentValue){
-                Jump();
-                jumpCount--;
-            }
+            if ( entity.jumpInputData.currentValue && jumpCount != 0 && coyoteTimer != 0f )
+                entity.Jump(jumpDirection);
+        }
+
+        private void OnEntityJump(Vector3 jumpDirection){
+            jumpCount--;
+        }
+        private void OnEntityEvade(Vector3 evadeDirection){
+            evadeCount--;
+        }
+
+        private void OnEvadeInputStart(float timer){
+            if ( evadeCount == 0 ) return;
+
+            Vector3 evadeDir = entity.moveDirection.magnitude == 0f ? -entity.absoluteForward : entity.moveDirection;
+            entity.GroundedEvade(evadeDir);
+        }
+
+        private void OnEntityEvadeStop(float timer){
+            if ( entity.sliding ) return;
+
+            entity.StartWalkAnim();
         }
 
         private void OnEntityLand(float timer){
             entity.StartWalkAnim();
-        }
-
-        private void OnEvadeInputStart(float timer){
-            Evade();
-            evadeCount--;
-        }
-        private void OnEntityEvadeStop(float timer){
-            if ( !entity.sliding )
-                entity.StartWalkAnim();
         }
     }
 }

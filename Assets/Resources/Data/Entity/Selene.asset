@@ -19,7 +19,7 @@ MonoBehaviour:
   stepHeight: 0.75
   moveIncrement: 20
   weight: 12.5
-  jumpHeight: 20
+  jumpHeight: 17
   baseSpeed: 17
   slowSpeed: 0.7
   crouchSpeed: 1

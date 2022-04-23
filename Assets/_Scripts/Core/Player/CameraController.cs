@@ -34,7 +34,7 @@ namespace SeleneGame.Core {
         private void FixedUpdate() {
             Entity playerEntity = Player.current.entity;
 
-            entityRotation = Quaternion.Slerp( entityRotation, playerEntity.rotation, 4f * Time.deltaTime );
+            entityRotation = Quaternion.Slerp( entityRotation, playerEntity.rotation, 4f * Global.timeDelta );
             
             transform.rotation = entityRotation * playerEntity.lookRotationData.currentValue;
 

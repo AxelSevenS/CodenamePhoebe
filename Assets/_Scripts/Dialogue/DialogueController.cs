@@ -58,7 +58,7 @@ namespace SeleneGame {
         }
         
         void Update(){
-            currOpacity = Mathf.MoveTowards(currOpacity, opacity, 7f * Time.deltaTime);
+            currOpacity = Mathf.MoveTowards(currOpacity, opacity, 7f * Global.timeDelta);
 
             foreach (Image i in imageList){
                 i.color = new Color(i.color.r, i.color.g, i.color.b, currOpacity);

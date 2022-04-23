@@ -34,8 +34,8 @@ namespace SeleneGame {
             if (!onFace && (positionBlocked(relativePos)))
                 onRight = !onRight;
 
-            flyingPosition = Vector3.Lerp(flyingPosition, entity._transform.position + relativePos, 15f * Time.deltaTime);
-            maskPosT = Mathf.MoveTowards(maskPosT, System.Convert.ToSingle(onFace), 4f * Time.deltaTime);
+            flyingPosition = Vector3.Lerp(flyingPosition, entity._transform.position + relativePos, 15f * Global.timeDelta);
+            maskPosT = Mathf.MoveTowards(maskPosT, System.Convert.ToSingle(onFace), 4f * Global.timeDelta);
 
             animator.SetBool("OnFace", onFace);
             animator.SetFloat("OnRight", onRight ? 1f : 0f);

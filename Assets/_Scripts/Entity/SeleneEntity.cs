@@ -49,7 +49,7 @@ namespace SeleneGame.Entities {
 
                 var grabbedMono = grabbedObjects[i] as MonoBehaviour;
 
-                grabbedMono.transform.position = Vector3.Lerp(grabbedMono.transform.position, transform.position + lookRotationData.currentValue * grabbedPositions[i], 10f* Time.deltaTime);
+                grabbedMono.transform.position = Vector3.Lerp(grabbedMono.transform.position, transform.position + lookRotationData.currentValue * grabbedPositions[i], 10f* Global.timeDelta);
             }
         }
 

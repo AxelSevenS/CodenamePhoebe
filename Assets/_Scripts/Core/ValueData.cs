@@ -83,8 +83,8 @@ namespace SeleneGame.Core {
         }
 
         private void UpdateTimer(){
-            trueTimer = currentValue ? trueTimer + Time.deltaTime : 0f;
-            falseTimer = !currentValue ? falseTimer + Time.deltaTime : 0f;
+            trueTimer = currentValue ? trueTimer + Global.timeDelta : 0f;
+            falseTimer = !currentValue ? falseTimer + Global.timeDelta : 0f;
         }
 
     }

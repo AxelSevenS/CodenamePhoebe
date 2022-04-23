@@ -35,7 +35,7 @@ namespace SeleneGame.Core {
 
         public static event Action<string> onSetEntityCostume;
         public static void SetEntityCostume(string charName, string costumeName){
-            UnitData.GetDataByName<EntityData>(charName).SetCostume(costumeName);
+            DataGetter.GetData<EntityData>(charName).SetCostume(costumeName);
             EntityManager.current.entityCostumes[charName] = costumeName;
             Debug.Log("Set " + charName + " Entity costume to : " + costumeName);
 
@@ -45,7 +45,7 @@ namespace SeleneGame.Core {
 
         public static event Action<string> onSetWeaponCostume;
         public static void SetWeaponCostume(string weaponName, string costumeName){
-            UnitData.GetDataByName<WeaponData>(weaponName).SetCostume(costumeName);
+            DataGetter.GetData<WeaponData>(weaponName).SetCostume(costumeName);
             EntityManager.current.weaponCostumes[weaponName] = costumeName;
             Debug.Log("Set " + weaponName + " Weapon costume to : " + costumeName);
 
