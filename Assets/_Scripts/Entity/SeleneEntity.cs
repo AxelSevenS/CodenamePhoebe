@@ -18,10 +18,8 @@ namespace SeleneGame.Entities {
         private SpeedlinesEffect speedlines;
 
         protected override void EntityEnable(){
-            shiftInputData.stopped += Shift;
         }
         protected override void EntityDisable(){
-            shiftInputData.stopped -= Shift;
         }
 
         protected override void EntityDestroy(){
@@ -40,6 +38,21 @@ namespace SeleneGame.Entities {
         }
 
         protected override void EntityUpdate(){
+            if (shiftInputData.stopped && shiftInputData.trueTimer < Player.current.holdDuration){
+                
+                if (state is WalkingState walking && shiftCooldown == 0f){
+                    shiftCooldown = 0.3f;
+                    if (onGround) _rb.velocity += -gravityDown*3f;
+                    
+                    SetState("Shifting");
+
+                    //Shift effects
+                        // var shiftParticle = Instantiate(Global.LoadParticle("ShiftParticles"), transform.position, Quaternion.FromToRotation(Vector3.up, transform.up));
+                        // Destroy(shiftParticle, 2f);
+                }else if (state is ShiftingState shifting){
+                    shifting.StopShifting(Vector3.down);
+                }
+            }
         }
 
         protected override void EntityFixedUpdate(){
@@ -55,20 +68,17 @@ namespace SeleneGame.Entities {
 
         private void Shift(float timer){
             if (timer >= Player.current.holdDuration) return;
-            if (state is WalkingState){
-                if ( shiftCooldown == 0f){
-                    shiftCooldown = 0.3f;
-                    if (onGround) _rb.velocity += -gravityDown*3f;
-                    
-                    SetState("Shifting");
+            if (state is WalkingState walking && shiftCooldown == 0f){
+                shiftCooldown = 0.3f;
+                if (onGround) _rb.velocity += -gravityDown*3f;
+                
+                SetState("Shifting");
 
-                    //Shift effects
-                        // var shiftParticle = Instantiate(Global.LoadParticle("ShiftParticles"), transform.position, Quaternion.FromToRotation(Vector3.up, transform.up));
-                        // Destroy(shiftParticle, 2f);
-                }
-            }else if (state is ShiftingState){
-                ShiftingState shiftingState = state as ShiftingState;
-                shiftingState.StopShifting(Vector3.down);
+                //Shift effects
+                    // var shiftParticle = Instantiate(Global.LoadParticle("ShiftParticles"), transform.position, Quaternion.FromToRotation(Vector3.up, transform.up));
+                    // Destroy(shiftParticle, 2f);
+            }else if (state is ShiftingState shifting){
+                shifting.StopShifting(Vector3.down);
             }
 
         }

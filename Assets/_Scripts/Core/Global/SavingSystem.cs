@@ -25,7 +25,7 @@ namespace SeleneGame.Core {
             
             SaveData data = GetPlayerData(slot);
 
-            if (data is object){
+            if (data != null){
                 data.Load();
                 Debug.Log("Data Loaded from Slot " + slot.ToString());
             }else{

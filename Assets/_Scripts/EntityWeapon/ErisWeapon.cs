@@ -22,7 +22,7 @@ namespace SeleneGame.Weapons {
 
             // Stick to Surface when sliding in Light Mode. (Light Anchoring)
             if ( gravitySlide ){
-                entity.inertiaMultiplier = Mathf.Min( Mathf.Max( entity.inertiaMultiplier, 12f ), 14f );
+                // entity.inertiaMultiplier = Mathf.Min( Mathf.Max( entity.inertiaMultiplier, 12f ), 14f );
                 entity.gravityDown = Vector3.Lerp( entity.gravityDown, -entity.groundHit.normal, 0.1f );
             }
             

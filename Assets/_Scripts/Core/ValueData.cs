@@ -19,7 +19,12 @@ namespace SeleneGame.Core {
 
     [System.Serializable]
     public class VectorData : ValueData<Vector3> {
+
+        public float zeroTimer;
         
+        public override void Update(){
+            zeroTimer = currentValue == Vector3.zero ? zeroTimer + Global.timeDelta : 0f;
+        }
     }
 
     [System.Serializable]
@@ -32,41 +37,43 @@ namespace SeleneGame.Core {
 
         public float trueTimer;
         public float falseTimer;
-        public event Action<float> started;
-        public event Action<float> stopped;
+        // public event Action<float> started;
+        // public event Action<float> stopped;
+        public bool started => currentValue && !lastValue;
+        public bool stopped => !currentValue && lastValue;
 
         public BoolData(){
         }
-        public BoolData(Action<float> newStartAction, Action<float> newStopAction){
-            started = timer => newStartAction.Invoke(timer);
-            stopped = timer => newStopAction.Invoke(timer);
-        }
-        public BoolData(Action<float> newStartAction, Action newStopAction){
-            started = timer => newStartAction.Invoke(timer);
-            stopped = _ => newStopAction.Invoke();
-        }
-        public BoolData(Action newStartAction, Action<float> newStopAction){
-            started = _ => newStartAction.Invoke();
-            stopped = timer => newStopAction.Invoke(timer);
-        }
-        public BoolData(Action newStartAction, Action newStopAction){
-            started = _ => newStartAction.Invoke();
-            stopped = _ => newStopAction.Invoke();
-        }
-        public BoolData(Action newAction, bool isStarted = true){
-            if (isStarted){
-                started = _ => newAction.Invoke();
-            }else{
-                stopped = _ => newAction.Invoke();
-            }
-        }
-        public BoolData(Action<float> newAction, bool isStarted = true){
-            if (isStarted){
-                started = timer => newAction.Invoke(timer);
-            }else{
-                stopped = timer => newAction.Invoke(timer);
-            }
-        }
+        // public BoolData(Action<float> newStartAction, Action<float> newStopAction){
+        //     started = timer => newStartAction.Invoke(timer);
+        //     stopped = timer => newStopAction.Invoke(timer);
+        // }
+        // public BoolData(Action<float> newStartAction, Action newStopAction){
+        //     started = timer => newStartAction.Invoke(timer);
+        //     stopped = _ => newStopAction.Invoke();
+        // }
+        // public BoolData(Action newStartAction, Action<float> newStopAction){
+        //     started = _ => newStartAction.Invoke();
+        //     stopped = timer => newStopAction.Invoke(timer);
+        // }
+        // public BoolData(Action newStartAction, Action newStopAction){
+        //     started = _ => newStartAction.Invoke();
+        //     stopped = _ => newStopAction.Invoke();
+        // }
+        // public BoolData(Action newAction, bool isStarted = true){
+        //     if (isStarted){
+        //         started = _ => newAction.Invoke();
+        //     }else{
+        //         stopped = _ => newAction.Invoke();
+        //     }
+        // }
+        // public BoolData(Action<float> newAction, bool isStarted = true){
+        //     if (isStarted){
+        //         started = timer => newAction.Invoke(timer);
+        //     }else{
+        //         stopped = timer => newAction.Invoke(timer);
+        //     }
+        // }
         // public BoolData(Action<float>[] newStartActions, Action<float>[] newStopActions){
         //     foreach(Action<float> action in newStartActions)
         //         started += action;
@@ -76,8 +83,8 @@ namespace SeleneGame.Core {
 
         
         public override void Update(){
-            if (currentValue && !lastValue && started != null) started(falseTimer);
-            if (!currentValue && lastValue && stopped != null) stopped(trueTimer);
+            // if (currentValue && !lastValue && started != null) started(falseTimer);
+            // if (!currentValue && lastValue && stopped != null) stopped(trueTimer);
             lastValue = currentValue;
             UpdateTimer();
         }

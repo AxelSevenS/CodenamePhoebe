@@ -23,7 +23,7 @@ namespace SeleneGame {
 
         private void FixedUpdate(){
             rigidbody.AddForceAtPosition(Physics.gravity*1.5f/floaterCount, transform.position, ForceMode.Acceleration);
-            _physicsComponent.BodyFloat(rigidbody, (2f/floaterCount)+0.1f);
+            _physicsComponent.BodyFloat(rigidbody, transform.position, (2f/floaterCount)+0.1f);
         }
     }
 }

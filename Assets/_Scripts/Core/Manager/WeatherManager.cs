@@ -103,8 +103,8 @@ namespace SeleneGame.Core {
             Vector3 deltaRotation = new Vector3(sunSpeed.x, sunSpeed.y, 0)*Global.timeDelta;
             sunRotation *= Quaternion.Euler(deltaRotation);
 
-            deltaRotation = new Vector3(moonSpeed.x, moonSpeed.y, 0)*Global.timeDelta;
-            moonRotation *= Quaternion.Euler(deltaRotation);
+            // deltaRotation = new Vector3(moonSpeed.x, moonSpeed.y, 0)*Global.timeDelta;
+            // moonRotation *= Quaternion.Euler(deltaRotation);
 
             // sun.intensity = lightLevel;
             sun.transform.rotation = sunRotation;

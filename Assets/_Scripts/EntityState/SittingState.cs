@@ -15,20 +15,16 @@ namespace SeleneGame.States {
 
         [HideInInspector] public Seat seat;
 
-        protected override void StateEnable(){
-            entity.crouchInputData.started += OnCrouchInput;
+        protected override void StateUpdate(){
+            if (entity.crouchInputData.started)
+                seat.StopSitting();
         }
-
-        protected override void StateDisable(){
-            entity.crouchInputData.started -= OnCrouchInput;
-        }
-
 
         protected override void StateFixedUpdate(){
             // Sitting
-            entity._transform.rotation = Quaternion.LookRotation( Vector3.ProjectOnPlane(seat.transform.position - entity._transform.position, seat.transform.up), seat.transform.up);
             entity._transform.position = seat.sitPosition;
             entity.absoluteForward = entity._transform.forward;
+            entity._transform.rotation = Quaternion.LookRotation( Vector3.ProjectOnPlane(seat.transform.position - entity._transform.position, seat.transform.up), seat.transform.up);
         }
 
         protected override void UpdateMoveSpeed(){;}
@@ -45,12 +41,7 @@ namespace SeleneGame.States {
             inputDict[ "Focus" ] = entity.focusInputData.currentValue;
             inputDict[ "Shift" ] = entity.shiftInputData.currentValue;
 
-            seat.seatEntity.EntityInput(entity.moveInputData.currentValue, entity.lookRotationData.currentValue, inputDict);
-        }
-
-
-        private void OnCrouchInput(float timer){
-            seat.StopSitting();
+            seat.seatEntity.EntityInput(entity.moveInputData.currentValue, entity.lookRotation, inputDict);
         }
     }
 }

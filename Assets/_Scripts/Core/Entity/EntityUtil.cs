@@ -7,36 +7,6 @@ namespace SeleneGame.Core {
 
     public static class EntityUtil {
 
-        public static bool DirectionCheck( this Entity entity, Vector3 direction, out RaycastHit checkHit, float skinThickness = 0.05f ) {
-
-            foreach (Collider col in entity._colliders){
-                bool hasHitWall = col.ColliderCast( col.transform.position, direction, out RaycastHit tempHit, skinThickness );
-                if ( !hasHitWall || tempHit.collider == null ) continue;
-
-                checkHit = tempHit;
-                return true;
-            }
-            checkHit = new RaycastHit();
-            return false;
-        }
-
-        public static bool WallCheck( this Entity entity, out RaycastHit wallHitOut ) {
-            for (int i = 0; i < 11; i++){
-                float angle = (i%2 == 0 && i != 0) ? (i-1 * -30f) : i * 30f;
-                Quaternion angleTurn = Quaternion.AngleAxis( angle, entity.rotation * Vector3.down);
-                bool hasHitWall = entity.DirectionCheck( angleTurn * entity.absoluteForward * 0.3f, out RaycastHit tempHit );
-                if (hasHitWall){
-                    wallHitOut = tempHit;
-                    return true;
-                }
-            }
-            wallHitOut = new RaycastHit();
-            return false;
-        }
-
-        public static void LookAt( this Entity entity, Vector3 direction) {
-            entity.lookRotationData.SetVal( Quaternion.LookRotation( Quaternion.Inverse(entity.rotation) * direction, entity.rotation * Vector3.up ) );
-        }
         
         public static async Task WalkTo( this Entity entity, Vector3 pos, Entity.WalkSpeed speed = Entity.WalkSpeed.walk) {
             entity.walkingTo = true;

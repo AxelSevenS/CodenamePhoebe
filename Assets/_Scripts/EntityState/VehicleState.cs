@@ -16,25 +16,25 @@ namespace SeleneGame.States {
         private Vector3 finalDirection = Vector3.zero;
         private Vector3 inputDirection;
 
-        private bool landed;
-        public float coyoteTimer = 0f;
+        private float jumpCooldown;
 
-        protected override void StateEnable(){
+        private void OnEnable(){
 
             entity.onJump += OnEntityJump;
             entity.onEvade += OnEntityEvade;
-            entity.groundData.started += OnEntityLand;
         }
-        protected override void StateDisable(){
+        private void OnDisable(){
 
             entity.onJump -= OnEntityJump;
             entity.onEvade -= OnEntityEvade;
-            entity.groundData.started -= OnEntityLand;
         }
 
         protected override void StateUpdate(){
 
-            coyoteTimer = Mathf.Max( Mathf.MoveTowards( coyoteTimer, 0f, Global.timeDelta ), (System.Convert.ToSingle(entity.onGround) * 0.4f) );
+            jumpCooldown = Mathf.MoveTowards( jumpCooldown, 0f, Global.timeDelta );
+
+            if (entity.groundData.started) 
+                entity.StartWalkAnim();
 
         }
 
@@ -44,7 +44,7 @@ namespace SeleneGame.States {
             
             if ( entity.groundData.currentValue ){
                 evadeCount = 1;
-                if( entity.jumpCooldown == 0 )
+                if( jumpCooldown == 0f )
                     jumpCount = 1;
             }
 
@@ -93,24 +93,20 @@ namespace SeleneGame.States {
 
             float newLinger = groundDirection.magnitude;
             accelerationLinger = Mathf.Lerp(accelerationLinger, newLinger, Global.timeDelta * (newLinger > accelerationLinger ? 3f : 2f) );
-            
-            // moveAmount = entity.moveInputData.currentValue.z;
-            // turnDirection = entity.moveInputData.currentValue.x;
+
+            entity.slidingData.SetVal(entity.evadeInputData.currentValue && entity.onGround);
             
             // Jump if the Jump key is pressed.
-            if ( entity.jumpInputData.currentValue && jumpCount != 0 && coyoteTimer != 0f )
+            if ( entity.jumpInputData.currentValue && jumpCount != 0 && entity.groundData.falseTimer <= 0.4f )
                 entity.Jump( -entity.gravityDown );
         }
 
         private void OnEntityJump(Vector3 jumpDirection){
             jumpCount--;
+            jumpCooldown = 0.4f;
         }
         private void OnEntityEvade(Vector3 evadeDirection){
             evadeCount--;
-        }
-
-        private void OnEntityLand(float timer){
-            entity.StartWalkAnim();
         }
     }
 }

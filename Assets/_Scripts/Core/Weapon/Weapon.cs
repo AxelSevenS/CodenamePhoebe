@@ -25,7 +25,7 @@ namespace SeleneGame.Core {
         protected virtual float GetWeightModifier() => 1f;
         protected virtual Vector3 GetJumpDirection() => -entity.gravityDown;
         protected virtual Vector3 GetCameraPosition() => new Vector3(1f, 0f, -3.5f);
-        protected virtual Vector3 GetOverrideRotation() => entity.relativeForward;
+        protected virtual Vector3 GetOverrideRotation() => entity.absoluteForward;
 
         public virtual bool shifting => false;
 

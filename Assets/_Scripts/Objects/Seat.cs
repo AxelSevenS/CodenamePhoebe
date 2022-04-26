@@ -60,13 +60,12 @@ namespace SeleneGame {
         }
 
         private async void StartSitting(Entity entity){
+            previousAnchor = entity.transform.parent;
+
             seatOccupant = entity;
-
-            seatOccupant.transform.SetParent(this.transform);
-
             entity.SetState("Walking");
             
-            CalculateClosestDirection(out Vector3 direction, out seatOccupant.subState);
+            CalculateClosestDirection(out relativePos, out seatOccupant.subState);
 
             if (speed < 4){
                 seatOccupant.walkingTo = true;
@@ -74,12 +73,12 @@ namespace SeleneGame {
                 await seatOccupant.TurnTo( transform.rotation * -relativePos );
                 seatOccupant.walkingTo = false;
             }
-
-            previousAnchor = seatOccupant.transform.parent;
             
             entity.SetState("Sitting");
-            Global.SetLayerRecursively(entity.gameObject, 8);
             ((SittingState)entity.state).seat = this;
+            Global.SetLayerRecursively(entity.gameObject, 8);
+
+            seatOccupant.transform.SetParent(this.transform);
 
 
             entity.AnimatorTrigger("Sit");
@@ -89,10 +88,10 @@ namespace SeleneGame {
 
             if (seatOccupant == null) return;
 
-            seatOccupant._transform.SetParent(previousAnchor);
-
             seatOccupant.SetState("Walking");
             Global.SetLayerRecursively(seatOccupant.gameObject, 6);
+
+            seatOccupant._transform.SetParent(previousAnchor);
 
             seatOccupant = null;
         }

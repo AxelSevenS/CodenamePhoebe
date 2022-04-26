@@ -25,8 +25,6 @@ namespace SeleneGame.Core {
 
         protected virtual void StateAwake(){;}
         protected virtual void StateStart(){;}
-        protected virtual void StateEnable(){;}
-        protected virtual void StateDisable(){;}
         protected virtual void StateDestroy(){;}
         protected virtual void StateUpdate(){;}
         protected virtual void StateFixedUpdate(){;}
@@ -41,24 +39,13 @@ namespace SeleneGame.Core {
             StateStart();
         }
 
-        private void OnEnable(){
-            StateEnable();
-            entity.lightAttackInputData.started += ParryCheck;
-            entity.heavyAttackInputData.started += ParryCheck;
-        }
-
-        private void OnDisable(){
-            StateDisable();
-            entity.lightAttackInputData.started -= ParryCheck;
-            entity.heavyAttackInputData.started -= ParryCheck;
-        }
-
         private void OnDestroy(){
             StateDestroy();
         }
 
         private void Update(){
             UpdateMoveSpeed();
+            ParryCheck();
             StateUpdate();
         }
 
@@ -74,16 +61,16 @@ namespace SeleneGame.Core {
         public static Type GetStateTypeByName(string stateName){
             return Type.GetType($"SeleneGame.States.{stateName}State");
         }
-
-        protected abstract void UpdateMoveSpeed();
         
 
-        protected void ParryCheck(float timer){
-            bool lightActuated = entity.lightAttackInputData.trueTimer < 0.15f && entity.lightAttackInputData.currentValue;
-            bool heavyActuated = entity.heavyAttackInputData.trueTimer < 0.15f && entity.heavyAttackInputData.currentValue;
-            if (lightActuated && heavyActuated)
+        protected void ParryCheck(){
+            bool lightActuated = entity.lightAttackInputData.trueTimer < 0.15f && entity.lightAttackInputData.currentValue && entity.heavyAttackInputData.started;
+            bool heavyActuated = entity.heavyAttackInputData.trueTimer < 0.15f && entity.heavyAttackInputData.currentValue && entity.lightAttackInputData.started;
+            if (lightActuated || heavyActuated)
                 entity.Parry();
         }
+
+        protected abstract void UpdateMoveSpeed();
 
         public abstract void HandleInput();
 

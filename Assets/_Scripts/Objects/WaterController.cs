@@ -77,21 +77,22 @@ namespace SeleneGame {
         }
 
         void Start() {
-            if ( collider is MeshCollider ) (collider as MeshCollider).convex = true;
-            collider.isTrigger = true;
-            gameObject.layer = 4;
+            if ( collider is MeshCollider meshCollider )
+                meshCollider.convex = true;
+            // collider.isTrigger = true;
+            Global.SetLayerRecursively(gameObject, 4);
         }
 
-        private void OnTriggerEnter(Collider col){
-            if (col.attachedRigidbody.TryGetComponent<CustomPhysicsComponent>(out var physicsComponent)) {
-                physicsComponent.UpdateWaterBody(this);
-                physicsComponent.isNearWater = true;
-            }
-        }
-        private void OnTriggerExit(Collider col){
-            if (col.attachedRigidbody.TryGetComponent<CustomPhysicsComponent>(out var physicsComponent)) {
-                physicsComponent.isNearWater = false;
-            }
-        }
+        // private void OnTriggerEnter(Collider col){
+        //     if (col.attachedRigidbody.TryGetComponent<CustomPhysicsComponent>(out var physicsComponent)) {
+        //         physicsComponent.UpdateWaterBody(this);
+        //         physicsComponent.isNearWater = true;
+        //     }
+        // }
+        // private void OnTriggerExit(Collider col){
+        //     if (col.attachedRigidbody.TryGetComponent<CustomPhysicsComponent>(out var physicsComponent)) {
+        //         physicsComponent.isNearWater = false;
+        //     }
+        // }
     }
 }

@@ -18,6 +18,8 @@ namespace SeleneGame.Core {
             types = System.Reflection.Assembly.GetExecutingAssembly().GetTypes();
             CreateAssetOfInheritingScripts(typeof(Weapon), typeof(WeaponData), @"Assets\Resources\Data\Weapon", "Weapon");
             CreateAssetOfInheritingScripts(typeof(Entity), typeof(EntityData), @"Assets\Resources\Data\Entity", "Entity");
+
+
         }
 
         // // The String {{TypeName}} in the template is replaced by the TypeName when generating Classes.

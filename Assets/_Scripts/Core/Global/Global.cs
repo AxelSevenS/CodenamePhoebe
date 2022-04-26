@@ -6,17 +6,17 @@ using UnityEngine.InputSystem;
 
 namespace SeleneGame.Core {
 
-    public static class Global{
+    public static class Global {
         
-        public static GameObject manager = GameObject.FindWithTag("GameController");
-        public static GameObject effects = manager.transform.Find("Effects").gameObject;
-        public static GameObject weather = manager.transform.Find("Weather").gameObject;
-        public static GameObject ui = GameObject.FindWithTag("UI");
-        public static EntityManager entityManager = manager.transform.GetComponentInChildren<EntityManager>();
-        public static ObjectManager objectManager = manager.transform.GetComponentInChildren<ObjectManager>();
-        public static WeatherManager weatherManager = manager.transform.GetComponentInChildren<WeatherManager>();
-        public static MusicManager musicManager = manager.transform.GetComponentInChildren<MusicManager>();
-        public static SceneManager sceneManager = manager.transform.GetComponentInChildren<SceneManager>();
+        public static GameController gameController => GameObject.FindWithTag("GameController").GetComponent<GameController>();
+        public static GameObject effects = gameController.transform.Find("Effects").gameObject;
+        public static GameObject weather = gameController.transform.Find("Weather").gameObject;
+        public static GameObject ui = gameController.transform.Find("UI").gameObject;
+        public static EntityManager entityManager = gameController.transform.GetComponentInChildren<EntityManager>();
+        public static ObjectManager objectManager = gameController.transform.GetComponentInChildren<ObjectManager>();
+        public static WeatherManager weatherManager = gameController.transform.GetComponentInChildren<WeatherManager>();
+        public static MusicManager musicManager = gameController.transform.GetComponentInChildren<MusicManager>();
+        public static SceneManager sceneManager = gameController.transform.GetComponentInChildren<SceneManager>(); 
 
 
         public static LayerMask GroundMask = LayerMask.GetMask("Default");
@@ -36,15 +36,17 @@ namespace SeleneGame.Core {
         public static bool IsActuated(this InputAction action) => action.ReadValue<float>() > 0;
 
         public static string Nicify(this string t){
-            string result = "";
+            
+            System.Text.StringBuilder result = new System.Text.StringBuilder("", t.Length);
+            const char spaceChar = ' ';
         
             for(int i = 0; i < t.Length; i++){
                 if(char.IsUpper(t[i]) == true && i != 0){
-                    result += " ";
+                    result.Append(spaceChar);
                 }
-                result += t[i];
+                result.Append(t[i]);
             }
-            return result;
+            return result.ToString();
         }
 
         public static T SafeDestroy<T>(T obj) where T : Object{

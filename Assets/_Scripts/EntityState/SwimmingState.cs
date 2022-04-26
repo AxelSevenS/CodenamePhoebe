@@ -12,34 +12,31 @@ namespace SeleneGame.States {
 
         public override bool masked => false;
 
-        protected override void StateEnable(){
-
-            entity.evadeInputData.started += OnEvadeInputStart;
-        }
-        protected override void StateDisable(){
-
-            entity.evadeInputData.started -= OnEvadeInputStart;
-        }
-
         protected override void StateUpdate(){
 
             if (entity.currentWeapon.weightModifier > 1f || !entity.inWater){
                 entity.SetState("Walking");
             }
 
+            if (entity.evadeInputData.started)
+                entity.Evade(entity.absoluteForward);
+
         }
 
         protected override void StateFixedUpdate(){
-            if ( entity.EvadeUpdate(out float evadeSpeed) )
-                entity.Move( Global.timeDelta * evadeSpeed * entity.evadeDirection );
 
             entity.SetRotation(-entity.gravityDown);
+
+            entity._rb.velocity = Vector3.Dot(entity._rb.velocity.normalized, entity.gravityDown) > 0f ? entity._rb.velocity / 1.1f : entity._rb.velocity;
+
+            if ( entity.EvadeUpdate(out float evadeSpeed) )
+                entity.Move( Global.timeDelta * evadeSpeed * entity.evadeDirection );
 
             if (entity.moveDirection.magnitude > 0f){
 
                 entity.absoluteForward = entity.moveDirection.normalized;
                 if ( (entity.evadeTimer < entity.data.evadeCooldown) ){
-                    Vector3 up = Vector3.Cross(entity.moveDirection, Vector3.Cross(entity.moveDirection, entity.gravityDown));
+                    Vector3 up = Vector3.Cross(entity.absoluteForward, Vector3.Cross(entity.absoluteForward, entity.gravityDown));
                     entity.RotateTowardsAbsolute(entity.absoluteForward, up);
                 }
 
@@ -61,15 +58,11 @@ namespace SeleneGame.States {
 
         public override void HandleInput(){
             
-            entity.moveDirection = entity.lookRotationData.currentValue * entity.moveInputData.currentValue;
+            entity.moveDirection = entity.rotation * entity.lookRotationData.currentValue * entity.moveInputData.currentValue;
             
             if (entity.jumpInputData.currentValue && entity.isOnWaterSurface){
                 entity.Jump( -entity.gravityDown );
             }
-        }
-
-        private void OnEvadeInputStart(float timer){
-            entity.Evade(entity.absoluteForward);
         }
     }
 }

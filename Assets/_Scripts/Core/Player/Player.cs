@@ -164,8 +164,8 @@ namespace SeleneGame.Core {
 
             if ( menu || talking || entity.walkingTo ) return null;
 
-            if (entity.state is SittingState)
-                return ((SittingState)entity.state).seat;
+            if (entity.state is SittingState sitting)
+                return sitting.seat;
 
             Physics.OverlapSphereNonAlloc(entity._transform.position, 5f, buffer, Global.ObjectEntityMask);
             foreach ( Collider hit in buffer ){

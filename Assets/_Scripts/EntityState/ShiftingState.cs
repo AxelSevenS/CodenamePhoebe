@@ -10,7 +10,7 @@ namespace SeleneGame.States {
         public override int id => 2;
         protected override float GetSpeedMultiplier() => entity.currentWeapon.speedMultiplier;
         protected override Vector3 GetCameraPosition(){
-            if (entity.sliding){
+            if (shiftFalling){
                 return new Vector3(0f, 1f, -4f) - new Vector3(0,0,additionalCameraDistance);
             }else{
                 return new Vector3(0.7f, 0.8f, -2.5f) - new Vector3(0,0,additionalCameraDistance);
@@ -20,13 +20,18 @@ namespace SeleneGame.States {
 
         public override bool masked => true;
 
-        private Vector2 randomRotation = Vector3.zero;
-        private Vector2 fallInput = Vector3.zero;
-        private Quaternion fallRotation = Quaternion.identity;
-        private Vector3 fallDirection = Vector3.zero;
-        private Vector3 floatDirection = Vector3.zero;
-        private float additionalCameraDistance;
+        public BoolData shiftFallingData = new BoolData();
+        public bool shiftFalling => shiftFallingData.currentValue;
 
+        private Vector2 randomRotation = Vector3.zero;
+        
+        private Vector2 fallInput = Vector3.zero;
+        private Vector3 floatDirection = Vector3.zero;
+
+        private Quaternion fallRotation = Quaternion.identity;
+        private Vector3 fallDirection => fallRotation * Vector3.forward;
+
+        private float additionalCameraDistance;
 
         private GameObject landCursor;
 
@@ -35,37 +40,41 @@ namespace SeleneGame.States {
             landCursor = GameObject.Instantiate(Resources.Load("Prefabs/UI/LandCursor"), Global.ui.transform.GetChild(0)) as GameObject;
         }
 
-        protected override void StateEnable(){
-
-            entity.slidingData.started += OnSlideStart;
-            entity.evadeInputData.stopped += OnEvadeInputStop;
-        }
-        protected override void StateDisable(){
-
-            entity.slidingData.started -= OnSlideStart;
-            entity.evadeInputData.stopped -= OnEvadeInputStop;
-        }
-
         protected override void StateDestroy(){
             landCursor = Global.SafeDestroy(landCursor);
         }
 
         protected override void StateUpdate(){
 
+            shiftFallingData.SetVal( entity.evadeInputData.trueTimer > 0.125f );
+
             // Gravity Shifting Movement
             if ( entity.inWater || entity.shiftInputData.trueTimer > Player.current.holdDuration ){
                 StopShifting(Vector3.down);
             }
 
-            if ( entity.onGround && entity.sliding ) {
+            if ( entity.onGround && shiftFalling ) {
                 StopShifting(fallDirection);
             }
 
-            entity.inertiaMultiplier = Mathf.Max(entity.inertiaMultiplier, 4f);
+            if (shiftFallingData.started){
+                Vector3 dir = entity.lookDirection;
+                fallRotation = Quaternion.LookRotation(dir, -entity.gravityDown);
+                randomRotation = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized;
+
+                Debug.DrawRay(entity._transform.position, 10f * dir, Color.red, 3f);
+            }
+
+            if (entity.evadeInputData.stopped && entity.evadeInputData.trueTimer < 0.125f)
+                entity.Evade(floatDirection);
 
             additionalCameraDistance = (entity.focusing ? -0.7f : 0f) + (entity.walkSpeed == Entity.WalkSpeed.sprint ? 0.4f : 0f);
 
             UpdateLandCursorPos();
+        }
+
+        private void LateUpdate(){
+            shiftFallingData.Update();
         }
 
         protected override void StateFixedUpdate(){
@@ -76,26 +85,25 @@ namespace SeleneGame.States {
 
             Vector3 finalRotation;
             Vector3 finalUp;
-            if (entity.sliding){
+            if (shiftFalling){
 
-                Vector3 oldFallDirection = fallDirection;
                 Quaternion rotationDelta = Quaternion.AngleAxis(-fallInput.y, fallRotation * Vector3.right) * Quaternion.AngleAxis(fallInput.x, fallRotation * Vector3.up);
-                fallDirection = (rotationDelta * fallDirection).normalized;
+                Vector3 newDirection = (rotationDelta * fallDirection).normalized;
 
-                entity.rotation = Quaternion.FromToRotation(oldFallDirection, fallDirection) * entity.rotation;
-                fallRotation = Quaternion.LookRotation(fallDirection, entity.rotation * Vector3.up);
+                entity.rotation = Quaternion.FromToRotation(fallDirection, newDirection) * entity.rotation;
+                fallRotation = Quaternion.LookRotation(newDirection, entity.rotation * Vector3.up);
 
-                entity.absoluteForward = fallDirection;
+                entity.absoluteForward = newDirection;
 
                 // entity._rb.velocity += entity.evadeDirection*entity.data.baseSpeed*entity.inertiaMultiplier*Global.timeDelta;
-                entity.Gravity(entity.inertiaMultiplier, fallDirection);
+                entity.Gravity(entity.moveSpeed, newDirection);
 
                 finalRotation = new Vector3(randomRotation.x, 0f, randomRotation.y);
-                finalUp = -fallDirection;
+                finalUp = -newDirection;
 
             }else{
 
-                if (floatDirection.magnitude == 0f){
+                if (floatDirection.magnitude != 0f){
                     entity.absoluteForward = floatDirection;
                     entity.evadeDirection = Vector3.Lerp(entity.evadeDirection, entity.absoluteForward, 0.1f * Global.timeDelta);
 
@@ -107,7 +115,7 @@ namespace SeleneGame.States {
                 finalUp = entity.rotation * Vector3.up;
             }
 
-            entity.moveDirection = entity.sliding ? fallDirection : floatDirection;
+            entity.moveDirection = entity.absoluteForward;
             entity.RotateTowardsRelative(finalRotation, finalUp);
             entity.gravityDown = -finalUp;
             
@@ -116,6 +124,7 @@ namespace SeleneGame.States {
 
         protected override void UpdateMoveSpeed(){ 
             float newSpeed = entity.data.baseSpeed * entity.currentWeapon?.speedMultiplier ?? 1f;
+            newSpeed = shiftFalling ? newSpeed * 0.75f : newSpeed;
             
             entity.moveSpeed = Mathf.MoveTowards(entity.moveSpeed, newSpeed, entity.data.moveIncrement * Global.timeDelta);
         }
@@ -127,8 +136,6 @@ namespace SeleneGame.States {
             Vector2 newfallInput = new Vector3(entity.moveInputData.currentValue.x, entity.moveInputData.currentValue.z);
             fallInput = Vector2.Lerp(fallInput, (newfallInput.normalized * 0.85f), 10f * Global.timeDelta);
             floatDirection = groundDirection3D;
-
-            entity.slidingData.SetVal( entity.evadeInputData.trueTimer > 0.125f );
 
             if (entity.shiftInputData.trueTimer > Player.current.holdDuration)
                 StopShifting(Vector3.down);
@@ -142,7 +149,7 @@ namespace SeleneGame.States {
         protected void UpdateLandCursorPos(){
             if (landCursor == null) return;
 
-            if ( !(entity.isPlayer && entity.sliding) ) {
+            if ( !(entity.isPlayer && shiftFalling) ) {
                 landCursor.SetActive(false);
                 return;
             }
@@ -158,19 +165,6 @@ namespace SeleneGame.States {
             landCursor.SetActive(true);
 
             landCursor.transform.position = Player.current.camera.WorldToScreenPoint(fallCursorHit.point);
-        }
-
-        private void OnSlideStart(float timer){
-            Vector3 dir = entity.lookDirection;
-            fallDirection = dir;
-            randomRotation = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized;
-
-            Debug.DrawRay(entity._transform.position, 10f * dir, Color.red, 3f);
-        }
-
-        private void OnEvadeInputStop(float timer){
-            if (timer < 0.125f)
-                entity.Evade(floatDirection);
         }
 
     }

@@ -44,7 +44,7 @@ namespace SeleneGame.Core {
 
         public float currHealth;
         public float evadeTimer, parryTimer;
-        public float jumpCooldown, shiftCooldown;
+        public float shiftCooldown;
 
 
         public WalkSpeed walkSpeed;
@@ -55,9 +55,9 @@ namespace SeleneGame.Core {
 
         public Vector3 evadeDirection = Vector3.forward;
 
-        public Vector3 inertia { get => inertiaDirection * inertiaMultiplier; set { inertiaDirection = value.normalized; inertiaMultiplier = value.magnitude; } }
-        public Vector3 inertiaDirection = Vector3.forward;
-        public float inertiaMultiplier = 0f;
+        // public Vector3 inertia { get => inertiaDirection * inertiaMultiplier; set { inertiaDirection = value.normalized; inertiaMultiplier = value.magnitude; } }
+        // public Vector3 inertiaDirection = Vector3.forward;
+        // public float inertiaMultiplier = 0f;
 
         private Vector3 _absoluteForward;
         public Vector3 absoluteForward { get => _absoluteForward; set { _absoluteForward = value; _relativeForward = Quaternion.Inverse(rotation) * value; } }
@@ -67,7 +67,8 @@ namespace SeleneGame.Core {
 
         public Quaternion rotation = Quaternion.identity;
         
-        public Vector3 lookDirection => rotation * lookRotationData.currentValue * Vector3.forward;
+        public Quaternion lookRotation => rotation * lookRotationData.currentValue;
+        public Vector3 lookDirection => lookRotation * Vector3.forward;
 
         public Vector3 gravityDown = Vector3.down;
         
@@ -82,7 +83,6 @@ namespace SeleneGame.Core {
 
 
         public BoolData groundData,
-        wallData,
         slidingData,
         evadingData = new BoolData();
 
@@ -104,7 +104,6 @@ namespace SeleneGame.Core {
         public event Action onParry;
 
         public RaycastHit groundHit;
-        public RaycastHit wallHit;
 
 
         public bool isPlayer => Player.current.entity == this;
@@ -118,7 +117,6 @@ namespace SeleneGame.Core {
         public bool evading => evadingData.currentValue;
         public bool sliding => slidingData.currentValue;
         public bool onGround => groundData.currentValue;
-        public bool onWall => wallData.currentValue;
 
 
 
@@ -181,20 +179,19 @@ namespace SeleneGame.Core {
         }
 
         private void Update(){
+            evadingData.SetVal( evadeTimer > data.evadeCooldown );
+            groundData.SetVal( ColliderCast( gravityDown.normalized * 0.1f, out groundHit, 0.05f, Global.GroundMask ) );
+
             // Debug.DrawRay(transform.position, inertiaDirection * inertiaMultiplier, Color.red);
             // Debug.DrawRay(transform.position, absoluteForward, Color.blue);
             // Debug.DrawRay(transform.position, evadeDirection, Color.magenta);
             // Debug.DrawRay(transform.position, _rb.velocity, Color.green);
-            Debug.DrawRay(transform.position, moveDirection, Color.blue);
+            // Debug.DrawRay(transform.position, moveDirection, Color.blue);
 
-            jumpCooldown = Mathf.MoveTowards( jumpCooldown, 0f, Global.timeDelta );
             shiftCooldown = Mathf.MoveTowards( shiftCooldown, 0f, Global.timeDelta );
             evadeTimer = Mathf.MoveTowards( evadeTimer, 0f, Global.timeDelta );
             parryTimer = Mathf.MoveTowards( parryTimer, 0f, Global.timeDelta );
-
-            evadingData.SetVal( evadeTimer > data.evadeCooldown );
-            groundData.SetVal( this.DirectionCheck( gravityDown.normalized * 0.3f, out groundHit) );
-            wallData.SetVal( this.WallCheck(out wallHit) );
+            
             
             EntityUpdate();
 
@@ -206,8 +203,8 @@ namespace SeleneGame.Core {
                 _animator.SetFloat("WeaponType", (float)(currentWeapon.data.weaponType) );
                 _animator.SetFloat("SubState", subState);
                 _animator.SetFloat("WalkSpeed", (float)walkSpeed);
-                _animator.SetFloat("DotOfForward", Vector3.Dot(absoluteForward, rotationForward));
-                _animator.SetFloat("ForwardRight", Vector3.Dot(absoluteForward, Vector3.Cross(-gravityDown, rotationForward)));
+                _animator.SetFloat("DotOfForward", Vector3.Dot(absoluteForward, _transform.forward));
+                _animator.SetFloat("ForwardRight", Vector3.Dot(absoluteForward, Vector3.Cross(-_transform.up, _transform.forward)));
                 state?.StateAnimation();
             }
         }
@@ -221,7 +218,6 @@ namespace SeleneGame.Core {
             evadingData.Update();
             slidingData.Update();
             groundData.Update();
-            wallData.Update();
 
             lightAttackInputData.Update();
             heavyAttackInputData.Update();
@@ -237,6 +233,44 @@ namespace SeleneGame.Core {
             state.HandleInput();
 
             moveInputData.SetVal(Vector3.zero);
+
+        }
+
+        public bool ColliderCast( Vector3 direction, out RaycastHit checkHit, float skinThickness, LayerMask layerMask ) {
+            foreach (Collider col in _colliders){
+                bool hasHitWall = col.ColliderCast( col.transform.position, direction, out RaycastHit tempHit, skinThickness, layerMask );
+                if ( !hasHitWall || tempHit.collider == null ) continue;
+
+                checkHit = tempHit;
+                return true;
+            }
+            checkHit = new RaycastHit();
+            return false;
+        }
+        public Collider[] ColliderOverlap( float skinThickness, LayerMask layerMask ) {
+            foreach (Collider col in _colliders){
+                Collider[] hits = col.ColliderOverlap( col.transform.position, skinThickness, layerMask );
+                if ( hits.Length > 0 ) return hits;
+            }
+            return new Collider[0];
+        }
+
+        public bool WallCheck( out RaycastHit wallHitOut, LayerMask layerMask ) {
+            for (int i = 0; i < 11; i++){
+                float angle = (i%2 == 0 && i != 0) ? (i-1 * -30f) : i * 30f;
+                Quaternion angleTurn = Quaternion.AngleAxis( angle, rotation * Vector3.down);
+                bool hasHitWall = ColliderCast( angleTurn * absoluteForward * 0.3f, out RaycastHit tempHit, 0.05f, layerMask );
+                if (hasHitWall){
+                    wallHitOut = tempHit;
+                    return true;
+                }
+            }
+            wallHitOut = new RaycastHit();
+            return false;
+        }
+
+        public void LookAt( Vector3 direction) {
+            lookRotationData.SetVal( Quaternion.LookRotation( Quaternion.Inverse(rotation) * direction, rotation * Vector3.up ) );
         }
 
         public void SetRotation(Vector3 newUp) => rotation = Quaternion.FromToRotation(rotation * Vector3.up, newUp) * rotation;
@@ -249,7 +283,7 @@ namespace SeleneGame.Core {
         public void RotateTowardsAbsolute(Vector3 newDirection, Vector3 newUp){
 
             Quaternion inverse = Quaternion.Inverse(rotation);
-            RotateTowardsRelative(inverse * newDirection, inverse * newUp);
+            RotateTowardsRelative(inverse * newDirection, newUp);
         }
 
         public void SetState(string stateName){
@@ -284,9 +318,7 @@ namespace SeleneGame.Core {
 
             if (dir.magnitude == 0f) return;
 
-            Vector3 move = dir;
-
-            move = Vector3.ProjectOnPlane(move, groundOrientation * -gravityDown);
+            Vector3 move = Vector3.ProjectOnPlane(dir, groundOrientation * -gravityDown);
 
             // Needs a bit of Reworking.
             // if (canStep){
@@ -304,18 +336,16 @@ namespace SeleneGame.Core {
         public void Move(Vector3 dir){
             if (dir.magnitude == 0f) return;
 
-            Vector3 move = dir;
+            bool walkCollision = this.ColliderCast( dir, out RaycastHit walkHit, 0.15f, Global.GroundMask);
 
-            bool walkCollision = this.DirectionCheck( move, out RaycastHit walkHit);
+            if ( walkCollision /* && walkHit.transform.gameObject.layer == 0 */) 
+                dir = dir.NullifyInDirection( -walkHit.normal );
 
-            if ( walkCollision && walkHit.transform.gameObject.layer == 0) 
-                move = move.NullifyInDirection( -walkHit.normal );
-
-            _transform.position += move;
+            _rb.MovePosition(_rb.position + dir);
+            // _transform.position += dir;
         }
 
         public void Jump(Vector3 jumpDirection){
-            if (jumpCooldown > 0f ) return;
 
             float gravityJumpMultiplier = (2 - (gravityForce/15f));
 
@@ -324,7 +354,6 @@ namespace SeleneGame.Core {
             _rb.velocity = newVelocity;
 
             AnimatorTrigger("Jump");
-            jumpCooldown = 0.4f;
 
             onJump?.Invoke(jumpDirection);
         }
@@ -337,9 +366,9 @@ namespace SeleneGame.Core {
             if (evadeTimer > data.totalEvadeDuration - 0.15f){
                 evadeDirection = absoluteForward;
             }
-            inertiaDirection = evadeDirection;
+            // inertiaDirection = evadeDirection;
 
-            evadeSpeed = 24f * data.evadeCurve.Evaluate( 1 - ( (evadeTimer - data.evadeCooldown) / data.evadeDuration ) );
+            evadeSpeed = 15f * data.evadeCurve.Evaluate( 1 - ( (evadeTimer - data.evadeCooldown) / data.evadeDuration ) );
             return true;
         }
 
@@ -358,8 +387,6 @@ namespace SeleneGame.Core {
             if (evadeTimer > 0f) return;
 
             this.evadeDirection = evadeDirection;
-
-            inertiaMultiplier = Mathf.Max( 12.5f, inertiaMultiplier);
             
             AnimatorTrigger("Evade");
             evadeTimer = data.totalEvadeDuration;
