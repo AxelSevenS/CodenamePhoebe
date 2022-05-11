@@ -46,6 +46,9 @@ namespace SeleneGame.Core {
         public float evadeTimer, parryTimer;
         public float shiftCooldown;
 
+        public float jumpCount = 1f;
+        public float evadeCount = 1f;
+        public float jumpCooldown;
 
         public WalkSpeed walkSpeed;
         public float moveSpeed;
@@ -55,10 +58,6 @@ namespace SeleneGame.Core {
 
         public Vector3 evadeDirection = Vector3.forward;
 
-        // public Vector3 inertia { get => inertiaDirection * inertiaMultiplier; set { inertiaDirection = value.normalized; inertiaMultiplier = value.magnitude; } }
-        // public Vector3 inertiaDirection = Vector3.forward;
-        // public float inertiaMultiplier = 0f;
-
         private Vector3 _absoluteForward;
         public Vector3 absoluteForward { get => _absoluteForward; set { _absoluteForward = value; _relativeForward = Quaternion.Inverse(rotation) * value; } }
         private Vector3 _relativeForward;
@@ -67,8 +66,7 @@ namespace SeleneGame.Core {
 
         public Quaternion rotation = Quaternion.identity;
         
-        public Quaternion lookRotation => rotation * lookRotationData.currentValue;
-        public Vector3 lookDirection => lookRotation * Vector3.forward;
+        public Quaternion cameraRotation => rotation * lookRotation;
 
         public Vector3 gravityDown = Vector3.down;
         
@@ -82,22 +80,22 @@ namespace SeleneGame.Core {
         public IInteractable lastInteracted;
 
 
-        public BoolData groundData,
-        slidingData,
-        evadingData = new BoolData();
+        public BoolData onGround = new BoolData();
+        public BoolData sliding = new BoolData();
+        public BoolData evading = new BoolData();
 
         // [HideInInspector]
-        public BoolData lightAttackInputData,
-        heavyAttackInputData,
-        jumpInputData,
-        evadeInputData,
-        walkInputData,
-        crouchInputData,
-        focusInputData,
-        shiftInputData = new BoolData();
+        public BoolData lightAttackInput = new BoolData();
+        public BoolData heavyAttackInput = new BoolData();
+        public BoolData jumpInput = new BoolData();
+        public BoolData evadeInput = new BoolData();
+        public BoolData walkInput = new BoolData();
+        public BoolData crouchInput = new BoolData();
+        public BoolData focusInput = new BoolData();
+        public BoolData shiftInput = new BoolData();
 
-        public VectorData moveInputData = new VectorData();
-        public QuaternionData lookRotationData = new QuaternionData();
+        public VectorData moveInput = new VectorData();
+        public QuaternionData lookRotation = new QuaternionData();
 
         public event Action<Vector3> onJump;
         public event Action<Vector3> onEvade;
@@ -114,9 +112,6 @@ namespace SeleneGame.Core {
         public bool masked => state.masked;
         public bool inWater => _physicsComponent.inWater;
         public bool isOnWaterSurface => inWater && transform.position.y > (_physicsComponent.waterHeight - data.size.y);
-        public bool evading => evadingData.currentValue;
-        public bool sliding => slidingData.currentValue;
-        public bool onGround => groundData.currentValue;
 
 
 
@@ -179,8 +174,13 @@ namespace SeleneGame.Core {
         }
 
         private void Update(){
-            evadingData.SetVal( evadeTimer > data.evadeCooldown );
-            groundData.SetVal( ColliderCast( gravityDown.normalized * 0.1f, out groundHit, 0.05f, Global.GroundMask ) );
+
+            evading.SetVal( evadeTimer > data.evadeCooldown );
+            onGround.SetVal( ColliderCast( gravityDown.normalized * 0.1f, out groundHit, 0.05f, Global.GroundMask ) );
+            
+            state.HandleInput();
+
+            moveInput.SetVal(Vector3.zero);
 
             // Debug.DrawRay(transform.position, inertiaDirection * inertiaMultiplier, Color.red);
             // Debug.DrawRay(transform.position, absoluteForward, Color.blue);
@@ -214,26 +214,6 @@ namespace SeleneGame.Core {
         }
 
         private void LateUpdate(){
-
-            evadingData.Update();
-            slidingData.Update();
-            groundData.Update();
-
-            lightAttackInputData.Update();
-            heavyAttackInputData.Update();
-            jumpInputData.Update();
-            evadeInputData.Update();
-            walkInputData.Update();
-            crouchInputData.Update();
-            focusInputData.Update();
-            shiftInputData.Update();
-            moveInputData.Update();
-            lookRotationData.Update();
-
-            state.HandleInput();
-
-            moveInputData.SetVal(Vector3.zero);
-
         }
 
         public bool ColliderCast( Vector3 direction, out RaycastHit checkHit, float skinThickness, LayerMask layerMask ) {
@@ -270,7 +250,7 @@ namespace SeleneGame.Core {
         }
 
         public void LookAt( Vector3 direction) {
-            lookRotationData.SetVal( Quaternion.LookRotation( Quaternion.Inverse(rotation) * direction, rotation * Vector3.up ) );
+            lookRotation.SetVal( Quaternion.LookRotation( Quaternion.Inverse(rotation) * direction, rotation * Vector3.up ) );
         }
 
         public void SetRotation(Vector3 newUp) => rotation = Quaternion.FromToRotation(rotation * Vector3.up, newUp) * rotation;
@@ -355,20 +335,17 @@ namespace SeleneGame.Core {
 
             AnimatorTrigger("Jump");
 
+            jumpCooldown = 0.4f;
             onJump?.Invoke(jumpDirection);
         }
 
-        public bool EvadeUpdate(out float evadeSpeed){
+        public bool EvadeUpdate(out float evadeCurve){
             if ( !evading ) {
-                evadeSpeed = 0f;
+                evadeCurve = 0f;
                 return false;
             }
-            if (evadeTimer > data.totalEvadeDuration - 0.15f){
-                evadeDirection = absoluteForward;
-            }
-            // inertiaDirection = evadeDirection;
 
-            evadeSpeed = 15f * data.evadeCurve.Evaluate( 1 - ( (evadeTimer - data.evadeCooldown) / data.evadeDuration ) );
+            evadeCurve = data.evadeCurve.Evaluate( 1 - ( (evadeTimer - data.evadeCooldown) / data.evadeDuration ) );
             return true;
         }
 
@@ -403,24 +380,24 @@ namespace SeleneGame.Core {
 
         public void EntityInput(Vector3 rawInput, Quaternion camRotation, SafeDictionary<string, bool> inputDictionary){
 
-            lightAttackInputData.SetVal( inputDictionary["LightAttack"] );
-            heavyAttackInputData.SetVal( inputDictionary["HeavyAttack"] );
-            jumpInputData.SetVal( inputDictionary["Jump"] );
-            evadeInputData.SetVal( inputDictionary["Evade"] );
-            walkInputData.SetVal( inputDictionary["Walk"] );
-            crouchInputData.SetVal( inputDictionary["Crouch"] );
-            focusInputData.SetVal( inputDictionary["Focus"] );
-            shiftInputData.SetVal( inputDictionary["Shift"] );
-            moveInputData.SetVal( rawInput );
-            lookRotationData.SetVal( camRotation );
+            lightAttackInput.SetVal( inputDictionary["LightAttack"] );
+            heavyAttackInput.SetVal( inputDictionary["HeavyAttack"] );
+            jumpInput.SetVal( inputDictionary["Jump"] );
+            evadeInput.SetVal( inputDictionary["Evade"] );
+            walkInput.SetVal( inputDictionary["Walk"] );
+            crouchInput.SetVal( inputDictionary["Crouch"] );
+            focusInput.SetVal( inputDictionary["Focus"] );
+            shiftInput.SetVal( inputDictionary["Shift"] );
+            moveInput.SetVal( rawInput );
+            lookRotation.SetVal( camRotation );
 
         }
 
         public void RawInputToGroundedMovement(out Vector3 camRight, out Vector3 camForward, out Vector3 groundDirection, out Vector3 groundDirection3D){
-            camRight = rotation * lookRotationData.currentValue * Vector3.right;
+            camRight = rotation * lookRotation.currentValue * Vector3.right;
             camForward = Vector3.Cross(camRight, _transform.up).normalized;
-            groundDirection = (moveInputData.currentValue.x * camRight + moveInputData.currentValue.z * camForward).normalized;
-            groundDirection3D = groundDirection + (lookRotationData.currentValue * Vector3.up) * moveInputData.currentValue.y;
+            groundDirection = (moveInput.currentValue.x * camRight + moveInput.currentValue.z * camForward).normalized;
+            groundDirection3D = groundDirection + (lookRotation.currentValue * Vector3.up) * moveInput.currentValue.y;
         }
 
         public void LoadModel(){
@@ -466,9 +443,8 @@ namespace SeleneGame.Core {
         }
 
         public void StartWalkAnim(){
-            if (onGround && moveDirection.magnitude > 0f){
+            if (onGround && moveDirection.magnitude > 0f)
                 AnimatorTrigger("Walk");
-            }
         }
 
     }

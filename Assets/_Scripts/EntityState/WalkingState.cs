@@ -5,7 +5,7 @@ using SeleneGame.Core;
 
 namespace SeleneGame.States {
     
-    public class WalkingState : State{
+    public class WalkingState : State {
 
         protected override float GetSpeedMultiplier() => entity.currentWeapon.speedMultiplier;
         protected override Vector3 GetJumpDirection() => entity.currentWeapon.jumpDirection;
@@ -17,13 +17,10 @@ namespace SeleneGame.States {
 
         private float additionalCameraDistance;
 
-        BoolData waterHoverData = new BoolData();
+        BoolData waterHover = new BoolData();
 
         RaycastHit waterHoverHit;
 
-        private bool waterHover => waterHoverData.currentValue;
-
-        private float jumpCooldown;
 
 
         private void OnEnable(){
@@ -39,19 +36,25 @@ namespace SeleneGame.States {
         
         protected override void StateUpdate(){
 
-            jumpCooldown = Mathf.MoveTowards( jumpCooldown, 0f, Global.timeDelta );
+            entity.jumpCooldown = Mathf.MoveTowards( entity.jumpCooldown, 0f, Global.timeDelta );
+            
+            if ( entity.onGround ){
+                entity.evadeCount = 1;
+                if( entity.jumpCooldown == 0 )
+                    entity.jumpCount = 1;
+            }
 
-            waterHoverData.SetVal( entity.currentWeapon.weightModifier < 0.8f && entity.moveInputData.zeroTimer < 0.6f && entity.ColliderCast( entity.gravityDown.normalized * 0.15f, out waterHoverHit, 0.15f, Global.WaterMask ) );
-            entity.groundData.SetVal( entity.groundData.currentValue || waterHover );
+            waterHover.SetVal( entity.currentWeapon.weightModifier < 0.8f && entity.moveInput.zeroTimer < 0.6f && entity.ColliderCast( entity.gravityDown.normalized * 0.15f, out waterHoverHit, 0.15f, Global.WaterMask ) );
+            entity.onGround.SetVal( entity.onGround || waterHover );
 
             if (entity.inWater && entity.currentWeapon.weightModifier <= 1f){
                 entity.SetState("Swimming");
             }
 
-            if (entity.evadeInputData.started && evadeCount != 0)
+            if (entity.evadeInput.started && entity.evadeCount != 0)
                 entity.GroundedEvade( entity.moveDirection.magnitude == 0f ? -entity.absoluteForward : entity.moveDirection );
 
-            if ( entity.groundData.started || (entity.evadingData.stopped && !entity.sliding) ) 
+            if ( entity.onGround.started || (entity.evading.stopped && !entity.sliding) ) 
                 entity.StartWalkAnim();
 
             additionalCameraDistance = entity.focusing ? -0.3f : 0f;
@@ -61,7 +64,7 @@ namespace SeleneGame.States {
                 additionalCameraDistance += -0.2f;
             }
 
-            if (entity.shiftInputData.trueTimer > Player.current.holdDuration){
+            if (entity.shiftInput.trueTimer > Player.current.holdDuration){
                 entity.gravityDown = Vector3.down;
             }
         }
@@ -70,17 +73,9 @@ namespace SeleneGame.States {
 
             entity.SetRotation(-entity.gravityDown);
 
-            entity.JumpGravity(entity.gravityForce, entity.gravityDown, entity.jumpInputData.currentValue);
+            entity.JumpGravity(entity.gravityForce, entity.gravityDown, entity.jumpInput);
 
-            // Move when evading
-            if ( entity.EvadeUpdate(out float evadeSpeed) )
-                entity.GroundedMove( Global.timeDelta * evadeSpeed * entity.evadeDirection );
             
-            if ( entity.onGround ){
-                evadeCount = 1;
-                if( jumpCooldown == 0 )
-                    jumpCount = 1;
-            }
 
             // entity.inertiaDirection = Vector3.Lerp( entity.inertiaDirection, entity.groundOrientation * entity.absoluteForward, 3f*Global.timeDelta);
 
@@ -103,17 +98,21 @@ namespace SeleneGame.States {
             }
 
 
-            if (entity.moveDirection.magnitude > 0f && !entity.sliding){
+            if (entity.moveDirection.magnitude > 0f){
 
-                entity.absoluteForward = entity.moveDirection.normalized;
-            
-                entity.GroundedMove(entity.moveSpeed * Global.timeDelta * entity.absoluteForward, entity.onGround);
-                
-            }else if (entity.sliding){
+                if ( !entity.evading )
+                    entity.absoluteForward = Vector3.Lerp( entity.absoluteForward, entity.moveDirection.normalized, 20f * Global.timeDelta);
 
-                entity.absoluteForward = Vector3.Lerp( entity.absoluteForward, entity.moveDirection, Global.timeDelta);
+                if (entity.evadeTimer > entity.data.totalEvadeDuration - 0.15f)
+                    entity.evadeDirection = entity.moveDirection.normalized;
 
             }
+
+            // Move when evading
+            if ( entity.EvadeUpdate(out float evadeCurve) )
+                entity.GroundedMove( Global.timeDelta * evadeCurve * entity.data.evadeSpeed * entity.evadeDirection );
+
+            entity.GroundedMove(entity.moveSpeed * ( 1 - evadeCurve ) * Global.timeDelta * entity.absoluteForward, entity.onGround);
 
             // entity.GroundedMove(Global.timeDelta * 2.5f * entity.inertia );
             
@@ -121,18 +120,14 @@ namespace SeleneGame.States {
             entity.RotateTowardsAbsolute(finalRotation, -entity.gravityDown);
         }
 
-        private void LateUpdate(){
-            waterHoverData.Update();
-        }
-
         protected override void UpdateMoveSpeed(){
-            float newSpeed = entity.moveInputData.currentValue.magnitude > 0f && !entity.sliding ? entity.data.baseSpeed : 0f;
+            float newSpeed = entity.moveDirection.magnitude > 0f ? entity.data.baseSpeed : 0f;
             // if (entity.walkSpeed != Entity.WalkSpeed.run) 
             //     newSpeed *= entity.walkSpeed == Entity.WalkSpeed.sprint ? /* entity.data.sprintSpeed */1f : entity.data.slowSpeed;
 
             newSpeed *= speedMultiplier;
 
-            float speedDelta = newSpeed > entity.moveSpeed ? 40f : 60f;
+            float speedDelta = newSpeed > entity.moveSpeed ? 40f : 80f;
             
             entity.moveSpeed = Mathf.MoveTowards(entity.moveSpeed, newSpeed, speedDelta * Global.timeDelta);
         }
@@ -142,23 +137,23 @@ namespace SeleneGame.States {
             entity.RawInputToGroundedMovement(out Vector3 camRight, out Vector3 camForward, out Vector3 groundDirection, out Vector3 groundDirection3D);
             entity.moveDirection = groundDirection;
 
-            if (entity.crouchInputData.currentValue) entity.SetWalkSpeed(Entity.WalkSpeed.crouch);
-            else if ((groundDirection.magnitude <= 0.25f || entity.walkInputData.currentValue) && entity.onGround) entity.SetWalkSpeed(Entity.WalkSpeed.walk);
+            if (entity.crouchInput) entity.SetWalkSpeed(Entity.WalkSpeed.crouch);
+            else if ((groundDirection.magnitude <= 0.25f || entity.walkInput) && entity.onGround) entity.SetWalkSpeed(Entity.WalkSpeed.walk);
             else entity.SetWalkSpeed(Entity.WalkSpeed.run);
             
-            // entity.slidingData.SetVal( entity.evadeInputData.currentValue && !entity.evading && (entity.inertiaMultiplier > 2f | !entity.onGround) && !entity.inWater );
+            // entity.slidingData.SetVal( entity.evadeInput && !entity.evading && (entity.inertiaMultiplier > 2f | !entity.onGround) && !entity.inWater );
             
-            if ( entity.jumpInputData.currentValue && jumpCount != 0 && entity.groundData.falseTimer < 0.4f && jumpCooldown == 0f )
+            if ( entity.jumpInput && entity.jumpCount != 0 && entity.onGround.falseTimer < 0.4f && entity.jumpCooldown == 0f )
                 entity.Jump(jumpDirection);
         }
 
+        
         private void OnEntityJump(Vector3 jumpDirection){
-            jumpCount--;
-            jumpCooldown = 0.4f;
+            entity.jumpCount--;
         }
         private void OnEntityEvade(Vector3 evadeDirection){
-            evadeCount--;
-            // entity.inertiaMultiplier = Mathf.Max( 6.5f, entity.inertiaMultiplier);
+            entity.evadeCount--;
         }
+
     }
 }

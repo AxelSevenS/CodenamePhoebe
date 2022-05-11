@@ -45,7 +45,7 @@ namespace SeleneGame {
             seatEntity = GetComponent<Entity>();
         }
 
-        private void OnDestroy(){
+        private void OnDisable(){
             StopSitting();
         }
 

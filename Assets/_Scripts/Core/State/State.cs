@@ -20,20 +20,19 @@ namespace SeleneGame.Core {
 
         public virtual bool masked => false;
 
-        public float jumpCount;
-        public float evadeCount = 1f;
 
         protected virtual void StateAwake(){;}
         protected virtual void StateStart(){;}
         protected virtual void StateDestroy(){;}
         protected virtual void StateUpdate(){;}
+        protected virtual void StateLateUpdate(){;}
         protected virtual void StateFixedUpdate(){;}
 
         public virtual void StateAnimation(){;}
 
         private void Awake(){
-            StateAwake();
             Reset();
+            StateAwake();
         }
         private void Start(){
             StateStart();
@@ -47,6 +46,9 @@ namespace SeleneGame.Core {
             UpdateMoveSpeed();
             ParryCheck();
             StateUpdate();
+        }
+        private void LateUpdate(){
+            StateLateUpdate();
         }
 
         private void FixedUpdate(){
@@ -64,8 +66,8 @@ namespace SeleneGame.Core {
         
 
         protected void ParryCheck(){
-            bool lightActuated = entity.lightAttackInputData.trueTimer < 0.15f && entity.lightAttackInputData.currentValue && entity.heavyAttackInputData.started;
-            bool heavyActuated = entity.heavyAttackInputData.trueTimer < 0.15f && entity.heavyAttackInputData.currentValue && entity.lightAttackInputData.started;
+            bool lightActuated = entity.lightAttackInput.trueTimer < 0.15f && entity.lightAttackInput && entity.heavyAttackInput.started;
+            bool heavyActuated = entity.heavyAttackInput.trueTimer < 0.15f && entity.heavyAttackInput && entity.lightAttackInput.started;
             if (lightActuated || heavyActuated)
                 entity.Parry();
         }

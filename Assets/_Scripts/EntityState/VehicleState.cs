@@ -8,15 +8,14 @@ namespace SeleneGame.States {
     public class VehicleState : State{
 
         public override int id => 7;
-        protected override Vector3 GetCameraPosition() => new Vector3(0.3f, 1.2f, -8.5f);
+        protected override Vector3 GetCameraPosition() => new Vector3(0.3f, 0.5f, -6.5f);
 
         public override bool masked => false;
 
         private float accelerationLinger = 0f;
         private Vector3 finalDirection = Vector3.zero;
         private Vector3 inputDirection;
-
-        private float jumpCooldown;
+        
 
         private void OnEnable(){
 
@@ -31,21 +30,21 @@ namespace SeleneGame.States {
 
         protected override void StateUpdate(){
 
-            jumpCooldown = Mathf.MoveTowards( jumpCooldown, 0f, Global.timeDelta );
+            entity.jumpCooldown = Mathf.MoveTowards( entity.jumpCooldown, 0f, Global.timeDelta );
 
-            if (entity.groundData.started) 
+            if (entity.onGround.started) 
                 entity.StartWalkAnim();
 
         }
 
         protected override void StateFixedUpdate(){
 
-            entity.JumpGravity(entity.gravityForce, entity.gravityDown, entity.jumpInputData.currentValue);
+            entity.JumpGravity(entity.gravityForce, entity.gravityDown, entity.jumpInput);
             
-            if ( entity.groundData.currentValue ){
-                evadeCount = 1;
-                if( jumpCooldown == 0f )
-                    jumpCount = 1;
+            if ( entity.onGround ){
+                entity.evadeCount = 1;
+                if( entity.jumpCooldown == 0f )
+                    entity.jumpCount = 1;
             }
 
 
@@ -94,19 +93,19 @@ namespace SeleneGame.States {
             float newLinger = groundDirection.magnitude;
             accelerationLinger = Mathf.Lerp(accelerationLinger, newLinger, Global.timeDelta * (newLinger > accelerationLinger ? 3f : 2f) );
 
-            entity.slidingData.SetVal(entity.evadeInputData.currentValue && entity.onGround);
+            entity.sliding.SetVal(entity.evadeInput && entity.onGround);
             
             // Jump if the Jump key is pressed.
-            if ( entity.jumpInputData.currentValue && jumpCount != 0 && entity.groundData.falseTimer <= 0.4f )
+            if ( entity.jumpInput && entity.jumpCount != 0 && entity.onGround.falseTimer <= 0.4f )
                 entity.Jump( -entity.gravityDown );
         }
 
         private void OnEntityJump(Vector3 jumpDirection){
-            jumpCount--;
-            jumpCooldown = 0.4f;
+            entity.jumpCount--;
+            entity.jumpCooldown = 0.4f;
         }
         private void OnEntityEvade(Vector3 evadeDirection){
-            evadeCount--;
+            entity.evadeCount--;
         }
     }
 }

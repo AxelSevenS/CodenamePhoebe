@@ -38,7 +38,7 @@ namespace SeleneGame.Entities {
         }
 
         protected override void EntityUpdate(){
-            if (shiftInputData.stopped && shiftInputData.trueTimer < Player.current.holdDuration){
+            if (shiftInput.stopped && shiftInput.trueTimer < Player.current.holdDuration){
                 
                 if (state is WalkingState walking && shiftCooldown == 0f){
                     shiftCooldown = 0.3f;
@@ -62,7 +62,7 @@ namespace SeleneGame.Entities {
 
                 var grabbedMono = grabbedObjects[i] as MonoBehaviour;
 
-                grabbedMono.transform.position = Vector3.Lerp(grabbedMono.transform.position, transform.position + lookRotationData.currentValue * grabbedPositions[i], 10f* Global.timeDelta);
+                grabbedMono.transform.position = Vector3.Lerp(grabbedMono.transform.position, transform.position + lookRotation.currentValue * grabbedPositions[i], 10f* Global.timeDelta);
             }
         }
 

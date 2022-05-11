@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: BikeBase
   m_EditorClassIdentifier: 
   portrait: {fileID: 0}
-  model: {fileID: 5994831601863150770, guid: cdeedf5096b47274c8a735788cff9045, type: 3}
+  model: {fileID: 596980097985551269, guid: 4b05025ac30ae7842b1157bb51cc57dc, type: 3}
   determinedPortrait: {fileID: 0}
   hesitantPortrait: {fileID: 0}
   shockedPortrait: {fileID: 0}

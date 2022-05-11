@@ -114,7 +114,7 @@ namespace SeleneGame.Core {
                 }
 
                 float jump = System.Convert.ToSingle(inputDict["Jump"]) - System.Convert.ToSingle(inputDict["Crouch"]);
-                Quaternion lookRotation = UpdateCameraRotation( entity.lookRotationData.currentValue );
+                Quaternion lookRotation = UpdateCameraRotation( entity.lookRotation );
 
                 Vector2 dir = playerControls["Move"].ReadValue<Vector2>();
                 Vector3 moveDirection = new Vector3(dir.x, jump, dir.y);

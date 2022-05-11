@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering.HighDefinition;
 
 namespace SeleneGame.Core {
     
@@ -15,8 +14,6 @@ namespace SeleneGame.Core {
         [SerializeField] private GameObject snowEffects;
         [SerializeField] private Light sun;
         [SerializeField] private Light moon;
-        [SerializeField] private HDAdditionalLightData sunData;
-        [SerializeField] private HDAdditionalLightData moonData;
 
         private ParticleSystem[] rainParticles;
         private ParticleSystem[] snowParticles;
@@ -69,6 +66,7 @@ namespace SeleneGame.Core {
 
         #if UNITY_EDITOR
         void OnValidate(){
+            ambientLight = _ambientLight;
             SetGlobals();
         }
         #endif

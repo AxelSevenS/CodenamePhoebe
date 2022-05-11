@@ -7,6 +7,7 @@ using SeleneGame.States;
 
 namespace SeleneGame.Weapons {
     
+    [System.Serializable]
     public class HypnosWeapon : Weapon{
 
         private Vector3 wallRunDir;
@@ -19,11 +20,9 @@ namespace SeleneGame.Weapons {
         
 
         private BoolData wallData = new BoolData();
-        private BoolData wallRunData = new BoolData();
+        private BoolData wallRun = new BoolData();
 
         public RaycastHit wallHit;
-
-        private bool wallRun => wallRunData.currentValue;
 
 
         protected override float GetSpeedMultiplier(){
@@ -58,30 +57,19 @@ namespace SeleneGame.Weapons {
 
         // protected override void WeaponAwake(){
         // }
-
-        protected override void WeaponEnable(){
-        }
-        protected override void WeaponDisable(){
-        }
-
-        protected override void UpdateAlways(){;}
+        // public HypnosWeapon(Entity entity) : base(entity){;}
         
-        protected override void UpdateEquipped(){
+        protected override void WeaponUpdateEquipped(){
             
             wallData.SetVal( entity.WallCheck( out wallHit, Global.GroundMask ) );
-            wallRunData.SetVal(entity.sliding && wallData.currentValue);
+            wallRun.SetVal(entity.sliding && wallData);
 
-            if (entity.groundData.stopped)
+            if (entity.onGround.stopped)
                 wallRunTimer = 7f;
 
         }
 
-        private void LateUpdate() {
-            wallData.Update();
-            wallRunData.Update();
-        }
-
-        protected override void FixedUpdateEquipped(){
+        protected override void WeaponFixedUpdateEquipped(){
 
             // // Wall-stand when standing against a wall. (Feather Grip)
             // if ( wallStand ){
@@ -109,7 +97,7 @@ namespace SeleneGame.Weapons {
 
             //     entity.Move(wallRunDir * Global.timeDelta * entity.data.baseSpeed * 0.45f);
 
-            //     if ( entity.jumpInputData.currentValue )
+            //     if ( entity.jumpInput.currentValue )
             //         entity.Jump( (wallRunDir + wallHit.normal*1.2f - entity.gravityDown*2f).normalized * 1.4f );
             // }
         }

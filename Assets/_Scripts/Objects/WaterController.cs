@@ -44,9 +44,9 @@ namespace SeleneGame {
         }
 
         void ApplyParams(){
-            if ( collider is MeshCollider && (collider as MeshCollider).sharedMesh == null ){
+            if ( collider is MeshCollider meshCollider && meshCollider.sharedMesh == null ){
                 MeshFilter meshFilter = GetComponent<MeshFilter>();
-                (collider as MeshCollider).sharedMesh = meshFilter.sharedMesh;
+                meshCollider.sharedMesh = meshFilter.sharedMesh;
             }
             if (renderer == null)
                 renderer = GetComponent<Renderer>();

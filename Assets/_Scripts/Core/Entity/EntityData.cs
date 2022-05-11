@@ -40,6 +40,7 @@ namespace SeleneGame.Core {
         public float slowSpeed = 1f;
         public float crouchSpeed = 1f;
         public float swimSpeed;
+        public float evadeSpeed;
         public float evadeDuration;
         public float evadeCooldown;
         public float totalEvadeDuration => evadeDuration + evadeCooldown;

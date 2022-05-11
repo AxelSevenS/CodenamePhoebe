@@ -12,13 +12,18 @@ namespace SeleneGame.States {
 
         public override bool masked => false;
 
+        protected override void StateAwake(){
+            entity.evadeCount = 1;
+            entity.jumpCount = 1;
+        }
+
         protected override void StateUpdate(){
 
             if (entity.currentWeapon.weightModifier > 1f || !entity.inWater){
                 entity.SetState("Walking");
             }
 
-            if (entity.evadeInputData.started)
+            if (entity.evadeInput.started)
                 entity.Evade(entity.absoluteForward);
 
         }
@@ -29,8 +34,8 @@ namespace SeleneGame.States {
 
             entity._rb.velocity = Vector3.Dot(entity._rb.velocity.normalized, entity.gravityDown) > 0f ? entity._rb.velocity / 1.1f : entity._rb.velocity;
 
-            if ( entity.EvadeUpdate(out float evadeSpeed) )
-                entity.Move( Global.timeDelta * evadeSpeed * entity.evadeDirection );
+            if ( entity.EvadeUpdate(out float evadeCurve) )
+                entity.Move( Global.timeDelta * evadeCurve * entity.data.evadeSpeed * entity.evadeDirection );
 
             if (entity.moveDirection.magnitude > 0f){
 
@@ -58,9 +63,9 @@ namespace SeleneGame.States {
 
         public override void HandleInput(){
             
-            entity.moveDirection = entity.rotation * entity.lookRotationData.currentValue * entity.moveInputData.currentValue;
+            entity.moveDirection = entity.rotation * entity.lookRotation * entity.moveInput;
             
-            if (entity.jumpInputData.currentValue && entity.isOnWaterSurface){
+            if (entity.jumpInput && entity.isOnWaterSurface && entity.jumpCount != 0 && entity.jumpCooldown == 0f ){
                 entity.Jump( -entity.gravityDown );
             }
         }

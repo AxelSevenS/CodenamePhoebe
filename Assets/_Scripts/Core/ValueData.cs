@@ -10,20 +10,31 @@ namespace SeleneGame.Core {
         public T currentValue;
         public T lastValue;
         
+        public static implicit operator T(ValueData<T> data) => data.currentValue;
+
+        public ValueData(){
+            GameController.onUpdate += Update;
+        }
+        ~ValueData(){
+            GameController.onUpdate -= Update;
+        }
+        
         public virtual void SetVal(T updatedValue){
             currentValue = updatedValue;
         }
 
-        public virtual void Update(){;}
+        protected virtual void Update(){;}
     }
 
     [System.Serializable]
     public class VectorData : ValueData<Vector3> {
 
         public float zeroTimer;
+        public float nonZeroTimer;
         
-        public override void Update(){
+        protected override void Update(){
             zeroTimer = currentValue == Vector3.zero ? zeroTimer + Global.timeDelta : 0f;
+            nonZeroTimer = currentValue != Vector3.zero ? nonZeroTimer + Global.timeDelta : 0f;
         }
     }
 
@@ -37,54 +48,10 @@ namespace SeleneGame.Core {
 
         public float trueTimer;
         public float falseTimer;
-        // public event Action<float> started;
-        // public event Action<float> stopped;
         public bool started => currentValue && !lastValue;
         public bool stopped => !currentValue && lastValue;
-
-        public BoolData(){
-        }
-        // public BoolData(Action<float> newStartAction, Action<float> newStopAction){
-        //     started = timer => newStartAction.Invoke(timer);
-        //     stopped = timer => newStopAction.Invoke(timer);
-        // }
-        // public BoolData(Action<float> newStartAction, Action newStopAction){
-        //     started = timer => newStartAction.Invoke(timer);
-        //     stopped = _ => newStopAction.Invoke();
-        // }
-        // public BoolData(Action newStartAction, Action<float> newStopAction){
-        //     started = _ => newStartAction.Invoke();
-        //     stopped = timer => newStopAction.Invoke(timer);
-        // }
-        // public BoolData(Action newStartAction, Action newStopAction){
-        //     started = _ => newStartAction.Invoke();
-        //     stopped = _ => newStopAction.Invoke();
-        // }
-        // public BoolData(Action newAction, bool isStarted = true){
-        //     if (isStarted){
-        //         started = _ => newAction.Invoke();
-        //     }else{
-        //         stopped = _ => newAction.Invoke();
-        //     }
-        // }
-        // public BoolData(Action<float> newAction, bool isStarted = true){
-        //     if (isStarted){
-        //         started = timer => newAction.Invoke(timer);
-        //     }else{
-        //         stopped = timer => newAction.Invoke(timer);
-        //     }
-        // }
-        // public BoolData(Action<float>[] newStartActions, Action<float>[] newStopActions){
-        //     foreach(Action<float> action in newStartActions)
-        //         started += action;
-        //     foreach(Action<float> action in newStopActions)
-        //         stopped += action;
-        // }
-
         
-        public override void Update(){
-            // if (currentValue && !lastValue && started != null) started(falseTimer);
-            // if (!currentValue && lastValue && stopped != null) stopped(trueTimer);
+        protected override void Update(){
             lastValue = currentValue;
             UpdateTimer();
         }

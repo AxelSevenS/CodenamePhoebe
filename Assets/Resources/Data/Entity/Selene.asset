@@ -20,12 +20,13 @@ MonoBehaviour:
   moveIncrement: 20
   weight: 12.5
   jumpHeight: 17
-  baseSpeed: 17
+  baseSpeed: 14
   slowSpeed: 0.7
   crouchSpeed: 1
   swimSpeed: 0.85
-  evadeDuration: 0.45
-  evadeCooldown: 0.05
+  evadeSpeed: 20
+  evadeDuration: 0.4
+  evadeCooldown: 0.06
   evadeCurve:
     serializedVersion: 2
     m_Curve:
@@ -57,31 +58,22 @@ MonoBehaviour:
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.9113228
-      value: 0.026952926
-      inSlope: -1.2363908
-      outSlope: -1.2363908
+      time: 0.81131667
+      value: 0.5576231
+      inSlope: -6.5467234
+      outSlope: -6.5467234
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.7456353
-    - serializedVersion: 3
-      time: 0.95
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 136
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
+      inWeight: 0.11270596
+      outWeight: 0.09460285
     - serializedVersion: 3
       time: 1
       value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 136
+      inSlope: -1.0831587
+      outSlope: -1.0831587
+      tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
+      inWeight: 1
       outWeight: 0.33333334
     m_PreInfinity: 2
     m_PostInfinity: 2

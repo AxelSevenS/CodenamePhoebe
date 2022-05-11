@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace SeleneGame.Core {
     
+    [System.Serializable]
     public abstract class Weapon : MonoBehaviour {
 
         [Space(35)]
@@ -29,14 +30,61 @@ namespace SeleneGame.Core {
 
         public virtual bool shifting => false;
 
-        protected virtual void WeaponStart(){;}
-        protected virtual void WeaponAwake(){;}
-        protected virtual void WeaponEnable(){;}
-        protected virtual void WeaponDisable(){;}
-        protected virtual void UpdateAlways(){;}
-        protected virtual void UpdateEquipped(){;}
-        protected virtual void FixedUpdateAlways(){;}
-        protected virtual void FixedUpdateEquipped(){;}
+        private void OnEnable() {
+            entity = GetComponent<Entity>();
+            SetData();
+            LoadModel();
+
+            data.onChangeCostume += LoadModel;
+            Construct();
+        }
+        private void OnDisable() {
+            DestroyModel();
+
+            data.onChangeCostume -= LoadModel;
+            Destruct();
+        }
+
+        // private Weapon(){;}
+        // public Weapon(Entity entity){
+        //     this.entity = entity;
+        //     SetData();
+        //     LoadModel();
+
+        //     data.onChangeCostume += LoadModel;
+        //     Construct();
+        // }
+        // ~Weapon(){
+        //     DestroyModel();
+
+        //     data.onChangeCostume -= LoadModel;
+        //     Destruct();
+        // }
+
+        public void Update(){
+            WeaponUpdate();
+            if (entity.currentWeapon == this)
+                WeaponUpdateEquipped();
+        }
+        public void LateUpdate(){
+            WeaponLateUpdate();
+            if (entity.currentWeapon == this)
+                WeaponLateUpdateEquipped();
+        }
+        public void FixedUpdate(){
+            WeaponFixedUpdate();
+            if (entity.currentWeapon == this)
+                WeaponFixedUpdateEquipped();
+        }
+
+        protected virtual void Construct(){;}
+        protected virtual void Destruct(){;}
+        protected virtual void WeaponUpdate(){;}
+        protected virtual void WeaponLateUpdate(){;}
+        protected virtual void WeaponFixedUpdate(){;}
+        protected virtual void WeaponUpdateEquipped(){;}
+        protected virtual void WeaponLateUpdateEquipped(){;}
+        protected virtual void WeaponFixedUpdateEquipped(){;}
 
         private void SetData(){
             if (data != null) return;
@@ -44,44 +92,6 @@ namespace SeleneGame.Core {
             string dataName = GetType().Name.Replace("Weapon","");
             data = DataGetter.GetData<WeaponData>( dataName );
             Debug.Log(dataName);
-        }
-
-        private void Start(){
-            WeaponStart();
-        }
-        private void Awake(){
-            SetData();
-            WeaponAwake();
-            Reset();
-            LoadModel();
-        }
-
-        private void Reset(){
-            entity = GetComponent<Entity>();
-        }
-
-        private void OnEnable(){
-            data.onChangeCostume += LoadModel;
-            WeaponEnable();
-        }
-        private void OnDisable(){
-            data.onChangeCostume -= LoadModel;
-            WeaponDisable();
-        }
-
-        private void OnDestroy(){
-            DestroyModel();
-        }
-
-        private void Update(){
-            UpdateAlways();
-            if (entity.currentWeapon == this)
-                UpdateEquipped();
-        }
-        private void FixedUpdate(){
-            FixedUpdateAlways();
-            if (entity.currentWeapon == this)
-                FixedUpdateEquipped();
         }
 
         public static Type GetWeaponTypeByName(string weaponName){
@@ -96,13 +106,13 @@ namespace SeleneGame.Core {
 
             if (data?.costume.model != null){
                 Transform rightWeapon = entity["weaponRight"].transform;
-                model = Instantiate(data.costume.model, rightWeapon.position, rightWeapon.rotation, rightWeapon);
+                model = GameObject.Instantiate(data.costume.model, rightWeapon.position, rightWeapon.rotation, rightWeapon);
                 model.name = $"WeaponModel{data.name}";
             }
 
             if (data?.costume.secondaryModel != null){
                 Transform leftWeapon = entity["weaponLeft"].transform;
-                secondaryModel = Instantiate(data.costume.secondaryModel, leftWeapon.position, leftWeapon.rotation, leftWeapon);
+                secondaryModel = GameObject.Instantiate(data.costume.secondaryModel, leftWeapon.position, leftWeapon.rotation, leftWeapon);
                 secondaryModel.name = $"WeaponModel{data.name}";
             }
             

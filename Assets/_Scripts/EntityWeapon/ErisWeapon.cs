@@ -8,17 +8,17 @@ namespace SeleneGame.Weapons {
     
     public class ErisWeapon : Weapon{
 
-        [SerializeField] private BoolData gravitySlideData = new BoolData();
-        [SerializeField] private bool gravitySlide => gravitySlideData.currentValue;
+        [SerializeField] private BoolData gravitySlide = new BoolData();
 
         protected override float GetSpeedMultiplier() => entity.inWater ? 1.5f : 1f;
         protected override float GetWeightModifier() => 1.4f;
         protected override Vector3 GetJumpDirection() => -entity.gravityDown;
         // protected override Vector3 GetCameraPosition() => entity.inWater ? new Vector3(0, 1f, -3.5f) : new Vector3(1f, 1f, -3.5f);
 
-        protected override void UpdateEquipped(){
+        // public ErisWeapon(Entity entity) : base(entity){;}
+        protected override void WeaponUpdateEquipped(){
 
-            gravitySlideData.SetVal(entity.sliding && entity.onGround);
+            gravitySlide.SetVal(entity.sliding && entity.onGround);
 
             // Stick to Surface when sliding in Light Mode. (Light Anchoring)
             if ( gravitySlide ){
@@ -27,10 +27,6 @@ namespace SeleneGame.Weapons {
             }
             
 
-        }
-
-        private void LateUpdate() {
-            gravitySlideData.Update();
         }
     }
 }

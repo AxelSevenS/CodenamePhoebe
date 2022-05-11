@@ -7,6 +7,8 @@ namespace SeleneGame.Weapons {
     
     public class UnarmedWeapon : Weapon{
 
+        // public UnarmedWeapon(Entity entity) : base(entity){;}
+
 
     }
 }

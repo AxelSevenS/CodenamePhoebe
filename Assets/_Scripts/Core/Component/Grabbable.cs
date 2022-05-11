@@ -55,10 +55,10 @@ namespace SeleneGame.Core {
             _grabbed = false;
 
             entity.grabbedObjects.Remove(this);
-            _rigidbody.AddForce(entity.lookRotationData.currentValue*Vector3.forward*30f*_rigidbody.mass, ForceMode.Impulse);
+            _rigidbody.AddForce(entity.lookRotation.currentValue*Vector3.forward*30f*_rigidbody.mass, ForceMode.Impulse);
 
 
-            var impulseParticle = Instantiate(Global.LoadParticle("ShiftImpulseParticles"), entity._transform.position + entity.lookRotationData.currentValue * Vector3.forward*2f, entity.lookRotationData.currentValue);
+            var impulseParticle = Instantiate(Global.LoadParticle("ShiftImpulseParticles"), entity._transform.position + entity.lookRotation.currentValue * Vector3.forward*2f, entity.lookRotation.currentValue);
             Destroy(impulseParticle, 1.2f);
         }
 

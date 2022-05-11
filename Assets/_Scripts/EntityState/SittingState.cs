@@ -16,7 +16,7 @@ namespace SeleneGame.States {
         [HideInInspector] public Seat seat;
 
         protected override void StateUpdate(){
-            if (entity.crouchInputData.started)
+            if (entity.crouchInput.started)
                 seat.StopSitting();
         }
 
@@ -24,7 +24,7 @@ namespace SeleneGame.States {
             // Sitting
             entity._transform.position = seat.sitPosition;
             entity.absoluteForward = entity._transform.forward;
-            entity._transform.rotation = Quaternion.LookRotation( Vector3.ProjectOnPlane(seat.transform.position - entity._transform.position, seat.transform.up), seat.transform.up);
+            entity.RotateTowardsAbsolute(Vector3.ProjectOnPlane(seat.transform.position - entity._transform.position, seat.transform.up), seat.transform.up);
         }
 
         protected override void UpdateMoveSpeed(){;}
@@ -34,14 +34,14 @@ namespace SeleneGame.States {
 
             SafeDictionary<string, bool> inputDict = new SafeDictionary<string, bool>();
 
-            inputDict[ "LightAttack" ] = entity.lightAttackInputData.currentValue;
-            inputDict[ "HeavyAttack" ] = entity.heavyAttackInputData.currentValue;
-            inputDict[ "Jump" ] = entity.jumpInputData.currentValue;
-            inputDict[ "Evade" ] = entity.evadeInputData.currentValue;
-            inputDict[ "Focus" ] = entity.focusInputData.currentValue;
-            inputDict[ "Shift" ] = entity.shiftInputData.currentValue;
+            inputDict[ "LightAttack" ] = entity.lightAttackInput;
+            inputDict[ "HeavyAttack" ] = entity.heavyAttackInput;
+            inputDict[ "Jump" ] = entity.jumpInput;
+            inputDict[ "Evade" ] = entity.evadeInput;
+            inputDict[ "Focus" ] = entity.focusInput;
+            inputDict[ "Shift" ] = entity.shiftInput;
 
-            seat.seatEntity.EntityInput(entity.moveInputData.currentValue, entity.lookRotation, inputDict);
+            seat.seatEntity.EntityInput(entity.moveInput, entity.cameraRotation, inputDict);
         }
     }
 }
