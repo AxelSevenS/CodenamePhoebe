@@ -24,7 +24,7 @@ namespace SeleneGame.States {
             // Sitting
             entity._transform.position = seat.sitPosition;
             entity.absoluteForward = entity._transform.forward;
-            entity.RotateTowardsAbsolute(Vector3.ProjectOnPlane(seat.transform.position - entity._transform.position, seat.transform.up), seat.transform.up);
+            entity.RotateTowardsAbsolute(Vector3.ProjectOnPlane(seat.transform.rotation * -seat.sittingDir, seat.transform.up), seat.transform.up);
         }
 
         protected override void UpdateMoveSpeed(){;}

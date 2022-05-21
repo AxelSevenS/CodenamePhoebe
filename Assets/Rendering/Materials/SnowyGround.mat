@@ -77,11 +77,27 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _CelShading_abf7811d76a7413ab3f888509118ab1c_Texture2D11aafe7ff96e42979b64ec9d7f21d9d8_1683355232:
+        m_Texture: {fileID: 2800000, guid: 063fcbdcf4614a24cb139f0f176ce4b6, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CelShading_abf7811d76a7413ab3f888509118ab1c_Texture2D2a370da13c6a46b7853499d378b684a6_2578309500:
+        m_Texture: {fileID: 2800000, guid: cebe9a3822944c141a5d9dc81779ebbc, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CelShading_abf7811d76a7413ab3f888509118ab1c_Texture2D722f01fdf8a7495183a7b3e444199524_2185002509:
+        m_Texture: {fileID: 2800000, guid: cebe9a3822944c141a5d9dc81779ebbc, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _CelShading_abf7811d76a7413ab3f888509118ab1c_Texture2D868615b9068a4d07b4d0f9234d9afed6_1403897915:
         m_Texture: {fileID: 2800000, guid: 063fcbdcf4614a24cb139f0f176ce4b6, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _CelShading_abf7811d76a7413ab3f888509118ab1c_Texture2D8ffd4e2bbac945efaea7b3af1f545f26_1608958148:
+        m_Texture: {fileID: 2800000, guid: 0ccb8e0d49adee140b8472de4ae0bb16, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CelShading_abf7811d76a7413ab3f888509118ab1c_Texture2Dbca7a61f2f4d4f88a34f04c975035108_3076940783:
         m_Texture: {fileID: 2800000, guid: 0ccb8e0d49adee140b8472de4ae0bb16, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -99,6 +115,18 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _LightingCelCustomFunction_2513510943474503a09a9bf6a58817e3_AccentGradient_6:
+        m_Texture: {fileID: 2800000, guid: cebe9a3822944c141a5d9dc81779ebbc, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _LightingCelCustomFunction_2513510943474503a09a9bf6a58817e3_ShadeGradient_5:
+        m_Texture: {fileID: 2800000, guid: 0ccb8e0d49adee140b8472de4ae0bb16, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _LightingCelCustomFunction_2513510943474503a09a9bf6a58817e3_SpecularGradient_8:
+        m_Texture: {fileID: 2800000, guid: 063fcbdcf4614a24cb139f0f176ce4b6, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
@@ -119,6 +147,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture2DAsset_2009682ad1094bba8b00f5e40d35557f_Out_0:
+        m_Texture: {fileID: 2800000, guid: 0ccb8e0d49adee140b8472de4ae0bb16, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:

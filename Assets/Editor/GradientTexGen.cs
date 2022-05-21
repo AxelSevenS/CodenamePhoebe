@@ -12,12 +12,12 @@ namespace mattatz.Utils {
     public class GradientTexGen {
 
         public static Texture2D Create (Gradient grad, int width = 32, int height = 1) {
-            var gradTex = new Texture2D(width, height, TextureFormat.ARGB32, false);
+            Texture2D gradTex = new Texture2D(width, height, TextureFormat.ARGB32, false, false);
             gradTex.filterMode = FilterMode.Bilinear;
             float inv = 1f / width;
             for (int y = 0; y < height; y++) {
                 for (int x = 0; x < width; x++) {
-                    var t = x * inv;
+                    float t = x * inv;
                     Color col = grad.Evaluate(t);
                     gradTex.SetPixel(x, y, col);
                 }
@@ -65,8 +65,18 @@ namespace mattatz.Utils {
                 GUILayout.Label(".png");
             }
 
-            if(GUILayout.Button("Save")) {
+            if(GUILayout.Button("Save at ...")) {
                 string path = EditorUtility.SaveFolderPanel("Select an output path", "", "");
+                if(path.Length > 0) {
+                    var tex = GradientTexGen.Create(gradient, width, height);
+                    byte[] pngData = tex.EncodeToPNG();
+                    File.WriteAllBytes(path + "/" + fileName + ".png", pngData);
+                    AssetDatabase.Refresh();
+                }
+            }
+
+            if(GUILayout.Button("Save at default Location")) {
+                string path = Application.dataPath + "/Rendering/Textures/Gradients/";
                 if(path.Length > 0) {
                     var tex = GradientTexGen.Create(gradient, width, height);
                     byte[] pngData = tex.EncodeToPNG();

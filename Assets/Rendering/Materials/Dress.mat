@@ -25,7 +25,7 @@ Material:
     type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
+  m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
@@ -33,6 +33,18 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - Layer_516397B8:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Layer_CB82EA3:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Layer_D9B91623:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - Texture2D_010b4418f1dd4eca8c903b9e96d373ac:
         m_Texture: {fileID: 2800000, guid: 79ca79c86878ba94d8bf89e8cf4db7c7, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -45,8 +57,16 @@ Material:
         m_Texture: {fileID: 8400000, guid: 3fd964db336004648ba75c5ac7ef9f56, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - Texture2D_62ada9bf79e840e99d54061c68e5656e:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - Texture2D_6a1409f6604740879a5e599cda5f5f02:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_7e329c5e9f3844f4bad8dd261cf26e5f:
+        m_Texture: {fileID: 2800000, guid: cebe9a3822944c141a5d9dc81779ebbc, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - Texture2D_9d2dc686cea4411eb4cd42e0ad89db69:
@@ -57,12 +77,32 @@ Material:
         m_Texture: {fileID: 2800000, guid: 0ccb8e0d49adee140b8472de4ae0bb16, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - Texture2D_ac6bd4abba294b3abcb030700951df8b:
+        m_Texture: {fileID: 2800000, guid: edf3750bacb660a47af181385458bd56, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_d2dc7a4b57b1449986abcdaf39128a7f:
+        m_Texture: {fileID: 2800000, guid: cebe9a3822944c141a5d9dc81779ebbc, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _BaseMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CelShading_f5c658ba84a743b29c36c275531286d9_Texture2D11aafe7ff96e42979b64ec9d7f21d9d8_1683355232:
+        m_Texture: {fileID: 2800000, guid: 063fcbdcf4614a24cb139f0f176ce4b6, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CelShading_f5c658ba84a743b29c36c275531286d9_Texture2D2a370da13c6a46b7853499d378b684a6_2578309500:
+        m_Texture: {fileID: 2800000, guid: cebe9a3822944c141a5d9dc81779ebbc, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CelShading_f5c658ba84a743b29c36c275531286d9_Texture2Dbca7a61f2f4d4f88a34f04c975035108_3076940783:
+        m_Texture: {fileID: 2800000, guid: 0ccb8e0d49adee140b8472de4ae0bb16, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
@@ -79,6 +119,18 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _LightingCelCustomFunction_2513510943474503a09a9bf6a58817e3_AccentGradient_6:
+        m_Texture: {fileID: 2800000, guid: cebe9a3822944c141a5d9dc81779ebbc, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _LightingCelCustomFunction_2513510943474503a09a9bf6a58817e3_ShadeGradient_5:
+        m_Texture: {fileID: 2800000, guid: 0ccb8e0d49adee140b8472de4ae0bb16, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _LightingCelCustomFunction_2513510943474503a09a9bf6a58817e3_SpecularGradient_8:
+        m_Texture: {fileID: 2800000, guid: 063fcbdcf4614a24cb139f0f176ce4b6, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
@@ -114,6 +166,8 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - Boolean_4dcb652bd35946169f20fa329ff261b7: 1
+    - Boolean_62b895750dbe44d9bb512d647701feaf: 0
     - Vector1_5be3734798f64a63b2827794b79391c3: 0.07
     - Vector1_cc6e37850778480781084b62719d58c3: 0.4
     - _AlphaClip: 0

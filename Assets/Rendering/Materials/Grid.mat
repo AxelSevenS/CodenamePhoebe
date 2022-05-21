@@ -39,6 +39,18 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - Layer_516397B8:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Layer_CB82EA3:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Layer_D9B91623:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - Texture2D_010b4418f1dd4eca8c903b9e96d373ac:
         m_Texture: {fileID: 2800000, guid: 4327a136315e07d429471e228e35b2c5, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -59,11 +71,19 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - Texture2D_62ada9bf79e840e99d54061c68e5656e:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - Texture2D_6a1409f6604740879a5e599cda5f5f02:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - Texture2D_796c21f2e41f42579b5a3a838ddd0da8:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_7e329c5e9f3844f4bad8dd261cf26e5f:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -75,12 +95,32 @@ Material:
         m_Texture: {fileID: 2800000, guid: 0ccb8e0d49adee140b8472de4ae0bb16, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - Texture2D_ac6bd4abba294b3abcb030700951df8b:
+        m_Texture: {fileID: 2800000, guid: 0ccb8e0d49adee140b8472de4ae0bb16, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_d2dc7a4b57b1449986abcdaf39128a7f:
+        m_Texture: {fileID: 2800000, guid: 063fcbdcf4614a24cb139f0f176ce4b6, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _BaseMap:
         m_Texture: {fileID: 2800000, guid: 4327a136315e07d429471e228e35b2c5, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CelShading_f5c658ba84a743b29c36c275531286d9_Texture2D11aafe7ff96e42979b64ec9d7f21d9d8_1683355232:
+        m_Texture: {fileID: 2800000, guid: 063fcbdcf4614a24cb139f0f176ce4b6, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CelShading_f5c658ba84a743b29c36c275531286d9_Texture2D2a370da13c6a46b7853499d378b684a6_2578309500:
+        m_Texture: {fileID: 2800000, guid: cebe9a3822944c141a5d9dc81779ebbc, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CelShading_f5c658ba84a743b29c36c275531286d9_Texture2Dbca7a61f2f4d4f88a34f04c975035108_3076940783:
+        m_Texture: {fileID: 2800000, guid: 0ccb8e0d49adee140b8472de4ae0bb16, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
@@ -101,6 +141,18 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _LightingCelCustomFunction_2513510943474503a09a9bf6a58817e3_AccentGradient_6:
+        m_Texture: {fileID: 2800000, guid: cebe9a3822944c141a5d9dc81779ebbc, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _LightingCelCustomFunction_2513510943474503a09a9bf6a58817e3_ShadeGradient_5:
+        m_Texture: {fileID: 2800000, guid: 0ccb8e0d49adee140b8472de4ae0bb16, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _LightingCelCustomFunction_2513510943474503a09a9bf6a58817e3_SpecularGradient_8:
+        m_Texture: {fileID: 2800000, guid: 063fcbdcf4614a24cb139f0f176ce4b6, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
@@ -144,6 +196,8 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - Boolean_4dcb652bd35946169f20fa329ff261b7: 0
+    - Boolean_62b895750dbe44d9bb512d647701feaf: 0
     - Vector1_35c667d970344fd6b95be761e487f0a9: 0
     - Vector1_4dc3fdd432d049e39b7967ae08cdd3cb: 0
     - Vector1_554e352f997b498e8ce0f46e2e848097: 0

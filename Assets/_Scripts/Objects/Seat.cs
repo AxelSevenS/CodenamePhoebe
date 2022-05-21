@@ -18,13 +18,13 @@ namespace SeleneGame {
         [Space(15)]
         
         [SerializeField] private int speed;
-        [SerializeField] private Vector3 relativePos;
-        [SerializeField] private List<Vector4> Directions;
+        public Vector3 sittingDir;
+        [SerializeField] private List<Vector4> sittingDirections;
         public Vector3 sitPosition { get {
-                if (seatOccupant != null ) 
-                    return transform.position + transform.rotation*relativePos + seatOccupant.transform.up*( seatOccupant.data.size.y/2f - transform.localScale.y/2f );
+                Vector3 seatOccupantUp = seatOccupant != null ? seatOccupant.transform.up : transform.up;
+                float seatOccupantSize = seatOccupant != null ? seatOccupant.data.size.y/2f : 1.67f;
 
-                return transform.position + transform.rotation*relativePos + transform.up*( 1.67f - transform.localScale.y/2f );
+                return transform.position + transform.rotation*(sittingDir + directionalPlacement) + (seatOccupantUp * seatOccupantSize);
             }
         }
 
@@ -56,7 +56,7 @@ namespace SeleneGame {
         private void OnDrawGizmosSelected(){
             Gizmos.color = Color.blue;
             Gizmos.DrawSphere(sitPosition, 0.3f);
-            Gizmos.DrawLine(transform.position, transform.position + transform.rotation * relativePos);
+            Gizmos.DrawLine(transform.position, transform.position + transform.rotation * sittingDir);
         }
 
         private async void StartSitting(Entity entity){
@@ -65,12 +65,12 @@ namespace SeleneGame {
             seatOccupant = entity;
             entity.SetState("Walking");
             
-            CalculateClosestDirection(out relativePos, out seatOccupant.subState);
+            CalculateClosestDirection(out sittingDir, out seatOccupant.subState);
 
             if (speed < 4){
                 seatOccupant.walkingTo = true;
                 await seatOccupant.WalkTo( sitPosition, (Entity.WalkSpeed)(speed+1) );
-                await seatOccupant.TurnTo( transform.rotation * -relativePos );
+                await seatOccupant.TurnTo( transform.rotation * -sittingDir );
                 seatOccupant.walkingTo = false;
             }
             
@@ -100,7 +100,7 @@ namespace SeleneGame {
             finalDirection = (transform.position - seatOccupant.transform.position).normalized;
             subState = 0f;
 
-            foreach (Vector4 currentDirection in Directions){
+            foreach (Vector4 currentDirection in sittingDirections){
                 Vector3 direction = new Vector3( currentDirection.x, currentDirection.y, currentDirection.z ).normalized;
                 Vector3 directionToOccupant = (seatOccupant.transform.position - transform.position).normalized;
 
