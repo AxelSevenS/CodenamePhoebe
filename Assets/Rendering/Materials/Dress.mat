@@ -165,6 +165,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Texture2DAsset_0f5a535ec23b4c1c983170f73c3f5924_Out_0:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -183,10 +187,15 @@ Material:
     - Boolean_101eac5857d84f2b8c80fed3fbaa437b: 0
     - Boolean_4dcb652bd35946169f20fa329ff261b7: 1
     - Boolean_62b895750dbe44d9bb512d647701feaf: 0
+    - Boolean_746f00cdd21a463a8f7db0eed7f65639: 0
+    - EMISSIONMAP: 0
+    - EMISSIONMAP_ON: 1
     - HATCHING: 0
     - PROXIMITYDITHER: 1
     - SPECULARGRADIENT: 0
     - Vector1_5be3734798f64a63b2827794b79391c3: 0.07
+    - Vector1_a62ab1db54d34856836ce0b6d78fe08f: 1
+    - Vector1_c092b1ab83a845279db3044fddc481d7: 1
     - Vector1_cc6e37850778480781084b62719d58c3: 0.4
     - Vector1_eba81f4ec9494ffc89d831e650dc2eee: 0
     - Vector1_f99686aaeca44c4687bb480feabfa5fb: 0
@@ -218,6 +227,7 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
+    - Color_0f915c3fbe4045b294e1149c13889c54: {r: 0, g: 0, b: 0, a: 0}
     - Color_1a287ec675fe4899bb4a792f25de7640: {r: 0, g: 0, b: 0, a: 0}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}

@@ -103,6 +103,10 @@ Material:
         m_Texture: {fileID: 2800000, guid: 063fcbdcf4614a24cb139f0f176ce4b6, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - Texture2D_ea1c329133fc4f01a0ae24d3d7ecfc16:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _BaseMap:
         m_Texture: {fileID: 2800000, guid: 4327a136315e07d429471e228e35b2c5, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -199,6 +203,10 @@ Material:
         m_Texture: {fileID: 2800000, guid: 4327a136315e07d429471e228e35b2c5, type: 3}
         m_Scale: {x: 10, y: 10}
         m_Offset: {x: 0, y: 0}
+    - _Texture2DAsset_0f5a535ec23b4c1c983170f73c3f5924_Out_0:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -212,14 +220,26 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - ACCENTGRADIENT: 0
+    - Boolean_1: 0
+    - Boolean_101eac5857d84f2b8c80fed3fbaa437b: 0
     - Boolean_4dcb652bd35946169f20fa329ff261b7: 0
     - Boolean_62b895750dbe44d9bb512d647701feaf: 0
+    - Boolean_746f00cdd21a463a8f7db0eed7f65639: 0
+    - EMISSIONMAP: 0
+    - EMISSIONMAP_ON: 1
+    - HATCHING: 0
+    - SPECULARGRADIENT: 0
     - Vector1_35c667d970344fd6b95be761e487f0a9: 0
     - Vector1_4dc3fdd432d049e39b7967ae08cdd3cb: 0
     - Vector1_554e352f997b498e8ce0f46e2e848097: 0
     - Vector1_7e42139876d84cd5a82c6cbf4de9ebbf: 0
+    - Vector1_a62ab1db54d34856836ce0b6d78fe08f: 1
+    - Vector1_c092b1ab83a845279db3044fddc481d7: 1
     - Vector1_c9c0151777624e528172d11b6bdf3e3e: 0.07
     - Vector1_dbe98fbfd091484698b433c5a69f2e97: 0.64
+    - Vector1_eba81f4ec9494ffc89d831e650dc2eee: 0
+    - Vector1_f99686aaeca44c4687bb480feabfa5fb: 0
     - _AddPrecomputedVelocity: 0
     - _AlphaClip: 0
     - _AlphaCutoffEnable: 0
@@ -297,6 +317,7 @@ Material:
     - _ZTestTransparent: 4
     - _ZWrite: 1
     m_Colors:
+    - Color_0f915c3fbe4045b294e1149c13889c54: {r: 0, g: 0, b: 0, a: 0}
     - Color_1a287ec675fe4899bb4a792f25de7640: {r: 0, g: 0, b: 0, a: 0}
     - _BaseColor: {r: 0.8396226, g: 0.7160555, b: 0.7160555, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
