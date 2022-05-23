@@ -62,7 +62,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - Texture2D_b9baf54b736a49b8931070640840afe0:
-        m_Texture: {fileID: 2800000, guid: 4c9af0b945c91b743848a7500506c034, type: 3}
+        m_Texture: {fileID: 10309, guid: 0000000000000000f000000000000000, type: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - Texture2D_c99ba8a89a0e49c780df6a87923307d3:
@@ -89,12 +89,20 @@ Material:
         m_Texture: {fileID: 2800000, guid: cebe9a3822944c141a5d9dc81779ebbc, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _CelShading_abf7811d76a7413ab3f888509118ab1c_Texture2D83f355de83174ace915108acbec33656_2287955086:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _CelShading_abf7811d76a7413ab3f888509118ab1c_Texture2D868615b9068a4d07b4d0f9234d9afed6_1403897915:
         m_Texture: {fileID: 2800000, guid: 063fcbdcf4614a24cb139f0f176ce4b6, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _CelShading_abf7811d76a7413ab3f888509118ab1c_Texture2D8ffd4e2bbac945efaea7b3af1f545f26_1608958148:
         m_Texture: {fileID: 2800000, guid: 0ccb8e0d49adee140b8472de4ae0bb16, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CelShading_abf7811d76a7413ab3f888509118ab1c_Texture2D9666dd2f2f8f4fddb6c2a5c61ddfa9bd_3072536305:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _CelShading_abf7811d76a7413ab3f888509118ab1c_Texture2Dbca7a61f2f4d4f88a34f04c975035108_3076940783:
@@ -143,6 +151,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_ae174264f50a47fda28a00b42ff70be5_Texture_1:
+        m_Texture: {fileID: 8400000, guid: 3fd964db336004648ba75c5ac7ef9f56, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:

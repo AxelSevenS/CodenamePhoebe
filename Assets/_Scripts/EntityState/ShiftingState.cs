@@ -74,7 +74,7 @@ namespace SeleneGame.States {
         }
 
         protected override void StateFixedUpdate(){
-            if ( entity.EvadeUpdate(out float evadeCurve) )
+            if ( entity.EvadeUpdate(out _, out float evadeCurve) )
                 entity.Move( Global.timeDelta * evadeCurve * entity.data.evadeSpeed * entity.evadeDirection );
 
 

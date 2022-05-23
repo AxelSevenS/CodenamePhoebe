@@ -1,5 +1,11 @@
 {
   "dependencies": {
+    "com.needle.shadergraph-markdown": {
+      "version": "file:com.needle.shadergraph-markdown",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
       "depth": 0,
@@ -113,14 +119,6 @@
         "com.unity.ugui": "1.0.0"
       },
       "url": "https://packages.unity.com"
-    },
-    "com.unity.render-pipelines.high-definition-config": {
-      "version": "file:../LocalPackages/com.unity.render-pipelines.high-definition-config",
-      "depth": 0,
-      "source": "local",
-      "dependencies": {
-        "com.unity.render-pipelines.core": "10.5.1"
-      }
     },
     "com.unity.render-pipelines.universal": {
       "version": "10.5.1",

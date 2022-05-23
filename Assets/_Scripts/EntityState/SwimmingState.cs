@@ -34,7 +34,7 @@ namespace SeleneGame.States {
 
             entity._rb.velocity = Vector3.Dot(entity._rb.velocity.normalized, entity.gravityDown) > 0f ? entity._rb.velocity / 1.1f : entity._rb.velocity;
 
-            if ( entity.EvadeUpdate(out float evadeCurve) )
+            if ( entity.EvadeUpdate(out _, out float evadeCurve) )
                 entity.Move( Global.timeDelta * evadeCurve * entity.data.evadeSpeed * entity.evadeDirection );
 
             if (entity.moveDirection.magnitude > 0f){

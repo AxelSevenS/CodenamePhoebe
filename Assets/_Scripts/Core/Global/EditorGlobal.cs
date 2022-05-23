@@ -12,6 +12,8 @@ namespace SeleneGame.Core {
 
         private static System.Type[] types;
 
+        #if UNITY_EDITOR
+
         [InitializeOnLoadMethod]
         private static void OnLoaded(){
 
@@ -61,5 +63,7 @@ namespace SeleneGame.Core {
 
             }
         }
+
+        #endif
     }
 }

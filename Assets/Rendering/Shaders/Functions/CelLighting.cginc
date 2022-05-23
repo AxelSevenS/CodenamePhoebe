@@ -35,9 +35,13 @@ float2 GetLuminanceSpecular (float3 normalWS, float3 viewDirectionWS, float3 lig
     float NdotL = saturate(dot(normalWS, lightDirectionWS));
     float luminance = NdotL * lightAttenuation;
 
-    float specularAngle = acos(dot(normalize(lightDirectionWS - viewDirectionWS), normalWS));
-    float specularExponent = specularAngle / (1 - smoothness);
-    float specular = exp(-specularExponent * specularExponent);
+    #ifdef SPECULARGRADIENT_ON
+        float specularAngle = acos(dot(normalize(lightDirectionWS - viewDirectionWS), normalize(normalWS)));
+        float specularExponent = specularAngle / (1 - smoothness);
+        float specular = exp(-specularExponent * specularExponent);
+    #else 
+        float specular = 0;
+    #endif
 
     return float2(luminance, specular);
 }
@@ -45,8 +49,18 @@ float2 GetLuminanceSpecular (float3 normalWS, float3 viewDirectionWS, float3 lig
 float3 CelShade (float2 luminanceSpecular, UnityTexture2D shadeGradient, UnityTexture2D specularGradient, UnityTexture2D accentGradient) {
 
     float attenuation = SampleGradientTex(shadeGradient, luminanceSpecular.x).r;
-    float specular = SampleGradientTex(specularGradient, attenuation * luminanceSpecular.y ).r;
-    float accent = SampleGradientTex(accentGradient, luminanceSpecular.x).r;
+
+    #ifdef SPECULARGRADIENT_ON
+        float specular = SampleGradientTex(specularGradient, attenuation * luminanceSpecular.y ).r;
+    #else 
+        float specular = 0;
+    #endif
+
+    #ifdef ACCENTGRADIENT_ON
+        float accent = SampleGradientTex(accentGradient, luminanceSpecular.x).r;
+    #else 
+        float accent = 0;
+    #endif
 
     return float3(attenuation, specular, accent);
 }
@@ -54,10 +68,10 @@ float3 CelShade (float2 luminanceSpecular, UnityTexture2D shadeGradient, UnityTe
 float3 CelColor (float3 lightColor, float attenuation, float specular, float accent, float3 accentColor) {
 
     float3 radiance = lightColor * _AmbientLight;
-    float3 shade = _AmbientLight*0.05;
+    float3 shade = radiance*0.2;
 
     float3 finalColor = lerp(shade, radiance, attenuation);
-    finalColor = lerp(finalColor, radiance * accentColor, accent);
+    finalColor = lerp(finalColor, finalColor * accentColor, accent);
     
     finalColor += radiance * specular;
     

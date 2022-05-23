@@ -162,13 +162,8 @@ namespace SeleneGame {
             plane.SetUVs(0, uvs);
             plane.SetTriangles(triangles, 0);
 
-            if (waterController != null){
-                collider.size = new Vector3(squareSize*meshSize,(meshHeight*squareSize) + Mathf.Abs(waterController.waveStrength) + waterController.noiseStrength + waterMargin,squareSize*meshSize);
-                collider.center = new Vector3(collider.center.x,(-(meshHeight*squareSize) + Mathf.Abs(waterController.waveStrength) + waterController.noiseStrength + waterMargin)/2f,collider.center.z);
-            }else{
-                collider.size = new Vector3(squareSize*meshSize, (meshHeight*squareSize) + waterMargin, squareSize*meshSize);
-                collider.center = new Vector3(collider.center.x,(-(meshHeight*squareSize) + waterMargin)/2f,collider.center.z);
-            }
+            collider.size = new Vector3(squareSize*meshSize,(meshHeight*squareSize) + Mathf.Abs(Shader.GetGlobalFloat("waveStrength")) + Shader.GetGlobalFloat("noiseStrength") + waterMargin,squareSize*meshSize);
+            collider.center = new Vector3(collider.center.x,(-(meshHeight*squareSize) + Mathf.Abs(Shader.GetGlobalFloat("waveStrength")) + Shader.GetGlobalFloat("noiseStrength") + waterMargin)/2f,collider.center.z);
 
             return plane;
         }

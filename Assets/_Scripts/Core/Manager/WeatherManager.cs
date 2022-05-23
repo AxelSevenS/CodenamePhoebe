@@ -18,7 +18,9 @@ namespace SeleneGame.Core {
         private ParticleSystem[] rainParticles;
         private ParticleSystem[] snowParticles;
 
-        [Space(15)]
+        [Space(15f)]
+
+        [Header("Sun and Moon")]
 
         public float sunLight = 10000f;
         public Vector2 sunSpeed;
@@ -29,12 +31,13 @@ namespace SeleneGame.Core {
         public Vector3 sunForward => sun.transform.forward;
         public Vector3 moonForward => moon.transform.forward;
 
-        [Space(15)]
-
         [SerializeField] [ColorUsage(true, true)] private Color _ambientLight = new Color(1f/199f, 0, 1f/57f);
         [HideInInspector] [ColorUsage(true, true)] public Color ambientLight = new Color(1f/199f, 0, 1f/57f);
 
-        [Space(15)]
+
+        [Space(15f)]
+
+        [Header("Weather Properties")]
 
         [SerializeField] private Vector3 _windDirection = new Vector3(1f,0,1f);
         [HideInInspector] public Vector3 windDirection = new Vector3(1f,0,1f);
@@ -42,6 +45,27 @@ namespace SeleneGame.Core {
         [Range(0, 2f)]public float snowAmount = 0f;
         public bool precipitation = false;
         public bool snow = false;
+
+        [Space(15f)]
+
+        [Header("Water Properties")]
+        public Color waterShallowColor;
+        public Color waterDeepColor;
+        public Texture2D waterNoiseMap;
+        public Texture2D waterNormalMap;
+        [Range(0, 1)] public float waterShininess;
+        [Range(0, 1)] public float waterSmoothness;
+        [Range(0, 1)] public float waterNormalIntensity = 0.47f;
+
+        [Space(15f)]
+        [Range(0, 1)] public float waterWaveStrength;
+        [Range(0, 1)] public float waterWaveSpeed;
+        [Range(0, 1)] public float waterWaveFrequency;
+        [Range(0, 0.1f)] public float waterNoiseScale;
+        [Range(0, 1)] public float waterNoiseSpeed;
+        [Range(0, 10)] public float waterNoiseStrength;
+        public float waterFoamDistance;
+        public bool waterIsPlane = true;
 
         void OnEnable(){
             if (current != null)
@@ -75,6 +99,21 @@ namespace SeleneGame.Core {
             Shader.SetGlobalColor("_AmbientLight", new Color(ambientLight.r, ambientLight.g, ambientLight.b, ambientLight.a));
             Shader.SetGlobalVector("_WindDirection", new Vector4(windDirection.x, windDirection.y, windDirection.z, 0));
             Shader.SetGlobalFloat("_SnowAmount", snowAmount);
+
+            Shader.SetGlobalColor("_WaterColorShallow", waterShallowColor);
+            Shader.SetGlobalColor("_WaterColorDeep", waterDeepColor);
+            Shader.SetGlobalTexture("_WaterNormalMap", waterNormalMap);
+            Shader.SetGlobalTexture("_WaterNoiseMap", waterNoiseMap);
+            Shader.SetGlobalFloat("_WaterShininess", waterShininess);
+            Shader.SetGlobalFloat("_WaterSmoothness", waterSmoothness);
+            Shader.SetGlobalFloat("_WaterNormalIntensity", waterNormalIntensity);
+            Shader.SetGlobalFloat("_WaterWaveStrength", waterWaveStrength);
+            Shader.SetGlobalFloat("_WaterWaveSpeed", waterWaveSpeed);
+            Shader.SetGlobalFloat("_WaterWaveFrequency", waterWaveFrequency);
+            Shader.SetGlobalFloat("_WaterNoiseStrength", waterNoiseStrength);
+            Shader.SetGlobalFloat("_WaterNoiseSpeed", waterNoiseSpeed);
+            Shader.SetGlobalFloat("_WaterNoiseScale", waterNoiseScale);
+            Shader.SetGlobalInt ("_WaterCull", 2);
         }
 
         void Update(){

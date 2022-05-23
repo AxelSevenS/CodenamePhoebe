@@ -10,7 +10,7 @@ Material:
   m_Name: Skin
   m_Shader: {fileID: -6465566751694194690, guid: 6566a88970a4a3a419d928f0c3db33a5,
     type: 3}
-  m_ShaderKeywords: 
+  m_ShaderKeywords: ACCENTGRADIENT_ON PROXIMITYDITHER_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 1
@@ -41,7 +41,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - Texture2D_408732e7caa34af796ddb77be6aaabea:
-        m_Texture: {fileID: 2800000, guid: 169baa3daa525b14b99d5da80d9db061, type: 3}
+        m_Texture: {fileID: 2800000, guid: e73491cfb5de63548b26dc2a5206eb4f, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - Texture2D_62ada9bf79e840e99d54061c68e5656e:
@@ -72,6 +72,10 @@ Material:
         m_Texture: {fileID: 2800000, guid: 063fcbdcf4614a24cb139f0f176ce4b6, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - Texture2D_ea1c329133fc4f01a0ae24d3d7ecfc16:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _BaseMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -88,8 +92,20 @@ Material:
         m_Texture: {fileID: 2800000, guid: cebe9a3822944c141a5d9dc81779ebbc, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _CelShading_f5c658ba84a743b29c36c275531286d9_Texture2D83f355de83174ace915108acbec33656_2287955086:
+        m_Texture: {fileID: 8400000, guid: 3fd964db336004648ba75c5ac7ef9f56, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CelShading_f5c658ba84a743b29c36c275531286d9_Texture2D9666dd2f2f8f4fddb6c2a5c61ddfa9bd_3072536305:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _CelShading_f5c658ba84a743b29c36c275531286d9_Texture2Dbca7a61f2f4d4f88a34f04c975035108_3076940783:
         m_Texture: {fileID: 2800000, guid: 0ccb8e0d49adee140b8472de4ae0bb16, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CelShading_f5c658ba84a743b29c36c275531286d9_Texture2Dd30dc9690f7c49f8b4209f534ac84964_1885437178:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
@@ -136,6 +152,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_ae174264f50a47fda28a00b42ff70be5_Texture_1:
+        m_Texture: {fileID: 8400000, guid: 3fd964db336004648ba75c5ac7ef9f56, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -153,8 +173,25 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - ACCENT: 0
+    - ACCENTGRADIENT: 1
+    - BOOLEAN_1BBEACABB706429EA63498F525CD6032: 0
+    - BOOLEAN_45CDE634EEDC4808AFA5C4A73EF153F3: 0
+    - BOOLEAN_9399624E9FCF4619A207050B934C0850: 0
+    - Boolean_1: 0
+    - Boolean_101eac5857d84f2b8c80fed3fbaa437b: 0
+    - Boolean_46a28e5731304e738b9c0f263ad40164: 0
     - Boolean_4dcb652bd35946169f20fa329ff261b7: 1
     - Boolean_62b895750dbe44d9bb512d647701feaf: 0
+    - Boolean_746f00cdd21a463a8f7db0eed7f65639: 0
+    - Boolean_f3ce2507893d400b844eabb1891e80ad: 0
+    - Boolean_fcee53381cb2428387cf1c12b4c6d15a: 0
+    - HATCHING: 0
+    - PROXIMITYDITHER: 1
+    - SPECULARGRADIENT: 0
+    - Vector1_eba81f4ec9494ffc89d831e650dc2eee: 0
+    - Vector1_f99686aaeca44c4687bb480feabfa5fb: 0
+    - Vector1_f99686aaeca44c4687bb480feabfa5fb_1: 0
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1
@@ -182,6 +219,8 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
+    - Color_1a287ec675fe4899bb4a792f25de7640: {r: 0, g: 0, b: 0, a: 0}
+    - Color_7cc429ac704047a2a3102638639c5725: {r: 1, g: 0, b: 0, a: 0}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}

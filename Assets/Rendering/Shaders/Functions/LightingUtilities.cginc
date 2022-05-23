@@ -1,7 +1,6 @@
 #ifndef LIGHTING_UTILITIES
 #define LIGHTING_UTILITIES
 
-
 float3 ComputeSpecular(float3 L, float3 N, float3 viewVector, float smoothness, float shininess){
     if (shininess > 0){
         float specularAngle = acos(dot(normalize(L - viewVector), N));

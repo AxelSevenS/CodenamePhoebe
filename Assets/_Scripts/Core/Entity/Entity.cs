@@ -176,7 +176,7 @@ namespace SeleneGame.Core {
         private void Update(){
 
             evading.SetVal( evadeTimer > data.evadeCooldown );
-            onGround.SetVal( ColliderCast( gravityDown.normalized * 0.1f, out groundHit, 0.05f, Global.GroundMask ) );
+            onGround.SetVal( ColliderCast( Vector3.zero, gravityDown.normalized * 0.1f, out groundHit, 0.05f, Global.GroundMask ) );
             
             state.HandleInput();
 
@@ -216,9 +216,9 @@ namespace SeleneGame.Core {
         private void LateUpdate(){
         }
 
-        public bool ColliderCast( Vector3 direction, out RaycastHit checkHit, float skinThickness, LayerMask layerMask ) {
+        public bool ColliderCast( Vector3 position, Vector3 direction, out RaycastHit checkHit, float skinThickness, LayerMask layerMask ) {
             foreach (Collider col in _colliders){
-                bool hasHitWall = col.ColliderCast( col.transform.position, direction, out RaycastHit tempHit, skinThickness, layerMask );
+                bool hasHitWall = col.ColliderCast( col.transform.position + _transform.TransformDirection(position), direction, out RaycastHit tempHit, skinThickness, layerMask );
                 if ( !hasHitWall || tempHit.collider == null ) continue;
 
                 checkHit = tempHit;
@@ -239,7 +239,7 @@ namespace SeleneGame.Core {
             for (int i = 0; i < 11; i++){
                 float angle = (i%2 == 0 && i != 0) ? (i-1 * -30f) : i * 30f;
                 Quaternion angleTurn = Quaternion.AngleAxis( angle, rotation * Vector3.down);
-                bool hasHitWall = ColliderCast( angleTurn * absoluteForward * 0.3f, out RaycastHit tempHit, 0.05f, layerMask );
+                bool hasHitWall = ColliderCast( Vector3.zero, angleTurn * absoluteForward * 0.3f, out RaycastHit tempHit, 0.05f, layerMask );
                 if (hasHitWall){
                     wallHitOut = tempHit;
                     return true;
@@ -300,9 +300,8 @@ namespace SeleneGame.Core {
 
             Vector3 move = Vector3.ProjectOnPlane(dir, groundOrientation * -gravityDown);
 
-            // Needs a bit of Reworking.
             // if (canStep){
-            //     bool stepCollision = _collider.ColliderCast( transform.position + move.normalized * 0.5f, gravityDown.normalized * data.stepHeight * 0.98f, data.stepHeight, out RaycastHit stepHit, 0.45f );
+            //     bool stepCollision = _collider.ColliderCast( Vector3.zero, transform.position + move.normalized * 0.5f, gravityDown.normalized * data.stepHeight * 0.98f, data.stepHeight, out RaycastHit stepHit, 0.45f );
 
             //     if (!walkCollision && stepCollision) {
             //         Vector3 stepElevation = Vector3.ProjectOnPlane( stepHit.point - (bottom + move), -move );
@@ -316,7 +315,7 @@ namespace SeleneGame.Core {
         public void Move(Vector3 dir){
             if (dir.magnitude == 0f) return;
 
-            bool walkCollision = this.ColliderCast( dir, out RaycastHit walkHit, 0.15f, Global.GroundMask);
+            bool walkCollision = this.ColliderCast( Vector3.zero, dir, out RaycastHit walkHit, 0.15f, Global.GroundMask);
 
             if ( walkCollision /* && walkHit.transform.gameObject.layer == 0 */) 
                 dir = dir.NullifyInDirection( -walkHit.normal );
@@ -339,13 +338,15 @@ namespace SeleneGame.Core {
             onJump?.Invoke(jumpDirection);
         }
 
-        public bool EvadeUpdate(out float evadeCurve){
+        public bool EvadeUpdate(out float evadeTime, out float evadeCurve){
             if ( !evading ) {
+                evadeTime = 0f;
                 evadeCurve = 0f;
                 return false;
             }
 
-            evadeCurve = data.evadeCurve.Evaluate( 1 - ( (evadeTimer - data.evadeCooldown) / data.evadeDuration ) );
+            evadeTime = Mathf.Clamp01( 1 - ( (evadeTimer - data.evadeCooldown) / data.evadeDuration ) );
+            evadeCurve = Mathf.Clamp01( data.evadeCurve.Evaluate( evadeTime ) );
             return true;
         }
 

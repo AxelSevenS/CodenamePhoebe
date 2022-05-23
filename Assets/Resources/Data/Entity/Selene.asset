@@ -25,7 +25,7 @@ MonoBehaviour:
   crouchSpeed: 1
   swimSpeed: 0.85
   evadeSpeed: 20
-  evadeDuration: 0.4
+  evadeDuration: 0.5
   evadeCooldown: 0.06
   evadeCurve:
     serializedVersion: 2
@@ -42,38 +42,29 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0.19787118
       value: 1
+      inSlope: 0.023822755
+      outSlope: 0.023822755
+      tangentMode: 136
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.39583743
+      value: 1.0023575
       inSlope: 0
       outSlope: 0
       tangentMode: 136
       weightedMode: 0
       inWeight: 0.33333334
       outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.6
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 136
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.81131667
-      value: 0.5576231
-      inSlope: -6.5467234
-      outSlope: -6.5467234
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.11270596
-      outWeight: 0.09460285
     - serializedVersion: 3
       time: 1
       value: 0
-      inSlope: -1.0831587
-      outSlope: -1.0831587
+      inSlope: -0.006289968
+      outSlope: -0.006289968
       tangentMode: 0
       weightedMode: 0
-      inWeight: 1
+      inWeight: 0.62069386
       outWeight: 0.33333334
     m_PreInfinity: 2
     m_PostInfinity: 2

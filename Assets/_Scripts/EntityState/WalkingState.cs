@@ -44,7 +44,7 @@ namespace SeleneGame.States {
                     entity.jumpCount = 1;
             }
 
-            waterHover.SetVal( entity.currentWeapon.weightModifier < 0.8f && entity.moveInput.zeroTimer < 0.6f && entity.ColliderCast( entity.gravityDown.normalized * 0.15f, out waterHoverHit, 0.15f, Global.WaterMask ) );
+            waterHover.SetVal( entity.currentWeapon.weightModifier < 0.8f && entity.moveInput.zeroTimer < 0.6f && entity.ColliderCast( Vector3.zero, entity.gravityDown.normalized * 0.15f, out waterHoverHit, 0.15f, Global.WaterMask ) );
             entity.onGround.SetVal( entity.onGround || waterHover );
 
             if (entity.inWater && entity.currentWeapon.weightModifier <= 1f){
@@ -101,7 +101,7 @@ namespace SeleneGame.States {
             if (entity.moveDirection.magnitude > 0f){
 
                 if ( !entity.evading )
-                    entity.absoluteForward = Vector3.Lerp( entity.absoluteForward, entity.moveDirection.normalized, 20f * Global.timeDelta);
+                    entity.absoluteForward = Vector3.Lerp( entity.absoluteForward, entity.moveDirection.normalized, 100f * Global.timeDelta);
 
                 if (entity.evadeTimer > entity.data.totalEvadeDuration - 0.15f)
                     entity.evadeDirection = entity.moveDirection.normalized;
@@ -109,10 +109,10 @@ namespace SeleneGame.States {
             }
 
             // Move when evading
-            if ( entity.EvadeUpdate(out float evadeCurve) )
-                entity.GroundedMove( Global.timeDelta * evadeCurve * entity.data.evadeSpeed * entity.evadeDirection );
+            if ( entity.EvadeUpdate(out _, out float evadeSpeed) )
+                entity.GroundedMove( Global.timeDelta * evadeSpeed * entity.data.evadeSpeed * entity.evadeDirection );
 
-            entity.GroundedMove(entity.moveSpeed * ( 1 - evadeCurve ) * Global.timeDelta * entity.absoluteForward, entity.onGround);
+            entity.GroundedMove(entity.moveSpeed * (1 - evadeSpeed) * Global.timeDelta * entity.moveDirection, entity.onGround);
 
             // entity.GroundedMove(Global.timeDelta * 2.5f * entity.inertia );
             
@@ -122,12 +122,13 @@ namespace SeleneGame.States {
 
         protected override void UpdateMoveSpeed(){
             float newSpeed = entity.moveDirection.magnitude > 0f ? entity.data.baseSpeed : 0f;
+            // newSpeed = entity.evading ? newSpeed * 0.15f : newSpeed;
             // if (entity.walkSpeed != Entity.WalkSpeed.run) 
             //     newSpeed *= entity.walkSpeed == Entity.WalkSpeed.sprint ? /* entity.data.sprintSpeed */1f : entity.data.slowSpeed;
 
             newSpeed *= speedMultiplier;
 
-            float speedDelta = newSpeed > entity.moveSpeed ? 40f : 80f;
+            float speedDelta = newSpeed > entity.moveSpeed ? 150f : 100f;
             
             entity.moveSpeed = Mathf.MoveTowards(entity.moveSpeed, newSpeed, speedDelta * Global.timeDelta);
         }

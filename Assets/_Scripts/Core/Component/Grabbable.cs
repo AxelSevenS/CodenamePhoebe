@@ -19,6 +19,7 @@ namespace SeleneGame.Core {
         void Awake(){
             _rigidbody = GetComponent<Rigidbody>();
             _collider = GetComponent<Collider>();
+            Global.SetLayerRecursively(gameObject, 6);
         }
 
         void FixedUpdate() {
