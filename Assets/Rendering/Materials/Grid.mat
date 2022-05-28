@@ -59,6 +59,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - Texture2D_1709bfc569f34021a1205546b253ac2b:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - Texture2D_1a91e16ca2334e0491830bda0a5e2d44:
         m_Texture: {fileID: 2800000, guid: 063fcbdcf4614a24cb139f0f176ce4b6, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -68,6 +72,10 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - Texture2D_408732e7caa34af796ddb77be6aaabea:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_51f5017f54fb4442ab0c440143295633:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -89,6 +97,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     - Texture2D_9d2dc686cea4411eb4cd42e0ad89db69:
         m_Texture: {fileID: 10309, guid: 0000000000000000f000000000000000, type: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_9e7ce96f70ec4e4fad0aca3a397849ab:
+        m_Texture: {fileID: 2800000, guid: 213d402938d88bd43b08fd3e7c12158b, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - Texture2D_9feaf6a96f6e4252bb63b9afe4d0784c:
@@ -226,17 +238,26 @@ Material:
     - Boolean_4dcb652bd35946169f20fa329ff261b7: 0
     - Boolean_62b895750dbe44d9bb512d647701feaf: 0
     - Boolean_746f00cdd21a463a8f7db0eed7f65639: 0
+    - CEL_ACCENT: 0
+    - CEL_SPECULAR: 0
     - EMISSIONMAP: 0
-    - EMISSIONMAP_ON: 1
+    - EMISSIONMAP_ON: 0
+    - FLOWMAP_ON: 0
     - HATCHING: 0
+    - NORMALMAP_ON: 0
     - SPECULARGRADIENT: 0
+    - Vector1_1: 0.5
     - Vector1_35c667d970344fd6b95be761e487f0a9: 0
+    - Vector1_38eeab6d9e3146b49202d29537ff230c: 0.5
     - Vector1_4dc3fdd432d049e39b7967ae08cdd3cb: 0
     - Vector1_554e352f997b498e8ce0f46e2e848097: 0
+    - Vector1_693d76d6835a455fba9b2a18be0e2bec: 0.27
     - Vector1_7e42139876d84cd5a82c6cbf4de9ebbf: 0
+    - Vector1_83717f647fb949a0b96857d7ef1efef2: 0
     - Vector1_a62ab1db54d34856836ce0b6d78fe08f: 1
     - Vector1_c092b1ab83a845279db3044fddc481d7: 1
     - Vector1_c9c0151777624e528172d11b6bdf3e3e: 0.07
+    - Vector1_da40d7438c114e189f67f755323f75ea: 0.85
     - Vector1_dbe98fbfd091484698b433c5a69f2e97: 0.64
     - Vector1_eba81f4ec9494ffc89d831e650dc2eee: 0
     - Vector1_f99686aaeca44c4687bb480feabfa5fb: 0

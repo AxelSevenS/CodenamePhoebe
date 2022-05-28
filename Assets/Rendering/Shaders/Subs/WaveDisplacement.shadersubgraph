@@ -784,14 +784,14 @@
     ],
     "synonyms": [],
     "m_Precision": 0,
-    "m_PreviewExpanded": false,
+    "m_PreviewExpanded": true,
     "m_PreviewMode": 0,
     "m_CustomColors": {
         "m_SerializableColors": []
     },
     "m_SourceType": 0,
     "m_FunctionName": "CalculateWave",
-    "m_FunctionSource": "c86d9122059e92248b2349e44c4b2797",
+    "m_FunctionSource": "1ada67e860ecac842aab1481b69cff8f",
     "m_FunctionBody": "Enter function body here..."
 }
 

@@ -2,29 +2,37 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using SeleneGame.Core;
+using SeleneGame.Entities;
 
 namespace SeleneGame.States {
     
     public class SwimmingState : State{
 
         public override int id => 1;
-        protected override Vector3 GetCameraPosition() => entity.currentWeapon.cameraPosition;
+        protected override Vector3 GetCameraPosition() {
+            if (entity is ArmedEntity armed)
+                return armed.currentWeapon.cameraPosition;
+                
+            return base.GetCameraPosition();
+        }
 
-        public override bool masked => false;
+        // public override bool masked => true;
 
         protected override void StateAwake(){
-            entity.evadeCount = 1;
             entity.jumpCount = 1;
         }
 
         protected override void StateUpdate(){
 
-            if (entity.currentWeapon.weightModifier > 1f || !entity.inWater){
+
+            if (!entity.inWater || entity.CanSink()){
                 entity.SetState("Walking");
             }
 
-            if (entity.evadeInput.started)
+
+            if ( entity.evadeInput.started )
                 entity.Evade(entity.absoluteForward);
+
 
         }
 
@@ -34,36 +42,43 @@ namespace SeleneGame.States {
 
             entity._rb.velocity = Vector3.Dot(entity._rb.velocity.normalized, entity.gravityDown) > 0f ? entity._rb.velocity / 1.1f : entity._rb.velocity;
 
-            if ( entity.EvadeUpdate(out _, out float evadeCurve) )
-                entity.Move( Global.timeDelta * evadeCurve * entity.data.evadeSpeed * entity.evadeDirection );
+            // if (entity is ArmedEntity armed && armed.EvadeUpdate(out _, out float evadeCurve)){
+                
+            //     armed.Move( Global.timeDelta * evadeCurve * armed.data.evadeSpeed * armed.evadeDirection );
+                
+            // }
+
 
             if (entity.moveDirection.magnitude > 0f){
 
                 entity.absoluteForward = entity.moveDirection.normalized;
-                if ( (entity.evadeTimer < entity.data.evadeCooldown) ){
-                    Vector3 up = Vector3.Cross(entity.absoluteForward, Vector3.Cross(entity.absoluteForward, entity.gravityDown));
-                    entity.RotateTowardsAbsolute(entity.absoluteForward, up);
-                }
+                Vector3 newUp = Vector3.Cross(entity.absoluteForward, Vector3.Cross(entity.absoluteForward, entity.gravityDown));
+                // if ( entity is ArmedEntity && (armed.evadeTimer < armed.data.evadeCooldown) ){
+                //     armed.RotateTowardsAbsolute(armed.absoluteForward, newUp);
+                // }
 
                 entity.Move(entity.moveDirection * Global.timeDelta * entity.moveSpeed);
+
+                entity.RotateTowardsAbsolute(entity.absoluteForward, newUp);
             }
+
 
 
         }
 
-        protected override void UpdateMoveSpeed(){
+        public override float UpdateMoveSpeed(){
             float newSpeed = entity.walkSpeed != Entity.WalkSpeed.idle ? entity.data.baseSpeed : 0f;
             if (entity.walkSpeed != Entity.WalkSpeed.run) 
                 newSpeed *= entity.walkSpeed == Entity.WalkSpeed.sprint ? /* entity.data.sprintSpeed */1f : entity.data.slowSpeed;
 
-            newSpeed = newSpeed * speedMultiplier * entity.data.swimSpeed;
+            newSpeed = newSpeed * entity.data.swimSpeed;
             
-            entity.moveSpeed = Mathf.MoveTowards(entity.moveSpeed, newSpeed, entity.data.moveIncrement * Global.timeDelta);
+            return newSpeed;
         }
 
         public override void HandleInput(){
             
-            entity.moveDirection = entity.rotation * entity.lookRotation * entity.moveInput;
+            entity.moveDirection.SetVal( entity.rotation * entity.lookRotation * entity.moveInput );
             
             if (entity.jumpInput && entity.isOnWaterSurface && entity.jumpCount != 0 && entity.jumpCooldown == 0f ){
                 entity.Jump( -entity.gravityDown );

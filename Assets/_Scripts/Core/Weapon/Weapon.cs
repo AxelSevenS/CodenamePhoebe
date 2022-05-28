@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using SeleneGame.Entities;
 
 namespace SeleneGame.Core {
     
@@ -7,7 +8,7 @@ namespace SeleneGame.Core {
     public abstract class Weapon : MonoBehaviour {
 
         [Space(35)]
-        [ReadOnly] public Entity entity;
+        [ReadOnly] public ArmedEntity entity;
         [ReadOnly] public WeaponData data;
 
         [ReadOnly] public GameObject model;
@@ -15,23 +16,23 @@ namespace SeleneGame.Core {
 
         public new string name => data.name;
 
-        public float speedMultiplier => GetSpeedMultiplier();
+        // public float speedMultiplier => GetSpeedMultiplier();
         public float weightModifier => GetWeightModifier();
         public Vector3 jumpDirection => GetJumpDirection();
         public Vector3 cameraPosition => GetCameraPosition();
         public Vector3 overrideRotation => GetOverrideRotation();
 
 
-        protected virtual float GetSpeedMultiplier() => 1f;
+        // protected virtual float GetSpeedMultiplier() => 1f;
         protected virtual float GetWeightModifier() => 1f;
         protected virtual Vector3 GetJumpDirection() => -entity.gravityDown;
-        protected virtual Vector3 GetCameraPosition() => new Vector3(1f, 0f, -3.5f);
+        protected virtual Vector3 GetCameraPosition() => Player.current.defaultCameraPosition;
         protected virtual Vector3 GetOverrideRotation() => entity.absoluteForward;
 
-        public virtual bool shifting => false;
+        public bool isEquipped => entity.currentWeapon == this;
 
         private void OnEnable() {
-            entity = GetComponent<Entity>();
+            entity = GetComponent<ArmedEntity>();
             SetData();
             LoadModel();
 
@@ -63,17 +64,17 @@ namespace SeleneGame.Core {
 
         public void Update(){
             WeaponUpdate();
-            if (entity.currentWeapon == this)
+            if (isEquipped)
                 WeaponUpdateEquipped();
         }
         public void LateUpdate(){
             WeaponLateUpdate();
-            if (entity.currentWeapon == this)
+            if (isEquipped)
                 WeaponLateUpdateEquipped();
         }
         public void FixedUpdate(){
             WeaponFixedUpdate();
-            if (entity.currentWeapon == this)
+            if (isEquipped)
                 WeaponFixedUpdateEquipped();
         }
 

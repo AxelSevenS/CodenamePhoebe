@@ -18,7 +18,6 @@ namespace SeleneGame.Core {
 
         private void Start() {
         }
-
         private void Update() {
 
             Cursor.visible = Player.current.menu;

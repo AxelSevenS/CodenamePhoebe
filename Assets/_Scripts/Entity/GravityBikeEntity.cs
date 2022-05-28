@@ -7,8 +7,6 @@ namespace SeleneGame.Entities {
 
     public class GravityBikeEntity : Entity {
         
-        protected override void EntityAwake(){
-            SetState("Vehicle");
-        }
+        public override string defaultState => "Vehicle";
     }
 }

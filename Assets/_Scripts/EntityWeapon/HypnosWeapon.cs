@@ -14,8 +14,6 @@ namespace SeleneGame.Weapons {
         private Vector3 wallRunNormal;
         [SerializeField] private float wallRunTimer = 4f;
 
-        public override bool shifting => wallRun;
-
 
         
 
@@ -25,9 +23,9 @@ namespace SeleneGame.Weapons {
         public RaycastHit wallHit;
 
 
-        protected override float GetSpeedMultiplier(){
-            return entity.state is ShiftingState ? 1.5f : 1f;
-        }
+        // protected override float GetSpeedMultiplier(){
+        //     return entity.state is ShiftingState ? 1.5f : 1f;
+        // }
 
         protected override float GetWeightModifier() => 0.75f;
 
@@ -97,7 +95,7 @@ namespace SeleneGame.Weapons {
 
             //     entity.Move(wallRunDir * Global.timeDelta * entity.data.baseSpeed * 0.45f);
 
-            //     if ( entity.jumpInput.currentValue )
+            //     if ( entity.jumpInput )
             //         entity.Jump( (wallRunDir + wallHit.normal*1.2f - entity.gravityDown*2f).normalized * 1.4f );
             // }
         }

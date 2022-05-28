@@ -30,22 +30,26 @@ namespace SeleneGame.Core {
         // public static string GetDataPath() => "Data/Entity";
 
         
+        public RuntimeAnimatorController controller;
         public float maxHealth;
         public Vector3 size = new Vector3(1f, 1f, 1f);
         public float stepHeight = 1f;
         public float moveIncrement = 20f;
         public float weight = 15f;
         public float jumpHeight= 1f;
+
+        [Header("Movement Speed")]
         public float baseSpeed = 1f;
+        public float sprintSpeed = 1f;
         public float slowSpeed = 1f;
-        public float crouchSpeed = 1f;
         public float swimSpeed;
+
+        [Header("Evade")]
         public float evadeSpeed;
         public float evadeDuration;
         public float evadeCooldown;
         public float totalEvadeDuration => evadeDuration + evadeCooldown;
         public AnimationCurve evadeCurve;
-        public RuntimeAnimatorController controller;
         
     }
 }

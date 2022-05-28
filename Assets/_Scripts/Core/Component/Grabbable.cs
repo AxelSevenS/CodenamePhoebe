@@ -37,10 +37,11 @@ namespace SeleneGame.Core {
         }
 
         public void Interact(Entity entity){
-            Grab(entity);
+            if (entity is GravityShifterEntity shifter)
+                Grab(shifter);
         }
 
-        public void Grab(Entity entity){
+        public void Grab(GravityShifterEntity entity){
             if (entity.grabbedObjects.Count >= 4) return;
 
             _grabbed = true;
@@ -49,17 +50,17 @@ namespace SeleneGame.Core {
             randomSpin = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized * 0.3f ;
         }
 
-        public void Throw(Entity entity){
+        public void Throw(GravityShifterEntity entity){
             
             if ( !entity.grabbedObjects.Contains(this) ) return;
 
             _grabbed = false;
 
             entity.grabbedObjects.Remove(this);
-            _rigidbody.AddForce(entity.lookRotation.currentValue*Vector3.forward*30f*_rigidbody.mass, ForceMode.Impulse);
+            _rigidbody.AddForce(entity.lookRotation*Vector3.forward*30f*_rigidbody.mass, ForceMode.Impulse);
 
 
-            var impulseParticle = Instantiate(Global.LoadParticle("ShiftImpulseParticles"), entity._transform.position + entity.lookRotation.currentValue * Vector3.forward*2f, entity.lookRotation.currentValue);
+            var impulseParticle = Instantiate(Global.LoadParticle("ShiftImpulseParticles"), entity._transform.position + entity.lookRotation * Vector3.forward*2f, entity.lookRotation);
             Destroy(impulseParticle, 1.2f);
         }
 

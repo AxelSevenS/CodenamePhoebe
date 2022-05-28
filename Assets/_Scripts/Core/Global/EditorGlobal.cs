@@ -47,7 +47,7 @@ namespace SeleneGame.Core {
         // }
 
         private static void CreateAssetOfInheritingScripts(System.Type scriptType, System.Type dataType, string path, string suffixToBeRemoved = ""){
-            System.Type[] inheriting = (from System.Type checkedType in types where checkedType.IsSubclassOf(scriptType) select checkedType).ToArray();
+            System.Type[] inheriting = (from System.Type checkedType in types where checkedType.IsSubclassOf(scriptType) && !checkedType.IsAbstract select checkedType).ToArray();
             foreach(var inheritingType in inheriting){
                 string assetName = suffixToBeRemoved != "" ? inheritingType.Name.Replace(suffixToBeRemoved,"") : inheritingType.Name; 
                 string assetPath = $@"{path}\{assetName}.asset";

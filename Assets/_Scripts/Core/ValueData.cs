@@ -31,6 +31,13 @@ namespace SeleneGame.Core {
 
         public float zeroTimer;
         public float nonZeroTimer;
+        public float x => currentValue.x;
+        public float y => currentValue.y;
+        public float z => currentValue.z;
+        public float magnitude => currentValue.magnitude;
+        public Vector3 normalized => currentValue.normalized;
+        public static Vector3 operator *(VectorData a, float b) => a.currentValue * b;
+        public static Vector3 operator *(float a, VectorData b) => a * b.currentValue;
         
         protected override void Update(){
             zeroTimer = currentValue == Vector3.zero ? zeroTimer + Global.timeDelta : 0f;
@@ -40,6 +47,10 @@ namespace SeleneGame.Core {
 
     [System.Serializable]
     public class QuaternionData : ValueData<Quaternion> {
+
+        public static Vector3 operator *(QuaternionData a, Vector3 b) => a.currentValue * b;
+        public static Vector3 operator *(QuaternionData a, VectorData b) => a.currentValue * b.currentValue;
+        public static Quaternion operator *(QuaternionData a, QuaternionData b) => a.currentValue * b.currentValue;
         
     }
     
@@ -50,6 +61,7 @@ namespace SeleneGame.Core {
         public float falseTimer;
         public bool started => currentValue && !lastValue;
         public bool stopped => !currentValue && lastValue;
+
         
         protected override void Update(){
             lastValue = currentValue;

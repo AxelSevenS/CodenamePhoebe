@@ -61,6 +61,6 @@ public class ShaderGraphConversionTool : Editor {
             BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
         var generatedShader = generatedShaderMethod.Invoke(generator, new object[] { });
 
-        WriteShaderToFile(ConvertShader((string) generatedShader), path, shaderGraphName);
+        WriteShaderToFile(ConvertShader((string) generatedShader), path, shaderGraphName); 
     }
 }

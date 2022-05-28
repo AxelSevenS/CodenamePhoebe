@@ -187,7 +187,7 @@ Material:
     - Boolean_101eac5857d84f2b8c80fed3fbaa437b: 0
     - Boolean_4dcb652bd35946169f20fa329ff261b7: 1
     - Boolean_62b895750dbe44d9bb512d647701feaf: 0
-    - Boolean_746f00cdd21a463a8f7db0eed7f65639: 0
+    - Boolean_746f00cdd21a463a8f7db0eed7f65639: 1
     - EMISSIONMAP: 0
     - EMISSIONMAP_ON: 0
     - HATCHING: 1

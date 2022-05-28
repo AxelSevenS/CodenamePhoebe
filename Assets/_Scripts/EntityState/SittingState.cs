@@ -9,9 +9,9 @@ namespace SeleneGame.States {
     public class SittingState : State{
         
         public override int id => 100;
-        protected override Vector3 GetCameraPosition() => seat.seatEntity.state.cameraPosition;
+        protected override Vector3 GetCameraPosition() => seat.seatEntity?.state.cameraPosition ?? base.GetCameraPosition();
 
-        public override bool masked => true;
+        // public override bool masked => true;
 
         [HideInInspector] public Seat seat;
 
@@ -27,7 +27,9 @@ namespace SeleneGame.States {
             entity.RotateTowardsAbsolute(Vector3.ProjectOnPlane(seat.transform.rotation * -seat.sittingDir, seat.transform.up), seat.transform.up);
         }
 
-        protected override void UpdateMoveSpeed(){;}
+        // public override float UpdateMoveSpeed(){
+        //     return base.UpdateMoveSpeed();
+        // }
 
         public override void HandleInput(){
             if (seat.seatEntity == null) return;

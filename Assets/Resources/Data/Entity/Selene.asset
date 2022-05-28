@@ -14,18 +14,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   displayName: Selene
   costume: {fileID: 11400000, guid: bad0e400899943c43af368f1c7710c38, type: 2}
+  controller: {fileID: 9100000, guid: 080e304828b097b4cac678d0babd1671, type: 2}
   maxHealth: 0
-  size: {x: 0.5, y: 3.34, z: 0.5}
-  stepHeight: 0.75
-  moveIncrement: 20
+  size: {x: 0.5, y: 3.12, z: 0.5}
+  stepHeight: 1
+  moveIncrement: 90
   weight: 12.5
   jumpHeight: 17
   baseSpeed: 14
+  sprintSpeed: 1.35
   slowSpeed: 0.7
-  crouchSpeed: 1
   swimSpeed: 0.85
-  evadeSpeed: 20
-  evadeDuration: 0.5
+  evadeSpeed: 23.5
+  evadeDuration: 0.6
   evadeCooldown: 0.06
   evadeCurve:
     serializedVersion: 2
@@ -69,4 +70,3 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  controller: {fileID: 9100000, guid: 080e304828b097b4cac678d0babd1671, type: 2}

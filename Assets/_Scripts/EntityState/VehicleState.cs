@@ -10,7 +10,7 @@ namespace SeleneGame.States {
         public override int id => 7;
         protected override Vector3 GetCameraPosition() => new Vector3(0.3f, 0.5f, -6.5f);
 
-        public override bool masked => false;
+        // public override bool masked => false;
 
         private float accelerationLinger = 0f;
         private Vector3 finalDirection = Vector3.zero;
@@ -20,12 +20,10 @@ namespace SeleneGame.States {
         private void OnEnable(){
 
             entity.onJump += OnEntityJump;
-            entity.onEvade += OnEntityEvade;
         }
         private void OnDisable(){
 
             entity.onJump -= OnEntityJump;
-            entity.onEvade -= OnEntityEvade;
         }
 
         protected override void StateUpdate(){
@@ -39,10 +37,9 @@ namespace SeleneGame.States {
 
         protected override void StateFixedUpdate(){
 
-            entity.JumpGravity(entity.gravityForce, entity.gravityDown, entity.jumpInput);
+            entity.JumpGravity(entity.GravityMultiplier(), entity.gravityDown, entity.jumpInput);
             
             if ( entity.onGround ){
-                entity.evadeCount = 1;
                 if( entity.jumpCooldown == 0f )
                     entity.jumpCount = 1;
             }
@@ -50,17 +47,18 @@ namespace SeleneGame.States {
 
 
             entity.absoluteForward = Vector3.Slerp(entity.absoluteForward, inputDirection, Global.timeDelta * 3f).normalized;
-            entity.moveDirection = entity.absoluteForward;
+            entity.moveDirection.SetVal(entity.absoluteForward);
 
             entity.GroundedMove( entity.moveSpeed * Global.timeDelta * entity.moveDirection, false );
 
             bool terrainFlatEnough = Vector3.Dot(entity.groundOrientation * -entity.gravityDown, -entity.gravityDown) > 0.75f;
 
-            Vector3 groundRelativeRotation = terrainFlatEnough ? entity.groundOrientation * -entity.gravityDown : -entity.gravityDown;
-            Vector3 rightDir = Vector3.Cross(entity.absoluteForward, groundRelativeRotation);
-            Vector3 finalRotation = (groundRelativeRotation*4f + (Vector3.Dot( inputDirection, rightDir ) * rightDir)).normalized;
+            Vector3 groundUp = terrainFlatEnough ? entity.groundOrientation * -entity.gravityDown : -entity.gravityDown;
+            Vector3 rightDir = Vector3.Cross(entity.absoluteForward, groundUp);
+            Vector3 finalUp = (groundUp*4f + (Vector3.Dot( inputDirection, rightDir ) * rightDir)).normalized;
+            // finalUp = entity.onGround ? finalUp : (finalUp + finalUp + finalUp - entity._transform.forward).normalized;
 
-            entity.RotateTowardsAbsolute(entity.absoluteForward, finalRotation);
+            entity.RotateTowardsAbsolute(entity.absoluteForward, finalUp);
 
 
 
@@ -71,15 +69,17 @@ namespace SeleneGame.States {
 
         }
 
-        protected override void UpdateMoveSpeed(){
+        public override float UpdateMoveSpeed(){
 
             float newSpeed = Vector3.Dot(entity.moveDirection, inputDirection) * accelerationLinger * entity.data.baseSpeed;
             if (entity.walkSpeed != Entity.WalkSpeed.run) 
                 newSpeed *= entity.walkSpeed == Entity.WalkSpeed.sprint ? /* entity.data.sprintSpeed */1f : entity.data.slowSpeed;
 
-            newSpeed = newSpeed * speedMultiplier;
+            // if (entity is GravityShifterEntity gravityShifter){
+            //     newSpeed *= gravityShifter.currentWeapon.speedMultiplier;
+            // }
             
-            entity.moveSpeed = Mathf.MoveTowards(entity.moveSpeed, newSpeed, entity.data.moveIncrement * Global.timeDelta);
+            return newSpeed;
         }
 
 
@@ -103,9 +103,6 @@ namespace SeleneGame.States {
         private void OnEntityJump(Vector3 jumpDirection){
             entity.jumpCount--;
             entity.jumpCooldown = 0.4f;
-        }
-        private void OnEntityEvade(Vector3 evadeDirection){
-            entity.evadeCount--;
         }
     }
 }

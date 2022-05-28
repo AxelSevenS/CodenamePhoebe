@@ -10,7 +10,7 @@ Material:
   m_Name: Gold
   m_Shader: {fileID: -6465566751694194690, guid: 6566a88970a4a3a419d928f0c3db33a5,
     type: 3}
-  m_ShaderKeywords: 
+  m_ShaderKeywords: CEL_SPECULAR_ON SPECULARGRADIENT_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
@@ -36,12 +36,20 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - Texture2D_1709bfc569f34021a1205546b253ac2b:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - Texture2D_1a91e16ca2334e0491830bda0a5e2d44:
         m_Texture: {fileID: 2800000, guid: a21395a8e0cb9244da03f9eed2076e3d, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - Texture2D_408732e7caa34af796ddb77be6aaabea:
         m_Texture: {fileID: 2800000, guid: a0e547748afae154f98ed4293a811b17, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_51f5017f54fb4442ab0c440143295633:
+        m_Texture: {fileID: 2800000, guid: cebe9a3822944c141a5d9dc81779ebbc, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - Texture2D_62ada9bf79e840e99d54061c68e5656e:
@@ -73,7 +81,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - Texture2D_ea1c329133fc4f01a0ae24d3d7ecfc16:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 85d60ed513fd96e4d95d78469d2cc854, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BaseMap:
@@ -81,6 +89,10 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CelShading_f5c658ba84a743b29c36c275531286d9_Texture2D02b185eb21ba4161ad7069f0123cf1d3_3989091526:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -178,12 +190,16 @@ Material:
     - Boolean_101eac5857d84f2b8c80fed3fbaa437b: 0
     - Boolean_4dcb652bd35946169f20fa329ff261b7: 1
     - Boolean_62b895750dbe44d9bb512d647701feaf: 0
-    - Boolean_746f00cdd21a463a8f7db0eed7f65639: 0
+    - Boolean_746f00cdd21a463a8f7db0eed7f65639: 1
+    - CEL_ACCENT: 0
+    - CEL_SPECULAR: 1
     - EMISSIONMAP: 0
     - EMISSIONMAP_ON: 0
     - HATCHING: 0
-    - SPECULARGRADIENT: 0
-    - Vector1_a62ab1db54d34856836ce0b6d78fe08f: 1
+    - SPECULARGRADIENT: 1
+    - Vector1_1: 2
+    - Vector1_38eeab6d9e3146b49202d29537ff230c: 0.07
+    - Vector1_a62ab1db54d34856836ce0b6d78fe08f: 1.49
     - Vector1_c092b1ab83a845279db3044fddc481d7: 1
     - Vector1_eba81f4ec9494ffc89d831e650dc2eee: 0
     - Vector1_f99686aaeca44c4687bb480feabfa5fb: 0

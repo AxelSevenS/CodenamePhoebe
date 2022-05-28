@@ -2,16 +2,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using SeleneGame.Core;
+using SeleneGame.Entities;
 
 namespace SeleneGame.States {
     
     public class WalkingState : State {
 
-        protected override float GetSpeedMultiplier() => entity.currentWeapon.speedMultiplier;
-        protected override Vector3 GetJumpDirection() => entity.currentWeapon.jumpDirection;
-        protected override Vector3 GetCameraPosition() => entity.currentWeapon.cameraPosition - new Vector3(0,0,additionalCameraDistance);
+        // protected override float GetSpeedMultiplier() => 1f/* entity.currentWeapon.speedMultiplier */;
+        protected override Vector3 GetJumpDirection(){
+            if (entity is GravityShifterEntity gravityShifter)
+                return gravityShifter.currentWeapon.jumpDirection;
+            return base.GetJumpDirection();
+        }
+        protected override Vector3 GetCameraPosition() {
+            if (entity is ArmedEntity armed) {
+                return armed.currentWeapon.cameraPosition - new Vector3(0,0,additionalCameraDistance);
+            }
+            return Player.current.defaultCameraPosition - new Vector3(0,0,additionalCameraDistance);
+        }
 
-        public override bool masked => Vector3.Dot ( entity.gravityDown, Vector3.down ) < 0.95f || entity.inWater || entity.currentWeapon.shifting;
+        // public override bool masked => Vector3.Dot ( entity.gravityDown, Vector3.down ) < 0.95f || entity.inWater || entity.currentWeapon.shifting;
 
         private bool crouching;
 
@@ -26,38 +36,41 @@ namespace SeleneGame.States {
         private void OnEnable(){
 
             entity.onJump += OnEntityJump;
-            entity.onEvade += OnEntityEvade;
         }
         private void OnDisable(){
 
             entity.onJump -= OnEntityJump;
-            entity.onEvade -= OnEntityEvade;
         }
         
         protected override void StateUpdate(){
 
             entity.jumpCooldown = Mathf.MoveTowards( entity.jumpCooldown, 0f, Global.timeDelta );
             
-            if ( entity.onGround ){
-                entity.evadeCount = 1;
-                if( entity.jumpCooldown == 0 )
-                    entity.jumpCount = 1;
-            }
+            if ( entity.onGround && entity.jumpCooldown == 0f )
+                entity.jumpCount = 1;
 
-            waterHover.SetVal( entity.currentWeapon.weightModifier < 0.8f && entity.moveInput.zeroTimer < 0.6f && entity.ColliderCast( Vector3.zero, entity.gravityDown.normalized * 0.15f, out waterHoverHit, 0.15f, Global.WaterMask ) );
+            waterHover.SetVal( entity.CanWaterHover() && entity.ColliderCast( Vector3.zero, entity.gravityDown.normalized * 0.15f, out waterHoverHit, 0.15f, Global.WaterMask ) );
             entity.onGround.SetVal( entity.onGround || waterHover );
 
-            if (entity.inWater && entity.currentWeapon.weightModifier <= 1f){
+            if (entity.inWater && !entity.CanSink() && !entity.CanWaterHover()){
                 entity.SetState("Swimming");
             }
 
-            if (entity.evadeInput.started && entity.evadeCount != 0)
-                entity.GroundedEvade( entity.moveDirection.magnitude == 0f ? -entity.absoluteForward : entity.moveDirection );
-
-            if ( entity.onGround.started || (entity.evading.stopped && !entity.sliding) ) 
+            if ( entity.onGround.started || (entity.evading.stopped && !entity.sliding)) 
                 entity.StartWalkAnim();
 
-            additionalCameraDistance = entity.focusing ? -0.3f : 0f;
+            if ( entity.onGround )
+                entity.evadeCount = 1;
+
+            if ( entity.evading.started)
+                entity.evadeCount--;
+                
+
+            if ( entity.evadeInput.started && entity.evadeCount != 0 )
+                entity.GroundedEvade( entity.moveDirection.magnitude == 0f ? -entity.absoluteForward : entity.moveDirection );
+
+
+            additionalCameraDistance = /* entity.focusing ? -0.3f :  */0f;
             if (entity.walkSpeed == Entity.WalkSpeed.sprint){
                 additionalCameraDistance += 0.3f;
             }else if (entity.walkSpeed == Entity.WalkSpeed.walk){
@@ -73,7 +86,7 @@ namespace SeleneGame.States {
 
             entity.SetRotation(-entity.gravityDown);
 
-            entity.JumpGravity(entity.gravityForce, entity.gravityDown, entity.jumpInput);
+            entity.JumpGravity(entity.GravityMultiplier(), entity.gravityDown, entity.jumpInput);
 
             
 
@@ -97,50 +110,42 @@ namespace SeleneGame.States {
                 entity.groundHit = waterHoverHit;
             }
 
-
-            if (entity.moveDirection.magnitude > 0f){
-
-                if ( !entity.evading )
-                    entity.absoluteForward = Vector3.Lerp( entity.absoluteForward, entity.moveDirection.normalized, 100f * Global.timeDelta);
-
-                if (entity.evadeTimer > entity.data.totalEvadeDuration - 0.15f)
-                    entity.evadeDirection = entity.moveDirection.normalized;
-
-            }
+            if (entity.moveDirection.magnitude > 0f && entity.CanTurn() )
+                entity.absoluteForward = Vector3.Lerp( entity.absoluteForward, entity.moveDirection.normalized, 100f * Global.timeDelta);
 
             // Move when evading
             if ( entity.EvadeUpdate(out _, out float evadeSpeed) )
                 entity.GroundedMove( Global.timeDelta * evadeSpeed * entity.data.evadeSpeed * entity.evadeDirection );
 
-            entity.GroundedMove(entity.moveSpeed * (1 - evadeSpeed) * Global.timeDelta * entity.moveDirection, entity.onGround);
+            entity.GroundedMove(entity.moveSpeed * (1 - evadeSpeed) * Global.timeDelta * entity.absoluteForward, entity.onGround);
 
             // entity.GroundedMove(Global.timeDelta * 2.5f * entity.inertia );
             
-            Vector3 finalRotation = entity?.currentWeapon.overrideRotation ?? entity.relativeForward;
-            entity.RotateTowardsAbsolute(finalRotation, -entity.gravityDown);
+            entity.RotateTowardsAbsolute(entity.absoluteForward, -entity.gravityDown);
         }
 
-        protected override void UpdateMoveSpeed(){
+        public override float UpdateMoveSpeed(){
             float newSpeed = entity.moveDirection.magnitude > 0f ? entity.data.baseSpeed : 0f;
             // newSpeed = entity.evading ? newSpeed * 0.15f : newSpeed;
-            // if (entity.walkSpeed != Entity.WalkSpeed.run) 
-            //     newSpeed *= entity.walkSpeed == Entity.WalkSpeed.sprint ? /* entity.data.sprintSpeed */1f : entity.data.slowSpeed;
+            if (entity.walkSpeed != Entity.WalkSpeed.run) 
+                newSpeed *= entity.walkSpeed == Entity.WalkSpeed.sprint ? entity.data.sprintSpeed : entity.data.slowSpeed;
 
-            newSpeed *= speedMultiplier;
-
-            float speedDelta = newSpeed > entity.moveSpeed ? 150f : 100f;
-            
-            entity.moveSpeed = Mathf.MoveTowards(entity.moveSpeed, newSpeed, speedDelta * Global.timeDelta);
+            return newSpeed;
         }
 
         public override void HandleInput(){
 
             entity.RawInputToGroundedMovement(out Vector3 camRight, out Vector3 camForward, out Vector3 groundDirection, out Vector3 groundDirection3D);
-            entity.moveDirection = groundDirection;
+            entity.moveDirection.SetVal(groundDirection);
 
-            if (entity.crouchInput) entity.SetWalkSpeed(Entity.WalkSpeed.crouch);
-            else if ((groundDirection.magnitude <= 0.25f || entity.walkInput) && entity.onGround) entity.SetWalkSpeed(Entity.WalkSpeed.walk);
-            else entity.SetWalkSpeed(Entity.WalkSpeed.run);
+            if (entity.crouchInput)
+                entity.SetWalkSpeed(Entity.WalkSpeed.crouch);
+            else if ( (groundDirection.magnitude <= 0.25f || entity.walkInput) && entity.onGround ) 
+                entity.SetWalkSpeed(Entity.WalkSpeed.walk);
+            else if ( entity.evadeInput )
+                entity.SetWalkSpeed(Entity.WalkSpeed.sprint);
+            else 
+                entity.SetWalkSpeed(Entity.WalkSpeed.run);
             
             // entity.slidingData.SetVal( entity.evadeInput && !entity.evading && (entity.inertiaMultiplier > 2f | !entity.onGround) && !entity.inWater );
             
@@ -151,9 +156,6 @@ namespace SeleneGame.States {
         
         private void OnEntityJump(Vector3 jumpDirection){
             entity.jumpCount--;
-        }
-        private void OnEntityEvade(Vector3 evadeDirection){
-            entity.evadeCount--;
         }
 
     }

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using SeleneGame.Core;
+using SeleneGame.Entities;
 
 namespace SeleneGame {
 
@@ -18,7 +19,7 @@ namespace SeleneGame {
         private bool positionBlocked(Vector3 position) => Physics.SphereCast(entity._transform.position, 0.35f, position, out MaskPosHit, position.magnitude, Global.GroundMask);
         private Vector3 flyingPosition;
 
-        private bool onFace => entity != null && (entity.masked || entity.inWater || entity.focusing || (positionBlocked(leftPosition) && positionBlocked(rightPosition)));
+
         private bool onRight;
 
         void Awake(){
@@ -30,11 +31,14 @@ namespace SeleneGame {
         }
 
         void FixedUpdate(){
-            if (entity == null) return;
+            if (entity == null || !(entity is GravityShifterEntity gravityShifter)) return;
+
+            bool onFace = gravityShifter.isMasked() || (positionBlocked(leftPosition) && positionBlocked(rightPosition));
+
             if (!onFace && (positionBlocked(relativePos)))
                 onRight = !onRight;
 
-            flyingPosition = Vector3.Lerp(flyingPosition, entity._transform.position + relativePos, 15f * Global.timeDelta);
+            flyingPosition = Vector3.Lerp(flyingPosition, gravityShifter._transform.position + relativePos, 15f * Global.timeDelta);
             maskPosT = Mathf.MoveTowards(maskPosT, System.Convert.ToSingle(onFace), 4f * Global.timeDelta);
 
             animator.SetBool("OnFace", onFace);

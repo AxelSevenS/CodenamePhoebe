@@ -24,7 +24,7 @@ namespace SeleneGame {
                 Vector3 seatOccupantUp = seatOccupant != null ? seatOccupant.transform.up : transform.up;
                 float seatOccupantSize = seatOccupant != null ? seatOccupant.data.size.y/2f : 1.67f;
 
-                return transform.position + transform.rotation*(sittingDir + directionalPlacement) + (seatOccupantUp * seatOccupantSize);
+                return transform.position + transform.rotation*(sittingDir) + (seatOccupantUp * seatOccupantSize);
             }
         }
 
@@ -88,7 +88,7 @@ namespace SeleneGame {
 
             if (seatOccupant == null) return;
 
-            seatOccupant.SetState("Walking");
+            seatOccupant.SetState(seatOccupant.defaultState);
             Global.SetLayerRecursively(seatOccupant.gameObject, 6);
 
             seatOccupant._transform.SetParent(previousAnchor);

@@ -14,16 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   displayName: Gravity Bicycle
   costume: {fileID: 11400000, guid: 99793ed8a8b4b9046a71eca92f0b7cdf, type: 2}
+  controller: {fileID: 9100000, guid: 080e304828b097b4cac678d0babd1671, type: 2}
   maxHealth: 0
   size: {x: 1, y: 1, z: 1}
   stepHeight: 1
   moveIncrement: 20
-  weight: 15
-  jumpHeight: 15
+  weight: 20
+  jumpHeight: 20
   baseSpeed: 32
+  sprintSpeed: 1
   slowSpeed: 1
-  crouchSpeed: 1
   swimSpeed: 0
+  evadeSpeed: 0
   evadeDuration: 0
   evadeCooldown: 0
   evadeCurve:
@@ -32,4 +34,3 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  controller: {fileID: 9100000, guid: 080e304828b097b4cac678d0babd1671, type: 2}

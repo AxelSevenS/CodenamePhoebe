@@ -2,13 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using SeleneGame.Core;
+using SeleneGame.Entities;
 
 namespace SeleneGame.States {
     
     public class ShiftingState : State{
 
         public override int id => 2;
-        protected override float GetSpeedMultiplier() => entity.currentWeapon.speedMultiplier;
+        // protected override float GetSpeedMultiplier() => entity.GravityMultiplier();
         protected override Vector3 GetCameraPosition(){
             if (shiftFalling){
                 return new Vector3(0f, 1f, -4f) - new Vector3(0,0,additionalCameraDistance);
@@ -16,9 +17,11 @@ namespace SeleneGame.States {
                 return new Vector3(0.7f, 0.8f, -2.5f) - new Vector3(0,0,additionalCameraDistance);
             }
         }
+
+        private GravityShifterEntity gravityShifter;
         
 
-        public override bool masked => true;
+        // public override bool masked => true;
 
         public BoolData shiftFallingData = new BoolData();
         public bool shiftFalling => shiftFallingData;
@@ -28,14 +31,21 @@ namespace SeleneGame.States {
         private Vector2 fallInput = Vector3.zero;
         private Vector3 floatDirection = Vector3.zero;
 
-        private Quaternion fallRotation = Quaternion.identity;
-        private Vector3 fallDirection => fallRotation * Vector3.forward;
+        private Vector3 fallDirection = Vector3.forward;
+        private Quaternion fallRotation => Quaternion.LookRotation(fallDirection, entity.cameraRotation * Vector3.up);
 
         private float additionalCameraDistance;
 
         private GameObject landCursor;
 
         protected override void StateAwake(){
+
+            if ( !(entity is GravityShifterEntity shifter) ) {
+                Debug.Log($"Entity {entity.name} cannot switch to Shifting State because it is not a Gravity Shifter");
+                entity.SetState(entity.defaultState);
+                return;
+            }
+            gravityShifter = shifter;
 
             landCursor = GameObject.Instantiate(Resources.Load("Prefabs/UI/LandCursor"), Global.ui.transform.GetChild(0)) as GameObject;
         }
@@ -46,112 +56,112 @@ namespace SeleneGame.States {
 
         protected override void StateUpdate(){
 
-            shiftFallingData.SetVal( entity.evadeInput.trueTimer > 0.125f );
+            shiftFallingData.SetVal( gravityShifter.evadeInput.trueTimer > 0.125f );
 
             // Gravity Shifting Movement
-            if ( entity.inWater || entity.shiftInput.trueTimer > Player.current.holdDuration ){
+            if ( gravityShifter.inWater || gravityShifter.shiftInput.trueTimer > Player.current.holdDuration ){
                 StopShifting(Vector3.down);
             }
 
-            if ( entity.onGround && shiftFalling ) {
+            if ( gravityShifter.onGround && shiftFalling ) {
                 StopShifting(fallDirection);
             }
 
             if (shiftFallingData.started){
-                Vector3 dir = (entity.cameraRotation) * Vector3.forward;
-                fallRotation = Quaternion.LookRotation(dir, -entity.gravityDown);
+                fallDirection = gravityShifter.cameraRotation * Vector3.forward;
                 randomRotation = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized;
 
-                Debug.DrawRay(entity._transform.position, 10f * dir, Color.red, 3f);
+                Debug.DrawRay(gravityShifter._transform.position, 10f * fallDirection, Color.red, 3f);
             }
 
-            if (entity.evadeInput.stopped && entity.evadeInput.trueTimer < 0.125f)
-                entity.Evade(floatDirection);
+            if (gravityShifter.evadeInput.stopped && gravityShifter.evadeInput.trueTimer < 0.125f)
+                gravityShifter.Evade(floatDirection);
 
-            additionalCameraDistance = (entity.focusing ? -0.7f : 0f) + (entity.walkSpeed == Entity.WalkSpeed.sprint ? 0.4f : 0f);
+            additionalCameraDistance = (gravityShifter.focusing ? -0.7f : 0f) + (gravityShifter.walkSpeed == Entity.WalkSpeed.sprint ? 0.4f : 0f);
 
             UpdateLandCursorPos();
         }
 
         protected override void StateFixedUpdate(){
-            if ( entity.EvadeUpdate(out _, out float evadeCurve) )
-                entity.Move( Global.timeDelta * evadeCurve * entity.data.evadeSpeed * entity.evadeDirection );
-
 
 
             Vector3 finalRotation;
             Vector3 finalUp;
             if (shiftFalling){
 
-                Quaternion rotationDelta = Quaternion.AngleAxis(-fallInput.y, fallRotation * Vector3.right) * Quaternion.AngleAxis(fallInput.x, fallRotation * Vector3.up);
+                Quaternion currentRotation = fallRotation;
+                Quaternion rotationDelta = Quaternion.AngleAxis(-fallInput.y, currentRotation * Vector3.right) * Quaternion.AngleAxis(fallInput.x, currentRotation * Vector3.up);
                 Vector3 newDirection = (rotationDelta * fallDirection).normalized;
 
-                entity.rotation = Quaternion.FromToRotation(fallDirection, newDirection) * entity.rotation;
-                fallRotation = Quaternion.LookRotation(newDirection, entity.rotation * Vector3.up);
+                gravityShifter.rotation.SetVal( Quaternion.FromToRotation(fallDirection, newDirection) * gravityShifter.rotation );
 
-                entity.absoluteForward = newDirection;
+                fallDirection = newDirection;
+                gravityShifter.absoluteForward = fallDirection;
 
-                // entity._rb.velocity += entity.evadeDirection*entity.data.baseSpeed*entity.inertiaMultiplier*Global.timeDelta;
-                entity.Gravity(entity.moveSpeed, newDirection);
+                // gravityShifter._rb.velocity += gravityShifter.evadeDirection*gravityShifter.data.baseSpeed*gravityShifter.inertiaMultiplier*Global.timeDelta;
+                gravityShifter.Gravity(gravityShifter.moveSpeed, fallDirection);
 
                 finalRotation = new Vector3(randomRotation.x, 0f, randomRotation.y);
-                finalUp = -newDirection;
+                finalUp = -fallDirection;
 
             }else{
 
-                if (floatDirection.magnitude != 0f){
-                    entity.absoluteForward = floatDirection;
-                    entity.evadeDirection = Vector3.Lerp(entity.evadeDirection, entity.absoluteForward, 0.1f * Global.timeDelta);
+                if ( gravityShifter.EvadeUpdate(out _, out float evadeCurve) )
+                    gravityShifter.Move( Global.timeDelta * evadeCurve * gravityShifter.data.evadeSpeed * gravityShifter.evadeDirection );
 
-                    entity._rb.velocity += entity.data.baseSpeed * Global.timeDelta * floatDirection;
+                if (floatDirection.magnitude != 0f){
+                    gravityShifter.absoluteForward = floatDirection;
+
+                    gravityShifter._rb.velocity += gravityShifter.data.baseSpeed * Global.timeDelta * floatDirection;
                 }
 
 
-                finalRotation = entity.relativeForward;
-                finalUp = entity.rotation * Vector3.up;
+                finalRotation = gravityShifter.relativeForward;
+                finalUp = gravityShifter.rotation * Vector3.up;
             }
 
-            entity.moveDirection = entity.absoluteForward;
-            entity.RotateTowardsRelative(finalRotation, finalUp);
-            entity.gravityDown = -finalUp;
+            gravityShifter.moveDirection.SetVal(gravityShifter.absoluteForward);
+            gravityShifter.RotateTowardsRelative(finalRotation, finalUp);
+            gravityShifter.gravityDown = -finalUp;
             
 
         }
 
-        protected override void UpdateMoveSpeed(){ 
-            float newSpeed = entity.data.baseSpeed * entity.currentWeapon?.speedMultiplier ?? 1f;
-            newSpeed = shiftFalling ? newSpeed * 0.75f : newSpeed;
+        public override float UpdateMoveSpeed(){ 
             
-            entity.moveSpeed = Mathf.MoveTowards(entity.moveSpeed, newSpeed, entity.data.moveIncrement * Global.timeDelta);
+            float newSpeed = gravityShifter.data.baseSpeed;
+            newSpeed = shiftFalling ? newSpeed * 0.75f : newSpeed;
+
+            return newSpeed;
         }
 
         public override void HandleInput(){
             
-            entity.RawInputToGroundedMovement(out Vector3 camRight, out Vector3 camForward, out Vector3 groundDirection, out Vector3 groundDirection3D);
+            gravityShifter.RawInputToGroundedMovement(out Vector3 camRight, out Vector3 camForward, out Vector3 groundDirection, out Vector3 groundDirection3D);
 
-            Vector2 newfallInput = new Vector3(entity.moveInput.currentValue.x, entity.moveInput.currentValue.z);
+            Vector2 newfallInput = new Vector3(gravityShifter.moveInput.x, gravityShifter.moveInput.z);
             fallInput = Vector2.Lerp(fallInput, (newfallInput.normalized * 0.85f), 10f * Global.timeDelta);
             floatDirection = groundDirection3D;
 
-            if (entity.shiftInput.trueTimer > Player.current.holdDuration)
+            if (gravityShifter.shiftInput.trueTimer > Player.current.holdDuration)
                 StopShifting(Vector3.down);
         }
 
         public void StopShifting(Vector3 newDown){
-            entity.gravityDown = newDown;
-            entity.SetState("Walking");
+            gravityShifter.gravityDown = newDown;
+            gravityShifter.SetState(gravityShifter.defaultState);
         }
 
         protected void UpdateLandCursorPos(){
             if (landCursor == null) return;
 
-            if ( !(entity.isPlayer && shiftFalling) ) {
+            if ( !(gravityShifter.isPlayer && shiftFalling) ) {
                 landCursor.SetActive(false);
                 return;
             }
             
-            bool hitGround = Physics.Raycast(entity.bottom, fallDirection.normalized, out RaycastHit fallCursorHit, 200f, Global.GroundMask);
-            bool inLineOfSight = Vector3.Dot(entity.transform.forward, fallDirection) > 0;
+            bool hitGround = Physics.Raycast(gravityShifter.bottom, fallDirection.normalized, out RaycastHit fallCursorHit, 200f, Global.GroundMask);
+            bool inLineOfSight = Vector3.Dot(gravityShifter.transform.forward, fallDirection) > 0;
 
             if ( !(hitGround && inLineOfSight) ) {
                 landCursor.SetActive(false);

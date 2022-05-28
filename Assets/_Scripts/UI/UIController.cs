@@ -20,7 +20,7 @@ namespace SeleneGame {
 
         void Update(){
             // Focus
-            aimCursor.SetActive(Player.current.entity.focusing);
+            aimCursor.SetActive(false/* Player.current.entity.focusing */);
 
             // Interact
             var interactCandidate = Player.current.interactionCandidate;

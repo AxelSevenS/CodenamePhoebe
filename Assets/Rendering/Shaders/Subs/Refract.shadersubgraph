@@ -446,7 +446,7 @@
         "m_SerializableColors": []
     },
     "m_Conversion": {
-        "from": 2,
+        "from": 4,
         "to": 3
     },
     "m_ConversionType": 1
