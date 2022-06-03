@@ -2364,6 +2364,31 @@
 {
     "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.Vector4MaterialSlot",
+    "m_ObjectId": "29630c6e8a744eedb2cbe59208544af2",
+    "m_Id": 1,
+    "m_DisplayName": "Color",
+    "m_SlotType": 1,
+    "m_Hidden": false,
+    "m_ShaderOutputName": "Color",
+    "m_StageCapability": 2,
+    "m_Value": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.0
+    },
+    "m_DefaultValue": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.0
+    },
+    "m_Labels": []
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.Vector4MaterialSlot",
     "m_ObjectId": "2aed89de78c74ff392ec07b1d72d1e72",
     "m_Id": 0,
     "m_DisplayName": "RGBA",
@@ -3427,24 +3452,6 @@
         "e32": 0.0,
         "e33": 1.0
     }
-}
-
-{
-    "m_SGVersion": 0,
-    "m_Type": "UnityEditor.ShaderGraph.Texture2DInputMaterialSlot",
-    "m_ObjectId": "4bf4be8d35184a13a5d35921ad700053",
-    "m_Id": -305875770,
-    "m_DisplayName": "SpecularGradient",
-    "m_SlotType": 0,
-    "m_Hidden": false,
-    "m_ShaderOutputName": "Texture2D_02b185eb21ba4161ad7069f0123cf1d3",
-    "m_StageCapability": 2,
-    "m_BareResource": false,
-    "m_Texture": {
-        "m_SerializedTexture": "{\"texture\":{\"fileID\":2800000,\"guid\":\"cebe9a3822944c141a5d9dc81779ebbc\",\"type\":3}}",
-        "m_Guid": ""
-    },
-    "m_DefaultType": 0
 }
 
 {
@@ -4796,29 +4803,6 @@
         "z": 0.0,
         "w": 0.0
     }
-}
-
-{
-    "m_SGVersion": 0,
-    "m_Type": "UnityEditor.ShaderGraph.Vector3MaterialSlot",
-    "m_ObjectId": "778748d19d3b411398597e964ac3dd2a",
-    "m_Id": 1,
-    "m_DisplayName": "Color",
-    "m_SlotType": 1,
-    "m_Hidden": false,
-    "m_ShaderOutputName": "Color",
-    "m_StageCapability": 2,
-    "m_Value": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
-    },
-    "m_DefaultValue": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
-    },
-    "m_Labels": []
 }
 
 {
@@ -6343,9 +6327,6 @@
             "m_Id": "20adb49dfb7e4a2cb0323c41edf9f9a4"
         },
         {
-            "m_Id": "4bf4be8d35184a13a5d35921ad700053"
-        },
-        {
             "m_Id": "a99be757f0c940adbeae0e373b6eee6f"
         },
         {
@@ -6358,7 +6339,7 @@
             "m_Id": "9d372ab6c3ba44a1bdf72416cc7a29db"
         },
         {
-            "m_Id": "778748d19d3b411398597e964ac3dd2a"
+            "m_Id": "29630c6e8a744eedb2cbe59208544af2"
         }
     ],
     "synonyms": [],

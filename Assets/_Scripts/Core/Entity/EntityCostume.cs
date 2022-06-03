@@ -5,7 +5,7 @@ using UnityEngine;
 namespace SeleneGame.Core {
     
     [CreateAssetMenu(fileName = "new Entity Costume", menuName = "Costume/Entity")]
-    public class EntityCostume : DataCostume {
+    public class EntityCostume : Costume {
 
         public Sprite determinedPortrait;
         public Sprite hesitantPortrait;

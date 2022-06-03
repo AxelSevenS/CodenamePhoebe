@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.cratesmith.assetui": {
+      "version": "https://github.com/Cratesmith/Cratesmith.AssetUI.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "11c14a27283e247f57662038f58d7f41ade9d686"
+    },
     "com.needle.shadergraph-markdown": {
       "version": "file:com.needle.shadergraph-markdown",
       "depth": 0,

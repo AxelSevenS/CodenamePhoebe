@@ -37,7 +37,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - Texture2D_1709bfc569f34021a1205546b253ac2b:
-        m_Texture: {fileID: 2800000, guid: 2f71c829bc5d3d74b91c41e0c42a3e8f, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - Texture2D_1a91e16ca2334e0491830bda0a5e2d44:
@@ -66,6 +66,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     - Texture2D_9d2dc686cea4411eb4cd42e0ad89db69:
         m_Texture: {fileID: 2800000, guid: ac46c98a8195c794a95fa31d465de333, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_9e7ce96f70ec4e4fad0aca3a397849ab:
+        m_Texture: {fileID: 2800000, guid: 80669822131a1ef4fa7250afdaae4e16, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - Texture2D_9feaf6a96f6e4252bb63b9afe4d0784c:
@@ -97,7 +101,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _CelShading_f5c658ba84a743b29c36c275531286d9_Texture2D11aafe7ff96e42979b64ec9d7f21d9d8_1683355232:
-        m_Texture: {fileID: 2800000, guid: 063fcbdcf4614a24cb139f0f176ce4b6, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _CelShading_f5c658ba84a743b29c36c275531286d9_Texture2D2a370da13c6a46b7853499d378b684a6_2578309500:
@@ -136,6 +140,18 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _FlowMapCustomFunction_582f18a725314d9aa1050d01737c2bb0_FlowMap_0:
+        m_Texture: {fileID: 2800000, guid: fa895e5d8053cc6448d0c129810abd31, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FlowMapCustomFunction_582f18a725314d9aa1050d01737c2bb0_Texture_5:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _HuskTex:
+        m_Texture: {fileID: 2800000, guid: e73491cfb5de63548b26dc2a5206eb4f, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _LightingCelCustomFunction_2513510943474503a09a9bf6a58817e3_AccentGradient_6:
         m_Texture: {fileID: 2800000, guid: cebe9a3822944c141a5d9dc81779ebbc, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -149,7 +165,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: ac46c98a8195c794a95fa31d465de333, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -166,6 +182,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _SampleTexture2D_ae174264f50a47fda28a00b42ff70be5_Texture_1:
         m_Texture: {fileID: 8400000, guid: 3fd964db336004648ba75c5ac7ef9f56, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ShadeGradient:
+        m_Texture: {fileID: 2800000, guid: 0ccb8e0d49adee140b8472de4ae0bb16, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
@@ -207,15 +227,18 @@ Material:
     - CEL_SPECULAR: 0
     - EMISSIONMAP: 0
     - EMISSIONMAP_ON: 0
+    - FLOWMAP_ON: 0
     - HATCHING: 0
     - NORMALMAP_ON: 0
     - PROXIMITYDITHER: 1
     - SPECULARGRADIENT: 0
     - Vector1_1: 0.41
     - Vector1_38eeab6d9e3146b49202d29537ff230c: 0.03
-    - Vector1_83717f647fb949a0b96857d7ef1efef2: 0
+    - Vector1_693d76d6835a455fba9b2a18be0e2bec: 0.25
+    - Vector1_83717f647fb949a0b96857d7ef1efef2: 1
     - Vector1_a62ab1db54d34856836ce0b6d78fe08f: 1.34
     - Vector1_c092b1ab83a845279db3044fddc481d7: 1
+    - Vector1_da40d7438c114e189f67f755323f75ea: 0.25
     - Vector1_eba81f4ec9494ffc89d831e650dc2eee: 0
     - Vector1_f99686aaeca44c4687bb480feabfa5fb: 0
     - Vector1_f99686aaeca44c4687bb480feabfa5fb_1: 0
@@ -233,11 +256,13 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
+    - _HuskDistance: 0.05
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _QueueOffset: 0
     - _ReceiveShadows: 1
+    - _Scale: 3
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1

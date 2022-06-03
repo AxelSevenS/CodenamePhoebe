@@ -68,6 +68,10 @@ Material:
         m_Texture: {fileID: 2800000, guid: 85d60ed513fd96e4d95d78469d2cc854, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - Texture2D_9e7ce96f70ec4e4fad0aca3a397849ab:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - Texture2D_9feaf6a96f6e4252bb63b9afe4d0784c:
         m_Texture: {fileID: 2800000, guid: 0ccb8e0d49adee140b8472de4ae0bb16, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -129,6 +133,14 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FlowMapCustomFunction_582f18a725314d9aa1050d01737c2bb0_FlowMap_0:
+        m_Texture: {fileID: 2800000, guid: fa895e5d8053cc6448d0c129810abd31, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FlowMapCustomFunction_582f18a725314d9aa1050d01737c2bb0_Texture_5:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -195,12 +207,17 @@ Material:
     - CEL_SPECULAR: 1
     - EMISSIONMAP: 0
     - EMISSIONMAP_ON: 0
+    - FLOWMAP_ON: 0
     - HATCHING: 0
+    - NORMALMAP_ON: 0
     - SPECULARGRADIENT: 1
     - Vector1_1: 2
     - Vector1_38eeab6d9e3146b49202d29537ff230c: 0.07
+    - Vector1_693d76d6835a455fba9b2a18be0e2bec: 0
+    - Vector1_83717f647fb949a0b96857d7ef1efef2: 0
     - Vector1_a62ab1db54d34856836ce0b6d78fe08f: 1.49
     - Vector1_c092b1ab83a845279db3044fddc481d7: 1
+    - Vector1_da40d7438c114e189f67f755323f75ea: 0
     - Vector1_eba81f4ec9494ffc89d831e650dc2eee: 0
     - Vector1_f99686aaeca44c4687bb480feabfa5fb: 0
     - _AlphaClip: 0
