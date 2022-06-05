@@ -5,7 +5,7 @@ using UnityEngine;
 namespace SeleneGame.Core {
 
     [System.Serializable]
-    public class WeaponInventory : IEnumerator, IEnumerable {
+    public class WeaponInventory : IEnumerable {
         private GameObject gameObject;
         [SerializeField] private Map<int, Weapon> items = new Map<int, Weapon>();
         
@@ -53,17 +53,16 @@ namespace SeleneGame.Core {
             foreach ( ValuePair<int, Weapon> item in items )
                 item.valueTwo.Hide();
 
-            currentIndex = items[index] == null ? defaultIndex : index;
+            try {
+                Weapon newItem = items[index];
+                currentIndex = index;
+            } catch ( KeyNotFoundException ) {
+                currentIndex = defaultIndex;
+            }
 
             currentItem.Display();
         }
 
         public IEnumerator GetEnumerator() => items.GetEnumerator();
-        
-        public bool MoveNext() => items.MoveNext();
-        
-        public void Reset() => items.Reset();
-        
-        public object Current => items.Current;
     }
 }

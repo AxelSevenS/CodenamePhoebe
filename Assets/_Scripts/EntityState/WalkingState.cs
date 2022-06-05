@@ -49,8 +49,8 @@ namespace SeleneGame.States {
             if ( entity.onGround && entity.jumpCooldown == 0f )
                 entity.jumpCount = 1;
 
-            waterHover.SetVal( entity.CanWaterHover() && entity.ColliderCast( Vector3.zero, entity.gravityDown.normalized * 0.15f, out waterHoverHit, 0.15f, Global.WaterMask ) );
-            entity.onGround.SetVal( entity.onGround || waterHover );
+            // waterHover.SetVal( entity.CanWaterHover() && entity.ColliderCast( Vector3.zero, entity.gravityDown.normalized * 0.15f, out waterHoverHit, 0.15f, Global.WaterMask ) );
+            // entity.onGround.SetVal( entity.onGround || waterHover );
 
             if (entity.inWater && !entity.CanSink() && !entity.CanWaterHover()){
                 entity.SetState("Swimming");

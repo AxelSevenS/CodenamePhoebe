@@ -13,7 +13,6 @@ namespace SeleneGame.Core {
         public Sprite disgustedPortrait;
         public Sprite sadPortrait;
         public Sprite happyPortrait;
-        public List< ValuePair<string, string> > limbsPaths = new List< ValuePair<string, string> >();
         
     }
 }

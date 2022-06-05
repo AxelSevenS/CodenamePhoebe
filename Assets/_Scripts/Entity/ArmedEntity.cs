@@ -6,7 +6,7 @@ using SeleneGame.Core;
 
 namespace SeleneGame.Entities {
 
-    public abstract class ArmedEntity : Entity {
+    public class ArmedEntity : Entity {
         
         public WeaponInventory weapons;
         public Weapon currentWeapon => weapons.currentItem;

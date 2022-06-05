@@ -29,8 +29,7 @@ namespace SeleneGame.Core {
         // }
         // public static string GetDataPath() => "Data/Entity";
 
-        
-        public RuntimeAnimatorController controller;
+        public string defaultState;
         public float maxHealth;
         public Vector3 size = new Vector3(1f, 1f, 1f);
         public float stepHeight = 1f;

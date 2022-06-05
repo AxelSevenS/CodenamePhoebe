@@ -17,9 +17,9 @@ namespace SeleneGame.Core {
         [InitializeOnLoadMethod]
         private static void OnLoaded(){
 
-            types = System.Reflection.Assembly.GetExecutingAssembly().GetTypes();
-            CreateAssetOfInheritingScripts(typeof(Weapon), typeof(WeaponData), @"Assets\Resources\Data\Weapon", "Weapon");
-            CreateAssetOfInheritingScripts(typeof(Entity), typeof(EntityData), @"Assets\Resources\Data\Entity", "Entity");
+            // types = System.Reflection.Assembly.GetExecutingAssembly().GetTypes();
+            // CreateAssetOfInheritingScripts(typeof(Weapon), typeof(WeaponData), @"Assets\Resources\Data\Weapon", "Weapon");
+            // CreateAssetOfInheritingScripts(typeof(Entity), typeof(EntityData), @"Assets\Resources\Data\Entity", "Entity");
 
 
         }

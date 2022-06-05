@@ -12,12 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c57bfd30e1b089b45824a21e2f291205, type: 3}
   m_Name: BikeBase
   m_EditorClassIdentifier: 
+  model: {fileID: 5534340132901445963, guid: ca96c8816e56c6545a6823b2bcc89684, type: 3}
   portrait: {fileID: 0}
-  model: {fileID: 596980097985551269, guid: 4b05025ac30ae7842b1157bb51cc57dc, type: 3}
   determinedPortrait: {fileID: 0}
   hesitantPortrait: {fileID: 0}
   shockedPortrait: {fileID: 0}
   disgustedPortrait: {fileID: 0}
   sadPortrait: {fileID: 0}
   happyPortrait: {fileID: 0}
-  limbsPaths: []

@@ -160,7 +160,7 @@ namespace SeleneGame.States {
                 return;
             }
             
-            bool hitGround = Physics.Raycast(gravityShifter.bottom, fallDirection.normalized, out RaycastHit fallCursorHit, 200f, Global.GroundMask);
+            bool hitGround = Physics.Raycast(gravityShifter.transform.position, fallDirection.normalized, out RaycastHit fallCursorHit, 200f, Global.GroundMask);
             bool inLineOfSight = Vector3.Dot(gravityShifter.transform.forward, fallDirection) > 0;
 
             if ( !(hitGround && inLineOfSight) ) {

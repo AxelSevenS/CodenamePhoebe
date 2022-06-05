@@ -9,11 +9,9 @@ namespace SeleneGame.Core {
     }
 
     [System.Serializable]
-    public class Map<TKey, TVal> : Map, IEnumerator, IEnumerable{
+    public class Map<TKey, TVal> : Map, IEnumerable{
 
         [SerializeField] private List< ValuePair<TKey, TVal> > pairs = new List< ValuePair<TKey, TVal> >();
-
-        private int position;
 
         public TVal this[TKey key]{
             get {
@@ -22,16 +20,7 @@ namespace SeleneGame.Core {
                 throw new KeyNotFoundException();
             }
             set {
-                int index = GetIndex(key);
-                if (index != -1){ 
-                    pairs[index].valueTwo = value;
-                }else{
-                    ValuePair<TKey, TVal> newPair = new ValuePair<TKey, TVal>();
-                    newPair.valueOne = key;
-                    newPair.valueTwo = value;
-
-                    pairs.Add(newPair);
-                }
+                Set(key, value);
             }
         }
 
@@ -47,20 +36,25 @@ namespace SeleneGame.Core {
             return -1;
         }
 
-        public IEnumerator GetEnumerator() => (IEnumerator)this;
-        
-        public bool MoveNext(){
-            position++;
-
-            bool notDone = position < pairs.Count;
-            if (!notDone) Reset();
-            return notDone;
+        public void Remove(TKey key){
+            int index = GetIndex(key);
+            if (index != -1) pairs.RemoveAt(index);
         }
-        
-        public object Current => pairs[position];
 
+        public void Set(TKey key, TVal value){
+            int index = GetIndex(key);
+            if (index != -1){ 
+                pairs[index].valueTwo = value;
+            }else{
+                ValuePair<TKey, TVal> newPair = new ValuePair<TKey, TVal>();
+                newPair.valueOne = key;
+                newPair.valueTwo = value;
 
-        // Deprecated but it wasn't removed from the Interface :)
-        public void Reset() => position = -1;
+                pairs.Add(newPair);
+            }
+        }
+
+        public IEnumerator GetEnumerator() => pairs.GetEnumerator();
+
     }
 }

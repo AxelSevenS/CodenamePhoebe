@@ -6,7 +6,7 @@ using SeleneGame.States;
 
 namespace SeleneGame.Entities {
 
-    public abstract class GravityShifterEntity : ArmedEntity {
+    public class GravityShifterEntity : ArmedEntity {
 
         // public bool masked => state.masked;
         
@@ -74,8 +74,8 @@ namespace SeleneGame.Entities {
                 }
             }
             
-            if (_animator.runtimeAnimatorController != null){
-                _animator.SetFloat("WeaponType", (float)(currentWeapon.data.weaponType) );
+            if (animator.runtimeAnimatorController != null){
+                animator.SetFloat("WeaponType", (float)(currentWeapon.data.weaponType) );
             }
         }
 

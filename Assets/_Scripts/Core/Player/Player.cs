@@ -36,7 +36,7 @@ namespace SeleneGame.Core {
         public bool canLook => (!menu);
         public bool canInteract => interactionCandidate != null;
 
-        private RaycastHit landingHit;
+        // private RaycastHit landingHit;
         
         
         public float holdDuration = 0.2f;
@@ -102,7 +102,7 @@ namespace SeleneGame.Core {
         
         private void Update(){
 
-            Physics.Raycast(entity.bottom, entity.gravityDown, out landingHit, Global.GroundMask);
+            // Physics.Raycast(entity.bottom, entity.gravityDown, out landingHit, Global.GroundMask);
 
             EntityControl();
 

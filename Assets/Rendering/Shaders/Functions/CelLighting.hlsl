@@ -47,35 +47,31 @@ half3 CelColor (half3 lightColor, float attenuation, float specular, float accen
 }
 
 half3 CelShade( half3 normal, half3 viewDir, half3 lightColor, half3 lightDir, half lightShadowAtten, half specularIntensity, half smoothness, half3 accentColor ) {
+    lightDir = normalize(lightDir);
     
     half luminance = GetLuminance(normal, lightDir, lightShadowAtten);
     half shade = GetShade(luminance);
 
-    // half shade = shadeGradient.Sample(gradient_point_clamp_sampler, luminance).r;
-
     #ifdef CEL_SPECULAR_ON
         half specular = GetSpecular(normal, viewDir, lightDir, lightShadowAtten, smoothness);
         specular = smoothstep(0.15, 1.0, specular) * specularIntensity;
-
-        // specular = SampleGradientTex(specularGradient, saturate(specular)).r * specularIntensity;
     #else
         half specular = 0;
-    #endif
+    #endif // CEL_SPECULAR_ON
 
     #ifdef CEL_ACCENT_ON
         // accent is how near luminance is to 0.2, it transitions from 1 when the difference is 0 to 0 when the difference is 0.65, then it plateaus
         // sqrt is to make the transition less linear
         half accent = ( 1 - sqrt(abs(0.2 - luminance) ) ) * 0.7;
-        
-        // half accent = accentGradient.Sample(gradient_point_clamp_sampler, luminance).r;
     #else
         half accent = 0;
-    #endif
+    #endif // CEL_ACCENT_ON
 
     return CelColor(lightColor, shade, specular, accent, accentColor);
 }
 
 half3 SimpleCelShade( half3 normal, half3 lightColor, half3 lightDir, half lightShadowAtten ) {
+    lightDir = normalize(lightDir);
     
     half luminance = GetLuminance(normal, lightDir, lightShadowAtten);
     half shade = GetShade(luminance);
@@ -94,6 +90,8 @@ half3 SimpleCelShade( half3 normal, half3 lightColor, half3 lightDir, half light
 
 
 half4 CelLighting( half4 baseColor, float3 positionWS, half3 viewDirectionWS, half3 normalWS, half specularIntensity, half smoothness, half3 accentColor ) {
+    normalWS = normalize(normalWS);
+    viewDirectionWS = normalize(viewDirectionWS);
 
     #ifdef SHADERGRAPH_PREVIEW
 
@@ -155,6 +153,7 @@ half4 CelLighting( half4 baseColor, float3 positionWS, half3 viewDirectionWS, ha
 }
 
 half4 SimpleCelLighting( half4 baseColor, float3 positionWS, half3 normalWS ) {
+    normalWS = normalize(normalWS);
 
     #ifdef SHADERGRAPH_PREVIEW
 
