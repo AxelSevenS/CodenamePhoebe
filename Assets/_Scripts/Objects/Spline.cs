@@ -17,14 +17,18 @@ namespace SeleneGame {
         public MeshCollider _meshCollider;
         public Spline prevSegment, nextSegment;
 
-        public OrientedPoint controlPoint1 => splineCurve.controlPoint1;
-        public OrientedPoint controlPoint2 => splineCurve.controlPoint2;
-        public OrientedPoint handle1 => splineCurve.handle1;
-        public OrientedPoint handle2 => splineCurve.handle2;
+        public ref OrientedPoint controlPoint1 => ref splineCurve.controlPoint1;
+        public ref OrientedPoint controlPoint2 => ref splineCurve.controlPoint2;
+        public ref OrientedPoint handle1 => ref splineCurve.handle1;
+        public ref OrientedPoint handle2 => ref splineCurve.handle2;
+        public OrientedPoint transformedControlPoint1 => transform.TransformPoint(splineCurve.controlPoint1);
+        public OrientedPoint transformedControlPoint2 => transform.TransformPoint(splineCurve.controlPoint2);
+        public OrientedPoint transformedHandle1 => transform.TransformPoint(splineCurve.handle1);
+        public OrientedPoint transformedHandle2 => transform.TransformPoint(splineCurve.handle2);
 
         public BezierCurve splineCurve;
 
-        public OrientedPoint GetBezier(float tVal) => splineCurve.GetPoint(tVal);
+        public OrientedPoint GetBezier(float tVal) => transform.TransformPoint(splineCurve.GetPoint(tVal));
 
         public RepeatableMesh mesh2D;
         [Range(3, 128)]
@@ -32,7 +36,6 @@ namespace SeleneGame {
         public float scale = 1f;
         private int segNbr = 1;
 
-        public Vector3 oldPos;
 
         
         void OnEnable() => Global.objectManager.objectList.Add( this.gameObject );
@@ -43,10 +46,10 @@ namespace SeleneGame {
         }
 
         private void Reset(){
-            Vector3 cp1 = transform.position - Vector3.forward * 3;
-            Vector3 cp2 = transform.position + Vector3.forward * 3;
-            Vector3 h1 = transform.position - Vector3.forward * 2;
-            Vector3 h2 = transform.position + Vector3.forward * 2;
+            Vector3 cp1 = Vector3.forward * 0f;
+            Vector3 cp2 = Vector3.forward * 75f;
+            Vector3 h1 = Vector3.forward * 25f;
+            Vector3 h2 = Vector3.forward * 50f;
             splineCurve = new BezierCurve(cp1, cp2, h1, h2);
             Awake();
         }
@@ -67,19 +70,18 @@ namespace SeleneGame {
                 mesh = new Mesh();
                 mesh.name = $"Procedural {mesh2D.name} mesh";
             }
-            var vertices = new List<Vector3>();
-            var normals = new List<Vector3>();
-            var uvs = new List<Vector2>();
-            var triangles = new List<int>();
+            List<Vector3> vertices = new List<Vector3>();
+            List<Vector3> normals = new List<Vector3>();
+            List<Vector2> uvs = new List<Vector2>();
+            List<int> triangles = new List<int>();
 
             for (int ring = 0; ring < ringCount; ring++){
 
                 float t = ring / (ringCount-1f);
-                // OrientedPoint op = GetBezierCurve(new OrientedPoint(controlPoint1), new OrientedPoint(controlPoint2), new OrientedPoint(handle1), new OrientedPoint(handle2), t);
-                OrientedPoint op = GetBezier(t);
+                OrientedPoint op = splineCurve.GetPoint(t);
 
                 for (int j = 0; j < mesh2D.vertexCount; j++){
-                    vertices.Add(op.position - this.transform.position + (op.rotation * mesh2D.vertices[j].point)*scale);
+                    vertices.Add(op.position + (op.rotation * mesh2D.vertices[j].point)*scale);
                     normals.Add(op.rotation * mesh2D.vertices[j].normal);
                     uvs.Add(new Vector2(mesh2D.vertices[j].UCoord, t));
 
@@ -126,13 +128,15 @@ namespace SeleneGame {
         public void UpdateOtherSegments(){
             UpdateMesh();
             if(nextSegment != null){
-                nextSegment.controlPoint1.Set(controlPoint2);
-                nextSegment.handle1.Set(nextSegment.controlPoint1.position + (controlPoint2.position - handle2.position));
+                nextSegment.controlPoint1.Set(nextSegment.transform.InverseTransformPoint(transformedControlPoint2));
+                Vector3 displacement = transformedControlPoint2.position - transformedHandle2.position;
+                nextSegment.handle1.Set( nextSegment.transform.InverseTransformPoint(nextSegment.transformedControlPoint1.position + displacement) );
                 nextSegment.UpdateMesh();
             }
             if(prevSegment != null){
-                prevSegment.controlPoint2.Set(controlPoint1);
-                prevSegment.handle2.Set(prevSegment.controlPoint2.position + (controlPoint1.position - handle1.position));
+                prevSegment.controlPoint2.Set(prevSegment.transform.InverseTransformPoint(transformedControlPoint1));
+                Vector3 displacement = transformedControlPoint1.position - transformedHandle1.position;
+                prevSegment.handle2.Set( prevSegment.transform.InverseTransformPoint(prevSegment.transformedControlPoint2.position + displacement) );
                 prevSegment.UpdateMesh();
             }
         }
@@ -142,7 +146,6 @@ namespace SeleneGame {
             nextSegment = Instantiate(gameObject, transform.position + displacement, transform.rotation, transform.parent).GetComponent<Spline>();
             nextSegment.prevSegment = this;
 
-            nextSegment.splineCurve.Move(displacement);
             nextSegment.segNbr = segNbr + 1;
             nextSegment.gameObject.name = "Segment" + nextSegment.segNbr;
 
@@ -160,7 +163,6 @@ namespace SeleneGame {
             prevSegment = Instantiate(gameObject, transform.position + displacement, transform.rotation, transform.parent).GetComponent<Spline>();
             prevSegment.nextSegment = this;
 
-            prevSegment.splineCurve.Move(displacement);
             prevSegment.segNbr = segNbr - 1;
             prevSegment.gameObject.name = "Segment" + prevSegment.segNbr;
             
@@ -173,51 +175,9 @@ namespace SeleneGame {
             prevSegment = null;
         }
 
-
-        #if UNITY_EDITOR
-        public void OnDrawGizmosSelected(){
-
-            Handles.DrawBezier( controlPoint1.position, controlPoint2.position, handle1.position, handle2.position, Color.white, EditorGUIUtility.whiteTexture, 1f );
-
-
-            for (int i = 0; i < ringCount; i++){
-                OrientedPoint pointAlongTessel = GetBezier( (float)i/(float)ringCount );
-                // Vector3 velocityAlongTessel = GetVelocity( (float)i/(float)ringCount );
-                // Vector3 accelerationAlongTessel = GetAcceleration( (float)i/(float)ringCount );
-
-                // Gizmos.color = Color.magenta;
-                // Gizmos.DrawLine( pointAlongTessel.position, pointAlongTessel.position + velocityAlongTessel );
-
-                // Gizmos.color = Color.blue;
-                // Gizmos.DrawLine( pointAlongTessel.position, pointAlongTessel.position + accelerationAlongTessel );
-
-
-                if (mesh2D == null) continue;
-                Gizmos.color = Color.red;
-
-                for (int j = 0; j < mesh2D.vertices.Length-1; j++)
-                    Gizmos.DrawLine(pointAlongTessel.position + (pointAlongTessel.rotation * mesh2D.vertices[j].point)*scale, pointAlongTessel.position + (pointAlongTessel.rotation * mesh2D.vertices[j+1].point)*scale);
-                Gizmos.DrawLine(pointAlongTessel.position + (pointAlongTessel.rotation * mesh2D.vertices[mesh2D.vertices.Length-1].point)*scale, pointAlongTessel.position + (pointAlongTessel.rotation * mesh2D.vertices[0].point)*scale);
-                
-                // Handles.PositionHandle(point.pos, point.rot);
-            }
-
-            if ( transform.hasChanged ){
-                Vector3 movement = transform.position - oldPos;
-
-                splineCurve.Move(movement);
-                oldPos += movement;
-
-                transform.hasChanged = false;
-
-                UpdateOtherSegments();
-            }
-        }
-
         private void OnValidate(){
             UpdateOtherSegments();
         }
 
-        #endif
     }
 }

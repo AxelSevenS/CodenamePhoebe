@@ -25,7 +25,6 @@ namespace SeleneGame.Core {
         protected Animator animator => modelData?.animator ?? null;
         public GameObject this[string key]{
             get { try{ return modelData.bones[key]; } catch{ return model; } }
-            // private set { bones[key] = value; }
         }
 
         [Space(10)]
@@ -158,22 +157,16 @@ namespace SeleneGame.Core {
                 return;
             }
 
-            // string dataName = GetType().Name.Replace("Entity","");
-            // data = DataGetter.GetData<EntityData>( dataName );
-
             _transform = transform;
             _rb = GetComponent<Rigidbody>();
             _physicsComponent = GetComponent<CustomPhysicsComponent>();
 
-            // LoadModel();
             gameObject.name = name;
         }
 
         private void Update(){
             evading.SetVal( evadeTimer > data.evadeCooldown );
             onGround.SetVal( ColliderCast( Vector3.zero, gravityDown.normalized * 0.1f, out groundHit, 0.15f, Global.GroundMask ) );
-            // if (!onGround) Debug.Log("salope");
-            // if (onGround) Debug.Log("pute");
 
             evadeTimer = Mathf.MoveTowards( evadeTimer, 0f, Global.timeDelta );
             
@@ -203,8 +196,6 @@ namespace SeleneGame.Core {
                 animator.SetFloat("ForwardRight", Vector3.Dot(absoluteForward, Vector3.Cross(-_transform.up, _transform.forward)));
                 state?.StateAnimation();
             }
-
-            // moveInput.SetVal(Vector3.zero);
         }
 
         private void FixedUpdate(){
@@ -232,7 +223,6 @@ namespace SeleneGame.Core {
             if (currHealth == 0f)
                 Death();
 
-            // après si tu veux du knockback tu peux faire un truc comme ça
             _rb.AddForce(knockback, ForceMode.Impulse);
         }
 
@@ -349,13 +339,13 @@ namespace SeleneGame.Core {
             _rb.AddForce(force * Global.timeDelta * direction);
 
             // Inertia that's only active when falling
-            if( onGround ) return;
+            if ( onGround ) return;
             
             float floatingMultiplier = slowFall ? 1.75f : 3f;
             float fallingMultiplier = 5f;
             float multiplier = fallVelocity >= 0 ? floatingMultiplier : fallingMultiplier;
             _rb.velocity += multiplier * force * Global.timeDelta * direction.normalized;
-                
+        
         }
         public void Jump(Vector3 jumpDirection){
 
@@ -377,8 +367,6 @@ namespace SeleneGame.Core {
             if (dir.magnitude == 0f) return;
 
             Vector3 move = Vector3.ProjectOnPlane(dir, groundOrientation * -gravityDown);
-            
-            // Move(move);
 
             bool walkCollision = ColliderCast( Vector3.zero, move, out RaycastHit walkHit, 0.15f, Global.GroundMask);
             // Debug.DrawRay(bottom, -gravityDown * data.size.y, Color.red);
@@ -416,11 +404,10 @@ namespace SeleneGame.Core {
 
             bool walkCollision = this.ColliderCast( Vector3.zero, dir, out RaycastHit walkHit, 0.15f, Global.GroundMask);
 
-            if ( walkCollision /* && walkHit.transform.gameObject.layer == 0 */) 
+            if ( walkCollision ) 
                 dir = dir.NullifyInDirection( -walkHit.normal );
 
             _rb.MovePosition(_rb.position + dir);
-            // _transform.position += dir;
         }
 
         public void EntityInput(Vector3 rawInput, Quaternion camRotation, SafeDictionary<string, bool> inputDictionary){
@@ -451,29 +438,14 @@ namespace SeleneGame.Core {
 
             if (data == null) return;
 
-            // Load Model into Scene
             model = Instantiate(data.costume.model, transform.position, transform.rotation, transform);
             model.name = "Model";
 
-            // Reset Animations
-
-            // animator.runtimeAnimatorController = Global.entityManager.entityAnimatorController;
-            // animator.Rebind();
-
-            // Assign Armature Bones and colliders in Script
-
-            // bones.Clear();
-            // foreach ( ValuePair<string, string> pair in data?.costume.limbsPaths){
-            //     this[pair.valueOne] = model.transform.Find( pair.valueTwo ).gameObject;
-            // }
-
             modelData = model.GetComponent<CostumeData>();
-            // _colliders = model.GetComponentsInChildren<Collider>();
-            // _renderer = model.GetComponentInChildren<Renderer>();
-
-            EntityLoadModel();
 
             gameObject.SetLayerRecursively(6);
+
+            EntityLoadModel();
         }
 
         public void DestroyModel(){
@@ -494,8 +466,8 @@ namespace SeleneGame.Core {
         }
 
         public void StartWalkAnim(){
-            if (onGround && moveDirection.magnitude > 0f)
-                AnimatorTrigger("Walk");
+            if (!onGround && moveDirection.magnitude == 0f) return;
+            AnimatorTrigger("Walk");
         }
 
     }

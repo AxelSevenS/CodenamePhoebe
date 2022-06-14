@@ -10,7 +10,6 @@ namespace SeleneGame.EditorUI {
     [CustomEditor(typeof(Spline))]
     public class SplineEditor : Editor{
 
-        private Vector3 oldPos; 
         private Spline targetSpline;
 
         private SerializedObject so;
@@ -43,7 +42,7 @@ namespace SeleneGame.EditorUI {
             propScale = so.FindProperty( "scale" );
 
             targetSpline = (Spline)target;
-            targetSpline.oldPos = targetSpline.transform.position;
+            // targetSpline.oldTransform = new OrientedPoint(targetSpline.transform);
         }
         
         public override void OnInspectorGUI(){
@@ -110,13 +109,13 @@ namespace SeleneGame.EditorUI {
         }
 
         public void OnSceneGUI(){
-
-            BezierCurve splineCurve = targetSpline.splineCurve;
             
 		    EditorGUI.BeginChangeCheck();
 
-            OrientedPoint newControlPoint1 = new OrientedPoint(splineCurve.controlPoint1);
-            OrientedPoint newControlPoint2 = new OrientedPoint(splineCurve.controlPoint2);
+            OrientedPoint newControlPoint1 = targetSpline.transformedControlPoint1;
+            OrientedPoint newControlPoint2 = targetSpline.transformedControlPoint2;
+            OrientedPoint newHandle1 = targetSpline.transformedHandle1;
+            OrientedPoint newHandle2 = targetSpline.transformedHandle2;
 
             GUIStyle style = GUIStyle.none;
             style.fontSize = 15;
@@ -126,58 +125,60 @@ namespace SeleneGame.EditorUI {
 
             Handles.Label(newControlPoint1.position, "Control Point 1", style );
             Handles.Label(newControlPoint2.position, "Control Point 2", style );
-            Handles.Label(splineCurve.handle1.position, "Handle 1", style );
-            Handles.Label(splineCurve.handle2.position, "Handle 2", style );
+            Handles.Label(newHandle1.position, "Handle 1", style );
+            Handles.Label(newHandle2.position, "Handle 2", style );
 
             Handles.TransformHandle(ref newControlPoint1.position, ref newControlPoint1.rotation);
             Handles.TransformHandle(ref newControlPoint2.position, ref newControlPoint2.rotation);
-            Vector3 newHandle1Pos = Handles.PositionHandle(splineCurve.handle1.position, Quaternion.identity);
-            Vector3 newHandle2Pos = Handles.PositionHandle(splineCurve.handle2.position, Quaternion.identity);
+            newHandle1.position = Handles.PositionHandle(newHandle1.position, Quaternion.identity);
+            newHandle2.position = Handles.PositionHandle(newHandle2.position, Quaternion.identity);
 
             if ( EditorGUI.EndChangeCheck() ){
 
                 Undo.RecordObject( target, "Edited Spline" ); 
 
-                targetSpline.controlPoint1.Set(newControlPoint1);
-                targetSpline.controlPoint2.Set(newControlPoint2);
-                targetSpline.handle1.Set(newHandle1Pos);
-                targetSpline.handle2.Set(newHandle2Pos);
+                targetSpline.controlPoint1.Set(targetSpline.transform.InverseTransformPoint(newControlPoint1));
+                targetSpline.controlPoint2.Set(targetSpline.transform.InverseTransformPoint(newControlPoint2));
+
+                targetSpline.handle1.Set(targetSpline.transform.InverseTransformPoint(newHandle1));
+                targetSpline.handle2.Set(targetSpline.transform.InverseTransformPoint(newHandle2));
 
                 targetSpline.UpdateOtherSegments();
 
             }
+        }
 
-            // // Check if a parent was moved recursively.
-            // var currentParent = targetSpline.transform;
-            // bool hasChanged = currentParent.hasChanged;
-            // Debug.Log(hasChanged);
-            // while (!hasChanged) {
-            //     currentParent = currentParent.parent;
-            //     if (currentParent == null) break;
-            //     hasChanged = currentParent.hasChanged;
-            // }
+        [DrawGizmo(GizmoType.InSelectionHierarchy | GizmoType.Active)]
+        private static void OnDrawGizmosSelected(Spline scr, GizmoType gizmoType) {
 
-            // if ( hasChanged ){
-            //     Debug.Log("pute");
-            //     Vector3 movement = targetSpline.transform.position - oldPos;
+            Handles.DrawBezier( scr.transformedControlPoint1.position, scr.transformedControlPoint2.position, scr.transformedHandle1.position, scr.transformedHandle2.position, Color.white, EditorGUIUtility.whiteTexture, 1f );
 
-            //     targetSpline.splineCurve.Move(movement);
-            //     oldPos += movement;
+            for (int i = 0; i < scr.ringCount; i++){
+                OrientedPoint pointAlongTessel = scr.GetBezier( (float)i/(float)scr.ringCount );
+                // pointAlongTessel.position = scr.transform.TransformPoint(pointAlongTessel.position);
+                // Vector3 velocityAlongTessel = GetVelocity( (float)i/(float)ringCount );
+                // Vector3 accelerationAlongTessel = GetAcceleration( (float)i/(float)ringCount );
 
-            //     currentParent.hasChanged = false;
+                // Gizmos.color = Color.magenta;
+                // Gizmos.DrawLine( pointAlongTessel.position, pointAlongTessel.position + velocityAlongTessel );
 
-            //     targetSpline.UpdateOtherSegments();
-            // }
+                // Gizmos.color = Color.blue;
+                // Gizmos.DrawLine( pointAlongTessel.position, pointAlongTessel.position + accelerationAlongTessel );
 
-            if ( targetSpline.transform.hasChanged && oldPos != Vector3.zero){
-                Vector3 movement = targetSpline.transform.position - oldPos;
 
-                targetSpline.splineCurve.Move(movement);
-                oldPos += movement;
+                if (scr.mesh2D == null) continue;
+                Gizmos.color = Color.red;
 
-                targetSpline.transform.hasChanged = false;
+                for (int j = 0; j < scr.mesh2D.vertices.Length-1; j++)
+                    Gizmos.DrawLine(pointAlongTessel.position + (pointAlongTessel.rotation * scr.mesh2D.vertices[j].point)*scr.scale, pointAlongTessel.position + (pointAlongTessel.rotation * scr.mesh2D.vertices[j+1].point)*scr.scale);
+                Gizmos.DrawLine(pointAlongTessel.position + (pointAlongTessel.rotation * scr.mesh2D.vertices[scr.mesh2D.vertices.Length-1].point)*scr.scale, pointAlongTessel.position + (pointAlongTessel.rotation * scr.mesh2D.vertices[0].point)*scr.scale);
+                
+                // Handles.PositionHandle(point.pos, point.rot);
+            }
+            if ( scr.transform.hasChanged ){
 
-                targetSpline.UpdateOtherSegments();
+                scr.transform.hasChanged = false;
+                scr.UpdateOtherSegments();
             }
         }
     }
