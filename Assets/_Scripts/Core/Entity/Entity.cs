@@ -29,8 +29,8 @@ namespace SeleneGame.Core {
 
         [Space(10)]
 
-        public State state;
-        public string defaultState => data.defaultState;
+        [SerializeReference] public State state;
+        public State defaultState => EntityData.TypeToDefaultState(data.entityType);
 
         [Space(10)]
 
@@ -134,6 +134,7 @@ namespace SeleneGame.Core {
         private void Awake(){
             if (data == null) data = Resources.Load<EntityData>( "Data/Entity/Selene" );
             if (model == null) LoadModel();
+
             SetState(defaultState);
             EntityAwake();
         }
@@ -184,6 +185,7 @@ namespace SeleneGame.Core {
             
             
             EntityUpdate();
+            state?.StateUpdate();
 
             if (animator.runtimeAnimatorController != null){
                 animator.SetBool("OnGround", onGround);
@@ -203,10 +205,12 @@ namespace SeleneGame.Core {
                 evadeDirection = moveDirection.normalized;
 
             EntityFixedUpdate();
+            state?.StateFixedUpdate();
         }
 
         private void LateUpdate(){
             EntityLateUpdate();
+            state?.StateLateUpdate();
         }
 
         public virtual void Death(){
@@ -285,9 +289,11 @@ namespace SeleneGame.Core {
             // _transform.rotation = Quaternion.Slerp(_transform.rotation, apparentRotation * turnDirection, 12f*Global.timeDelta);
         }
 
-        public void SetState(string stateName){
-            state = Global.SafeDestroy(state);
-            state = gameObject.AddComponent( State.GetStateTypeByName(stateName) ) as State;
+        public void SetState(State newState){
+            state?.OnExit();
+            newState.OnEnter(this);
+            state = newState;
+            Debug.Log($"{name} switched state to {state.name}");
         }
 
         public void SetWalkSpeed(WalkSpeed newSpeed){

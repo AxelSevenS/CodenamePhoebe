@@ -7,7 +7,7 @@ namespace SeleneGame.Core {
 
     public interface IData {
 
-        event System.Action onChangeCostume;
+        System.Action onChangeCostume{ get; set;}
 
         void SetCostume(string costumeName);
     }

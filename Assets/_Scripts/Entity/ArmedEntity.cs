@@ -39,8 +39,8 @@ namespace SeleneGame.Entities {
         }
 
         protected override void EntityLoadModel() {
-            foreach ( Weapon weapon in weapons){
-                weapon.LoadModel();
+            foreach ( ValuePair<int, Weapon> pair in weapons){
+                pair.valueTwo.LoadModel();
             }
         }
 

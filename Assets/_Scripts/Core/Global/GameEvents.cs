@@ -11,8 +11,8 @@ namespace SeleneGame.Core {
             onPlayerInput = null;
             onToggleMenu = null;
             onStartDialogue = null;
-            onSetEntityCostume = null;
-            onSetWeaponCostume = null;
+            // onSetEntityCostume = null;
+            // onSetWeaponCostume = null;
         }
 
         public static event Action onPlayerInput;
@@ -33,24 +33,28 @@ namespace SeleneGame.Core {
                 onStartDialogue(dialogue, dialogueObject);
         }
 
-        public static event Action<string> onSetEntityCostume;
-        public static void SetEntityCostume(string charName, string costumeName){
-            DataGetter.GetData<EntityData>(charName).SetCostume(costumeName);
-            EntityManager.current.entityCostumes[charName] = costumeName;
-            Debug.Log("Set " + charName + " Entity costume to : " + costumeName);
+        // public static event Action<string> onSetEntityCostume;
+        public static void SetEntityCostume(EntityData entityData, EntityCostume costume){
+            Debug.Log(entityData);
+            Debug.Log(costume);
+            Debug.Log("Set " + entityData.name + " Entity costume to : " + costume.name);
+            entityData.costume = costume;
+            // EntityManager.current.entityCostumes[entityData] = costume;
 
-            if (onSetEntityCostume != null)
-                onSetEntityCostume(charName);
+            entityData.onChangeCostume?.Invoke();
+            // if (onSetEntityCostume != null)
+            //     onSetEntityCostume(entityData);
         }
 
-        public static event Action<string> onSetWeaponCostume;
-        public static void SetWeaponCostume(string weaponName, string costumeName){
-            DataGetter.GetData<WeaponData>(weaponName).SetCostume(costumeName);
-            EntityManager.current.weaponCostumes[weaponName] = costumeName;
-            Debug.Log("Set " + weaponName + " Weapon costume to : " + costumeName);
+        // public static event Action<string> onSetWeaponCostume;
+        public static void SetWeaponCostume(WeaponData weaponData, WeaponCostume costume){
+            weaponData.costume = costume;
+            // EntityManager.current.weaponCostumes[weaponName] = costumeName;
+            Debug.Log("Set " + weaponData.name + " Weapon costume to : " + costume.name);
 
-            if (onSetWeaponCostume != null)
-                onSetWeaponCostume(weaponName);
+            weaponData.onChangeCostume?.Invoke();
+            // if (onSetWeaponCostume != null)
+            //     onSetWeaponCostume(weaponName);
         }
     }
 }

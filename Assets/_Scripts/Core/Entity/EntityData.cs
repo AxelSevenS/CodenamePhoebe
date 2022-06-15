@@ -1,11 +1,33 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using SeleneGame.States;
 
 namespace SeleneGame.Core {
     
     [CreateAssetMenu(fileName = "new Entity Data", menuName = "Data/Entity")]
     public class EntityData : ScriptableObject, IData {
+
+        public enum EntityType {
+            Humanoid,
+            Vehicle,
+            Flying,
+            Other
+        }
+
+        public static State TypeToDefaultState(EntityType type) {
+            switch (type) {
+                case EntityType.Humanoid:
+                    return new WalkingState();
+                case EntityType.Vehicle:
+                    return new VehicleState();
+                // case EntityType.Flying:
+                //     return new FlyingState();
+                //     // Need to create proper flying state.
+                default:
+                    return new WalkingState();
+            }
+        }
 
         public static string defaultData => "Selene";
 
@@ -13,7 +35,7 @@ namespace SeleneGame.Core {
         
         public EntityCostume costume;
 
-        public event System.Action onChangeCostume;
+        public System.Action onChangeCostume{ get; set;}
 
         public void SetCostume(string costumeName){
             costume = Resources.Load<EntityCostume>($"{DataGetter.GetDataPath<EntityData>()}/{name}/{costumeName}");
@@ -29,7 +51,7 @@ namespace SeleneGame.Core {
         // }
         // public static string GetDataPath() => "Data/Entity";
 
-        public string defaultState;
+        public EntityType entityType;
         public float maxHealth;
         public Vector3 size = new Vector3(1f, 1f, 1f);
         public float stepHeight = 1f;

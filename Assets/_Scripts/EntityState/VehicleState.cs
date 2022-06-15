@@ -5,6 +5,7 @@ using SeleneGame.Core;
 
 namespace SeleneGame.States {
     
+    [System.Serializable]
     public class VehicleState : State{
 
         public override int id => 7;
@@ -17,16 +18,17 @@ namespace SeleneGame.States {
         private Vector3 inputDirection;
         
 
-        private void OnEnable(){
+        public override void OnEnter(Entity entity){
+            base.OnEnter(entity);
 
             entity.onJump += OnEntityJump;
         }
-        private void OnDisable(){
+        public override void OnExit(){
 
             entity.onJump -= OnEntityJump;
         }
 
-        protected override void StateUpdate(){
+        public override void StateUpdate(){
 
             entity.jumpCooldown = Mathf.MoveTowards( entity.jumpCooldown, 0f, Global.timeDelta );
 
@@ -35,7 +37,7 @@ namespace SeleneGame.States {
 
         }
 
-        protected override void StateFixedUpdate(){
+        public override void StateFixedUpdate(){
 
             entity.JumpGravity(entity.GravityMultiplier(), entity.gravityDown, entity.jumpInput);
             

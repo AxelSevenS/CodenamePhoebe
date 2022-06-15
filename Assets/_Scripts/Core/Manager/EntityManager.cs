@@ -24,13 +24,13 @@ namespace SeleneGame.Core {
             current = this;
         }
 
-        public void SetCostume(string charName, string costumeName){
-            GameEvents.SetEntityCostume(charName, costumeName);
-        }
+        // public void SetCostume(string charName, string costumeName){
+        //     GameEvents.SetEntityCostume(charName, costumeName);
+        // }
 
-        public void SetCostumeSeleneBase(){
-            GameEvents.SetEntityCostume("Selene", "SeleneBase");
-        }
+        // public void SetCostumeSeleneBase(){
+        //     GameEvents.SetEntityCostume("Selene", "SeleneBase");
+        // }
 
     }
 }

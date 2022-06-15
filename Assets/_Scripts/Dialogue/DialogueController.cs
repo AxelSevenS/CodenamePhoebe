@@ -82,7 +82,7 @@ namespace SeleneGame {
         private void UpdatePortrait(){
             EntityCostume costume = dialogue.entityData.costume;
             Sprite[] portraits = new Sprite[7]{costume.portrait, costume.determinedPortrait, costume.hesitantPortrait, costume.shockedPortrait, costume.disgustedPortrait, costume.sadPortrait, costume.happyPortrait};
-            dialoguePortrait.sprite = portraits[ (int)dialogue.emotion ];
+            dialoguePortrait.sprite = portraits?[ (int)dialogue.emotion ];
         }
 
         public void StartConversation(Conversation newConversation){

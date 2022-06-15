@@ -11,20 +11,25 @@ namespace SeleneGame.Core {
 
         public EventType eventType;
 
-        public string parameter1;
-        public string parameter2;
-        public string parameter3;
+        public Conversation conversation;
+        public EntityData entity;
+        public EntityCostume entityCostume;
+        public WeaponData weapon;
+        public WeaponCostume weaponCostume;
 
         public void Invoke(GameObject gameObject){
             switch (eventType){
                 case EventType.StartDialogue:
-                    GameEvents.StartDialogue(Conversation.GetConversationByName(parameter1), gameObject);
+                    if (conversation == null) break;
+                    GameEvents.StartDialogue(conversation, gameObject);
                     break;
                 case EventType.SetEntityCostume:
-                    GameEvents.SetEntityCostume(parameter1, parameter2);
+                    if (entity == null || entityCostume == null) break;
+                    GameEvents.SetEntityCostume(entity, entityCostume);
                     break;
                 case EventType.SetWeaponCostume:
-                    GameEvents.SetWeaponCostume(parameter1, parameter2);
+                    if (weapon == null || weaponCostume == null) break;
+                    GameEvents.SetWeaponCostume(weapon, weaponCostume);
                     break;
                 case EventType.Destroy:
                     Object.Destroy(gameObject);

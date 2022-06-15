@@ -13,7 +13,7 @@ namespace SeleneGame.Core {
         
         public WeaponCostume costume;
 
-        public event System.Action onChangeCostume;
+        public System.Action onChangeCostume{ get; set;}
 
         public void SetCostume(string costumeName){
             costume = Resources.Load<WeaponCostume>($"{DataGetter.GetDataPath<WeaponData>()}/{name}/{costumeName}");

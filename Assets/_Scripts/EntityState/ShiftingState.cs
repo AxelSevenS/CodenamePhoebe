@@ -6,6 +6,7 @@ using SeleneGame.Entities;
 
 namespace SeleneGame.States {
     
+    [System.Serializable]
     public class ShiftingState : State{
 
         public override int id => 2;
@@ -38,7 +39,8 @@ namespace SeleneGame.States {
 
         private GameObject landCursor;
 
-        protected override void StateAwake(){
+        public override void OnEnter(Entity entity){
+            base.OnEnter(entity);
 
             if ( !(entity is GravityShifterEntity shifter) ) {
                 Debug.Log($"Entity {entity.name} cannot switch to Shifting State because it is not a Gravity Shifter");
@@ -50,11 +52,11 @@ namespace SeleneGame.States {
             landCursor = GameObject.Instantiate(Resources.Load("Prefabs/UI/LandCursor"), Global.ui.transform.GetChild(0)) as GameObject;
         }
 
-        protected override void StateDestroy(){
+        public override void OnExit(){
             landCursor = Global.SafeDestroy(landCursor);
         }
 
-        protected override void StateUpdate(){
+        public override void StateUpdate(){
 
             shiftFallingData.SetVal( gravityShifter.evadeInput.trueTimer > 0.125f );
 
@@ -82,7 +84,7 @@ namespace SeleneGame.States {
             UpdateLandCursorPos();
         }
 
-        protected override void StateFixedUpdate(){
+        public override void StateFixedUpdate(){
 
 
             Vector3 finalRotation;

@@ -63,7 +63,7 @@ namespace SeleneGame {
             previousAnchor = entity.transform.parent;
 
             seatOccupant = entity;
-            entity.SetState("Walking");
+            entity.SetState(entity.defaultState);
             
             CalculateClosestDirection(out sittingDir, out seatOccupant.subState);
 
@@ -74,7 +74,7 @@ namespace SeleneGame {
                 seatOccupant.walkingTo = false;
             }
             
-            entity.SetState("Sitting");
+            entity.SetState(new SittingState());
             ((SittingState)entity.state).seat = this;
             Global.SetLayerRecursively(entity.gameObject, 8);
 

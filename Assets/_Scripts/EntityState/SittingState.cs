@@ -6,6 +6,7 @@ using SeleneGame.Entities;
 
 namespace SeleneGame.States {
     
+    [System.Serializable]
     public class SittingState : State{
         
         public override int id => 100;
@@ -15,12 +16,12 @@ namespace SeleneGame.States {
 
         [HideInInspector] public Seat seat;
 
-        protected override void StateUpdate(){
+        public override void StateUpdate(){
             if (entity.crouchInput.started)
                 seat.StopSitting();
         }
 
-        protected override void StateFixedUpdate(){
+        public override void StateFixedUpdate(){
             // Sitting
             entity._transform.position = seat.sitPosition;
             entity.absoluteForward = entity._transform.forward;

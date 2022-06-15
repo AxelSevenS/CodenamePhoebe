@@ -6,6 +6,7 @@ using SeleneGame.Entities;
 
 namespace SeleneGame.States {
     
+    [System.Serializable]
     public class SwimmingState : State{
 
         public override int id => 1;
@@ -18,15 +19,17 @@ namespace SeleneGame.States {
 
         // public override bool masked => true;
 
-        protected override void StateAwake(){
+        public override void OnEnter(Entity entity){
+            base.OnEnter(entity);
+            
             entity.jumpCount = 1;
         }
 
-        protected override void StateUpdate(){
+        public override void StateUpdate(){
 
 
             if (!entity.inWater || entity.CanSink()){
-                entity.SetState("Walking");
+                entity.SetState(entity.defaultState);
             }
 
 
@@ -36,7 +39,7 @@ namespace SeleneGame.States {
 
         }
 
-        protected override void StateFixedUpdate(){
+        public override void StateFixedUpdate(){
 
             entity.SetRotation(-entity.gravityDown);
 

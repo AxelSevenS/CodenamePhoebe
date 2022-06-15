@@ -121,11 +121,11 @@ Shader "Unlit/Eidolon" {
                     half4 shadedColor = SimpleCelLighting(baseColor, input.worldPosition.xyz, input.worldNormal);
 
                     if (shadedColor.a > 0.5) {
-                        // float waveScale = 5 * _Scale;
-                        // float waveSpeed = _Time[1] * (_Scale + 1) /* * clamp( waveDirection, -1, 1) */;
-                        // float wave = saturate( sin( waveScale * input.uv.y + waveSpeed ) ) ;
-                        float wave = MovingFractalNoise( input.uv, -_Time[1] * 0.25, 0.5 * _Scale);
-                        wave = saturate( wave + 0.5 );
+                        float waveScale = 5 * _Scale;
+                        float waveSpeed = _Time[1] * (_Scale + 1) /* * clamp( waveDirection, -1, 1) */;
+                        float wave = saturate( sin( waveScale * input.uv.y + waveSpeed ) ) ;
+                        // float wave = MovingFractalNoise( input.uv, -_Time[1] * 0.25, 0.5 * _Scale);
+                        // wave = saturate( wave + 0.5 );
 
                         float noise = MovingFractalNoise( input.uv, _Time[1], 5 * _Scale);
                         noise = saturate( noise + 0.5 );

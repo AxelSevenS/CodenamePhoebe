@@ -27,7 +27,7 @@
                     "id": "b3db6196-c50f-4738-abac-4505b2acfa15",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "Press"
+                    "interactions": ""
                 },
                 {
                     "name": "Jump",
@@ -35,7 +35,7 @@
                     "id": "79f27079-884e-41bd-9004-2d585bc59f0d",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "Press"
+                    "interactions": ""
                 },
                 {
                     "name": "LightAttack",
@@ -43,7 +43,7 @@
                     "id": "1c00df50-e088-4f2f-a141-fa276a31080c",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "SlowTap,Tap"
+                    "interactions": ""
                 },
                 {
                     "name": "HeavyAttack",
@@ -51,7 +51,7 @@
                     "id": "eb8b3d55-ff56-44e3-9c8b-27e800bff286",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "SlowTap,Tap"
+                    "interactions": ""
                 },
                 {
                     "name": "Shift",
@@ -59,7 +59,7 @@
                     "id": "30d035c5-3ac9-44ff-ac8e-403cd1f507dc",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "Tap,Hold"
+                    "interactions": ""
                 },
                 {
                     "name": "Evade",
@@ -67,7 +67,7 @@
                     "id": "a9d677ef-6b79-4b5a-8c2e-40939828e663",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "Press,Tap"
+                    "interactions": ""
                 },
                 {
                     "name": "Crouch",
@@ -75,7 +75,7 @@
                     "id": "6a30bbe8-2d59-4a60-a490-9d20b444abc2",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "Tap,Hold"
+                    "interactions": ""
                 },
                 {
                     "name": "Walk",
@@ -99,7 +99,7 @@
                     "id": "4b556614-4b9f-4e3b-a050-1686ef048def",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "Press"
+                    "interactions": ""
                 },
                 {
                     "name": "SecondaryWeapon",
@@ -107,7 +107,7 @@
                     "id": "ac9ff53c-bb07-47b8-a1e3-df971a3a63da",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "Press"
+                    "interactions": ""
                 },
                 {
                     "name": "TertiaryWeapon",
@@ -115,7 +115,7 @@
                     "id": "82f3e26b-ba2d-4f35-acf3-596a93ed05a9",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "Press"
+                    "interactions": ""
                 }
             ],
             "bindings": [

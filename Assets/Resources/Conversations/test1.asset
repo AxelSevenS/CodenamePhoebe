@@ -17,19 +17,25 @@ MonoBehaviour:
     emotion: 1
     text: "Guillaume est une tr\xE8s belle Salope"
     dialogueEvents:
-    - eventName: SetEntityCostume
-      parameter1: Selene
-      parameter2: SeleneBase
-      parameter3: 
+    - eventType: 1
+      conversation: {fileID: 0}
+      entity: {fileID: 11400000, guid: c3f56a8f9bc7b0a40a0fe3c07dbc08aa, type: 2}
+      entityCostume: {fileID: 11400000, guid: bad0e400899943c43af368f1c7710c38, type: 2}
+      weapon: {fileID: 0}
+      weaponCostume: {fileID: 0}
   - entityData: {fileID: 11400000, guid: c3f56a8f9bc7b0a40a0fe3c07dbc08aa, type: 2}
     emotion: 3
     text: Une vraiment magnifique salope
     dialogueEvents:
-    - eventName: SetWeaponCostume
-      parameter1: Hypnos
-      parameter2: HypnosTest
-      parameter3: 
-    - eventName: Destroy
-      parameter1: 
-      parameter2: 
-      parameter3: 
+    - eventType: 2
+      conversation: {fileID: 0}
+      entity: {fileID: 0}
+      entityCostume: {fileID: 0}
+      weapon: {fileID: 11400000, guid: 98f11d7c2a1062948b1f785fca40da08, type: 2}
+      weaponCostume: {fileID: 11400000, guid: f1c6cebfdf4f4554288c95a4539c3610, type: 2}
+    - eventType: 3
+      conversation: {fileID: 0}
+      entity: {fileID: 0}
+      entityCostume: {fileID: 0}
+      weapon: {fileID: 0}
+      weaponCostume: {fileID: 0}

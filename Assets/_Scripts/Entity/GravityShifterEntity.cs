@@ -48,6 +48,9 @@ namespace SeleneGame.Entities {
         protected override void EntityAwake(){
             base.EntityAwake();
 
+            weapons.Set(1, Weapon.GetWeaponTypeByName("Hypnos"));
+            weapons.Set(2, Weapon.GetWeaponTypeByName("Eris"));
+
             GameObject speedlinesObject = GameObject.Instantiate(Resources.Load("Prefabs/Effects/Speedlines"), Global.effects.transform) as GameObject;
             speedlines = speedlinesObject.GetComponent<SpeedlinesEffect>();
             speedlines.SetFollowedObject(gameObject);
@@ -64,7 +67,7 @@ namespace SeleneGame.Entities {
                     shiftCooldown = 0.3f;
                     if (onGround) _rb.velocity += -gravityDown*3f;
                     
-                    SetState("Shifting");
+                    SetState(new ShiftingState());
 
                     //Shift effects
                         // var shiftParticle = Instantiate(Global.LoadParticle("ShiftParticles"), transform.position, Quaternion.FromToRotation(Vector3.up, transform.up));
@@ -109,7 +112,7 @@ namespace SeleneGame.Entities {
                 shiftCooldown = 0.3f;
                 if (onGround) _rb.velocity += -gravityDown*3f;
                 
-                SetState("Shifting");
+                SetState(new ShiftingState());
 
                 //Shift effects
                     // var shiftParticle = Instantiate(Global.LoadParticle("ShiftParticles"), transform.position, Quaternion.FromToRotation(Vector3.up, transform.up));

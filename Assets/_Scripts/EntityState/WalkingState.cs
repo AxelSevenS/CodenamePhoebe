@@ -6,6 +6,7 @@ using SeleneGame.Entities;
 
 namespace SeleneGame.States {
     
+    [System.Serializable]
     public class WalkingState : State {
 
         // protected override float GetSpeedMultiplier() => 1f/* entity.currentWeapon.speedMultiplier */;
@@ -33,27 +34,26 @@ namespace SeleneGame.States {
 
 
 
-        private void OnEnable(){
+        public override void OnEnter(Entity entity){
+            base.OnEnter(entity);
 
             entity.onJump += OnEntityJump;
         }
-        private void OnDisable(){
+        public override void OnExit(){
 
             entity.onJump -= OnEntityJump;
         }
         
-        protected override void StateUpdate(){
+        public override void StateUpdate(){
 
             entity.jumpCooldown = Mathf.MoveTowards( entity.jumpCooldown, 0f, Global.timeDelta );
             
             if ( entity.onGround && entity.jumpCooldown == 0f )
                 entity.jumpCount = 1;
 
-            // waterHover.SetVal( entity.CanWaterHover() && entity.ColliderCast( Vector3.zero, entity.gravityDown.normalized * 0.15f, out waterHoverHit, 0.15f, Global.WaterMask ) );
-            // entity.onGround.SetVal( entity.onGround || waterHover );
 
             if (entity.inWater && !entity.CanSink() && !entity.CanWaterHover()){
-                entity.SetState("Swimming");
+                entity.SetState(new SwimmingState());
             }
 
             if ( entity.onGround.started || (entity.evading.stopped && !entity.sliding)) 
@@ -82,7 +82,7 @@ namespace SeleneGame.States {
             }
         }
 
-        protected override void StateFixedUpdate(){
+        public override void StateFixedUpdate(){
 
             entity.SetRotation(-entity.gravityDown);
 

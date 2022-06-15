@@ -9,32 +9,22 @@ namespace SeleneGame.Core {
         private GameObject gameObject;
         [SerializeField] private Map<int, Weapon> items = new Map<int, Weapon>();
         
-        [SerializeField] private int defaultIndex;
+        private const int defaultIndex = 0;
         [SerializeField] private int currentIndex;
 
-        public Weapon defaultItem => items[defaultIndex];
         public Weapon currentItem { get {
                 if ( !items.Exists(currentIndex) )
-                    return defaultItem;
+                    return items[defaultIndex];
                 return items[currentIndex];
             }
         }
 
-        // public Weapon this[int index] {
-
-        // }
-
-        public WeaponInventory(GameObject gameObject, int newDefaultIndex = 0){
+        public WeaponInventory(GameObject gameObject){
             this.gameObject = gameObject;
-            defaultIndex = newDefaultIndex;
-            Set( newDefaultIndex, Weapon.GetWeaponTypeByName(WeaponData.defaultData) );
+            Set( defaultIndex, Weapon.GetWeaponTypeByName(WeaponData.defaultData) );
         }
 
         public void Set(int index, System.Type type){
-            // if (index == defaultIndex){
-            //     Debug.LogError("Can't change the default value of this Inventory");
-            //     return;
-            // }
 
             if (items.Exists(index)) 
                 Remove(index);
@@ -44,12 +34,14 @@ namespace SeleneGame.Core {
         }
 
         public void Remove(int index) {
-            if (index != defaultIndex){
-                items[index] = Global.SafeDestroy(items[index]);
-            }
+            if (index == defaultIndex) return;
+
+            items[index] = Global.SafeDestroy(items[index]);
         }
 
         public void Switch(int index){
+            if (index == currentIndex) return;
+
             foreach ( ValuePair<int, Weapon> item in items )
                 item.valueTwo.Hide();
 

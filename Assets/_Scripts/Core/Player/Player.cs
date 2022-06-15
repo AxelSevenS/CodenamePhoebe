@@ -36,7 +36,6 @@ namespace SeleneGame.Core {
         public bool canLook => (!menu);
         public bool canInteract => interactionCandidate != null;
 
-        // private RaycastHit landingHit;
         
         
         public float holdDuration = 0.2f;
@@ -101,11 +100,8 @@ namespace SeleneGame.Core {
         }
         
         private void Update(){
-
-            // Physics.Raycast(entity.bottom, entity.gravityDown, out landingHit, Global.GroundMask);
-
+            
             EntityControl();
-
         }
 
         private void EntityControl(){
@@ -113,22 +109,21 @@ namespace SeleneGame.Core {
             Collider[] colliderBuffer = new Collider[5];
 
             // Player Input
-            if (canPlay){
+            if ( !canPlay ) return;
 
-                SafeDictionary<string, bool> inputDict = new SafeDictionary<string, bool>();
-                foreach(string key in inputKeys){
-                    inputDict[key] = playerControls[key].IsActuated();
-                }
-
-                float jump = System.Convert.ToSingle(inputDict["Jump"]) - System.Convert.ToSingle(inputDict["Crouch"]);
-                Quaternion lookRotation = UpdateCameraRotation( entity.lookRotation );
-
-                Vector2 dir = playerControls["Move"].ReadValue<Vector2>();
-                Vector3 moveDirection = new Vector3(dir.x, jump, dir.y);
-                
-
-                entity.EntityInput(moveDirection, lookRotation, inputDict);
+            SafeDictionary<string, bool> inputDict = new SafeDictionary<string, bool>();
+            foreach(string key in inputKeys ){
+                inputDict[key] = playerControls[key].IsActuated();
             }
+
+            float jump = System.Convert.ToSingle(inputDict["Jump"]) - System.Convert.ToSingle(inputDict["Crouch"]);
+            Quaternion lookRotation = UpdateCameraRotation( entity.lookRotation );
+
+            Vector2 dir = playerControls["Move"].ReadValue<Vector2>();
+            Vector3 moveDirection = new Vector3(dir.x, jump, dir.y);
+            
+
+            entity.EntityInput(moveDirection, lookRotation, inputDict);
 
             manipulationCandidate = GetManipulationCandidate(colliderBuffer);
 

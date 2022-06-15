@@ -41,5 +41,23 @@ namespace SeleneGame.Core {
             this.position = op.position;
             this.rotation = op.rotation;
         }
+
+        // public override bool Equals(Object obj){
+        //     if ( obj == null || GetType() != obj.GetType() ) {
+        //         return false;
+        //     }
+
+        //     return position == obj.position && rotation == obj.rotation;
+            
+        //     // TODO: write your implementation of Equals() here
+        //     throw new System.NotImplementedException();
+        //     return base.Equals (obj);
+        // }
+        public static bool operator ==(OrientedPoint op1, OrientedPoint op2) {
+            return op1.position == op2.position && op1.rotation == op2.rotation;
+        }
+        public static bool operator !=(OrientedPoint op1, OrientedPoint op2) {
+            return op1.position != op2.position || op1.rotation != op2.rotation;
+        }
     }
 }
