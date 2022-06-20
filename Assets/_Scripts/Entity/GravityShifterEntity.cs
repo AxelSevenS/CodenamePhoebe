@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using SeleneGame.Core;
+using SeleneGame.Weapons;
 using SeleneGame.States;
 
 namespace SeleneGame.Entities {
@@ -48,8 +49,8 @@ namespace SeleneGame.Entities {
         protected override void EntityAwake(){
             base.EntityAwake();
 
-            weapons.Set(1, Weapon.GetWeaponTypeByName("Hypnos"));
-            weapons.Set(2, Weapon.GetWeaponTypeByName("Eris"));
+            weapons.Set(1, new HypnosWeapon());
+            weapons.Set(2, new ErisWeapon());
 
             GameObject speedlinesObject = GameObject.Instantiate(Resources.Load("Prefabs/Effects/Speedlines"), Global.effects.transform) as GameObject;
             speedlines = speedlinesObject.GetComponent<SpeedlinesEffect>();

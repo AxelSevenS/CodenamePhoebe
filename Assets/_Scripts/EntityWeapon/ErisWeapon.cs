@@ -16,7 +16,9 @@ namespace SeleneGame.Weapons {
         // protected override Vector3 GetCameraPosition() => entity.inWater ? new Vector3(0, 1f, -3.5f) : new Vector3(1f, 1f, -3.5f);
 
         // public ErisWeapon(Entity entity) : base(entity){;}
-        protected override void WeaponUpdateEquipped(){
+        public override void WeaponUpdate(){
+
+            if (!isEquipped) return;
 
             gravitySlide.SetVal(entity.sliding && entity.onGround);
 

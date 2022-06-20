@@ -8,8 +8,8 @@ namespace SeleneGame.Core {
     public abstract class State { 
 
         public virtual int id => 0;
-        public new string name;
-        public Entity entity;
+        [ReadOnly] public new string name;
+        [HideInInspector] public Entity entity;
 
         public Vector3 cameraPosition => GetCameraPosition();
         public Vector3 jumpDirection => GetJumpDirection();

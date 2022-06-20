@@ -5,7 +5,7 @@ using SeleneGame.Entities;
 namespace SeleneGame.Core {
     
     [System.Serializable]
-    public abstract class Weapon : MonoBehaviour {
+    public abstract class Weapon {
 
         [Space(35)]
         [ReadOnly] public ArmedEntity entity;
@@ -31,61 +31,20 @@ namespace SeleneGame.Core {
 
         public bool isEquipped => entity.currentWeapon == this;
 
-        private void OnEnable() {
-            entity = GetComponent<ArmedEntity>();
+        public virtual void OnAdd() {
             SetData();
             LoadModel();
 
             data.onChangeCostume += LoadModel;
-            Construct();
         }
-        private void OnDisable() {
+        public virtual void OnRemove() {
             DestroyModel();
 
             data.onChangeCostume -= LoadModel;
-            Destruct();
         }
+        public virtual void WeaponUpdate(){;}
+        public virtual void WeaponFixedUpdate(){;}
 
-        // private Weapon(){;}
-        // public Weapon(Entity entity){
-        //     this.entity = entity;
-        //     SetData();
-        //     LoadModel();
-
-        //     data.onChangeCostume += LoadModel;
-        //     Construct();
-        // }
-        // ~Weapon(){
-        //     DestroyModel();
-
-        //     data.onChangeCostume -= LoadModel;
-        //     Destruct();
-        // }
-
-        public void Update(){
-            WeaponUpdate();
-            if (isEquipped)
-                WeaponUpdateEquipped();
-        }
-        public void LateUpdate(){
-            WeaponLateUpdate();
-            if (isEquipped)
-                WeaponLateUpdateEquipped();
-        }
-        public void FixedUpdate(){
-            WeaponFixedUpdate();
-            if (isEquipped)
-                WeaponFixedUpdateEquipped();
-        }
-
-        protected virtual void Construct(){;}
-        protected virtual void Destruct(){;}
-        protected virtual void WeaponUpdate(){;}
-        protected virtual void WeaponLateUpdate(){;}
-        protected virtual void WeaponFixedUpdate(){;}
-        protected virtual void WeaponUpdateEquipped(){;}
-        protected virtual void WeaponLateUpdateEquipped(){;}
-        protected virtual void WeaponFixedUpdateEquipped(){;}
 
         private void SetData(){
             if (data != null) return;

@@ -17,8 +17,6 @@ namespace SeleneGame.States {
             return base.GetCameraPosition();
         }
 
-        // public override bool masked => true;
-
         public override void OnEnter(Entity entity){
             base.OnEnter(entity);
             

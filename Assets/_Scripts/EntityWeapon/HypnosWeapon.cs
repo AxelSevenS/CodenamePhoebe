@@ -57,7 +57,9 @@ namespace SeleneGame.Weapons {
         // }
         // public HypnosWeapon(Entity entity) : base(entity){;}
         
-        protected override void WeaponUpdateEquipped(){
+        public override void WeaponUpdate(){
+
+            if (!isEquipped) return;
             
             wallData.SetVal( entity.WallCheck( out wallHit, Global.GroundMask ) );
             wallRun.SetVal(entity.sliding && wallData);
@@ -67,7 +69,9 @@ namespace SeleneGame.Weapons {
 
         }
 
-        protected override void WeaponFixedUpdateEquipped(){
+        public override void WeaponFixedUpdate(){
+
+            if (!isEquipped) return;
 
             // // Wall-stand when standing against a wall. (Feather Grip)
             // if ( wallStand ){

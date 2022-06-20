@@ -17,12 +17,8 @@ namespace SeleneGame.Entities {
 
         public override bool CanTurn() => !evading;
 
-
-        protected override void EntityDestroy(){
-        }
-
         protected override void EntityAwake(){
-            weapons = new WeaponInventory(gameObject);
+            weapons = new WeaponInventory(this);
         }
 
         protected override void EntityUpdate(){
@@ -33,14 +29,18 @@ namespace SeleneGame.Entities {
             if (lightActuated || heavyActuated)
                 Parry();
             
+            foreach (Weapon weapon in weapons)
+                weapon.WeaponUpdate();
         }
 
         protected override void EntityFixedUpdate() {
+            foreach (Weapon weapon in weapons)
+                weapon.WeaponFixedUpdate();
         }
 
         protected override void EntityLoadModel() {
-            foreach ( ValuePair<int, Weapon> pair in weapons){
-                pair.valueTwo.LoadModel();
+            foreach ( Weapon weapon in weapons){
+                weapon.LoadModel();
             }
         }
 

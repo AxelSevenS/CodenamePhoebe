@@ -171,7 +171,7 @@ namespace SeleneGame.Core {
 
             evadeTimer = Mathf.MoveTowards( evadeTimer, 0f, Global.timeDelta );
             
-            state.HandleInput();
+            state?.HandleInput();
             
             float newSpeed = state.UpdateMoveSpeed();
             float speedDelta = newSpeed > moveSpeed ? 1f : 0.65f;

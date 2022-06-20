@@ -46,8 +46,6 @@ namespace SeleneGame.States {
                     entity.jumpCount = 1;
             }
 
-
-
             entity.absoluteForward = Vector3.Slerp(entity.absoluteForward, inputDirection, Global.timeDelta * 3f).normalized;
             entity.moveDirection.SetVal(entity.absoluteForward);
 

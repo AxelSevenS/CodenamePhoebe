@@ -45,7 +45,7 @@ namespace SeleneGame.Core {
             lastValue = currentValue;
             zeroTimer = currentValue == Vector3.zero ? zeroTimer + Global.timeDelta : 0f;
             nonZeroTimer = currentValue != Vector3.zero ? nonZeroTimer + Global.timeDelta : 0f;
-            currentValue = default(Vector3);
+            // currentValue = default(Vector3);
         }
     }
 
@@ -74,7 +74,7 @@ namespace SeleneGame.Core {
         protected override void Update(){
             lastValue = currentValue;
             UpdateTimer();
-            currentValue = default(bool);
+            // currentValue = default(bool);
         }
 
         private void UpdateTimer(){

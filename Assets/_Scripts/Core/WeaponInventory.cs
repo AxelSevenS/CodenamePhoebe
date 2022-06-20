@@ -1,49 +1,54 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using SeleneGame.Entities;
+using SeleneGame.Weapons;
 
 namespace SeleneGame.Core {
 
     [System.Serializable]
     public class WeaponInventory : IEnumerable {
-        private GameObject gameObject;
-        [SerializeField] private Map<int, Weapon> items = new Map<int, Weapon>();
+        private ArmedEntity entity;
+        [SerializeReference] private List<Weapon> items = new List<Weapon>();
         
         private const int defaultIndex = 0;
         [SerializeField] private int currentIndex;
 
         public Weapon currentItem { get {
-                if ( !items.Exists(currentIndex) )
-                    return items[defaultIndex];
+            try {
                 return items[currentIndex];
+            } catch {
+                return items[defaultIndex];
             }
+        } }
+
+        public WeaponInventory(ArmedEntity entity){
+            this.entity = entity;
+            Set( defaultIndex, new UnarmedWeapon());
         }
 
-        public WeaponInventory(GameObject gameObject){
-            this.gameObject = gameObject;
-            Set( defaultIndex, Weapon.GetWeaponTypeByName(WeaponData.defaultData) );
-        }
-
-        public void Set(int index, System.Type type){
-
-            if (items.Exists(index)) 
-                Remove(index);
-
-            items[index] = gameObject.AddComponent(type) as Weapon;
-            items[index].enabled = true;
+        public void Set(int index, Weapon weapon){
+            weapon.entity = entity;
+            weapon.OnAdd();
+            try {
+                items[index] = weapon;
+            } catch {
+                items.Add(weapon);
+            }
         }
 
         public void Remove(int index) {
             if (index == defaultIndex) return;
 
-            items[index] = Global.SafeDestroy(items[index]);
+            items[index].OnRemove();
+            items[index] = null;
         }
 
         public void Switch(int index){
             if (index == currentIndex) return;
 
-            foreach ( ValuePair<int, Weapon> item in items )
-                item.valueTwo.Hide();
+            foreach ( Weapon weapon in items )
+                weapon.Hide();
 
             try {
                 Weapon newItem = items[index];

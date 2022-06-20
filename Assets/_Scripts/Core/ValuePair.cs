@@ -8,7 +8,7 @@ namespace SeleneGame.Core {
 
     [System.Serializable]
     public class ValuePair<T1, T2> : ValuePair{
-        public T1 valueOne;
-        public T2 valueTwo;
+        [SerializeReference] public T1 valueOne;
+        [SerializeReference] public T2 valueTwo;
     }
 }
