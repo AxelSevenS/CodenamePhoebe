@@ -49,6 +49,8 @@ namespace SeleneGame.Core {
         public float evadeTimer;
         public float evadeCount = 1f;
         public event Action<Vector3> onEvade;
+
+        const int moveCollisionStep = 1;
         
 
 
@@ -401,19 +403,27 @@ namespace SeleneGame.Core {
             // }else if (walkCollision) {
             //     move = move.NullifyInDirection( -walkHit.normal );
             // }
+            // _rb.MovePosition(_rb.position + move);
 
-            _rb.MovePosition(_rb.position + move);
+            Move(move);
 
         }
         public void Move(Vector3 dir){
             if (dir.magnitude == 0f) return;
 
-            bool walkCollision = this.ColliderCast( Vector3.zero, dir, out RaycastHit walkHit, 0.15f, Global.GroundMask);
+            Vector3 move = dir / moveCollisionStep;
 
-            if ( walkCollision ) 
-                dir = dir.NullifyInDirection( -walkHit.normal );
+            for (int i = 0; i < moveCollisionStep; i++) {
+                
+                bool walkCollision = ColliderCast( Vector3.zero, move, out RaycastHit walkHit, 0.15f, Global.GroundMask);
 
-            _rb.MovePosition(_rb.position + dir);
+                if ( walkCollision ){
+                    move = move.NullifyInDirection( -walkHit.normal );
+                    i = moveCollisionStep;
+                }
+                _rb.MovePosition(_rb.position + move);
+            }
+
         }
 
         public void EntityInput(Vector3 rawInput, Quaternion camRotation, SafeDictionary<string, bool> inputDictionary){
