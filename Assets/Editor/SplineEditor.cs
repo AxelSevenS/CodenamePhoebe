@@ -112,10 +112,10 @@ namespace SeleneGame.EditorUI {
             
 		    EditorGUI.BeginChangeCheck();
 
-            OrientedPoint newControlPoint1 = targetSpline.transformedControlPoint1;
-            OrientedPoint newControlPoint2 = targetSpline.transformedControlPoint2;
-            OrientedPoint newHandle1 = targetSpline.transformedHandle1;
-            OrientedPoint newHandle2 = targetSpline.transformedHandle2;
+            OrientedPoint newControlPoint1 = targetSpline.TransformPoint(targetSpline.controlPoint1);
+            OrientedPoint newControlPoint2 = targetSpline.TransformPoint(targetSpline.controlPoint2);
+            OrientedPoint newHandle1 = targetSpline.TransformPoint(targetSpline.handle1);
+            OrientedPoint newHandle2 = targetSpline.TransformPoint(targetSpline.handle2);
 
             GUIStyle style = GUIStyle.none;
             style.fontSize = 15;
@@ -151,7 +151,11 @@ namespace SeleneGame.EditorUI {
         [DrawGizmo(GizmoType.InSelectionHierarchy | GizmoType.Active)]
         private static void OnDrawGizmosSelected(Spline scr, GizmoType gizmoType) {
 
-            Handles.DrawBezier( scr.transformedControlPoint1.position, scr.transformedControlPoint2.position, scr.transformedHandle1.position, scr.transformedHandle2.position, Color.white, EditorGUIUtility.whiteTexture, 1f );
+            OrientedPoint transformedControlPoint1 = scr.TransformPoint(scr.controlPoint1);
+            OrientedPoint transformedControlPoint2 = scr.TransformPoint(scr.controlPoint2);
+            OrientedPoint transformedHandle1 = scr.TransformPoint(scr.handle1);
+            OrientedPoint transformedHandle2 = scr.TransformPoint(scr.handle2);
+            Handles.DrawBezier( transformedControlPoint1.position, transformedControlPoint2.position, transformedHandle1.position, transformedHandle2.position, Color.white, EditorGUIUtility.whiteTexture, 1f );
 
             for (int i = 0; i < scr.ringCount; i++){
                 OrientedPoint pointAlongTessel = scr.GetBezier( (float)i/(float)scr.ringCount );

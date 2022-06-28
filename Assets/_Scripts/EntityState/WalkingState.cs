@@ -124,15 +124,6 @@ namespace SeleneGame.States {
             entity.RotateTowardsAbsolute(entity.absoluteForward, -entity.gravityDown);
         }
 
-        public override float UpdateMoveSpeed(){
-            float newSpeed = entity.moveDirection.magnitude > 0f ? entity.data.baseSpeed : 0f;
-            // newSpeed = entity.evading ? newSpeed * 0.15f : newSpeed;
-            if (entity.walkSpeed != Entity.WalkSpeed.run) 
-                newSpeed *= entity.walkSpeed == Entity.WalkSpeed.sprint ? entity.data.sprintSpeed : entity.data.slowSpeed;
-
-            return newSpeed;
-        }
-
         public override void HandleInput(){
 
             entity.RawInputToGroundedMovement(out Vector3 camRight, out Vector3 camForward, out Vector3 groundDirection, out Vector3 groundDirection3D);
@@ -151,6 +142,13 @@ namespace SeleneGame.States {
             
             if ( entity.jumpInput && entity.jumpCount != 0 && entity.onGround.falseTimer < 0.4f && entity.jumpCooldown == 0f )
                 entity.Jump(jumpDirection);
+
+            float newSpeed = entity.moveDirection.magnitude > 0f ? entity.data.baseSpeed : 0f;
+            if (entity.walkSpeed != Entity.WalkSpeed.run) 
+                newSpeed *= entity.walkSpeed == Entity.WalkSpeed.sprint ? entity.data.sprintSpeed : entity.data.slowSpeed;
+
+            float speedDelta = newSpeed > entity.moveSpeed ? 1f : 0.65f;
+            entity.moveSpeed = Mathf.MoveTowards(entity.moveSpeed, newSpeed, speedDelta * entity.data.moveIncrement * Global.timeDelta);
         }
 
         

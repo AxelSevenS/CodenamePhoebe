@@ -119,6 +119,7 @@ namespace SeleneGame.Core {
         protected virtual void EntityUpdate(){;}
         protected virtual void EntityLateUpdate(){;}
         protected virtual void EntityFixedUpdate(){;}
+        protected virtual void EntityAnimation(){;}
         protected virtual void EntityLoadModel(){;}
 
 
@@ -174,19 +175,6 @@ namespace SeleneGame.Core {
             evadeTimer = Mathf.MoveTowards( evadeTimer, 0f, Global.timeDelta );
             
             state?.HandleInput();
-            
-            float newSpeed = state.UpdateMoveSpeed();
-            float speedDelta = newSpeed > moveSpeed ? 1f : 0.65f;
-            moveSpeed = Mathf.MoveTowards(moveSpeed, newSpeed, speedDelta * data.moveIncrement * Global.timeDelta);
-
-            // Debug.DrawRay(transform.position, inertiaDirection * inertiaMultiplier, Color.red);
-            // Debug.DrawRay(transform.position, absoluteForward, Color.blue);
-            // Debug.DrawRay(transform.position, evadeDirection, Color.magenta);
-            // Debug.DrawRay(transform.position, _rb.velocity, Color.green);
-            // Debug.DrawRay(transform.position, moveDirection, Color.blue);
-            
-            
-            EntityUpdate();
             state?.StateUpdate();
 
             if (animator.runtimeAnimatorController != null){
@@ -200,6 +188,8 @@ namespace SeleneGame.Core {
                 animator.SetFloat("ForwardRight", Vector3.Dot(absoluteForward, Vector3.Cross(-_transform.up, _transform.forward)));
                 state?.StateAnimation();
             }
+            
+            EntityUpdate();
         }
 
         private void FixedUpdate(){
@@ -349,7 +339,7 @@ namespace SeleneGame.Core {
             // Inertia that's only active when falling
             if ( onGround ) return;
             
-            float floatingMultiplier = slowFall ? 1.75f : 3f;
+            float floatingMultiplier = slowFall ? 1.75f : 3.25f;
             float fallingMultiplier = 5f;
             float multiplier = fallVelocity >= 0 ? floatingMultiplier : fallingMultiplier;
             _rb.velocity += multiplier * force * Global.timeDelta * direction.normalized;

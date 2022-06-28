@@ -67,23 +67,22 @@ namespace SeleneGame.States {
 
         }
 
-        public override float UpdateMoveSpeed(){
-            float newSpeed = entity.walkSpeed != Entity.WalkSpeed.idle ? entity.data.baseSpeed : 0f;
-            if (entity.walkSpeed != Entity.WalkSpeed.run) 
-                newSpeed *= entity.walkSpeed == Entity.WalkSpeed.sprint ? /* entity.data.sprintSpeed */1f : entity.data.slowSpeed;
-
-            newSpeed = newSpeed * entity.data.swimSpeed;
-            
-            return newSpeed;
-        }
-
         public override void HandleInput(){
+            
             
             entity.moveDirection.SetVal( entity.rotation * entity.lookRotation * entity.moveInput );
             
             if (entity.jumpInput && entity.isOnWaterSurface && entity.jumpCount != 0 && entity.jumpCooldown == 0f ){
                 entity.Jump( -entity.gravityDown );
             }
+
+            float newSpeed = entity.walkSpeed != Entity.WalkSpeed.idle ? entity.data.baseSpeed : 0f;
+            if (entity.walkSpeed != Entity.WalkSpeed.run) 
+                newSpeed *= entity.walkSpeed == Entity.WalkSpeed.sprint ? /* entity.data.sprintSpeed */1f : entity.data.slowSpeed;
+            newSpeed = newSpeed * entity.data.swimSpeed;
+
+            float speedDelta = newSpeed > entity.moveSpeed ? 1f : 0.65f;
+            entity.moveSpeed = Mathf.MoveTowards(entity.moveSpeed, newSpeed, speedDelta * entity.data.moveIncrement * Global.timeDelta);
         }
     }
 }

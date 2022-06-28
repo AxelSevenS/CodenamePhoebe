@@ -46,10 +46,9 @@ namespace SeleneGame {
         }
         void LateUpdate(){
             if (entity == null) return;
-            BezierCurve currentCurve = new BezierCurve(
+            BezierQuadratic currentCurve = new BezierQuadratic(
                 flyingPosition, 
                 entity["head"].transform.position,
-                flyingPosition + (entity["head"].transform.position - flyingPosition)/2f,
                 entity["head"].transform.position + entity["head"].transform.forward
             );
             transform.position = currentCurve.GetPoint(maskPosT).position;

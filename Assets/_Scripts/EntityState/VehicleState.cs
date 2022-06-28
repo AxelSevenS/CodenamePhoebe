@@ -69,19 +69,6 @@ namespace SeleneGame.States {
 
         }
 
-        public override float UpdateMoveSpeed(){
-
-            float newSpeed = Vector3.Dot(entity.moveDirection, inputDirection) * accelerationLinger * entity.data.baseSpeed;
-            if (entity.walkSpeed != Entity.WalkSpeed.run) 
-                newSpeed *= entity.walkSpeed == Entity.WalkSpeed.sprint ? /* entity.data.sprintSpeed */1f : entity.data.slowSpeed;
-
-            // if (entity is GravityShifterEntity gravityShifter){
-            //     newSpeed *= gravityShifter.currentWeapon.speedMultiplier;
-            // }
-            
-            return newSpeed;
-        }
-
 
         public override void HandleInput(){
 
@@ -98,6 +85,13 @@ namespace SeleneGame.States {
             // Jump if the Jump key is pressed.
             if ( entity.jumpInput && entity.jumpCount != 0 && entity.onGround.falseTimer <= 0.4f )
                 entity.Jump( -entity.gravityDown );
+            
+            float newSpeed = Vector3.Dot(entity.moveDirection, inputDirection) * accelerationLinger * entity.data.baseSpeed;
+            if (entity.walkSpeed != Entity.WalkSpeed.run) 
+                newSpeed *= entity.walkSpeed == Entity.WalkSpeed.sprint ? /* entity.data.sprintSpeed */1f : entity.data.slowSpeed;
+
+            float speedDelta = newSpeed > entity.moveSpeed ? 1f : 0.65f;
+            entity.moveSpeed = Mathf.MoveTowards(entity.moveSpeed, newSpeed, speedDelta * entity.data.moveIncrement * Global.timeDelta);
         }
 
         private void OnEntityJump(Vector3 jumpDirection){

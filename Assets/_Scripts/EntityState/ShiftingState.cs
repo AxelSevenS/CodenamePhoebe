@@ -129,14 +129,6 @@ namespace SeleneGame.States {
 
         }
 
-        public override float UpdateMoveSpeed(){ 
-            
-            float newSpeed = gravityShifter.data.baseSpeed;
-            newSpeed = shiftFalling ? newSpeed * 0.75f : newSpeed;
-
-            return newSpeed;
-        }
-
         public override void HandleInput(){
             
             gravityShifter.RawInputToGroundedMovement(out Vector3 camRight, out Vector3 camForward, out Vector3 groundDirection, out Vector3 groundDirection3D);
@@ -147,6 +139,11 @@ namespace SeleneGame.States {
 
             if (gravityShifter.shiftInput.trueTimer > Player.current.holdDuration)
                 StopShifting(Vector3.down);
+            
+            float newSpeed = gravityShifter.data.baseSpeed;
+            newSpeed = shiftFalling ? newSpeed * 0.75f : newSpeed;
+            float speedDelta = newSpeed > gravityShifter.moveSpeed ? 1f : 0.65f;
+            gravityShifter.moveSpeed = Mathf.MoveTowards(gravityShifter.moveSpeed, newSpeed, speedDelta * gravityShifter.data.moveIncrement * Global.timeDelta);
         }
 
         public void StopShifting(Vector3 newDown){

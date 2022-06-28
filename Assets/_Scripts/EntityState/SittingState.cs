@@ -28,10 +28,6 @@ namespace SeleneGame.States {
             entity.RotateTowardsAbsolute(Vector3.ProjectOnPlane(seat.transform.rotation * -seat.sittingDir, seat.transform.up), seat.transform.up);
         }
 
-        // public override float UpdateMoveSpeed(){
-        //     return base.UpdateMoveSpeed();
-        // }
-
         public override void HandleInput(){
             if (seat.seatEntity == null) return;
 
@@ -45,6 +41,8 @@ namespace SeleneGame.States {
             inputDict[ "Shift" ] = entity.shiftInput;
 
             seat.seatEntity.EntityInput(entity.moveInput, entity.cameraRotation, inputDict);
+
+            entity.moveSpeed = 0;
         }
     }
 }

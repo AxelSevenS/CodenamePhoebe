@@ -21,12 +21,11 @@ namespace SeleneGame {
         public ref OrientedPoint controlPoint2 => ref splineCurve.controlPoint2;
         public ref OrientedPoint handle1 => ref splineCurve.handle1;
         public ref OrientedPoint handle2 => ref splineCurve.handle2;
-        public OrientedPoint transformedControlPoint1 => transform.TransformPoint(splineCurve.controlPoint1);
-        public OrientedPoint transformedControlPoint2 => transform.TransformPoint(splineCurve.controlPoint2);
-        public OrientedPoint transformedHandle1 => transform.TransformPoint(splineCurve.handle1);
-        public OrientedPoint transformedHandle2 => transform.TransformPoint(splineCurve.handle2);
 
-        public BezierCurve splineCurve;
+        public OrientedPoint TransformPoint(OrientedPoint point) => transform.TransformPoint(point);
+        public OrientedPoint InverseTransformPoint(OrientedPoint point) => transform.InverseTransformPoint(point);
+
+        public BezierCubic splineCurve;
 
         public OrientedPoint GetBezier(float tVal) => transform.TransformPoint(splineCurve.GetPoint(tVal));
 
@@ -46,11 +45,8 @@ namespace SeleneGame {
         }
 
         private void Reset(){
-            Vector3 cp1 = Vector3.forward * 0f;
-            Vector3 cp2 = Vector3.forward * 75f;
-            Vector3 h1 = Vector3.forward * 25f;
-            Vector3 h2 = Vector3.forward * 50f;
-            splineCurve = new BezierCurve(cp1, cp2, h1, h2);
+            splineCurve = new BezierCubic();
+            splineCurve.Reset();
             Awake();
         }
 
@@ -128,15 +124,15 @@ namespace SeleneGame {
         public void UpdateOtherSegments(){
             UpdateMesh();
             if(nextSegment != null){
-                nextSegment.controlPoint1.Set(nextSegment.transform.InverseTransformPoint(transformedControlPoint2));
-                Vector3 displacement = transformedControlPoint2.position - transformedHandle2.position;
-                nextSegment.handle1.Set( nextSegment.transform.InverseTransformPoint(nextSegment.transformedControlPoint1.position + displacement) );
+                nextSegment.controlPoint1.Set(nextSegment.InverseTransformPoint(TransformPoint(controlPoint2)));
+                Vector3 displacement = TransformPoint(controlPoint2).position - TransformPoint(handle2).position;
+                nextSegment.handle1.Set( nextSegment.InverseTransformPoint(nextSegment.TransformPoint(nextSegment.controlPoint1) + displacement) );
                 nextSegment.UpdateMesh();
             }
             if(prevSegment != null){
-                prevSegment.controlPoint2.Set(prevSegment.transform.InverseTransformPoint(transformedControlPoint1));
-                Vector3 displacement = transformedControlPoint1.position - transformedHandle1.position;
-                prevSegment.handle2.Set( prevSegment.transform.InverseTransformPoint(prevSegment.transformedControlPoint2.position + displacement) );
+                prevSegment.controlPoint2.Set(prevSegment.InverseTransformPoint(TransformPoint(controlPoint1)));
+                Vector3 displacement = TransformPoint(controlPoint1).position - TransformPoint(handle1).position;
+                prevSegment.handle2.Set( prevSegment.InverseTransformPoint(prevSegment.TransformPoint(prevSegment.controlPoint2) + displacement) );
                 prevSegment.UpdateMesh();
             }
         }
