@@ -13,8 +13,21 @@ namespace SeleneGame {
     public class Spline : MonoBehaviour {
 
         private Mesh mesh;
-        public MeshFilter _meshFilter;
-        public MeshCollider _meshCollider;
+
+        private MeshFilter _meshFilter;
+        public MeshFilter meshFilter {
+            get {
+                if (_meshFilter == null) _meshFilter = GetComponent<MeshFilter>();
+                return _meshFilter;
+            }
+        }
+        private MeshCollider _meshCollider;
+        public MeshCollider meshCollider {
+            get {
+                if (_meshCollider == null) _meshCollider = GetComponent<MeshCollider>();
+                return _meshCollider;
+            }
+        }
         public Spline prevSegment, nextSegment;
 
         public ref OrientedPoint controlPoint1 => ref splineCurve.controlPoint1;
@@ -27,13 +40,12 @@ namespace SeleneGame {
 
         public BezierCubic splineCurve;
 
-        public OrientedPoint GetBezier(float tVal) => transform.TransformPoint(splineCurve.GetPoint(tVal));
+        public OrientedPoint GetBezier(float tVal) => TransformPoint(splineCurve.GetPoint(tVal));
 
         public RepeatableMesh mesh2D;
         [Range(3, 128)]
         public int ringCount = 4;
         public float scale = 1f;
-        private int segNbr = 1;
 
 
         
@@ -51,12 +63,10 @@ namespace SeleneGame {
         }
 
         public void UpdateMesh(){
-            if (_meshFilter == null) _meshFilter = GetComponent<MeshFilter>();
-            if (_meshCollider == null) _meshCollider = GetComponent<MeshCollider>();
 
             if (mesh2D == null) {
-                _meshFilter.sharedMesh = null;
-                _meshCollider.sharedMesh = null;
+                meshFilter.sharedMesh = null;
+                meshCollider.sharedMesh = null;
                 return;
             }
 
@@ -117,8 +127,8 @@ namespace SeleneGame {
 
             mesh.SetTriangles(triangles, 0);
 
-            _meshFilter.sharedMesh = mesh;
-            _meshCollider.sharedMesh = mesh;
+            meshFilter.sharedMesh = mesh;
+            meshCollider.sharedMesh = mesh;
         }
 
         public void UpdateOtherSegments(){
@@ -142,8 +152,7 @@ namespace SeleneGame {
             nextSegment = Instantiate(gameObject, transform.position + displacement, transform.rotation, transform.parent).GetComponent<Spline>();
             nextSegment.prevSegment = this;
 
-            nextSegment.segNbr = segNbr + 1;
-            nextSegment.gameObject.name = "Segment" + nextSegment.segNbr;
+            nextSegment.gameObject.name = "Segment";
 
             UpdateOtherSegments();
         }
@@ -159,8 +168,7 @@ namespace SeleneGame {
             prevSegment = Instantiate(gameObject, transform.position + displacement, transform.rotation, transform.parent).GetComponent<Spline>();
             prevSegment.nextSegment = this;
 
-            prevSegment.segNbr = segNbr - 1;
-            prevSegment.gameObject.name = "Segment" + prevSegment.segNbr;
+            prevSegment.gameObject.name = "Segment";
             
             UpdateOtherSegments();
         }

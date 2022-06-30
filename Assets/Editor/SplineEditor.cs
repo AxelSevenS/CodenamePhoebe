@@ -42,24 +42,24 @@ namespace SeleneGame.EditorUI {
             propScale = so.FindProperty( "scale" );
 
             targetSpline = (Spline)target;
-            // targetSpline.oldTransform = new OrientedPoint(targetSpline.transform);
         }
         
         public override void OnInspectorGUI(){
             /* DrawDefaultInspector(); */
 
-            GUILayout.Label( "Spline Control Points", EditorStyles.boldLabel );
-            using ( new GUILayout.HorizontalScope( EditorStyles.helpBox ) ){
-                EditorGUIUtility.labelWidth = 100;
-                using ( new GUILayout.VerticalScope() ){ 
-                    EditorGUILayout.PropertyField( propControlPoint1, new GUIContent("Control Point 1") );
-                    EditorGUILayout.PropertyField( propHandle1, new GUIContent("Handle 1") );
-                }
-                using ( new GUILayout.VerticalScope() ){
-                    EditorGUILayout.PropertyField( propControlPoint2, new GUIContent("Control Point 2") );
-                    EditorGUILayout.PropertyField( propHandle2, new GUIContent("Handle 2") );
-                }
-            }
+            EditorGUILayout.PropertyField( propSplineCurve, new GUIContent("Spline") );
+            // GUILayout.Label( "Spline Control Points", EditorStyles.boldLabel );
+            // using ( new GUILayout.HorizontalScope( EditorStyles.helpBox ) ){
+            //     EditorGUIUtility.labelWidth = 100;
+            //     using ( new GUILayout.VerticalScope() ){ 
+            //         EditorGUILayout.PropertyField( propControlPoint1, new GUIContent("Control Point 1") );
+            //         EditorGUILayout.PropertyField( propHandle1, new GUIContent("Handle 1") );
+            //     }
+            //     using ( new GUILayout.VerticalScope() ){
+            //         EditorGUILayout.PropertyField( propControlPoint2, new GUIContent("Control Point 2") );
+            //         EditorGUILayout.PropertyField( propHandle2, new GUIContent("Handle 2") );
+            //     }
+            // }
 
             GUILayout.Space( 15 );
 
