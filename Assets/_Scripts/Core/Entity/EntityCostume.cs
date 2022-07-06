@@ -18,6 +18,17 @@ namespace SeleneGame.Core {
             string defaultCostume = entity.GetType().Name.Replace("Entity", "Base");
             return GetEntityCostume(defaultCostume);
         }
+        public static EntityCostume TryGetEntityCostumeOrBase(Entity entity, string costumeName) {
+            string path = $"Costume/Entity/{costumeName}";
+            EntityCostume costume = Resources.Load<EntityCostume>(path);
+            if (costume == null) {
+                string baseCostumeName = entity.GetType().Name.Replace("Entity", "Base");
+                string basePath = $"Costume/Entity/{baseCostumeName}";
+                Debug.LogError($"No Costume was found at Path {path} ; Using entity base costume at Path {basePath}");
+                costume = GetEntityCostume(baseCostumeName);
+            }
+            return costume;
+        }
         public static EntityCostume GetEntityCostume(string costumeName) {
             string path = $"Costume/Entity/{costumeName}";
             EntityCostume costume = Resources.Load<EntityCostume>(path);

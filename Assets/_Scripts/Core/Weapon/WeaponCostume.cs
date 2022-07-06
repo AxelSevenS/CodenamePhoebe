@@ -15,9 +15,10 @@ namespace SeleneGame.Core {
             string path = $"Costume/Weapon/{costumeName}";
             WeaponCostume costume = Resources.Load<WeaponCostume>(path);
             if (costume == null) {
-                string basePath = $"Costume/Weapon/{weapon.GetType().Name.Replace("Weapon", "Base")}";
+                string baseCostumeName = weapon.GetType().Name.Replace("Weapon", "Base");
+                string basePath = $"Costume/Weapon/{baseCostumeName}";
                 Debug.LogError($"No Costume was found at Path {path} ; Using weapon base costume at Path {basePath}");
-                costume = GetWeaponBaseCostume(weapon);
+                costume = GetWeaponCostume(baseCostumeName);
             }
             return costume;
         }
