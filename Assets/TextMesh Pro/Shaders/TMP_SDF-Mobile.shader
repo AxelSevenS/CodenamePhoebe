@@ -93,7 +93,7 @@ SubShader {
 		#include "UnityUI.cginc"
 		#include "TMPro_Properties.cginc"
 
-		struct vertex_transform {
+		struct vertextransform {
 			UNITY_VERTEX_INPUT_INSTANCE_ID
 			float4	vertex			: POSITION;
 			float3	normal			: NORMAL;
@@ -102,7 +102,7 @@ SubShader {
 			float2	texcoord1		: TEXCOORD1;
 		};
 
-		struct pixel_transform {
+		struct pixeltransform {
 			UNITY_VERTEX_INPUT_INSTANCE_ID
 			UNITY_VERTEX_OUTPUT_STEREO
 			float4	vertex			: SV_POSITION;
@@ -118,11 +118,11 @@ SubShader {
 		};
 
 
-		pixel_transform VertShader(vertex_transform input)
+		pixeltransform VertShader(vertextransform input)
 		{
-			pixel_transform output;
+			pixeltransform output;
 
-			UNITY_INITIALIZE_OUTPUT(pixel_transform, output);
+			UNITY_INITIALIZE_OUTPUT(pixeltransform, output);
 			UNITY_SETUP_INSTANCE_ID(input);
 			UNITY_TRANSFER_INSTANCE_ID(input, output);
 			UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
@@ -193,7 +193,7 @@ SubShader {
 
 
 		// PIXEL SHADER
-		fixed4 PixShader(pixel_transform input) : SV_Target
+		fixed4 PixShader(pixeltransform input) : SV_Target
 		{
 			UNITY_SETUP_INSTANCE_ID(input);
 

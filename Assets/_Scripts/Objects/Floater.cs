@@ -9,12 +9,12 @@ namespace SeleneGame {
     public class Floater : MonoBehaviour{
         
         public new Rigidbody rigidbody;
-        public CustomPhysicsComponent _physicsComponent;
+        public CustomPhysicsComponent physicsComponent;
         public int floaterCount;
         // Start is called before the first frame update
 
         private void Awake(){
-            _physicsComponent = GetComponent<CustomPhysicsComponent>();
+            physicsComponent = GetComponent<CustomPhysicsComponent>();
         }
 
         void Start(){
@@ -23,7 +23,7 @@ namespace SeleneGame {
 
         private void FixedUpdate(){
             rigidbody.AddForceAtPosition(Physics.gravity*1.5f/floaterCount, transform.position, ForceMode.Acceleration);
-            _physicsComponent.BodyFloat(rigidbody, transform.position, (2f/floaterCount)+0.1f);
+            physicsComponent.BodyFloat(rigidbody, transform.position, (2f/floaterCount)+0.1f);
         }
     }
 }

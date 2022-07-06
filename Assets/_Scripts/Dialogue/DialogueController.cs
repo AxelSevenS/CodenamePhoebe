@@ -70,7 +70,7 @@ namespace SeleneGame {
             dialogueBox.SetActive(currOpacity != 0f);
 
             if (dialogueBox.activeSelf){
-                dialogueName.SetText(dialogue.entityData.name);
+                dialogueName.SetText(dialogue.entity.name);
                 UpdatePortrait();
                 dialogueIndicator.enabled = isDone && dialogueBox.activeSelf;
                 dialogueText.SetText(displayText);
@@ -80,7 +80,7 @@ namespace SeleneGame {
         }
 
         private void UpdatePortrait(){
-            EntityCostume costume = dialogue.entityData.costume;
+            EntityCostume costume = dialogue.entity.costume;
             Sprite[] portraits = new Sprite[7]{costume.portrait, costume.determinedPortrait, costume.hesitantPortrait, costume.shockedPortrait, costume.disgustedPortrait, costume.sadPortrait, costume.happyPortrait};
             dialoguePortrait.sprite = portraits?[ (int)dialogue.emotion ];
         }

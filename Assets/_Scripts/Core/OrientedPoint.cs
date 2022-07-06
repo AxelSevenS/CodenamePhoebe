@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 
 namespace SeleneGame.Core {
@@ -46,7 +47,16 @@ namespace SeleneGame.Core {
         public static OrientedPoint operator +(Vector3 a, OrientedPoint b) => new OrientedPoint(b.position + a, b.rotation);
         public static OrientedPoint operator -(OrientedPoint a, Vector3 b) => new OrientedPoint(a.position - b, a.rotation);
         public static OrientedPoint operator -(Vector3 a, OrientedPoint b) => new OrientedPoint(b.position - a, b.rotation);
-        public static bool operator ==(OrientedPoint op1, OrientedPoint op2) => op1.position == op2.position && op1.rotation == op2.rotation;
-        public static bool operator !=(OrientedPoint op1, OrientedPoint op2) => op1.position != op2.position || op1.rotation != op2.rotation;
+        public static bool operator ==(OrientedPoint obj1, OrientedPoint obj2) => obj1.Equals(obj2);
+        public static bool operator !=(OrientedPoint obj1, OrientedPoint obj2) => !obj1.Equals(obj2);
+
+        public override bool Equals(/* [NotNullWhen(true)]  */object obj) {
+            if (obj is OrientedPoint op)
+                return position == op.position && rotation == op.rotation;
+            else
+                return false;
+        }
+
+        public override int GetHashCode() => System.Tuple.Create(position, rotation).GetHashCode();
     }
 }

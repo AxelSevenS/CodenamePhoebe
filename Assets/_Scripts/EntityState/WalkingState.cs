@@ -9,20 +9,20 @@ namespace SeleneGame.States {
     [System.Serializable]
     public class WalkingState : State {
 
-        // protected override float GetSpeedMultiplier() => 1f/* entity.currentWeapon.speedMultiplier */;
+        // protected override float GetSpeedMultiplier() => 1f/* entity.weapons.current.speedMultiplier */;
         protected override Vector3 GetJumpDirection(){
             if (entity is GravityShifterEntity gravityShifter)
-                return gravityShifter.currentWeapon.jumpDirection;
+                return gravityShifter.weapons.current.jumpDirection;
             return base.GetJumpDirection();
         }
         protected override Vector3 GetCameraPosition() {
             if (entity is ArmedEntity armed) {
-                return armed.currentWeapon.cameraPosition - new Vector3(0,0,additionalCameraDistance);
+                return armed.weapons.current.cameraPosition - new Vector3(0,0,additionalCameraDistance);
             }
             return Player.current.defaultCameraPosition - new Vector3(0,0,additionalCameraDistance);
         }
 
-        // public override bool masked => Vector3.Dot ( entity.gravityDown, Vector3.down ) < 0.95f || entity.inWater || entity.currentWeapon.shifting;
+        // public override bool masked => Vector3.Dot ( entity.gravityDown, Vector3.down ) < 0.95f || entity.inWater || entity.weapons.current.shifting;
 
         private bool crouching;
 
@@ -52,22 +52,30 @@ namespace SeleneGame.States {
                 entity.jumpCount = 1;
 
 
-            if (entity.inWater && !entity.CanSink() && !entity.CanWaterHover()){
+            if (entity.inWater && !entity.CanSink() && !entity.CanWaterHover())
                 entity.SetState(new SwimmingState());
-            }
 
-            if ( entity.onGround.started || (entity.evading.stopped && !entity.sliding)) 
+            if ( entity.onGround.started ) 
                 entity.StartWalkAnim();
 
-            if ( entity.onGround )
-                entity.evadeCount = 1;
 
-            if ( entity.evading.started)
-                entity.evadeCount--;
+
+            if (entity is ArmedEntity armed) {
+                if (armed.evading.stopped && !armed.sliding)
+                    armed.StartWalkAnim();
+
+                if ( armed.evading.started)
+                    armed.evadeCount--;
+
+                if ( armed.onGround )
+                    armed.evadeCount = 1;
+
+                if ( armed.evadeInput.started && armed.evadeCount != 0 )
+                    armed.GroundedEvade( armed.moveDirection.magnitude == 0f ? -armed.absoluteForward : armed.moveDirection );
+            }
+
                 
 
-            if ( entity.evadeInput.started && entity.evadeCount != 0 )
-                entity.GroundedEvade( entity.moveDirection.magnitude == 0f ? -entity.absoluteForward : entity.moveDirection );
 
 
             additionalCameraDistance = /* entity.focusing ? -0.3f :  */0f;
@@ -106,25 +114,33 @@ namespace SeleneGame.States {
 
             // Hover over water as long as the player is moving
             if ( waterHover ){
-                entity._rb.velocity = entity._rb.velocity.NullifyInDirection(entity.gravityDown);
+                entity.rb.velocity = entity.rb.velocity.NullifyInDirection(entity.gravityDown);
                 entity.groundHit = waterHoverHit;
             }
 
             if (entity.moveDirection.magnitude > 0f && entity.CanTurn() )
                 entity.absoluteForward = Vector3.Lerp( entity.absoluteForward, entity.moveDirection.normalized, 100f * Global.timeDelta);
 
-            // Move when evading
-            if ( entity.EvadeUpdate(out _, out float evadeSpeed) )
-                entity.GroundedMove( Global.timeDelta * evadeSpeed * entity.data.evadeSpeed * entity.evadeDirection );
 
-            entity.GroundedMove(entity.moveSpeed * (1 - evadeSpeed) * Global.timeDelta * entity.absoluteForward, entity.onGround);
+            Vector3 walkingMovement = entity.moveSpeed * Global.timeDelta * entity.absoluteForward;
+            if (entity is ArmedEntity armed) {
 
-            // entity.GroundedMove(Global.timeDelta * 2.5f * entity.inertia );
+                // Move when evading
+                if ( armed.EvadeUpdate(out _, out float evadeSpeed) )
+                    armed.GroundedMove( Global.timeDelta * evadeSpeed * armed.data.evadeSpeed * armed.evadeDirection );
+
+                entity.GroundedMove((1 - evadeSpeed) * walkingMovement, entity.onGround);
+            }else {
+                entity.GroundedMove(walkingMovement, entity.onGround);
+            }
+            
             
             entity.RotateTowardsAbsolute(entity.absoluteForward, -entity.gravityDown);
         }
 
         public override void HandleInput(){
+
+            if (entity == null) return;
 
             entity.RawInputToGroundedMovement(out Vector3 camRight, out Vector3 camForward, out Vector3 groundDirection, out Vector3 groundDirection3D);
             entity.moveDirection.SetVal(groundDirection);

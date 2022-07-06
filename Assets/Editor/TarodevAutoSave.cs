@@ -17,16 +17,16 @@ namespace Tarodev {
     [CustomEditor(typeof(AutoSaveConfig))]
     public class TarodevAutoSave : Editor {
         private static AutoSaveConfig _config;
-        private static CancellationTokenSource _transformokenSource;
-        private static Task _transformask;
+        private static CancellationTokenSource transformokenSource;
+        private static Task transformask;
 
         [InitializeOnLoadMethod]
         private static void OnEnable() {
             FetchConfig();
             CancelTask();
 
-            _transformokenSource = new CancellationTokenSource();
-            _transformask = SaveInterval(_transformokenSource.Token);
+            transformokenSource = new CancellationTokenSource();
+            transformask = SaveInterval(transformokenSource.Token);
         }
 
         private static void FetchConfig() {
@@ -55,9 +55,9 @@ namespace Tarodev {
         }
 
         private static void CancelTask() {
-            if (_transformask == null) return;
-            _transformokenSource.Cancel();
-            _transformask.Wait();
+            if (transformask == null) return;
+            transformokenSource.Cancel();
+            transformask.Wait();
         }
 
         private static async Task SaveInterval(CancellationToken token) {

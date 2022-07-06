@@ -13,12 +13,14 @@ namespace SeleneGame.Core {
         public Collider waterCollider;
 
         public Entity entity;
-        [SerializeField] private Rigidbody _rb;
+        [SerializeField] private Rigidbody rb;
 
-        void Awake(){
-            entity = GetComponent<Entity>();
-            _rb = GetComponent<Rigidbody>();
+        private void Awake(){
+            if (entity == null) entity = GetComponent<Entity>();
+            if (rb == null) rb = GetComponent<Rigidbody>();
         }
+
+        private void Reset() => Awake();
 
         // private void Update(){
         //     if (!isNearWater) return;

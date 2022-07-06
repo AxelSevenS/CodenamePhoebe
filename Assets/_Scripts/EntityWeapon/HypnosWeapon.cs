@@ -9,6 +9,7 @@ namespace SeleneGame.Weapons {
     
     [System.Serializable]
     public class HypnosWeapon : Weapon{
+        public override WeaponType weaponType => WeaponType.spear;
 
         private Vector3 wallRunDir;
         private Vector3 wallRunNormal;
@@ -38,7 +39,7 @@ namespace SeleneGame.Weapons {
         // }
 
         // protected override Vector3 GetCameraPosition(){
-        //     if (wallRun && Vector3.Dot( -wallHit.normal, entity._transform.right ) > 0.75f)
+        //     if (wallRun && Vector3.Dot( -wallHit.normal, entity.transform.right ) > 0.75f)
         //         return new Vector3(-1f, 0f, -3.5f);
         //     else
         //         return base.GetCameraPosition();
@@ -75,7 +76,7 @@ namespace SeleneGame.Weapons {
 
             // // Wall-stand when standing against a wall. (Feather Grip)
             // if ( wallStand ){
-            //     entity._rb.velocity = entity._rb.velocity.NullifyInDirection(entity.gravityDown);
+            //     entity.rb.velocity = entity.rb.velocity.NullifyInDirection(entity.gravityDown);
             //     entity.Move( -wallHit.normal * Global.timeDelta * (wallHit.distance - 0.2f) );
             // }
 
@@ -106,7 +107,7 @@ namespace SeleneGame.Weapons {
 
         // private void OnStartWallStanding(){
 
-        //     entity._rb.velocity = entity._rb.velocity.NullifyInDirection(entity.gravityDown);
+        //     entity.rb.velocity = entity.rb.velocity.NullifyInDirection(entity.gravityDown);
         //     entity.evadeTimer = 0;
         //     entity.inertiaMultiplier = Mathf.Max( entity.inertiaMultiplier, 12f );
         // }

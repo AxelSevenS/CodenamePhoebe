@@ -56,7 +56,7 @@ SubShader {
 
 		#include "UnityCG.cginc"
 
-		struct appdata_transform {
+		struct appdatatransform {
 			float4 vertex : POSITION;
 			fixed4 color : COLOR;
 			float2 texcoord0 : TEXCOORD0;
@@ -80,7 +80,7 @@ SubShader {
 		uniform float		_MaskSoftnessX;
 		uniform float		_MaskSoftnessY;
 
-		v2f vert (appdata_transform v)
+		v2f vert (appdatatransform v)
 		{
 			v2f OUT;
 			float4 vert = v.vertex;

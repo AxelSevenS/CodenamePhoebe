@@ -92,5 +92,17 @@ namespace SeleneGame.Core {
         //     }
         // }
 
+
+        public static Weapon CreateWeapon(string weaponType){
+            weaponType = weaponType.Replace("Weapon", "");
+            switch (weaponType) {
+                default:
+                    return new SeleneGame.Weapons.UnarmedWeapon();
+                case "Eris":
+                    return new SeleneGame.Weapons.ErisWeapon();
+                case "Hypnos":
+                    return new SeleneGame.Weapons.HypnosWeapon();
+            }
+        }
     }
 }

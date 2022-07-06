@@ -9,7 +9,7 @@ namespace SeleneGame.Core {
     public class FloatingObject : MonoBehaviour{
         
         private new Rigidbody rigidbody;
-        private CustomPhysicsComponent _physicsComponent;
+        private CustomPhysicsComponent physicsComponent;
         [SerializeField] [Range(0f, 3f)] private float floatability; 
 
         void OnEnable() => Global.objectManager.objectList.Add( this.gameObject );
@@ -17,12 +17,12 @@ namespace SeleneGame.Core {
 
         private void Awake(){
             rigidbody = GetComponent<Rigidbody>();
-            _physicsComponent = GetComponent<CustomPhysicsComponent>();
+            physicsComponent = GetComponent<CustomPhysicsComponent>();
         }
         private void FixedUpdate(){
             
             rigidbody.AddForceAtPosition(Physics.gravity*1.5f, transform.position, ForceMode.Acceleration);
-            _physicsComponent.BodyFloat(rigidbody, transform.position, floatability);
+            physicsComponent.BodyFloat(rigidbody, transform.position, floatability);
 
         }
     }

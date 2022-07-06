@@ -13,10 +13,10 @@ namespace SeleneGame {
         private Animator animator;
         
         [SerializeField] private float maskPosT = 1f;
-        private Vector3 rightPosition => entity._transform.rotation * new Vector3(1.2f, 1.3f, -0.8f);
-        private Vector3 leftPosition => entity._transform.rotation * new Vector3(-1.2f, 1.3f, -0.8f);
+        private Vector3 rightPosition => entity.transform.rotation * new Vector3(1.2f, 1.3f, -0.8f);
+        private Vector3 leftPosition => entity.transform.rotation * new Vector3(-1.2f, 1.3f, -0.8f);
         private Vector3 relativePos => onRight ? rightPosition : leftPosition;
-        private bool positionBlocked(Vector3 position) => Physics.SphereCast(entity._transform.position, 0.35f, position, out MaskPosHit, position.magnitude, Global.GroundMask);
+        private bool positionBlocked(Vector3 position) => Physics.SphereCast(entity.transform.position, 0.35f, position, out MaskPosHit, position.magnitude, Global.GroundMask);
         private Vector3 flyingPosition;
 
 
@@ -38,7 +38,7 @@ namespace SeleneGame {
             if (!onFace && (positionBlocked(relativePos)))
                 onRight = !onRight;
 
-            flyingPosition = Vector3.Lerp(flyingPosition, gravityShifter._transform.position + relativePos, 15f * Global.timeDelta);
+            flyingPosition = Vector3.Lerp(flyingPosition, gravityShifter.transform.position + relativePos, 15f * Global.timeDelta);
             maskPosT = Mathf.MoveTowards(maskPosT, System.Convert.ToSingle(onFace), 4f * Global.timeDelta);
 
             animator.SetBool("OnFace", onFace);
@@ -46,13 +46,14 @@ namespace SeleneGame {
         }
         void LateUpdate(){
             if (entity == null) return;
+            
             BezierQuadratic currentCurve = new BezierQuadratic(
                 flyingPosition, 
                 entity["head"].transform.position,
                 entity["head"].transform.position + entity["head"].transform.forward
             );
             transform.position = currentCurve.GetPoint(maskPosT).position;
-            transform.rotation = Quaternion.Slerp(entity._transform.rotation,entity["head"].transform.rotation,maskPosT);
+            transform.rotation = Quaternion.Slerp(entity.transform.rotation,entity["head"].transform.rotation,maskPosT);
         }
     }
 }

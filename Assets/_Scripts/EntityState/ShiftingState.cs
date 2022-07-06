@@ -33,7 +33,7 @@ namespace SeleneGame.States {
         private Vector3 floatDirection = Vector3.zero;
 
         private Vector3 fallDirection = Vector3.forward;
-        private Quaternion fallRotation => Quaternion.LookRotation(fallDirection, entity.cameraRotation * Vector3.up);
+        private Quaternion fallRotation => Quaternion.LookRotation(fallDirection, entity.finalPlayerRotation * Vector3.up);
 
         private float additionalCameraDistance;
 
@@ -70,10 +70,10 @@ namespace SeleneGame.States {
             }
 
             if (shiftFallingData.started){
-                fallDirection = gravityShifter.cameraRotation * Vector3.forward;
+                fallDirection = gravityShifter.finalPlayerRotation * Vector3.forward;
                 randomRotation = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized;
 
-                Debug.DrawRay(gravityShifter._transform.position, 10f * fallDirection, Color.red, 3f);
+                Debug.DrawRay(gravityShifter.transform.position, 10f * fallDirection, Color.red, 3f);
             }
 
             if (gravityShifter.evadeInput.stopped && gravityShifter.evadeInput.trueTimer < 0.125f)
@@ -100,7 +100,7 @@ namespace SeleneGame.States {
                 fallDirection = newDirection;
                 gravityShifter.absoluteForward = fallDirection;
 
-                // gravityShifter._rb.velocity += gravityShifter.evadeDirection*gravityShifter.data.baseSpeed*gravityShifter.inertiaMultiplier*Global.timeDelta;
+                // gravityShifter.rb.velocity += gravityShifter.evadeDirection*gravityShifter.data.baseSpeed*gravityShifter.inertiaMultiplier*Global.timeDelta;
                 gravityShifter.Gravity(gravityShifter.moveSpeed, fallDirection);
 
                 finalRotation = new Vector3(randomRotation.x, 0f, randomRotation.y);
@@ -114,7 +114,7 @@ namespace SeleneGame.States {
                 if (floatDirection.magnitude != 0f){
                     gravityShifter.absoluteForward = floatDirection;
 
-                    gravityShifter._rb.velocity += gravityShifter.data.baseSpeed * Global.timeDelta * floatDirection;
+                    gravityShifter.rb.velocity += gravityShifter.data.baseSpeed * Global.timeDelta * floatDirection;
                 }
 
 

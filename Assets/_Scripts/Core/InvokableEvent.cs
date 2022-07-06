@@ -12,9 +12,9 @@ namespace SeleneGame.Core {
         public EventType eventType;
 
         public Conversation conversation;
-        public EntityData entity;
+        public Entity entity;
         public EntityCostume entityCostume;
-        public WeaponData weapon;
+        public Weapon weapon;
         public WeaponCostume weaponCostume;
 
         public void Invoke(GameObject gameObject){
@@ -25,11 +25,11 @@ namespace SeleneGame.Core {
                     break;
                 case EventType.SetEntityCostume:
                     if (entity == null || entityCostume == null) break;
-                    GameEvents.SetEntityCostume(entity, entityCostume);
+                    entity.SetCostume(entityCostume);
                     break;
                 case EventType.SetWeaponCostume:
                     if (weapon == null || weaponCostume == null) break;
-                    GameEvents.SetWeaponCostume(weapon, weaponCostume);
+                    weapon.SetCostume(weaponCostume);
                     break;
                 case EventType.Destroy:
                     Object.Destroy(gameObject);

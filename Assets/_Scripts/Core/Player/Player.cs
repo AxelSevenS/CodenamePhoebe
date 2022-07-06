@@ -4,8 +4,10 @@ using System.Reflection;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Interactions;
+
 using SeleneGame.Entities;
 using SeleneGame.States;
+using SeleneGame.Utility;
 
 namespace SeleneGame.Core {
     
@@ -101,6 +103,8 @@ namespace SeleneGame.Core {
         
         private void Update(){
             
+            if (entity == null || !entity.enabled || !entity.gameObject.activeSelf) return;
+
             EntityControl();
         }
 
@@ -117,13 +121,13 @@ namespace SeleneGame.Core {
             }
 
             float jump = System.Convert.ToSingle(inputDict["Jump"]) - System.Convert.ToSingle(inputDict["Crouch"]);
-            Quaternion lookRotation = UpdateCameraRotation( entity.lookRotation );
+            Quaternion cameraRotation = UpdateCameraRotation( entity.cameraRotation );
 
             Vector2 dir = playerControls["Move"].ReadValue<Vector2>();
             Vector3 moveDirection = new Vector3(dir.x, jump, dir.y);
             
 
-            entity.EntityInput(moveDirection, lookRotation, inputDict);
+            entity.EntityInput(moveDirection, cameraRotation, inputDict);
 
             manipulationCandidate = GetManipulationCandidate(colliderBuffer);
 
@@ -151,11 +155,11 @@ namespace SeleneGame.Core {
         private IManipulable GetManipulationCandidate(Collider[] buffer){
             // if ( !(entity.state is FocusState) ) return null;
 
-            Physics.OverlapSphereNonAlloc(entity._transform.position, 15f, buffer, Global.ObjectEntityMask);
+            Physics.OverlapSphereNonAlloc(entity.transform.position, 15f, buffer, Global.ObjectEntityMask);
             foreach ( Collider hit in buffer ){
 
                 Rigidbody rb = hit?.attachedRigidbody ?? null;
-                if (rb == null || rb.transform == entity._transform) continue;
+                if (rb == null || rb.transform == entity.transform) continue;
 
                 if ( rb.TryGetComponent<IManipulable>(out var manipulationComponent) ){
                     Ray cameraRay = new Ray(camera.transform.position, camera.transform.forward);
@@ -175,14 +179,14 @@ namespace SeleneGame.Core {
             if (entity.state is SittingState sitting)
                 return sitting.seat;
 
-            Physics.OverlapSphereNonAlloc(entity._transform.position, 5f, buffer, Global.ObjectEntityMask);
+            Physics.OverlapSphereNonAlloc(entity.transform.position, 5f, buffer, Global.ObjectEntityMask);
             foreach ( Collider hit in buffer ) {
 
                 Transform collisionTransform = hit?.transform;
                 if ( 
                     collisionTransform != null &&
-                    collisionTransform != entity._transform && 
-                    IsObjectForwardToEntity(entity._transform.position, collisionTransform.position, entity.absoluteForward, 60f) && 
+                    collisionTransform != entity.transform && 
+                    IsObjectForwardToEntity(entity.transform.position, collisionTransform.position, entity.absoluteForward, 60f) && 
                     collisionTransform.TryGetComponent<IInteractable>(out var interactionComponent) 
                 )
                     return interactionComponent;
@@ -190,8 +194,8 @@ namespace SeleneGame.Core {
                 Transform collisionRigidbodyTransform = hit?.attachedRigidbody?.transform ?? null;
                 if (
                     collisionRigidbodyTransform != null &&
-                    collisionRigidbodyTransform != entity._transform && 
-                    IsObjectForwardToEntity(entity._transform.position, collisionRigidbodyTransform.position, entity.absoluteForward, 60f) && 
+                    collisionRigidbodyTransform != entity.transform && 
+                    IsObjectForwardToEntity(entity.transform.position, collisionRigidbodyTransform.position, entity.absoluteForward, 60f) && 
                     collisionRigidbodyTransform.TryGetComponent<IInteractable>(out interactionComponent) 
                 )
                     return interactionComponent;

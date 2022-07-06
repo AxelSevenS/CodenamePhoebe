@@ -39,16 +39,12 @@ namespace SeleneGame.EditorUI {
             switch (eventType) {
                 case 0:
                     return GetConversationInfoHeight(property);
-                    break;
                 case 1:
                     return GetEntityCostumeInfoHeight(property);
-                    break;
                 case 2:
                     return GetWeaponCostumeInfoHeight(property);
-                    break;
                 default:
                     return GetDropdownHeight(property);
-                    break;
             }
 
         }

@@ -8,26 +8,26 @@ namespace SeleneGame.Core {
     
     public class Grabbable : MonoBehaviour, IInteractable{
 
-        private Rigidbody _rigidbody;
-        private Collider _collider;
+        private Rigidbody rb;
+        private Collider collider;
         
         private float holdDistance;
-        private bool _grabbed;
+        private bool grabbed;
         private bool inFront;
         private Vector3 randomSpin;
 
         void Awake(){
-            _rigidbody = GetComponent<Rigidbody>();
-            _collider = GetComponent<Collider>();
+            rb = GetComponent<Rigidbody>();
+            collider = GetComponent<Collider>();
             Global.SetLayerRecursively(gameObject, 6);
         }
 
         void FixedUpdate() {
-            _collider.enabled = !_grabbed;
+            collider.enabled = !grabbed;
 
-            if (!_grabbed) return;
+            if (!grabbed) return;
 
-            _rigidbody.AddTorque(randomSpin.x, randomSpin.y, randomSpin.z, ForceMode.VelocityChange);
+            rb.AddTorque(randomSpin.x, randomSpin.y, randomSpin.z, ForceMode.VelocityChange);
 
         }
         
@@ -44,7 +44,7 @@ namespace SeleneGame.Core {
         public void Grab(GravityShifterEntity entity){
             if (entity.grabbedObjects.Count >= 4) return;
 
-            _grabbed = true;
+            grabbed = true;
 
             entity.grabbedObjects.Add(this);
             randomSpin = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized * 0.3f ;
@@ -54,13 +54,13 @@ namespace SeleneGame.Core {
             
             if ( !entity.grabbedObjects.Contains(this) ) return;
 
-            _grabbed = false;
+            grabbed = false;
 
             entity.grabbedObjects.Remove(this);
-            _rigidbody.AddForce(entity.lookRotation*Vector3.forward*30f*_rigidbody.mass, ForceMode.Impulse);
+            rb.AddForce(entity.cameraRotation*Vector3.forward*30f*rb.mass, ForceMode.Impulse);
 
 
-            var impulseParticle = Instantiate(Global.LoadParticle("ShiftImpulseParticles"), entity._transform.position + entity.lookRotation * Vector3.forward*2f, entity.lookRotation);
+            var impulseParticle = Instantiate(Global.LoadParticle("ShiftImpulseParticles"), entity.transform.position + entity.cameraRotation * Vector3.forward*2f, entity.cameraRotation);
             Destroy(impulseParticle, 1.2f);
         }
 

@@ -13,6 +13,21 @@ namespace SeleneGame.Core {
         public Sprite disgustedPortrait;
         public Sprite sadPortrait;
         public Sprite happyPortrait;
+
+        public static EntityCostume GetEntityBaseCostume(Entity entity){
+            string defaultCostume = entity.GetType().Name.Replace("Entity", "Base");
+            return GetEntityCostume(defaultCostume);
+        }
+        public static EntityCostume GetEntityCostume(string costumeName) {
+            string path = $"Costume/Entity/{costumeName}";
+            EntityCostume costume = Resources.Load<EntityCostume>(path);
+            if (costume == null) {
+                const string defaultPath = "Costume/Entity/SeleneBase";
+                Debug.LogError($"No Costume was found at Path {path} ; Using default costume at Path {defaultPath}");
+                costume = Resources.Load<EntityCostume>(defaultPath);
+            }
+            return costume;
+        }
         
     }
 }

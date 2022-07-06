@@ -8,6 +8,8 @@ namespace SeleneGame.Weapons {
     
     public class ErisWeapon : Weapon{
 
+        public override WeaponType weaponType => WeaponType.heavySword;
+
         [SerializeField] private BoolData gravitySlide = new BoolData();
 
         // protected override float GetSpeedMultiplier() => entity.inWater ? 1.5f : 1f;

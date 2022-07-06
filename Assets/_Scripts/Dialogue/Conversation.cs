@@ -9,7 +9,7 @@ namespace SeleneGame {
     public class Dialogue{
         
         public enum Emotion {neutral, determined, hesitant, shocked, disgusted, sad, happy};
-        public EntityData entityData;
+        public Entity entity;
         public Emotion emotion;
         [TextArea] public string text;
         public List<InvokableEvent> dialogueEvents;

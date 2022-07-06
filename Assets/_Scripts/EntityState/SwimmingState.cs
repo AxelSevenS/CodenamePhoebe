@@ -12,7 +12,7 @@ namespace SeleneGame.States {
         public override int id => 1;
         protected override Vector3 GetCameraPosition() {
             if (entity is ArmedEntity armed)
-                return armed.currentWeapon.cameraPosition;
+                return armed.weapons.current.cameraPosition;
                 
             return base.GetCameraPosition();
         }
@@ -30,9 +30,8 @@ namespace SeleneGame.States {
                 entity.SetState(entity.defaultState);
             }
 
-
-            if ( entity.evadeInput.started )
-                entity.Evade(entity.absoluteForward);
+            if ( entity.evadeInput.started && entity is ArmedEntity armed )
+                armed.Evade(armed.absoluteForward);
 
 
         }
@@ -41,7 +40,7 @@ namespace SeleneGame.States {
 
             entity.SetRotation(-entity.gravityDown);
 
-            entity._rb.velocity = Vector3.Dot(entity._rb.velocity.normalized, entity.gravityDown) > 0f ? entity._rb.velocity / 1.1f : entity._rb.velocity;
+            entity.rb.velocity = Vector3.Dot(entity.rb.velocity.normalized, entity.gravityDown) > 0f ? entity.rb.velocity / 1.1f : entity.rb.velocity;
 
             // if (entity is ArmedEntity armed && armed.EvadeUpdate(out _, out float evadeCurve)){
                 
@@ -70,7 +69,7 @@ namespace SeleneGame.States {
         public override void HandleInput(){
             
             
-            entity.moveDirection.SetVal( entity.rotation * entity.lookRotation * entity.moveInput );
+            entity.moveDirection.SetVal( entity.rotation * entity.cameraRotation * entity.moveInput );
             
             if (entity.jumpInput && entity.isOnWaterSurface && entity.jumpCount != 0 && entity.jumpCooldown == 0f ){
                 entity.Jump( -entity.gravityDown );

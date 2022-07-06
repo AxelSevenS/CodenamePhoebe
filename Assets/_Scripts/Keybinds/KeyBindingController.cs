@@ -4,9 +4,11 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using SeleneGame.Core;
 
-namespace SeleneGame {
+using SeleneGame.Core;
+using SeleneGame.Utility;
+
+namespace SeleneGame.HUD {
     
     public class KeyBindingController : MonoBehaviour{
 

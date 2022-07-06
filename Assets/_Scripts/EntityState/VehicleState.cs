@@ -56,7 +56,7 @@ namespace SeleneGame.States {
             Vector3 groundUp = terrainFlatEnough ? entity.groundOrientation * -entity.gravityDown : -entity.gravityDown;
             Vector3 rightDir = Vector3.Cross(entity.absoluteForward, groundUp);
             Vector3 finalUp = (groundUp*4f + (Vector3.Dot( inputDirection, rightDir ) * rightDir)).normalized;
-            // finalUp = entity.onGround ? finalUp : (finalUp + finalUp + finalUp - entity._transform.forward).normalized;
+            // finalUp = entity.onGround ? finalUp : (finalUp + finalUp + finalUp - entity.transform.forward).normalized;
 
             entity.RotateTowardsAbsolute(entity.absoluteForward, finalUp);
 
@@ -64,7 +64,7 @@ namespace SeleneGame.States {
 
             // // When the Entity is sliding
             // if (entity.sliding)
-            //     entity._rb.velocity += entity.groundOrientation * entity.evadeDirection *entity.data.baseSpeed * entity.inertiaMultiplier * Global.timeDelta;
+            //     entity.rb.velocity += entity.groundOrientation * entity.evadeDirection *entity.data.baseSpeed * entity.inertiaMultiplier * Global.timeDelta;
 
 
         }
@@ -83,7 +83,7 @@ namespace SeleneGame.States {
             entity.sliding.SetVal(entity.evadeInput && entity.onGround);
             
             // Jump if the Jump key is pressed.
-            if ( entity.jumpInput && entity.jumpCount != 0 && entity.onGround.falseTimer <= 0.4f )
+            if ( entity.jumpInput.started && entity.jumpCount != 0 && entity.onGround.falseTimer <= 0.4f )
                 entity.Jump( -entity.gravityDown );
             
             float newSpeed = Vector3.Dot(entity.moveDirection, inputDirection) * accelerationLinger * entity.data.baseSpeed;

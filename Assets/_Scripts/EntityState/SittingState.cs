@@ -23,8 +23,8 @@ namespace SeleneGame.States {
 
         public override void StateFixedUpdate(){
             // Sitting
-            entity._transform.position = seat.sitPosition;
-            entity.absoluteForward = entity._transform.forward;
+            entity.transform.position = seat.sitPosition;
+            entity.absoluteForward = entity.transform.forward;
             entity.RotateTowardsAbsolute(Vector3.ProjectOnPlane(seat.transform.rotation * -seat.sittingDir, seat.transform.up), seat.transform.up);
         }
 
@@ -40,7 +40,7 @@ namespace SeleneGame.States {
             inputDict[ "Focus" ] = entity.focusInput;
             inputDict[ "Shift" ] = entity.shiftInput;
 
-            seat.seatEntity.EntityInput(entity.moveInput, entity.cameraRotation, inputDict);
+            seat.seatEntity.EntityInput(entity.moveInput, entity.finalPlayerRotation, inputDict);
 
             entity.moveSpeed = 0;
         }

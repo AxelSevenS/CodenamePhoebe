@@ -1,4 +1,4 @@
-﻿struct vertex_transform {
+﻿struct vertextransform {
     UNITY_VERTEX_INPUT_INSTANCE_ID
     float4	position		: POSITION;
     float3	normal			: NORMAL;
@@ -7,7 +7,7 @@
     float2	texcoord1		: TEXCOORD1;
 };
 
-struct pixel_transform {
+struct pixeltransform {
     UNITY_VERTEX_INPUT_INSTANCE_ID
     UNITY_VERTEX_OUTPUT_STEREO
     float4	position		: SV_POSITION;
@@ -26,11 +26,11 @@ float4 SRGBToLinear(float4 rgba) {
     return float4(lerp(rgba.rgb / 12.92f, pow((rgba.rgb + 0.055f) / 1.055f, 2.4f), step(0.04045f, rgba.rgb)), rgba.a);
 }
 
-pixel_transform VertShader(vertex_transform input)
+pixeltransform VertShader(vertextransform input)
 {
-    pixel_transform output;
+    pixeltransform output;
 
-    UNITY_INITIALIZE_OUTPUT(pixel_transform, output);
+    UNITY_INITIALIZE_OUTPUT(pixeltransform, output);
     UNITY_SETUP_INSTANCE_ID(input);
     UNITY_TRANSFER_INSTANCE_ID(input, output);
     UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
@@ -93,7 +93,7 @@ pixel_transform VertShader(vertex_transform input)
     return output;
 }
 
-float4 PixShader(pixel_transform input) : SV_Target
+float4 PixShader(pixeltransform input) : SV_Target
 {
     UNITY_SETUP_INSTANCE_ID(input);
 

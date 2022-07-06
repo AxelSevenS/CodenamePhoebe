@@ -91,7 +91,7 @@ namespace SeleneGame {
             seatOccupant.SetState(seatOccupant.defaultState);
             Global.SetLayerRecursively(seatOccupant.gameObject, 6);
 
-            seatOccupant._transform.SetParent(previousAnchor);
+            seatOccupant.transform.SetParent(previousAnchor);
 
             seatOccupant = null;
         }

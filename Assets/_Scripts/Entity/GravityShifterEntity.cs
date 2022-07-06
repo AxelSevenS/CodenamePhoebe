@@ -22,7 +22,7 @@ namespace SeleneGame.Entities {
             new Vector3(-2.5f, 2.5f, 3f)
         };
 
-        public override float GravityMultiplier() => data.weight * (currentWeapon?.weightModifier ?? 1f);
+        public override float GravityMultiplier() => data.weight * (weapons.current?.weightModifier ?? 1f);
         public override float JumpMultiplier() => 2 - (GravityMultiplier() / 15f);
 
         private SpeedlinesEffect speedlines;
@@ -35,7 +35,7 @@ namespace SeleneGame.Entities {
                 return true;
 
             else if (state is WalkingState walkingState) {
-                return Vector3.Dot ( gravityDown, Vector3.down ) < 0.95f /* || currentWeapon.shifting */;
+                return Vector3.Dot ( gravityDown, Vector3.down ) < 0.95f /* || weapons.current.shifting */;
             }
 
             return false;
@@ -43,18 +43,18 @@ namespace SeleneGame.Entities {
 
         protected override void EntityDestroy(){
             base.EntityDestroy();
+            
             Global.SafeDestroy(speedlines);
         }
 
         protected override void EntityAwake(){
             base.EntityAwake();
 
-            weapons.Set(1, new HypnosWeapon());
-            weapons.Set(2, new ErisWeapon());
 
-            GameObject speedlinesObject = GameObject.Instantiate(Resources.Load("Prefabs/Effects/Speedlines"), Global.effects.transform) as GameObject;
-            speedlines = speedlinesObject.GetComponent<SpeedlinesEffect>();
-            speedlines.SetFollowedObject(gameObject);
+
+            weapons = new WeaponInventory(this, 3);
+            // weapons.Set(1, new HypnosWeapon());
+            // weapons.Set(2, new ErisWeapon());
         }
 
         protected override void EntityUpdate(){
@@ -66,7 +66,7 @@ namespace SeleneGame.Entities {
                 
                 if (state is WalkingState walking && shiftCooldown == 0f){
                     shiftCooldown = 0.3f;
-                    if (onGround) _rb.velocity += -gravityDown*3f;
+                    if (onGround) rb.velocity += -gravityDown*3f;
                     
                     SetState(new ShiftingState());
 
@@ -79,7 +79,7 @@ namespace SeleneGame.Entities {
             }
             
             if (animator.runtimeAnimatorController != null){
-                animator.SetFloat("WeaponType", (float)(currentWeapon.data.weaponType) );
+                animator.SetFloat("WeaponType", (float)(weapons.current.weaponType) );
             }
         }
 
@@ -92,7 +92,7 @@ namespace SeleneGame.Entities {
 
                 var grabbedMono = grabbedObjects[i] as MonoBehaviour;
 
-                grabbedMono.transform.position = Vector3.Lerp(grabbedMono.transform.position, transform.position + lookRotation * grabbedObjectPositions[i], 10f* Global.timeDelta);
+                grabbedMono.transform.position = Vector3.Lerp(grabbedMono.transform.position, transform.position + cameraRotation * grabbedObjectPositions[i], 10f* Global.timeDelta);
             }
 
             if (shiftCooldown > 0f){
@@ -100,18 +100,28 @@ namespace SeleneGame.Entities {
             }
         }
 
+        protected override void EntityLoadModel() {
+            base.EntityLoadModel();
+            
+            if (speedlines == null) {
+                GameObject speedlinesObject = GameObject.Instantiate(Resources.Load("Prefabs/Effects/Speedlines"), Global.effects.transform) as GameObject;
+                speedlines = speedlinesObject.GetComponent<SpeedlinesEffect>();
+                speedlines.SetFollowedObject(gameObject);
+            }
+        }
+
         public override bool CanWaterHover() {
-            return currentWeapon.weightModifier < 0.8f && moveInput.zeroTimer < 0.6f;
+            return weapons.current.weightModifier < 0.8f && moveInput.zeroTimer < 0.6f;
         }
         public override bool CanSink() {
-            return currentWeapon.weightModifier > 1.3f;
+            return weapons.current.weightModifier > 1.3f;
         }
 
         protected void Shift(float timer){
             if (timer >= Player.current.holdDuration) return;
             if (state is WalkingState walking && shiftCooldown == 0f){
                 shiftCooldown = 0.3f;
-                if (onGround) _rb.velocity += -gravityDown*3f;
+                if (onGround) rb.velocity += -gravityDown*3f;
                 
                 SetState(new ShiftingState());
 

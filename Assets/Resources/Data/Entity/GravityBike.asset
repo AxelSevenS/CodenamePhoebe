@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: GravityBike
   m_EditorClassIdentifier: 
   displayName: Gravity Bicycle
-  costume: {fileID: 11400000, guid: 99793ed8a8b4b9046a71eca92f0b7cdf, type: 2}
   entityType: 1
+  defaultCostume: {fileID: 11400000, guid: 99793ed8a8b4b9046a71eca92f0b7cdf, type: 2}
   maxHealth: 0
   size: {x: 1, y: 1, z: 1}
   stepHeight: 1

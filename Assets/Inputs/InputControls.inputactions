@@ -793,7 +793,7 @@
                 {
                     "name": "",
                     "id": "3e204062-0963-47bc-8dde-020d81f457dc",
-                    "path": "<Keyboard>/q",
+                    "path": "<Keyboard>/leftCtrl",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",

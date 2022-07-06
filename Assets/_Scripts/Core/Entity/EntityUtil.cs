@@ -10,15 +10,15 @@ namespace SeleneGame.Core {
         
         public static async Task WalkTo( this Entity entity, Vector3 pos, Entity.WalkSpeed speed = Entity.WalkSpeed.walk) {
             entity.walkingTo = true;
-            while ((pos - entity._transform.position).magnitude > 0.3f){
+            while ((pos - entity.transform.position).magnitude > 0.3f){
 
-                Vector3 dir = Vector3.ProjectOnPlane( pos - entity._transform.position, -entity.gravityDown );
-                if (dir.magnitude > 0.4f && ((pos - entity._transform.position).magnitude - dir.magnitude) < 0.3f){
+                Vector3 dir = Vector3.ProjectOnPlane( pos - entity.transform.position, -entity.gravityDown );
+                if (dir.magnitude > 0.4f && ((pos - entity.transform.position).magnitude - dir.magnitude) < 0.3f){
                     entity.SetWalkSpeed(speed);
                     entity.moveDirection.SetVal(dir.normalized);
                 }else{
                     entity.moveDirection.SetVal(Vector3.zero);
-                    entity._transform.position = Vector3.Lerp(entity._transform.position, pos, Global.timeDelta);
+                    entity.transform.position = Vector3.Lerp(entity.transform.position, pos, Global.timeDelta);
                 }
                 await Task.Yield();
             }

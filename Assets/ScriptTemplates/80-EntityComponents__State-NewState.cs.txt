@@ -15,7 +15,7 @@ public class #SCRIPTNAME# : State{
     public override bool shifting => false;
 
     // This Value defines where, in relation to the Entity, the Player's camera should sit.
-    public override Vector3 cameraRelativePosition() => _entity.currentWeapon.cameraPosition();
+    public override Vector3 cameraRelativePosition() => _entity.weapons.current.cameraPosition();
 
     // StateUpdate works like Update but is only called when an Entity is in that specific state.
     public override void StateUpdate(){

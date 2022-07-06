@@ -9,7 +9,7 @@ namespace SeleneGame.Core {
 
         public virtual int id => 0;
         [ReadOnly] public new string name;
-        [HideInInspector] public Entity entity;
+        /* [HideInInspector] */ public Entity entity;
 
         public Vector3 cameraPosition => GetCameraPosition();
         public Vector3 jumpDirection => GetJumpDirection();
@@ -21,8 +21,8 @@ namespace SeleneGame.Core {
 
 
         public virtual void OnEnter(Entity entity){
-            this.entity = entity;
             name = GetType().Name.Replace("State","");
+            this.entity = entity;
         }
         public virtual void OnExit(){;}
         public virtual void StateUpdate(){;}
@@ -31,17 +31,7 @@ namespace SeleneGame.Core {
 
         public virtual void StateAnimation(){;}
 
-
-        public static Type GetStateTypeByName(string stateName){
-            return Type.GetType($"SeleneGame.States.{stateName}State");
-        }
-        
-
-        public virtual float UpdateMoveSpeed(){
-            return entity.moveSpeed;
-        }
-
-        public virtual void HandleInput(){;} 
+        public abstract void HandleInput();
 
     }
 }
