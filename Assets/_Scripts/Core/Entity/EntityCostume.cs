@@ -14,15 +14,15 @@ namespace SeleneGame.Core {
         public Sprite sadPortrait;
         public Sprite happyPortrait;
 
-        public static EntityCostume GetEntityBaseCostume(Entity entity){
-            string defaultCostume = entity.GetType().Name.Replace("Entity", "Base");
+        public static EntityCostume GetEntityBaseCostume(System.Type entityType){
+            string defaultCostume = entityType.Name.Replace("Entity", "Base");
             return GetEntityCostume(defaultCostume);
         }
-        public static EntityCostume TryGetEntityCostumeOrBase(Entity entity, string costumeName) {
+        public static EntityCostume TryGetEntityCostumeOrBase(System.Type entityType, string costumeName) {
             string path = $"Costume/Entity/{costumeName}";
             EntityCostume costume = Resources.Load<EntityCostume>(path);
             if (costume == null) {
-                string baseCostumeName = entity.GetType().Name.Replace("Entity", "Base");
+                string baseCostumeName = entityType.Name.Replace("Entity", "Base");
                 string basePath = $"Costume/Entity/{baseCostumeName}";
                 Debug.LogError($"No Costume was found at Path {path} ; Using entity base costume at Path {basePath}");
                 costume = GetEntityCostume(baseCostumeName);

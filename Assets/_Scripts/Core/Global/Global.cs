@@ -12,6 +12,7 @@ namespace SeleneGame.Core {
         public static GameObject effects = gameController.transform.Find("Effects").gameObject;
         public static GameObject weather = gameController.transform.Find("Weather").gameObject;
         public static GameObject ui = gameController.transform.Find("UI").gameObject;
+        public static KeyBindingController keyBindingController = gameController.GetComponentInChildren<KeyBindingController>();
         public static EntityManager entityManager = gameController.transform.GetComponentInChildren<EntityManager>();
         public static ObjectManager objectManager = gameController.transform.GetComponentInChildren<ObjectManager>();
         public static WeatherManager weatherManager = gameController.transform.GetComponentInChildren<WeatherManager>();

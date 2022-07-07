@@ -7,15 +7,15 @@ namespace SeleneGame.Core {
 
         public GameObject secondaryModel;
         
-        public static WeaponCostume GetWeaponBaseCostume(Weapon weapon){
-            string defaultCostume = weapon.GetType().Name.Replace("Weapon", "Base");
+        public static WeaponCostume GetWeaponBaseCostume(System.Type weaponType){
+            string defaultCostume = weaponType.Name.Replace("Weapon", "Base");
             return GetWeaponCostume(defaultCostume);
         }
-        public static WeaponCostume TryGetWeaponCostumeOrBase(Weapon weapon, string costumeName) {
+        public static WeaponCostume TryGetWeaponCostumeOrBase(System.Type weaponType, string costumeName) {
             string path = $"Costume/Weapon/{costumeName}";
             WeaponCostume costume = Resources.Load<WeaponCostume>(path);
             if (costume == null) {
-                string baseCostumeName = weapon.GetType().Name.Replace("Weapon", "Base");
+                string baseCostumeName = weaponType.Name.Replace("Weapon", "Base");
                 string basePath = $"Costume/Weapon/{baseCostumeName}";
                 Debug.LogError($"No Costume was found at Path {path} ; Using weapon base costume at Path {basePath}");
                 costume = GetWeaponCostume(baseCostumeName);

@@ -31,26 +31,13 @@ namespace SeleneGame.Core {
 
         public virtual void OnAdd() {
             name = GetType().Name.Replace("Weapon","");
-            SetCostume( WeaponCostume.GetWeaponBaseCostume(this) );
+            SetCostume( WeaponCostume.GetWeaponBaseCostume( GetType() ) );
         }
         public virtual void OnRemove() {
             DestroyModel();
         }
         public virtual void WeaponUpdate(){;}
         public virtual void WeaponFixedUpdate(){;}
-
-
-        // private void SetData(){
-        //     if (data != null) return;
-
-        //     string dataName = GetType().Name.Replace("Weapon","");
-        //     data = DataGetter.GetData<WeaponData>( dataName );
-        //     Debug.Log(dataName);
-        // }
-
-        // public static Type GetWeaponTypeByName(string weaponName){
-        //     return Type.GetType($"SeleneGame.Weapons.{weaponName}Weapon");
-        // }
 
         // [ContextMenu("LoadModel")]
         public void SetCostume(WeaponCostume newCostume){

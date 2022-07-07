@@ -26,7 +26,7 @@ namespace SeleneGame.EditorUI {
                     DisplayEntityCostumeInfo(position, property);
                     break;
                 case 2:
-                    DisplayWeaponCostumeInfo(position, property);
+                    DisplayPlayerCostumeInfo(position, property);
                     break;
             }
 
@@ -42,7 +42,7 @@ namespace SeleneGame.EditorUI {
                 case 1:
                     return GetEntityCostumeInfoHeight(property);
                 case 2:
-                    return GetWeaponCostumeInfoHeight(property);
+                    return GetPlayerCostumeInfoHeight(property);
                 default:
                     return GetDropdownHeight(property);
             }
@@ -84,21 +84,16 @@ namespace SeleneGame.EditorUI {
         }
 
 
-        private void DisplayWeaponCostumeInfo(Rect position, SerializedProperty property) {
-            SerializedProperty propWeapon = property.FindPropertyRelative( "weapon" );
-            SerializedProperty propWeaponCostume = property.FindPropertyRelative( "weaponCostume" );
-            float rectWeaponHeight = EditorGUI.GetPropertyHeight( propWeapon );
-            float rectWeaponCostumeHeight = EditorGUI.GetPropertyHeight( propWeaponCostume );
-            Rect rectWeapon = new Rect(position.x, position.y + lineSpace, position.width, rectWeaponHeight);
-            Rect rectWeaponCostume = new Rect(position.x, position.y + lineSpace + rectWeaponHeight + EditorGUIUtility.standardVerticalSpacing, position.width, rectWeaponCostumeHeight);
-            EditorGUI.PropertyField( rectWeapon, propWeapon, GUIContent.none );
-            EditorGUI.PropertyField( rectWeaponCostume, propWeaponCostume, GUIContent.none );
+        private void DisplayPlayerCostumeInfo(Rect position, SerializedProperty property) {
+            SerializedProperty propEntityCostume = property.FindPropertyRelative( "entityCostume" );
+            float rectEntityCostumeHeight = EditorGUI.GetPropertyHeight( propEntityCostume );
+            Rect rectEntityCostume = new Rect(position.x, position.y + lineSpace, position.width, rectEntityCostumeHeight);
+            EditorGUI.PropertyField( rectEntityCostume, propEntityCostume, GUIContent.none );
         }
-        private float GetWeaponCostumeInfoHeight(SerializedProperty property) {
+        private float GetPlayerCostumeInfoHeight(SerializedProperty property) {
             float propEventTypeHeight = GetDropdownHeight(property);
-            float propWeaponHeight = EditorGUI.GetPropertyHeight( property.FindPropertyRelative( "weapon" ) );
-            float propWeaponCostumeHeight = EditorGUI.GetPropertyHeight( property.FindPropertyRelative( "weaponCostume" ) );
-            return propEventTypeHeight + propWeaponHeight + propWeaponCostumeHeight + EditorGUIUtility.standardVerticalSpacing*2;
+            float propEntityCostumeHeight = EditorGUI.GetPropertyHeight( property.FindPropertyRelative( "entityCostume" ) );
+            return propEventTypeHeight + propEntityCostumeHeight + EditorGUIUtility.standardVerticalSpacing*2;
         }
     }
 
