@@ -4,9 +4,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using SeleneGame.Utility;
+
 namespace SeleneGame.Core {
 
-    public class ArmedEntity : Entity {
+    public abstract class ArmedEntity : Entity {
         
         public WeaponInventory weapons;
 
@@ -25,18 +27,21 @@ namespace SeleneGame.Core {
 
         public override bool CanTurn() => !evading;
 
-        protected override void EntityAwake(){
-            base.EntityAwake();
+        protected override void Awake(){
+            base.Awake();
             
             evading = new BoolData();
-            weapons = new WeaponInventory(this, 1);
+
+            // weapons = new WeaponInventory(this, 1);
         }
 
-        protected override void EntityUpdate(){
+        protected override void Update(){
+            base.Update();
+
             evading.SetVal( evadeTimer > data.evadeCooldown );
             
-            evadeTimer = Mathf.MoveTowards( evadeTimer, 0f, Global.timeDelta );
-            parryTimer = Mathf.MoveTowards( parryTimer, 0f, Global.timeDelta );
+            evadeTimer = Mathf.MoveTowards( evadeTimer, 0f, GameUtility.timeDelta );
+            parryTimer = Mathf.MoveTowards( parryTimer, 0f, GameUtility.timeDelta );
 
             bool lightActuated = lightAttackInput.trueTimer < 0.15f && lightAttackInput && heavyAttackInput.started;
             bool heavyActuated = heavyAttackInput.trueTimer < 0.15f && heavyAttackInput && lightAttackInput.started;
@@ -47,7 +52,9 @@ namespace SeleneGame.Core {
                 weapon?.WeaponUpdate();
         }
 
-        protected override void EntityFixedUpdate() {
+        protected override void FixedUpdate() {
+            base.FixedUpdate();
+
             if ( moveDirection.magnitude > 0f && evadeTimer > data.totalEvadeDuration - 0.15f )
                 evadeDirection = moveDirection.normalized;
 
@@ -55,8 +62,15 @@ namespace SeleneGame.Core {
                 weapon?.WeaponFixedUpdate();
         }
 
-        // protected override void EntityLoadModel() {
-        // }
+        protected override void EntityAnimation() {
+            base.EntityAnimation();
+
+            animator.SetFloat("WeaponType", (float)(weapons.current.weaponType) );
+        }
+
+        public override void SetStyle(int style) {
+            weapons.Switch(style);
+        }
 
         public void Parry(){
             Debug.Log("Parry");
@@ -74,7 +88,7 @@ namespace SeleneGame.Core {
             }
 
             evadeTime = Mathf.Clamp01( 1 - ( (evadeTimer - data.evadeCooldown) / data.evadeDuration ) );
-            evadeCurve = Mathf.Clamp01( data.evadeCurve.Evaluate( evadeTime ) );
+            evadeCurve = Mathf.Clamp01( EntityManager.current.evadeCurve.Evaluate( evadeTime ) );
             return true;
         }
 
@@ -87,15 +101,20 @@ namespace SeleneGame.Core {
             }
             rb.velocity = newVelocity;
 
-            Evade(evadeDirection);
+            StartEvade(evadeDirection);
         }
         public void Evade(Vector3 evadeDirection){
             if (evadeTimer > 0f) return;
-
-            this.evadeDirection = evadeDirection;
             
-            AnimatorTrigger("Evade");
+            StartEvade(evadeDirection);
+        }
+
+        protected void StartEvade(Vector3 evadeDirection) {
+            this.evadeDirection = evadeDirection;
             evadeTimer = data.totalEvadeDuration;
+
+            animator?.SetTrigger("Evade");
+
 
             onEvade?.Invoke(evadeDirection);
         }

@@ -24,41 +24,10 @@ namespace SeleneGame.Weapons {
         public RaycastHit wallHit;
 
 
-        // protected override float GetSpeedMultiplier(){
-        //     return entity.state is ShiftingState ? 1.5f : 1f;
-        // }
-
         protected override float GetWeightModifier() => 0.75f;
 
-        // protected override Vector3 GetJumpDirection(){
-        //     if (wallStand && !wallRun)
-        //         return (wallHit.normal + -entity.gravityDown + Vector3.ProjectOnPlane(entity.absoluteForward, wallHit.normal).normalized) / 2f;
-        //     else if (wallRun)
-        //         return (wallRunDir + wallHit.normal - entity.gravityDown * 2f)/4f;
-        //     return  -entity.gravityDown;
-        // }
-
-        // protected override Vector3 GetCameraPosition(){
-        //     if (wallRun && Vector3.Dot( -wallHit.normal, entity.transform.right ) > 0.75f)
-        //         return new Vector3(-1f, 0f, -3.5f);
-        //     else
-        //         return base.GetCameraPosition();
-        // }
-
-        // protected override Vector3 GetOverrideRotation(){
-        //     if (wallRun)
-        //         return wallRunDir;
-        //     else if (wallStand)
-        //         return -wallHit.normal;
-        //     return entity.absoluteForward;
-        // }
-
-
-        // protected override void WeaponAwake(){
-        // }
-        // public HypnosWeapon(Entity entity) : base(entity){;}
-        
         public override void WeaponUpdate(){
+            base.WeaponUpdate();
 
             if (!isEquipped) return;
             
@@ -71,13 +40,14 @@ namespace SeleneGame.Weapons {
         }
 
         public override void WeaponFixedUpdate(){
+            base.WeaponFixedUpdate();
 
             if (!isEquipped) return;
 
             // // Wall-stand when standing against a wall. (Feather Grip)
             // if ( wallStand ){
             //     entity.rb.velocity = entity.rb.velocity.NullifyInDirection(entity.gravityDown);
-            //     entity.Move( -wallHit.normal * Global.timeDelta * (wallHit.distance - 0.2f) );
+            //     entity.Move( -wallHit.normal * GameUtility.timeDelta * (wallHit.distance - 0.2f) );
             // }
 
             // // Wall-run when running against a wall. (Feather Grip)
@@ -96,9 +66,9 @@ namespace SeleneGame.Weapons {
             //     // entity.evadeDirection = wallRunDir;
 
 
-            //     wallRunTimer = Mathf.MoveTowards(wallRunTimer, 0f, Global.timeDelta);
+            //     wallRunTimer = Mathf.MoveTowards(wallRunTimer, 0f, GameUtility.timeDelta);
 
-            //     entity.Move(wallRunDir * Global.timeDelta * entity.data.baseSpeed * 0.45f);
+            //     entity.Move(wallRunDir * GameUtility.timeDelta * entity.data.baseSpeed * 0.45f);
 
             //     if ( entity.jumpInput )
             //         entity.Jump( (wallRunDir + wallHit.normal*1.2f - entity.gravityDown*2f).normalized * 1.4f );

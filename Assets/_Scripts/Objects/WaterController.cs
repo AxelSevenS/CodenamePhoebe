@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 using SeleneGame.Core;
+using SeleneGame.Utility;
 
 namespace SeleneGame {
 
@@ -29,7 +31,7 @@ namespace SeleneGame {
             if ( collider is MeshCollider meshCollider )
                 meshCollider.convex = true;
             // collider.isTrigger = true;
-            Global.SetLayerRecursively(gameObject, 4);
+            GameUtility.SetLayerRecursively(gameObject, 4);
         }
 
         // private void OnTriggerEnter(Collider col){

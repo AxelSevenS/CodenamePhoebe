@@ -3,16 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace SeleneGame.Core {
+using SeleneGame.UI;
+
+namespace SeleneGame {
     
-    public class GameEvents{
+    public static class GameEvents{
 
         public static void Reset(){
             onPlayerInput = null;
             onToggleMenu = null;
-            onStartDialogue = null;
-            // onSetEntityCostume = null;
-            // onSetWeaponCostume = null;
         }
 
         public static event Action onPlayerInput;
@@ -27,10 +26,8 @@ namespace SeleneGame.Core {
                 onToggleMenu();
         }
 
-        public static event Action<Conversation,GameObject> onStartDialogue;
-        public static void StartDialogue(Conversation dialogue, GameObject dialogueObject){
-            if (onStartDialogue != null)
-                onStartDialogue(dialogue, dialogueObject);
+        public static void StartDialogue(Dialogue dialogue, GameObject dialogueObject){
+            DialogueController.current.StartDialogue(dialogue, dialogueObject);
         }
         // public static void SetEntityCostume(Entity entity, EntityCostume costume){
         //     entity.SetCostume(costume);

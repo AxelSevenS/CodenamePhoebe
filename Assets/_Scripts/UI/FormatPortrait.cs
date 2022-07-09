@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace SeleneGame {
+namespace SeleneGame.UI {
 
     [RequireComponent(typeof(AspectRatioFitter))]
     public class FormatPortrait : MonoBehaviour{
@@ -21,6 +21,8 @@ namespace SeleneGame {
         }
 
         void LateUpdate(){
+
+            if (image?.sprite == null) return;
 
             float width = image.sprite.rect.width;
             float height = image.sprite.rect.height;

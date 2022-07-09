@@ -2,7 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace SeleneGame.Core {
+using SeleneGame.Core;
+using SeleneGame.UI;
+
+namespace SeleneGame {
     
     [System.Serializable]
     public struct InvokableEvent {
@@ -11,15 +14,15 @@ namespace SeleneGame.Core {
 
         public EventType eventType;
 
-        public Conversation conversation;
+        public Dialogue dialogue;
         public Entity entity;
         public EntityCostume entityCostume;
 
         public void Invoke(GameObject gameObject){
             switch (eventType){
                 case EventType.StartDialogue:
-                    if (conversation == null) break;
-                    GameEvents.StartDialogue(conversation, gameObject);
+                    if (dialogue == null) break;
+                    GameEvents.StartDialogue(dialogue, gameObject);
                     break;
                 case EventType.SetEntityCostume:
                     if (entity == null || entityCostume == null) break;

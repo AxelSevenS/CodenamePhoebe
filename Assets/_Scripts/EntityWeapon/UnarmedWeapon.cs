@@ -6,9 +6,7 @@ using SeleneGame.Core;
 namespace SeleneGame.Weapons {
     
     public class UnarmedWeapon : Weapon{
-        // public override WeaponType weaponType => WeaponType.sparring;
-
-        // public UnarmedWeapon(Entity entity) : base(entity){;}
+        public override WeaponType weaponType => WeaponType.sparring;
 
 
     }

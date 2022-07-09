@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+using SeleneGame.Utility;
+
 namespace SeleneGame.Core {
     
     public class CameraController : MonoBehaviour{
@@ -38,11 +40,11 @@ namespace SeleneGame.Core {
             Vector3 cameraRelativePosition = entity.state.cameraPosition;
             Vector3 cameraTargetVector = new Vector3( cameraRelativePosition.x, cameraRelativePosition.y, cameraRelativePosition.z * distanceToPlayer -additionalDistance);
 
-            cameraVector = Vector3.Slerp(cameraVector, cameraTargetVector, 3f * Global.timeDelta);
+            cameraVector = Vector3.Slerp(cameraVector, cameraTargetVector, 3f * GameUtility.timeDelta);
         }
 
         private void UpdateCameraPosition() {
-            entityRotation = Quaternion.Slerp( entityRotation, entity.rotation, 4f * Global.timeDelta );
+            entityRotation = Quaternion.Slerp( entityRotation, entity.rotation, 4f * GameUtility.timeDelta );
             
             transform.rotation = entityRotation * entity.cameraRotation;
 

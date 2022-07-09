@@ -46,10 +46,7 @@ namespace SeleneGame.Core {
             if (index != -1){ 
                 pairs[index].valueTwo = value;
             }else{
-                ValuePair<TKey, TVal> newPair = new ValuePair<TKey, TVal>();
-                newPair.valueOne = key;
-                newPair.valueTwo = value;
-
+                ValuePair<TKey, TVal> newPair = new ValuePair<TKey, TVal>(key, value);
                 pairs.Add(newPair);
             }
         }

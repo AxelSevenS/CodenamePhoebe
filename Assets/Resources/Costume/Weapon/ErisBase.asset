@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae8b671cf5f012a41a2085be81f07a0b, type: 3}
   m_Name: ErisBase
   m_EditorClassIdentifier: 
-  weaponPortrait: {fileID: 0}
-  leftModel: {fileID: 0}
-  rightModel: {fileID: 4417228832806416697, guid: c8fa52fa91804414cb8c4825271deb3a,
-    type: 3}
+  model: {fileID: 0}
+  portrait: {fileID: 21300000, guid: d2b99eeb2f25f8846a97b07595df9799, type: 3}
+  secondaryModel: {fileID: 0}

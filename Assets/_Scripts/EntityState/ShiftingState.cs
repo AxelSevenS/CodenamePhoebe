@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using SeleneGame.Core;
 using SeleneGame.Entities;
+using SeleneGame.Utility;
 
 namespace SeleneGame.States {
     
-    [System.Serializable]
     public class ShiftingState : State{
 
-        public override int id => 2;
+        public override StateType stateType => StateType.flyingState;
         // protected override float GetSpeedMultiplier() => entity.GravityMultiplier();
         protected override Vector3 GetCameraPosition(){
             if (shiftFalling){
@@ -20,20 +20,15 @@ namespace SeleneGame.States {
         }
 
         private GravityShifterEntity gravityShifter;
-        
 
-        // public override bool masked => true;
-
-        public BoolData shiftFallingData = new BoolData();
-        public bool shiftFalling => shiftFallingData;
+        public BoolData shiftFalling = new BoolData();
 
         private Vector2 randomRotation = Vector3.zero;
         
         private Vector2 fallInput = Vector3.zero;
-        private Vector3 floatDirection = Vector3.zero;
 
         private Vector3 fallDirection = Vector3.forward;
-        private Quaternion fallRotation => Quaternion.LookRotation(fallDirection, entity.finalPlayerRotation * Vector3.up);
+        // private Quaternion fallRotation => Quaternion.LookRotation(fallDirection, entity.finalPlayerRotation * Vector3.up);
 
         private float additionalCameraDistance;
 
@@ -41,6 +36,8 @@ namespace SeleneGame.States {
 
         public override void OnEnter(Entity entity){
             base.OnEnter(entity);
+
+            shiftFalling = new BoolData();
 
             if ( !(entity is GravityShifterEntity shifter) ) {
                 Debug.Log($"Entity {entity.name} cannot switch to Shifting State because it is not a Gravity Shifter");
@@ -53,31 +50,31 @@ namespace SeleneGame.States {
         }
 
         public override void OnExit(){
-            landCursor = Global.SafeDestroy(landCursor);
+            landCursor = GameUtility.SafeDestroy(landCursor);
         }
 
         public override void StateUpdate(){
 
-            shiftFallingData.SetVal( gravityShifter.evadeInput.trueTimer > 0.125f );
+            shiftFalling.SetVal( gravityShifter.evadeInput.trueTimer > 0.125f );
 
             // Gravity Shifting Movement
             if ( gravityShifter.inWater || gravityShifter.shiftInput.trueTimer > Player.current.holdDuration ){
-                StopShifting(Vector3.down);
+                gravityShifter.StopShifting(Vector3.down);
             }
 
             if ( gravityShifter.onGround && shiftFalling ) {
-                StopShifting(fallDirection);
+                gravityShifter.StopShifting(fallDirection);
             }
 
-            if (shiftFallingData.started){
+            if (shiftFalling.started){
                 fallDirection = gravityShifter.finalPlayerRotation * Vector3.forward;
                 randomRotation = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized;
 
                 Debug.DrawRay(gravityShifter.transform.position, 10f * fallDirection, Color.red, 3f);
             }
 
-            if (gravityShifter.evadeInput.stopped && gravityShifter.evadeInput.trueTimer < 0.125f)
-                gravityShifter.Evade(floatDirection);
+            if ( shiftFalling && gravityShifter.evadeInput.stopped && gravityShifter.evadeInput.trueTimer < 0.125f)
+                gravityShifter.Evade( gravityShifter.moveDirection );
 
             additionalCameraDistance = (gravityShifter.focusing ? -0.7f : 0f) + (gravityShifter.walkSpeed == Entity.WalkSpeed.sprint ? 0.4f : 0f);
 
@@ -91,16 +88,7 @@ namespace SeleneGame.States {
             Vector3 finalUp;
             if (shiftFalling){
 
-                Quaternion currentRotation = fallRotation;
-                Quaternion rotationDelta = Quaternion.AngleAxis(-fallInput.y, currentRotation * Vector3.right) * Quaternion.AngleAxis(fallInput.x, currentRotation * Vector3.up);
-                Vector3 newDirection = (rotationDelta * fallDirection).normalized;
-
-                gravityShifter.rotation.SetVal( Quaternion.FromToRotation(fallDirection, newDirection) * gravityShifter.rotation );
-
-                fallDirection = newDirection;
-                gravityShifter.absoluteForward = fallDirection;
-
-                // gravityShifter.rb.velocity += gravityShifter.evadeDirection*gravityShifter.data.baseSpeed*gravityShifter.inertiaMultiplier*Global.timeDelta;
+                // gravityShifter.rb.velocity += gravityShifter.evadeDirection*gravityShifter.data.baseSpeed*gravityShifter.inertiaMultiplier*GameUtility.timeDelta;
                 gravityShifter.Gravity(gravityShifter.moveSpeed, fallDirection);
 
                 finalRotation = new Vector3(randomRotation.x, 0f, randomRotation.y);
@@ -109,14 +97,7 @@ namespace SeleneGame.States {
             }else{
 
                 if ( gravityShifter.EvadeUpdate(out _, out float evadeCurve) )
-                    gravityShifter.Move( Global.timeDelta * evadeCurve * gravityShifter.data.evadeSpeed * gravityShifter.evadeDirection );
-
-                if (floatDirection.magnitude != 0f){
-                    gravityShifter.absoluteForward = floatDirection;
-
-                    gravityShifter.rb.velocity += gravityShifter.data.baseSpeed * Global.timeDelta * floatDirection;
-                }
-
+                    gravityShifter.Move( GameUtility.timeDelta * evadeCurve * gravityShifter.data.evadeSpeed * gravityShifter.evadeDirection );
 
                 finalRotation = gravityShifter.relativeForward;
                 finalUp = gravityShifter.rotation * Vector3.up;
@@ -133,22 +114,46 @@ namespace SeleneGame.States {
             
             gravityShifter.RawInputToGroundedMovement(out Vector3 camRight, out Vector3 camForward, out Vector3 groundDirection, out Vector3 groundDirection3D);
 
+            const float turningStrength = 0.65f;
+
             Vector2 newfallInput = new Vector3(gravityShifter.moveInput.x, gravityShifter.moveInput.z);
-            fallInput = Vector2.Lerp(fallInput, (newfallInput.normalized * 0.85f), 10f * Global.timeDelta);
-            floatDirection = groundDirection3D;
+            fallInput = Vector2.Lerp(fallInput, (newfallInput.normalized * turningStrength), 2.5f * GameUtility.timeDelta);
+
+
+            if (shiftFalling){
+
+                Quaternion currentRotation = Quaternion.LookRotation(fallDirection, entity.finalPlayerRotation * Vector3.up);
+
+                Quaternion rotationDelta = Quaternion.AngleAxis(-fallInput.y, currentRotation * Vector3.right) * Quaternion.AngleAxis(fallInput.x, currentRotation * Vector3.up);
+                Vector3 newDirection = (rotationDelta * (fallDirection)).normalized;
+
+                gravityShifter.rotation.SetVal( Quaternion.FromToRotation(fallDirection, newDirection) * gravityShifter.rotation );
+
+                fallDirection = newDirection;
+                gravityShifter.moveDirection.SetVal(fallDirection);
+
+            }else {
+                
+                if (groundDirection3D.magnitude != 0f){
+
+                    gravityShifter.moveDirection.SetVal(groundDirection3D);
+                    gravityShifter.rb.velocity += gravityShifter.data.baseSpeed * GameUtility.timeDelta * groundDirection3D;
+                }
+
+            }
+            gravityShifter.absoluteForward = gravityShifter.moveDirection;
 
             if (gravityShifter.shiftInput.trueTimer > Player.current.holdDuration)
-                StopShifting(Vector3.down);
+                gravityShifter.StopShifting(Vector3.down);
             
-            float newSpeed = gravityShifter.data.baseSpeed;
-            newSpeed = shiftFalling ? newSpeed * 0.75f : newSpeed;
-            float speedDelta = newSpeed > gravityShifter.moveSpeed ? 1f : 0.65f;
-            gravityShifter.moveSpeed = Mathf.MoveTowards(gravityShifter.moveSpeed, newSpeed, speedDelta * gravityShifter.data.moveIncrement * Global.timeDelta);
-        }
 
-        public void StopShifting(Vector3 newDown){
-            gravityShifter.gravityDown = newDown;
-            gravityShifter.SetState(gravityShifter.defaultState);
+            
+            float newSpeed = gravityShifter.data.baseSpeed * 0.5f;
+            newSpeed = shiftFalling ? newSpeed * 0.75f : newSpeed;
+
+            float speedDelta = newSpeed > gravityShifter.moveSpeed ? 1f : 0.65f;
+
+            gravityShifter.moveSpeed = Mathf.MoveTowards(gravityShifter.moveSpeed, newSpeed, speedDelta * gravityShifter.data.moveIncrement * GameUtility.timeDelta);
         }
 
         protected void UpdateLandCursorPos(){

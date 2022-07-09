@@ -1,29 +1,39 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+
 using SeleneGame.Core;
 using SeleneGame.Weapons;
 using SeleneGame.States;
+using SeleneGame.Utility;
 
 namespace SeleneGame.Entities {
 
-    public class GravityShifterEntity : ArmedEntity {
+    public abstract class GravityShifterEntity : ArmedEntity {
 
         // public bool masked => state.masked;
+        public override State defaultState => new WalkingState();
+
+        public override float GravityMultiplier() => data.weight * (weapons.current?.weightModifier ?? 1f);
+        public override float JumpMultiplier() => 2 - (GravityMultiplier() / 15f);
+        
+        public override bool CanWaterHover() {
+            return weapons.current.weightModifier < 0.8f && moveInput.zeroTimer < 0.6f;
+        }
+        public override bool CanSink() {
+            return weapons.current.weightModifier > 1.3f;
+        }     
         
         public bool focusing;
         public float shiftCooldown;
 
-        public List<Grabbable> grabbedObjects = new List<Grabbable>();
+        public List<ValueTuple<Vector3, Grabbable>> grabbedObjects = new List<ValueTuple<Vector3, Grabbable>>();
         private Vector3[] grabbedObjectPositions = new Vector3[4]{
             new Vector3(3.5f, 1.5f, 3f), 
             new Vector3(-3.5f, 1.5f, 3f), 
             new Vector3(2.5f, 2.5f, 3f), 
             new Vector3(-2.5f, 2.5f, 3f)
         };
-
-        public override float GravityMultiplier() => data.weight * (weapons.current?.weightModifier ?? 1f);
-        public override float JumpMultiplier() => 2 - (GravityMultiplier() / 15f);
 
         private SpeedlinesEffect speedlines;
 
@@ -41,67 +51,47 @@ namespace SeleneGame.Entities {
             return false;
         }
 
-        protected override void EntityDestroy(){
-            base.EntityDestroy();
-            
-            Global.SafeDestroy(speedlines);
-        }
-
-        protected override void EntityAwake(){
-            base.EntityAwake();
-
-
+        protected override void Awake(){
+            base.Awake();
 
             weapons = new WeaponInventory(this, 3);
-            // weapons.Set(1, new HypnosWeapon());
-            // weapons.Set(2, new ErisWeapon());
+            
         }
 
-        protected override void EntityUpdate(){
-            base.EntityUpdate();
+        protected override void Update(){
+            base.Update();
 
-            shiftCooldown = Mathf.MoveTowards( shiftCooldown, 0f, Global.timeDelta );
+            shiftCooldown = Mathf.MoveTowards( shiftCooldown, 0f, GameUtility.timeDelta );
             
             if (shiftInput.stopped && shiftInput.trueTimer < Player.current.holdDuration){
                 
-                if (state is WalkingState walking && shiftCooldown == 0f){
-                    shiftCooldown = 0.3f;
-                    if (onGround) rb.velocity += -gravityDown*3f;
-                    
-                    SetState(new ShiftingState());
-
-                    //Shift effects
-                        // var shiftParticle = Instantiate(Global.LoadParticle("ShiftParticles"), transform.position, Quaternion.FromToRotation(Vector3.up, transform.up));
-                        // Destroy(shiftParticle, 2f);
-                }else if (state is ShiftingState shifting){
-                    shifting.StopShifting(Vector3.down);
-                }
-            }
-            
-            if (animator.runtimeAnimatorController != null){
-                animator.SetFloat("WeaponType", (float)(weapons.current.weaponType) );
+                ToggleShift();
             }
         }
 
-        protected override void EntityFixedUpdate() {
-            base.EntityFixedUpdate();
+        protected override void FixedUpdate() {
+            base.FixedUpdate();
             
-            for (int i = 0; i < Mathf.Min(4, grabbedObjects.Count); i++){
-                Grabbable grabbed = grabbedObjects[i];
-                if (grabbed == null) return;
+            int i = 0;
+            foreach (ValueTuple<Vector3, Grabbable> grabbed in grabbedObjects) {
+                Vector3 randomSpin = grabbed.Item1;
+                Grabbable grabbable = grabbed.Item2;
+                Transform grabbedTransform = grabbable.transform;
 
-                var grabbedMono = grabbedObjects[i] as MonoBehaviour;
+                grabbable.rb.AddTorque(randomSpin.x, randomSpin.y, randomSpin.z, ForceMode.VelocityChange);
 
-                grabbedMono.transform.position = Vector3.Lerp(grabbedMono.transform.position, transform.position + cameraRotation * grabbedObjectPositions[i], 10f* Global.timeDelta);
+                grabbedTransform.position = Vector3.Lerp(grabbedTransform.position, transform.position + cameraRotation * grabbedObjectPositions[i], 10f* GameUtility.timeDelta);
+
+                i++;
             }
 
             if (shiftCooldown > 0f){
-                shiftCooldown -= Global.timeDelta;
+                shiftCooldown -= GameUtility.timeDelta;
             }
         }
 
-        protected override void EntityLoadModel() {
-            base.EntityLoadModel();
+        public override void LoadModel() {
+            base.LoadModel();
             
             if (speedlines == null) {
                 GameObject speedlinesObject = GameObject.Instantiate(Resources.Load("Prefabs/Effects/Speedlines"), Global.effects.transform) as GameObject;
@@ -110,28 +100,56 @@ namespace SeleneGame.Entities {
             }
         }
 
-        public override bool CanWaterHover() {
-            return weapons.current.weightModifier < 0.8f && moveInput.zeroTimer < 0.6f;
+        public override void DestroyModel(){
+            base.DestroyModel();
+            
+            GameUtility.SafeDestroy(speedlines);
+        }   
+        
+        public override void Grab(Grabbable grabbable){
+            if (grabbedObjects.Count >= 4) return;
+            
+            grabbedObjects.Add( new ValueTuple<Vector3, Grabbable>( UnityEngine.Random.insideUnitSphere.normalized * 0.3f, grabbable) );
+            grabbable.grabbed = true;
         }
-        public override bool CanSink() {
-            return weapons.current.weightModifier > 1.3f;
-        }
+        public override void Throw(Grabbable grabbable){
 
-        protected void Shift(float timer){
-            if (timer >= Player.current.holdDuration) return;
-            if (state is WalkingState walking && shiftCooldown == 0f){
-                shiftCooldown = 0.3f;
-                if (onGround) rb.velocity += -gravityDown*3f;
-                
-                SetState(new ShiftingState());
-
-                //Shift effects
-                    // var shiftParticle = Instantiate(Global.LoadParticle("ShiftParticles"), transform.position, Quaternion.FromToRotation(Vector3.up, transform.up));
-                    // Destroy(shiftParticle, 2f);
-            }else if (state is ShiftingState shifting){
-                shifting.StopShifting(Vector3.down);
+            foreach (ValueTuple<Vector3, Grabbable> grabbed in grabbedObjects) {
+                if (grabbed.Item2 == grabbable) {
+                    grabbedObjects.Remove(grabbed);
+                    grabbable.grabbed = false;
+                    break;
+                }
             }
 
+            grabbable.rb.AddForce(cameraRotation * Vector3.forward * 30f, ForceMode.Impulse);
+
+            var impulseParticle = Instantiate(Global.LoadParticle("ShiftImpulseParticles"), transform.position + cameraRotation * Vector3.forward*2f, cameraRotation);
+            Destroy(impulseParticle, 1.2f);
+        }
+
+        
+        protected void ToggleShift(){
+            if (shiftCooldown > 0f) return;
+
+            if (state is ShiftingState) 
+                StopShifting(Vector3.down);
+            else {
+                Shift();
+            }
+        }
+
+        public void StopShifting(Vector3 newDown){
+            gravityDown = newDown;
+
+            SetState( defaultState );
+        }
+
+        public void Shift(){
+            shiftCooldown = 0.3f;
+            if (onGround) rb.velocity += -gravityDown*3f;
+            
+            SetState( new ShiftingState() );
         }
 
     }

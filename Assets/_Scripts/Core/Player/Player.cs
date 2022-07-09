@@ -5,9 +5,8 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Interactions;
 
-using SeleneGame.Entities;
-using SeleneGame.States;
 using SeleneGame.Utility;
+using SeleneGame.Saving;
 
 namespace SeleneGame.Core {
     
@@ -25,6 +24,7 @@ namespace SeleneGame.Core {
         public IManipulable manipulationCandidate;
 
         private string[] inputKeys = new string[]{ "LightAttack", "HeavyAttack", "Jump", "Interact", "Evade", "Walk", "Crouch", "Focus", "Shift" };
+        Collider[] _colliderBuffer = new Collider[5];
 
         private const float cameraSpeed = 0.1f;
         private Vector2 mousePos;
@@ -110,8 +110,6 @@ namespace SeleneGame.Core {
 
         private void EntityControl(){
 
-            Collider[] colliderBuffer = new Collider[5];
-
             // Player Input
             if ( !canPlay ) return;
 
@@ -129,16 +127,12 @@ namespace SeleneGame.Core {
 
             entity.EntityInput(moveDirection, cameraRotation, inputDict);
 
-            manipulationCandidate = GetManipulationCandidate(colliderBuffer);
+            // manipulationCandidate = GetManipulationCandidate(_colliderBuffer);
 
-            interactionCandidate = GetInteractionCandidate(colliderBuffer);
+            interactionCandidate = GetInteractionCandidate(_colliderBuffer);
 
         }
 
-        private bool IsObjectForwardToEntity(Vector3 entityPosition, Vector3 objectPosition, Vector3 entityForward, float threshold){
-            Vector3 entityToObject = (objectPosition - entityPosition);
-            return (Vector3.Dot(entityToObject.normalized, entityForward) > threshold/90f);
-        }
 
         private Quaternion UpdateCameraRotation(Quaternion currentRotation){
             if (!canLook) return currentRotation;
@@ -155,7 +149,7 @@ namespace SeleneGame.Core {
         private IManipulable GetManipulationCandidate(Collider[] buffer){
             // if ( !(entity.state is FocusState) ) return null;
 
-            Physics.OverlapSphereNonAlloc(entity.transform.position, 15f, buffer, Global.ObjectEntityMask);
+            Physics.OverlapSphereNonAlloc(entity.transform.position, 15f, buffer, Global.EntityObjectMask);
             foreach ( Collider hit in buffer ){
 
                 Rigidbody rb = hit?.attachedRigidbody ?? null;
@@ -176,32 +170,40 @@ namespace SeleneGame.Core {
 
             if ( menu || talking || entity.walkingTo ) return null;
 
-            if (entity.state is SittingState sitting)
-                return sitting.seat;
+            KeyValuePair<float, IInteractable> closest = new KeyValuePair<float, IInteractable>(float.MaxValue, null);
 
-            Physics.OverlapSphereNonAlloc(entity.transform.position, 5f, buffer, Global.ObjectEntityMask);
+            Physics.OverlapSphereNonAlloc(entity.transform.position, 5f, buffer, Global.EntityObjectMask);
             foreach ( Collider hit in buffer ) {
 
-                Transform collisionTransform = hit?.transform;
+                if (hit == null) continue;
+
+                Transform collisionTransform = hit.attachedRigidbody?.transform ?? hit.transform;
+                float distance = Vector3.Distance(collisionTransform.position, entity.transform.position);
                 if ( 
-                    collisionTransform != null &&
+                    distance < closest.Key &&
+                    // collisionTransform != null &&
                     collisionTransform != entity.transform && 
-                    IsObjectForwardToEntity(entity.transform.position, collisionTransform.position, entity.absoluteForward, 60f) && 
+                    IsObjectInFrontOfEntity(entity.transform.position, collisionTransform.position, entity.absoluteForward, 60f) && 
                     collisionTransform.TryGetComponent<IInteractable>(out var interactionComponent) 
                 )
-                    return interactionComponent;
+                    closest = new KeyValuePair<float, IInteractable>(distance, interactionComponent);
 
-                Transform collisionRigidbodyTransform = hit?.attachedRigidbody?.transform ?? null;
-                if (
-                    collisionRigidbodyTransform != null &&
-                    collisionRigidbodyTransform != entity.transform && 
-                    IsObjectForwardToEntity(entity.transform.position, collisionRigidbodyTransform.position, entity.absoluteForward, 60f) && 
-                    collisionRigidbodyTransform.TryGetComponent<IInteractable>(out interactionComponent) 
-                )
-                    return interactionComponent;
+                // Transform collisionRigidbodyTransform = hit?.attachedRigidbody?.transform ?? null;
+                // if (
+                //     collisionRigidbodyTransform != null &&
+                //     collisionRigidbodyTransform != entity.transform && 
+                //     IsObjectInFrontOfEntity(entity.transform.position, collisionRigidbodyTransform.position, entity.absoluteForward, 60f) && 
+                //     collisionRigidbodyTransform.TryGetComponent<IInteractable>(out interactionComponent) 
+                // )
+                //     return interactionComponent;
             }
 
-            return null;
+            return closest.Value ?? null;
+
+            bool IsObjectInFrontOfEntity(Vector3 entityPosition, Vector3 objectPosition, Vector3 entityForward, float threshold){
+                Vector3 entityToObject = (objectPosition - entityPosition);
+                return (Vector3.Dot(entityToObject.normalized, entityForward) > threshold/90f);
+            }
         }
 
 
@@ -213,8 +215,7 @@ namespace SeleneGame.Core {
         }
 
         private void OnSwitchWeapon(int value){
-            if (canPlay && entity is GravityShifterEntity shifter)
-                shifter.weapons.Switch(value);
+            entity.SetStyle(value);
         }
         private void OnPlayerValidate(){
             GameEvents.PlayerInput();

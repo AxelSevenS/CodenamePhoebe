@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using SeleneGame.Core;
 using SeleneGame.Entities;
+using SeleneGame.Utility;
 
 namespace SeleneGame {
 
@@ -38,8 +39,8 @@ namespace SeleneGame {
             if (!onFace && (positionBlocked(relativePos)))
                 onRight = !onRight;
 
-            flyingPosition = Vector3.Lerp(flyingPosition, gravityShifter.transform.position + relativePos, 15f * Global.timeDelta);
-            maskPosT = Mathf.MoveTowards(maskPosT, System.Convert.ToSingle(onFace), 4f * Global.timeDelta);
+            flyingPosition = Vector3.Lerp(flyingPosition, gravityShifter.transform.position + relativePos, 15f * GameUtility.timeDelta);
+            maskPosT = Mathf.MoveTowards(maskPosT, System.Convert.ToSingle(onFace), 4f * GameUtility.timeDelta);
 
             animator.SetBool("OnFace", onFace);
             animator.SetFloat("OnRight", onRight ? 1f : 0f);

@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using SeleneGame.Utility;
+
 namespace SeleneGame.Core {
     
     [System.Serializable]
@@ -43,8 +45,8 @@ namespace SeleneGame.Core {
         
         protected override void Update(){
             lastValue = currentValue;
-            zeroTimer = currentValue == Vector3.zero ? zeroTimer + Global.timeDelta : 0f;
-            nonZeroTimer = currentValue != Vector3.zero ? nonZeroTimer + Global.timeDelta : 0f;
+            zeroTimer = currentValue == Vector3.zero ? zeroTimer + GameUtility.timeDelta : 0f;
+            nonZeroTimer = currentValue != Vector3.zero ? nonZeroTimer + GameUtility.timeDelta : 0f;
             // currentValue = default(Vector3);
         }
     }
@@ -78,8 +80,8 @@ namespace SeleneGame.Core {
         }
 
         private void UpdateTimer(){
-            trueTimer = currentValue ? trueTimer + Global.timeDelta : 0f;
-            falseTimer = !currentValue ? falseTimer + Global.timeDelta : 0f;
+            trueTimer = currentValue ? trueTimer + GameUtility.timeDelta : 0f;
+            falseTimer = !currentValue ? falseTimer + GameUtility.timeDelta : 0f;
         }
 
     }

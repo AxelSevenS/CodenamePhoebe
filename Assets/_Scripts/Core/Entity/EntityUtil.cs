@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
+using SeleneGame.Utility;
+
 namespace SeleneGame.Core {
 
     public static class EntityUtil {
@@ -18,7 +20,7 @@ namespace SeleneGame.Core {
                     entity.moveDirection.SetVal(dir.normalized);
                 }else{
                     entity.moveDirection.SetVal(Vector3.zero);
-                    entity.transform.position = Vector3.Lerp(entity.transform.position, pos, Global.timeDelta);
+                    entity.transform.position = Vector3.Lerp(entity.transform.position, pos, GameUtility.timeDelta);
                 }
                 await Task.Yield();
             }

@@ -1,11 +1,15 @@
 using System;
 using UnityEngine;
 
+using SeleneGame.Utility;
+
 namespace SeleneGame.Core {
     
     [System.Serializable]
     public abstract class Weapon : ICostumable<WeaponCostume> {
+
         public enum WeaponType {lightSword, heavySword, spear, swordAndShield, sparring};
+        public abstract WeaponType weaponType { get; }
 
         [HideInInspector] public new string name;
 
@@ -14,20 +18,16 @@ namespace SeleneGame.Core {
 
         public WeaponCostume costume;
         public GameObject model;
-        
-        public virtual WeaponType weaponType => WeaponType.sparring;
+
+        public bool isEquipped => entity.weapons.current == this;
 
 
         public float weightModifier => GetWeightModifier();
         public Vector3 jumpDirection => GetJumpDirection();
-        public Vector3 cameraPosition => GetCameraPosition();
 
 
         protected virtual float GetWeightModifier() => 1f;
         protected virtual Vector3 GetJumpDirection() => -entity.gravityDown;
-        protected virtual Vector3 GetCameraPosition() => Player.current.defaultCameraPosition;
-
-        public bool isEquipped => entity.weapons.current == this;
 
         public virtual void OnAdd() {
             name = GetType().Name.Replace("Weapon","");
@@ -36,8 +36,10 @@ namespace SeleneGame.Core {
         public virtual void OnRemove() {
             DestroyModel();
         }
+
         public virtual void WeaponUpdate(){;}
         public virtual void WeaponFixedUpdate(){;}
+
 
         // [ContextMenu("LoadModel")]
         public void SetCostume(WeaponCostume newCostume){
@@ -50,10 +52,9 @@ namespace SeleneGame.Core {
             LoadModel();
             Hide();
 
-            // Debug.Log($"Loaded {entity.name}'s {data.name} model.");
         }
 
-        public void LoadModel(){
+        public virtual void LoadModel(){
             if (costume == null || costume.model == null) return;
 
             Transform rightWeapon = entity["weaponRight"].transform;
@@ -61,20 +62,18 @@ namespace SeleneGame.Core {
             model.name = "WeaponModel";
                 
         }
-
-        public void DestroyModel(){
-            model = Global.SafeDestroy(model);
-            // secondaryModel = Global.SafeDestroy(secondaryModel);
+        public virtual void DestroyModel(){
+            model = GameUtility.SafeDestroy(model);
         }
 
-        public void Display(){
+
+        public virtual void Display(){
             if (entity == null) return;
 
             if (model != null) model.SetActive(true);
             // if (secondaryModel != null) secondaryModel.SetActive(true);
         }
-
-        public void Hide(){
+        public virtual void Hide(){
             if (entity == null) return;
 
             if (model != null) model.SetActive(false);

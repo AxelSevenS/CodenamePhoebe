@@ -20,7 +20,7 @@ namespace SeleneGame.EditorUI {
 
             switch (propEventType.enumValueIndex) {
                 case 0:
-                    DisplayConversationInfo(position, property);
+                    DisplayDialogueInfo(position, property);
                     break;
                 case 1:
                     DisplayEntityCostumeInfo(position, property);
@@ -38,7 +38,7 @@ namespace SeleneGame.EditorUI {
 
             switch (eventType) {
                 case 0:
-                    return GetConversationInfoHeight(property);
+                    return GetDialogueInfoHeight(property);
                 case 1:
                     return GetEntityCostumeInfoHeight(property);
                 case 2:
@@ -54,15 +54,15 @@ namespace SeleneGame.EditorUI {
         }
 
 
-        private void DisplayConversationInfo(Rect position, SerializedProperty property) {
-            SerializedProperty propConversation = property.FindPropertyRelative( "conversation" );
-            Rect rectConversation = new Rect(position.x, position.y + lineSpace, position.width, EditorGUI.GetPropertyHeight( propConversation ));
-            EditorGUI.PropertyField( rectConversation, propConversation, GUIContent.none );
+        private void DisplayDialogueInfo(Rect position, SerializedProperty property) {
+            SerializedProperty propDialogue = property.FindPropertyRelative( "dialogue" );
+            Rect rectDialogue = new Rect(position.x, position.y + lineSpace, position.width, EditorGUI.GetPropertyHeight( propDialogue ));
+            EditorGUI.PropertyField( rectDialogue, propDialogue, GUIContent.none );
         }
-        private float GetConversationInfoHeight(SerializedProperty property) {
+        private float GetDialogueInfoHeight(SerializedProperty property) {
             float propEventTypeHeight = GetDropdownHeight(property);
-            float propConversationHeight = EditorGUI.GetPropertyHeight( property.FindPropertyRelative( "conversation" ) );
-            return propEventTypeHeight + propConversationHeight + EditorGUIUtility.standardVerticalSpacing;
+            float propDialogueHeight = EditorGUI.GetPropertyHeight( property.FindPropertyRelative( "dialogue" ) );
+            return propEventTypeHeight + propDialogueHeight + EditorGUIUtility.standardVerticalSpacing;
         }
 
 

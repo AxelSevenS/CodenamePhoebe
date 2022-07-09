@@ -8,6 +8,8 @@ namespace SeleneGame.Core {
     public class EntityManager : MonoBehaviour{
         
         public static EntityManager current;
+
+        public AnimationCurve evadeCurve;
         
         public RuntimeAnimatorController entityAnimatorController;
         

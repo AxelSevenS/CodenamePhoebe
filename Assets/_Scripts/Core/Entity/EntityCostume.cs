@@ -14,6 +14,10 @@ namespace SeleneGame.Core {
         public Sprite sadPortrait;
         public Sprite happyPortrait;
 
+        public static EntityCostume GetEntityBaseCostume(string entityTypeName){
+            string defaultCostume = entityTypeName.Replace("Entity", "Base");
+            return GetEntityCostume(defaultCostume);
+        }
         public static EntityCostume GetEntityBaseCostume(System.Type entityType){
             string defaultCostume = entityType.Name.Replace("Entity", "Base");
             return GetEntityCostume(defaultCostume);

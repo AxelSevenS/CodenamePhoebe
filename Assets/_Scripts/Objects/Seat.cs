@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+using SeleneGame.Utility;
 using SeleneGame.Core;
 using SeleneGame.Entities;
 using SeleneGame.States;
@@ -17,8 +19,7 @@ namespace SeleneGame {
 
         [Space(15)]
         
-        [SerializeField] private int speed;
-        public Vector3 sittingDir;
+        [SerializeField] private int speed = 4;
         [SerializeField] private List<Vector4> sittingDirections;
         public Vector3 sitPosition { get {
                 Vector3 seatOccupantUp = seatOccupant != null ? seatOccupant.transform.up : transform.up;
@@ -27,6 +28,7 @@ namespace SeleneGame {
                 return transform.position + transform.rotation*(sittingDir) + (seatOccupantUp * seatOccupantSize);
             }
         }
+        [HideInInspector] public Vector3 sittingDir;
 
         public string interactionDescription => seatOccupant == Player.current.entity ? seatedInteractionText : "Sit Down";
         public void Interact(Entity entity){
@@ -41,9 +43,9 @@ namespace SeleneGame {
         protected virtual void SeatedInteract(Entity entity){;}
 
 
-        private void Awake(){
-            seatEntity = GetComponent<Entity>();
-        }
+        // private void Awake(){
+        //     seatEntity = GetComponent<Entity>();
+        // }
 
         private void OnDisable(){
             StopSitting();
@@ -63,7 +65,7 @@ namespace SeleneGame {
             previousAnchor = entity.transform.parent;
 
             seatOccupant = entity;
-            entity.SetState(entity.defaultState);
+            seatOccupant.SetState(seatOccupant.defaultState);
             
             CalculateClosestDirection(out sittingDir, out seatOccupant.subState);
 
@@ -74,14 +76,13 @@ namespace SeleneGame {
                 seatOccupant.walkingTo = false;
             }
             
-            entity.SetState(new SittingState());
-            ((SittingState)entity.state).seat = this;
-            Global.SetLayerRecursively(entity.gameObject, 8);
+            entity.SetState( new SittingState() );
+            ( (SittingState)entity.state ).seat = this;
+            GameUtility.SetLayerRecursively(entity.gameObject, 8);
 
             seatOccupant.transform.SetParent(this.transform);
 
-
-            entity.AnimatorTrigger("Sit");
+            // entity.SetAnimationState("Sitting", 0.2f);
         }
 
         public void StopSitting(){
@@ -89,7 +90,7 @@ namespace SeleneGame {
             if (seatOccupant == null) return;
 
             seatOccupant.SetState(seatOccupant.defaultState);
-            Global.SetLayerRecursively(seatOccupant.gameObject, 6);
+            GameUtility.SetLayerRecursively(seatOccupant.gameObject, 6);
 
             seatOccupant.transform.SetParent(previousAnchor);
 
@@ -110,5 +111,10 @@ namespace SeleneGame {
                 }
             }
         }
+
+        public void SetDirections(List<Vector4> sittingDirections){
+            this.sittingDirections = sittingDirections;
+        }
+
     }
 }

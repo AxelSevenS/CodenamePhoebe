@@ -12,12 +12,9 @@ namespace SeleneGame.Weapons {
 
         [SerializeField] private BoolData gravitySlide = new BoolData();
 
-        // protected override float GetSpeedMultiplier() => entity.inWater ? 1.5f : 1f;
         protected override float GetWeightModifier() => 1.4f;
         protected override Vector3 GetJumpDirection() => -entity.gravityDown;
-        // protected override Vector3 GetCameraPosition() => entity.inWater ? new Vector3(0, 1f, -3.5f) : new Vector3(1f, 1f, -3.5f);
-
-        // public ErisWeapon(Entity entity) : base(entity){;}
+        
         public override void WeaponUpdate(){
 
             if (!isEquipped) return;

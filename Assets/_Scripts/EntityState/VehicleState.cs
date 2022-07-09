@@ -1,14 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 using SeleneGame.Core;
+using SeleneGame.Utility;
 
 namespace SeleneGame.States {
     
-    [System.Serializable]
     public class VehicleState : State{
 
-        public override int id => 7;
+        public override StateType stateType => StateType.groundState;
         protected override Vector3 GetCameraPosition() => new Vector3(0.3f, 0.5f, -6.5f);
 
         // public override bool masked => false;
@@ -30,10 +31,10 @@ namespace SeleneGame.States {
 
         public override void StateUpdate(){
 
-            entity.jumpCooldown = Mathf.MoveTowards( entity.jumpCooldown, 0f, Global.timeDelta );
+            entity.jumpCooldown = Mathf.MoveTowards( entity.jumpCooldown, 0f, GameUtility.timeDelta );
 
-            if (entity.onGround.started) 
-                entity.StartWalkAnim();
+            // if (entity.onGround.started)
+                // entity.StartWalkAnim();
 
         }
 
@@ -46,10 +47,10 @@ namespace SeleneGame.States {
                     entity.jumpCount = 1;
             }
 
-            entity.absoluteForward = Vector3.Slerp(entity.absoluteForward, inputDirection, Global.timeDelta * 3f).normalized;
+            entity.absoluteForward = Vector3.Slerp(entity.absoluteForward, inputDirection, GameUtility.timeDelta * 3f).normalized;
             entity.moveDirection.SetVal(entity.absoluteForward);
 
-            entity.GroundedMove( entity.moveSpeed * Global.timeDelta * entity.moveDirection, false );
+            entity.GroundedMove( entity.moveSpeed * GameUtility.timeDelta * entity.moveDirection, false );
 
             bool terrainFlatEnough = Vector3.Dot(entity.groundOrientation * -entity.gravityDown, -entity.gravityDown) > 0.75f;
 
@@ -64,7 +65,7 @@ namespace SeleneGame.States {
 
             // // When the Entity is sliding
             // if (entity.sliding)
-            //     entity.rb.velocity += entity.groundOrientation * entity.evadeDirection *entity.data.baseSpeed * entity.inertiaMultiplier * Global.timeDelta;
+            //     entity.rb.velocity += entity.groundOrientation * entity.evadeDirection *entity.data.baseSpeed * entity.inertiaMultiplier * GameUtility.timeDelta;
 
 
         }
@@ -78,7 +79,7 @@ namespace SeleneGame.States {
                 inputDirection = groundDirection.normalized;
 
             float newLinger = groundDirection.magnitude;
-            accelerationLinger = Mathf.Lerp(accelerationLinger, newLinger, Global.timeDelta * (newLinger > accelerationLinger ? 3f : 2f) );
+            accelerationLinger = Mathf.Lerp(accelerationLinger, newLinger, GameUtility.timeDelta * (newLinger > accelerationLinger ? 3f : 2f) );
 
             entity.sliding.SetVal(entity.evadeInput && entity.onGround);
             
@@ -88,10 +89,10 @@ namespace SeleneGame.States {
             
             float newSpeed = Vector3.Dot(entity.moveDirection, inputDirection) * accelerationLinger * entity.data.baseSpeed;
             if (entity.walkSpeed != Entity.WalkSpeed.run) 
-                newSpeed *= entity.walkSpeed == Entity.WalkSpeed.sprint ? /* entity.data.sprintSpeed */1f : entity.data.slowSpeed;
+                newSpeed *= entity.walkSpeed == Entity.WalkSpeed.sprint ? /* entity.data.sprintMultiplier */1f : entity.data.slowMultiplier;
 
             float speedDelta = newSpeed > entity.moveSpeed ? 1f : 0.65f;
-            entity.moveSpeed = Mathf.MoveTowards(entity.moveSpeed, newSpeed, speedDelta * entity.data.moveIncrement * Global.timeDelta);
+            entity.moveSpeed = Mathf.MoveTowards(entity.moveSpeed, newSpeed, speedDelta * entity.data.moveIncrement * GameUtility.timeDelta);
         }
 
         private void OnEntityJump(Vector3 jumpDirection){

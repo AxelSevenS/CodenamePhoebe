@@ -5,16 +5,18 @@ using UnityEditor;
 namespace SeleneGame.Core {
     
     [System.Serializable]
-    public abstract class State { 
+    public abstract class State {
 
-        public virtual int id => 0;
+        public enum StateType {groundState, waterState, flyingState, immobileState};
+
+        public abstract StateType stateType { get; }
         [ReadOnly] public new string name;
-        /* [HideInInspector] */ public Entity entity;
+        public Entity entity;
 
         public Vector3 cameraPosition => GetCameraPosition();
         public Vector3 jumpDirection => GetJumpDirection();
 
-        protected virtual Vector3 GetCameraPosition() => new Vector3(1f, 1f, -3.5f);
+        protected virtual Vector3 GetCameraPosition() => Player.current.defaultCameraPosition;
         protected virtual Vector3 GetJumpDirection() => -entity.gravityDown;
 
 

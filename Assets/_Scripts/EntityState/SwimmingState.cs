@@ -3,22 +3,24 @@ using System.Collections.Generic;
 using UnityEngine;
 using SeleneGame.Core;
 using SeleneGame.Entities;
+using SeleneGame.Utility;
 
 namespace SeleneGame.States {
     
-    [System.Serializable]
     public class SwimmingState : State{
 
-        public override int id => 1;
+        public override StateType stateType => StateType.waterState;
         protected override Vector3 GetCameraPosition() {
-            if (entity is ArmedEntity armed)
-                return armed.weapons.current.cameraPosition;
+            // if (entity is ArmedEntity armed)
+            //     return armed.weapons.current.cameraPosition;
                 
-            return base.GetCameraPosition();
+            return Player.current.defaultCameraPosition;
         }
 
         public override void OnEnter(Entity entity){
             base.OnEnter(entity);
+
+            entity.gravityDown = Vector3.down;
             
             entity.jumpCount = 1;
         }
@@ -44,7 +46,7 @@ namespace SeleneGame.States {
 
             // if (entity is ArmedEntity armed && armed.EvadeUpdate(out _, out float evadeCurve)){
                 
-            //     armed.Move( Global.timeDelta * evadeCurve * armed.data.evadeSpeed * armed.evadeDirection );
+            //     armed.Move( GameUtility.timeDelta * evadeCurve * armed.data.evadeSpeed * armed.evadeDirection );
                 
             // }
 
@@ -57,7 +59,7 @@ namespace SeleneGame.States {
                 //     armed.RotateTowardsAbsolute(armed.absoluteForward, newUp);
                 // }
 
-                entity.Move(entity.moveDirection * Global.timeDelta * entity.moveSpeed);
+                entity.Move(entity.moveDirection * GameUtility.timeDelta * entity.moveSpeed);
 
                 entity.RotateTowardsAbsolute(entity.absoluteForward, newUp);
             }
@@ -77,11 +79,11 @@ namespace SeleneGame.States {
 
             float newSpeed = entity.walkSpeed != Entity.WalkSpeed.idle ? entity.data.baseSpeed : 0f;
             if (entity.walkSpeed != Entity.WalkSpeed.run) 
-                newSpeed *= entity.walkSpeed == Entity.WalkSpeed.sprint ? /* entity.data.sprintSpeed */1f : entity.data.slowSpeed;
-            newSpeed = newSpeed * entity.data.swimSpeed;
+                newSpeed *= entity.walkSpeed == Entity.WalkSpeed.sprint ? /* entity.data.sprintMultiplier */1f : entity.data.slowMultiplier;
+            newSpeed = newSpeed * entity.data.swimMultiplier;
 
             float speedDelta = newSpeed > entity.moveSpeed ? 1f : 0.65f;
-            entity.moveSpeed = Mathf.MoveTowards(entity.moveSpeed, newSpeed, speedDelta * entity.data.moveIncrement * Global.timeDelta);
+            entity.moveSpeed = Mathf.MoveTowards(entity.moveSpeed, newSpeed, speedDelta * entity.data.moveIncrement * GameUtility.timeDelta);
         }
     }
 }
