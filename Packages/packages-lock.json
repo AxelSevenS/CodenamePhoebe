@@ -13,6 +13,13 @@
       "source": "embedded",
       "dependencies": {}
     },
+    "com.seven.utility": {
+      "version": "https://github.com/AxelSevenS/Utility-Package.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "de8143f27bbe3bf83ad5ffca25e21e8c308c4ce5"
+    },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
       "depth": 0,

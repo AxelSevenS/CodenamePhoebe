@@ -1,6 +1,8 @@
 using System;
 using UnityEngine;
 
+using SevenGame.Utility;
+
 namespace SeleneGame.Core {
     
     [System.Serializable]

@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "com.cratesmith.assetui": "https://github.com/Cratesmith/Cratesmith.AssetUI.git",
+    "com.seven.utility": "https://github.com/AxelSevenS/Utility-Package.git",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.animation.rigging": "1.0.3",
     "com.unity.collab-proxy": "1.5.7",
