@@ -4,17 +4,17 @@ using UnityEngine;
 
 namespace SeleneGame {
 
-    public class SnowLayer : MonoBehaviour {
+    public class SnowLayer : MonoBehaviour { 
 
         [SerializeField] private RenderTexture thickness;
-        private MaterialPropertyBlock mpb;
         public RenderTexture snowThickness;
 
-        private Renderer renderer;
+        private new Renderer _renderer;
+        private MaterialPropertyBlock mpb;
 
         private void Awake() {
-            renderer = GetComponent<Renderer>();
-            mpb = new MaterialPropertyBlock();
+            _renderer = GetComponent<Renderer>();
+            _renderer.GetPropertyBlock(mpb);
         }
 
         private void Reset(){
@@ -23,12 +23,8 @@ namespace SeleneGame {
 
         private void Update(){
             mpb.SetTexture("_SnowThickness", thickness);
-            renderer.SetPropertyBlock(mpb);
+            _renderer.SetPropertyBlock(mpb);
         }
 
-        private void OnColliderStay(Collision other){
-            // if (other.gameObject.layer == 6)
-            //     snowThickness.
-        }
     }
 }

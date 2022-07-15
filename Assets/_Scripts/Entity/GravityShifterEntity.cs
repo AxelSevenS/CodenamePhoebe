@@ -5,7 +5,7 @@ using UnityEngine;
 using SeleneGame.Core;
 using SeleneGame.Weapons;
 using SeleneGame.States;
-using SeleneGame.Utility;
+using SevenGame.Utility;
 
 namespace SeleneGame.Entities {
 
@@ -63,7 +63,7 @@ namespace SeleneGame.Entities {
 
             shiftCooldown = Mathf.MoveTowards( shiftCooldown, 0f, GameUtility.timeDelta );
             
-            if (shiftInput.stopped && shiftInput.trueTimer < Player.current.holdDuration){
+            if (shiftInput.stopped && shiftInput.trueTimer < Global.HOLDTIME){
                 
                 ToggleShift();
             }
@@ -94,7 +94,7 @@ namespace SeleneGame.Entities {
             base.LoadModel();
             
             if (speedlines == null) {
-                GameObject speedlinesObject = GameObject.Instantiate(Resources.Load("Prefabs/Effects/Speedlines"), Global.effects.transform) as GameObject;
+                GameObject speedlinesObject = GameObject.Instantiate(Resources.Load("Prefabs/Effects/Speedlines"), EffectManager.current.transform) as GameObject;
                 speedlines = speedlinesObject.GetComponent<SpeedlinesEffect>();
                 speedlines.SetFollowedObject(gameObject);
             }

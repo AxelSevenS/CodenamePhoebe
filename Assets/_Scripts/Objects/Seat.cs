@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-using SeleneGame.Utility;
+using SevenGame.Utility;
 using SeleneGame.Core;
 using SeleneGame.Entities;
 using SeleneGame.States;
@@ -30,22 +30,6 @@ namespace SeleneGame {
         }
         [HideInInspector] public Vector3 sittingDir;
 
-        public string interactionDescription => seatOccupant == Player.current.entity ? seatedInteractionText : "Sit Down";
-        public void Interact(Entity entity){
-            if (entity == seatOccupant){
-                SeatedInteract(entity);
-                return;
-            }
-            StartSitting(entity);
-        }
-
-        protected virtual string seatedInteractionText => "";
-        protected virtual void SeatedInteract(Entity entity){;}
-
-
-        // private void Awake(){
-        //     seatEntity = GetComponent<Entity>();
-        // }
 
         private void OnDisable(){
             StopSitting();
@@ -60,6 +44,22 @@ namespace SeleneGame {
             Gizmos.DrawSphere(sitPosition, 0.3f);
             Gizmos.DrawLine(transform.position, transform.position + transform.rotation * sittingDir);
         }
+
+
+
+        public string InteractDescription() => seatOccupant != null ? seatedInteractionText : "Sit Down";
+        protected virtual string seatedInteractionText => "";
+        public virtual bool IsInteractable() => true;
+        public void Interact(Entity entity){
+            if (entity == seatOccupant){
+                SeatedInteract(entity);
+                return;
+            }
+            StartSitting(entity);
+        }
+        protected virtual void SeatedInteract(Entity entity){;}
+
+        
 
         private async void StartSitting(Entity entity){
             previousAnchor = entity.transform.parent;

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-using SeleneGame.Core;
+// using SeleneGame.Core;
 
-namespace SeleneGame.Utility {
+namespace SevenGame.Utility {
 
     [CanEditMultipleObjects]
     [CustomEditor(typeof(Spline))]
@@ -182,7 +182,7 @@ namespace SeleneGame.Utility {
             }
             if ( scr.transform.hasChanged ){
 
-                scr.transform.hasChanged = false;
+                scr.transform.hasChanged = false; 
                 scr.UpdateOtherSegments();
             }
         }

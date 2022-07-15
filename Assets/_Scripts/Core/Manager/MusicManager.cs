@@ -2,28 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using SevenGame.Utility;
+
 namespace SeleneGame.Core {
 
-    public class MusicManager : MonoBehaviour{
+    public class MusicManager : Singleton<MusicManager> {
         
-        public static MusicManager current;
-        
-        void OnEnable(){
-            if (current != null)
-                Destroy(current);
-            current = this;
-        }
-        
-        // Start is called before the first frame update
-        void Start()
-        {
-            
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-            
+        private void OnEnable() {
+            SetCurrent();
         }
     }
 }

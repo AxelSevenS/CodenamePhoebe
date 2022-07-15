@@ -1,8 +1,7 @@
 using UnityEngine;
 using UnityEditor;
-using SeleneGame.Core;
 
-namespace SeleneGame.EditorUI {
+namespace SeleneGame.Core {
 
     [CustomPropertyDrawer( typeof( InvokableEvent ), true )]
     public class InvokableEventDrawer : PropertyDrawer {

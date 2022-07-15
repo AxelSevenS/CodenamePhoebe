@@ -1,29 +1,24 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.Reflection;
+using System.Linq;
+
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Interactions;
 
-using SeleneGame.Utility;
-using SeleneGame.Saving;
+using SevenGame.Utility;
 
 namespace SeleneGame.Core {
     
-    public class Player : MonoBehaviour{
-        
-        public static Player current;
+    public class Player : Singleton<Player>{
 
         public Entity entity;
         public new Camera camera;
-        public InputActionAsset controls;
-        public InputActionMap playerControls;
-        public InputActionMap debugControls;
+
     
         public IInteractable interactionCandidate;
         public IManipulable manipulationCandidate;
 
-        private string[] inputKeys = new string[]{ "LightAttack", "HeavyAttack", "Jump", "Interact", "Evade", "Walk", "Crouch", "Focus", "Shift" };
+        SafeDictionary<string, bool> inputDictionary = new SafeDictionary<string, bool>();
         Collider[] _colliderBuffer = new Collider[5];
 
         private const float cameraSpeed = 0.1f;
@@ -39,73 +34,82 @@ namespace SeleneGame.Core {
         public bool canInteract => interactionCandidate != null;
 
         
-        
-        public float holdDuration = 0.2f;
         public float mouseSpeed = 1f;
         public float stickSpeed = 5f;
+
+
+        private BoolData interactInput;
+        private BoolData switchStyle1Input;
+        private BoolData switchStyle2Input;
+        private BoolData switchStyle3Input;
+        
+        #if UNITY_EDITOR
+            private BoolData menuInput;
+            private BoolData debugInput;
+        #endif
     
         private void Awake(){
-            GameEvents.Reset();
             camera = Camera.main;
+
+            interactInput = new BoolData();
+            switchStyle1Input = new BoolData(); 
+            switchStyle2Input = new BoolData();
+            switchStyle3Input = new BoolData();
+            
+            #if UNITY_EDITOR
+                menuInput = new BoolData();
+                debugInput = new BoolData(); 
+            #endif
+
+            inputDictionary = new SafeDictionary<string, bool>();
         }
 
-        private void OnEnable(){
-            if (current != null)
-                Destroy(current);
-            current = this;
-
-            playerControls = controls.FindActionMap("Player");
-            debugControls = controls.FindActionMap("Debug");
-
-            playerControls["Interact"].performed += ctx => OnInteract();
-            playerControls["PrimaryWeapon"].performed += ctx => OnSwitchWeapon(0);
-            playerControls["SecondaryWeapon"].performed += ctx => OnSwitchWeapon(1);
-            playerControls["TertiaryWeapon"].performed += ctx => OnSwitchWeapon(2);
-
-            playerControls["Interact"].performed += ctx => OnPlayerValidate();
-
-            debugControls["DebugKeyBindMenu"].performed += ctx => GameEvents.ToggleMenu();
-            debugControls["SaveSlot1"].performed += ctx => SavingSystem.SavePlayerData(1);
-            debugControls["SaveSlot2"].performed += ctx => SavingSystem.SavePlayerData(2);
-            debugControls["SaveSlot3"].performed += ctx => SavingSystem.SavePlayerData(3);
-            debugControls["LoadSlot1"].performed += ctx => SavingSystem.LoadPlayerData(1);
-            debugControls["LoadSlot2"].performed += ctx => SavingSystem.LoadPlayerData(2);
-            debugControls["LoadSlot3"].performed += ctx => SavingSystem.LoadPlayerData(3);
-            debugControls["Debug1"].performed += ctx => entity.Damage(50);
-            // debugControls["Debug2"].performed += ctx => null;
-
-            playerControls.actionTriggered += ctx => ControllerAction(ctx);
-
-            controls.Enable();
+        protected void OnEnable(){
+            SetCurrent();
+            ControlsManager.current.playerMap.actionTriggered += ctx => ControllerAction(ctx);
         }
         private void OnDisable(){
-            playerControls["Interact"].performed -= ctx => OnInteract();
-            playerControls["PrimaryWeapon"].performed -= ctx => OnSwitchWeapon(0);
-            playerControls["SecondaryWeapon"].performed -= ctx => OnSwitchWeapon(1);
-            playerControls["TertiaryWeapon"].performed -= ctx => OnSwitchWeapon(2);
 
-            playerControls["Interact"].performed -= ctx => OnPlayerValidate();
-
-            debugControls["DebugKeyBindMenu"].performed -= ctx => GameEvents.ToggleMenu();
-            debugControls["SaveSlot1"].performed -= ctx => SavingSystem.SavePlayerData(1);
-            debugControls["SaveSlot2"].performed -= ctx => SavingSystem.SavePlayerData(2);
-            debugControls["SaveSlot3"].performed -= ctx => SavingSystem.SavePlayerData(3);
-            debugControls["LoadSlot1"].performed -= ctx => SavingSystem.LoadPlayerData(1);
-            debugControls["LoadSlot2"].performed -= ctx => SavingSystem.LoadPlayerData(2);
-            debugControls["LoadSlot3"].performed -= ctx => SavingSystem.LoadPlayerData(3); 
-            debugControls["Debug1"].performed -= ctx => entity.Damage(50);
-            // debugControls["Debug2"].performed -= ctx => null;
-
-            playerControls.actionTriggered -= ctx => ControllerAction(ctx);
-
-            controls.Disable();
+            ControlsManager.current.playerMap.actionTriggered -= ctx => ControllerAction(ctx);
         }
         
-        private void Update(){
-            
+        private void Update() {
+            PlayerInput();
+
             if (entity == null || !entity.enabled || !entity.gameObject.activeSelf) return;
 
             EntityControl();
+        }
+
+        private async void PlayerInput() {
+            interactInput.SetVal(ControlsManager.current.playerMap.IsBindPressed("Interact"));
+            switchStyle1Input.SetVal(ControlsManager.current.playerMap.IsBindPressed("PrimaryWeapon"));
+            switchStyle2Input.SetVal(ControlsManager.current.playerMap.IsBindPressed("SecondaryWeapon"));
+            switchStyle3Input.SetVal(ControlsManager.current.playerMap.IsBindPressed("TertiaryWeapon"));
+
+            #if UNITY_EDITOR
+                menuInput.SetVal( ControlsManager.current.debugMap.IsBindPressed("DebugKeyBindMenu") );
+                debugInput.SetVal( ControlsManager.current.debugMap.IsBindPressed("Debug1") );
+            #endif
+
+
+
+            if (interactInput.started && canInteract)
+                interactionCandidate.Interact(entity);
+
+            if (switchStyle1Input.started)
+                entity.SetStyle(1);
+            if (switchStyle2Input.started)
+                entity.SetStyle(2);
+            if (switchStyle3Input.started)
+                entity.SetStyle(3);
+
+            #if UNITY_EDITOR
+                if (menuInput.started)
+                    menu = KeyBindingController.current.ToggleMenu(menu);
+                if (debugInput.started)
+                    entity.Damage(50);
+            #endif
         }
 
         private void EntityControl(){
@@ -113,19 +117,22 @@ namespace SeleneGame.Core {
             // Player Input
             if ( !canPlay ) return;
 
-            SafeDictionary<string, bool> inputDict = new SafeDictionary<string, bool>();
-            foreach(string key in inputKeys ){
-                inputDict[key] = playerControls[key].IsActuated();
+            foreach(var pair in ControlsManager.current.playerBindings){
+                try {
+                    inputDictionary[pair.Key] = ControlsManager.current.playerBindings[pair.Key].IsActuated();
+                } catch {
+                    // Debug.LogError(e.Message);
+                }
             }
 
-            float jump = System.Convert.ToSingle(inputDict["Jump"]) - System.Convert.ToSingle(inputDict["Crouch"]);
-            Quaternion cameraRotation = UpdateCameraRotation( entity.cameraRotation );
+            float jump = (ControlsManager.current.playerBindings["Jump"].IsActuated() ? 1f : 0f) - (ControlsManager.current.playerBindings["Crouch"].IsActuated() ? 1f : 0f);
+            Vector2 dir = ControlsManager.current.playerBindings["Move"].ReadValue<Vector2>();
 
-            Vector2 dir = playerControls["Move"].ReadValue<Vector2>();
             Vector3 moveDirection = new Vector3(dir.x, jump, dir.y);
+            Quaternion cameraRotation = UpdateCameraRotation( entity.cameraRotation );
             
 
-            entity.EntityInput(moveDirection, cameraRotation, inputDict);
+            entity.EntityInput(moveDirection, cameraRotation, inputDictionary);
 
             // manipulationCandidate = GetManipulationCandidate(_colliderBuffer);
 
@@ -136,7 +143,7 @@ namespace SeleneGame.Core {
 
         private Quaternion UpdateCameraRotation(Quaternion currentRotation){
             if (!canLook) return currentRotation;
-            Vector2 mouseInput = playerControls["Look"].ReadValue<Vector2>() * cameraSpeed;
+            Vector2 mouseInput = ControlsManager.current.playerBindings["Look"].ReadValue<Vector2>() * cameraSpeed;
 
             float additionalCameraSpeed = controllerType == Player.ControllerType.Controller ? stickSpeed : mouseSpeed;
             mouseInput *= additionalCameraSpeed;
@@ -170,61 +177,52 @@ namespace SeleneGame.Core {
 
             if ( menu || talking || entity.walkingTo ) return null;
 
-            KeyValuePair<float, IInteractable> closest = new KeyValuePair<float, IInteractable>(float.MaxValue, null);
+            const float interactionDistance = 5f;
+            const float interactionAngle = 0.75f;
 
             Physics.OverlapSphereNonAlloc(entity.transform.position, 5f, buffer, Global.EntityObjectMask);
+            // var candidate = buffer
+            //     .Where(hit => hit != null && Vector3.Distance(entity.transform.position, hit.transform.position) < 5f)
+            //     .OrderBy(hit => Vector3.Distance(hit.transform.position, entity.transform.position))
+            //     .OrderBy(hit => - Vector3.Dot( (hit.transform.position - entity.transform.position).normalized, entity.transform.forward ))
+            //     .Select(hit => hit.GetComponent<IInteractable>() ?? hit.attachedRigidbody?.GetComponent<IInteractable>())
+            //     .Where(candidate => candidate != entity)
+            //     .FirstOrDefault();
+
+            IInteractable candidate = null;
+            float closestDistance = float.MaxValue;
+            float closestAngle = float.MinValue;
+
             foreach ( Collider hit in buffer ) {
 
                 if (hit == null) continue;
 
                 Transform collisionTransform = hit.attachedRigidbody?.transform ?? hit.transform;
                 float distance = Vector3.Distance(collisionTransform.position, entity.transform.position);
-                if ( 
-                    distance < closest.Key &&
-                    // collisionTransform != null &&
+                float angle = Vector3.Dot( (collisionTransform.position - entity.transform.position).normalized, entity.transform.forward );
+                if (
+                    distance < interactionDistance && 
+                    angle > interactionAngle &&
+                    distance <= closestDistance &&
+                    angle >= closestAngle &&
                     collisionTransform != entity.transform && 
-                    IsObjectInFrontOfEntity(entity.transform.position, collisionTransform.position, entity.absoluteForward, 60f) && 
-                    collisionTransform.TryGetComponent<IInteractable>(out var interactionComponent) 
-                )
-                    closest = new KeyValuePair<float, IInteractable>(distance, interactionComponent);
-
-                // Transform collisionRigidbodyTransform = hit?.attachedRigidbody?.transform ?? null;
-                // if (
-                //     collisionRigidbodyTransform != null &&
-                //     collisionRigidbodyTransform != entity.transform && 
-                //     IsObjectInFrontOfEntity(entity.transform.position, collisionRigidbodyTransform.position, entity.absoluteForward, 60f) && 
-                //     collisionRigidbodyTransform.TryGetComponent<IInteractable>(out interactionComponent) 
-                // )
-                //     return interactionComponent;
+                    collisionTransform.TryGetComponent<IInteractable>(out var interactionComponent) &&
+                    interactionComponent.IsInteractable()
+                ) {
+                    candidate = interactionComponent;
+                    closestDistance = distance;
+                    closestAngle = angle;
+                }
+                
             }
 
-            return closest.Value ?? null;
-
-            bool IsObjectInFrontOfEntity(Vector3 entityPosition, Vector3 objectPosition, Vector3 entityForward, float threshold){
-                Vector3 entityToObject = (objectPosition - entityPosition);
-                return (Vector3.Dot(entityToObject.normalized, entityForward) > threshold/90f);
-            }
+            return candidate;
         }
 
 
-        private void OnInteract(){
-            if (canInteract){
-                interactionCandidate.Interact(entity);
-                Debug.Log("Interact");
-            }
-        }
 
-        private void OnSwitchWeapon(int value){
-            entity.SetStyle(value);
-        }
-        private void OnPlayerValidate(){
-            GameEvents.PlayerInput();
-        }
 
-        public enum ControllerType{
-            MouseKeyboard,
-            Controller
-        };
+        public enum ControllerType{ MouseKeyboard, Controller };
 
         public ControllerType controllerType = ControllerType.MouseKeyboard;
 

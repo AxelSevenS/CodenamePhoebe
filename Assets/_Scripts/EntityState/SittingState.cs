@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 using SeleneGame.Core;
 using SeleneGame.Entities;
 
@@ -39,7 +40,7 @@ namespace SeleneGame.States {
             inputDict[ "Focus" ] = entity.focusInput;
             inputDict[ "Shift" ] = entity.shiftInput;
 
-            seat.seatEntity.EntityInput(entity.moveInput, entity.finalPlayerRotation, inputDict);
+            seat.seatEntity.EntityInput(entity.moveInput, entity.finalRotation, inputDict);
 
             entity.moveSpeed = 0;
         }

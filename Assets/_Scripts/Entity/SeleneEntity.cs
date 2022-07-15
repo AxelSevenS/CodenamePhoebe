@@ -8,7 +8,6 @@ using SeleneGame.Weapons;
 namespace SeleneGame.Entities {
     public class SeleneEntity : GravityShifterEntity {
         
-        
         protected override void Awake(){
 
             data = new EntityData(){

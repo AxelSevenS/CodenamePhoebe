@@ -12,6 +12,8 @@ namespace SeleneGame.Core {
         public WaterController waterController;
         public Collider waterCollider;
 
+        Collider[] _colliderBuffer = new Collider[5];
+
         public Entity entity;
         [SerializeField] private Rigidbody rb;
 
@@ -31,8 +33,8 @@ namespace SeleneGame.Core {
 
         private void FixedUpdate(){
 
-            Collider[] hits = /* entity == null ? */ Physics.OverlapSphere(transform.position, 1f, Global.WaterMask) /* : entity.ColliderOverlap(0f, Global.WaterMask) */;
-            waterCollider = hits.Length > 0 ? hits[0] : null;
+            Physics.OverlapSphereNonAlloc(transform.position, 1f, _colliderBuffer, Global.WaterMask) /* : entity.ColliderOverlap(0f, Global.WaterMask) */;
+            waterCollider = _colliderBuffer.Length > 0 ? _colliderBuffer[0] : null;
             
             // Debug.DrawRay(new Vector3(transform.position.x, waterHeight, transform.position.z), Vector3.up, Color.red);
         }

@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using SeleneGame.Core;
 
 namespace SeleneGame.Core {
 
@@ -12,8 +11,8 @@ namespace SeleneGame.Core {
         private CustomPhysicsComponent physicsComponent;
         [SerializeField] [Range(0f, 3f)] private float floatability; 
 
-        void OnEnable() => Global.objectManager.objectList.Add( this.gameObject );
-        void OnDisable() => Global.objectManager.objectList.Remove( this.gameObject );
+        void OnEnable() => ObjectManager.current.objects.Add( this.gameObject );
+        void OnDisable() => ObjectManager.current.objects.Remove( this.gameObject );
 
         private void Awake(){
             rigidbody = GetComponent<Rigidbody>();

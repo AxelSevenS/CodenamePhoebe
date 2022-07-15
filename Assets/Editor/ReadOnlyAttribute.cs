@@ -1,9 +1,9 @@
-using UnityEditor;
 using UnityEngine;
+using UnityEditor;
 
-namespace SeleneGame.EditorUI {
+namespace SeleneGame.Core {
 
-    [CustomPropertyDrawer(typeof( SeleneGame.Core.ReadOnlyAttribute ))]
+    [CustomPropertyDrawer(typeof( ReadOnlyAttribute ))]
     public class ReadOnlyDrawer : PropertyDrawer{
         
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label){

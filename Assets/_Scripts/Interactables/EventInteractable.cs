@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 using SeleneGame.Core;
 using SeleneGame.Entities;
 
@@ -8,10 +9,9 @@ namespace SeleneGame {
 
     public class EventInteractable : MonoBehaviour, IInteractable{
         
-        public string interactionText;
-        public string interactionDescription{
-            get => interactionText;
-        }
+        [SerializeField] private string interactionText;
+        public string InteractDescription() => interactionText;
+        public bool IsInteractable() => true;
         public List<InvokableEvent> interactEvents;
 
         public void Interact(Entity entity){

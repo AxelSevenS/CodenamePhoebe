@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace SeleneGame.Utility {
+namespace SevenGame.Utility {
     
     public static class Mathfs{
 

@@ -1,15 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using SeleneGame.Entities;
 
 namespace SeleneGame.Core {
     
     public interface IInteractable {
 
-        string interactionDescription {
-            get;
-        }
+        string InteractDescription();
+
+        bool IsInteractable();
 
         void Interact(Entity entity);
     }

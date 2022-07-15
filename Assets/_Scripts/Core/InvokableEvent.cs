@@ -2,10 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-using SeleneGame.Core;
-using SeleneGame.UI;
 
-namespace SeleneGame {
+namespace SeleneGame.Core {
     
     [System.Serializable]
     public struct InvokableEvent {

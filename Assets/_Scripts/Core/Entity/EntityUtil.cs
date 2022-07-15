@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-using SeleneGame.Utility;
+using SevenGame.Utility;
 
 namespace SeleneGame.Core {
 
@@ -35,7 +35,7 @@ namespace SeleneGame.Core {
             //     entity.relativeForward = Vector3.Lerp(entity.relativeForward, Quaternion.Inverse(entity.rotation) * direction, 0.1f);
             //     entity.evadeDirection = Vector3.Lerp(entity.evadeDirection, entity.absoluteForward, 0.1f);
             //     // entity.rotationForward = Vector3.Lerp(entity.rotationForward, entity.relativeForward, 0.7f).normalized;
-            //     await Task.Yield();
+                await Task.Yield();
             // }
             // entity.turningTo = false;
         }

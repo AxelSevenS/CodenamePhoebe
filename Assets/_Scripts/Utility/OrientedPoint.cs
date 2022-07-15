@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 
-namespace SeleneGame.Utility {
+namespace SevenGame.Utility {
 
     [System.Serializable]
     public struct OrientedPoint{

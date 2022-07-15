@@ -1,9 +1,9 @@
 using UnityEngine;
 using UnityEditor;
 
-namespace SeleneGame.EditorUI {
+namespace SevenGame.Utility {
 
-    [CustomPropertyDrawer( typeof( SeleneGame.Core.Map ), true )]
+    [CustomPropertyDrawer( typeof( Map ), true )]
     public class MapDrawer : PropertyDrawer {
 
         public override void OnGUI( Rect position, SerializedProperty property, GUIContent label ) {

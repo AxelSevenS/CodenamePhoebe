@@ -7,12 +7,26 @@ namespace SeleneGame.Core {
     [CreateAssetMenu(fileName = "new Entity Costume", menuName = "Costume/Entity")]
     public class EntityCostume : Costume {
 
+        public enum Emotion {neutral, determined, hesitant, shocked, disgusted, sad, happy};
+
         public Sprite determinedPortrait;
         public Sprite hesitantPortrait;
         public Sprite shockedPortrait;
         public Sprite disgustedPortrait;
         public Sprite sadPortrait;
         public Sprite happyPortrait;
+
+        public Sprite GetPortrait(Emotion emotion) {
+            switch (emotion) {
+                default: return portrait;
+                case Emotion.determined: return determinedPortrait;
+                case Emotion.hesitant: return hesitantPortrait;
+                case Emotion.shocked: return shockedPortrait;
+                case Emotion.disgusted: return disgustedPortrait;
+                case Emotion.sad: return sadPortrait;
+                case Emotion.happy: return happyPortrait;
+            }
+        }
 
         public static EntityCostume GetEntityBaseCostume(string entityTypeName){
             string defaultCostume = entityTypeName.Replace("Entity", "Base");

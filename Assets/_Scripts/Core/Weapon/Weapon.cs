@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-using SeleneGame.Utility;
+using SevenGame.Utility;
 
 namespace SeleneGame.Core {
     
@@ -11,7 +11,7 @@ namespace SeleneGame.Core {
         public enum WeaponType {lightSword, heavySword, spear, swordAndShield, sparring};
         public abstract WeaponType weaponType { get; }
 
-        [HideInInspector] public new string name;
+        [HideInInspector] public string name;
 
         
         [HideInInspector] public ArmedEntity entity;

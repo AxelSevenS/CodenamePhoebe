@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+using SevenGame.Utility;
+
 namespace SeleneGame.Core {
 
-    public class EntityManager : MonoBehaviour{
-        
-        public static EntityManager current;
+    public class EntityManager : Singleton<EntityManager> {
 
         public AnimationCurve evadeCurve;
         
@@ -20,10 +20,8 @@ namespace SeleneGame.Core {
 
         public float stepHeight = 0.35f;
 
-        void OnEnable(){
-            if (current != null)
-                Destroy(current);
-            current = this;
+        private void OnEnable() {
+            SetCurrent();
         }
 
         // public void SetCostume(string charName, string costumeName){

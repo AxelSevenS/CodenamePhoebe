@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using UnityEditor;
 
 namespace SeleneGame.Core {
     
@@ -16,7 +15,7 @@ namespace SeleneGame.Core {
         public Vector3 cameraPosition => GetCameraPosition();
         public Vector3 jumpDirection => GetJumpDirection();
 
-        protected virtual Vector3 GetCameraPosition() => Player.current.defaultCameraPosition;
+        protected virtual Vector3 GetCameraPosition() => Global.cameraDefaultPosition;
         protected virtual Vector3 GetJumpDirection() => -entity.gravityDown;
 
 

@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+using SevenGame.Utility;
 using SeleneGame.Core;
 using SeleneGame.Entities;
 

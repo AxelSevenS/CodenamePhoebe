@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-using SeleneGame.Utility;
+using SevenGame.Utility;
 
 namespace SeleneGame.Core {
     
     public class CameraController : MonoBehaviour{
 
-        private Entity entity => Player.current.entity;
         private Quaternion entityRotation;
         private Vector3 delayedPosition;
         private Vector3 cameraVector;
@@ -23,32 +22,32 @@ namespace SeleneGame.Core {
         }
         private void Update() {
 
+            if (Player.current?.entity == null) return;
+
             Cursor.visible = Player.current.menu;
             Cursor.lockState = Cursor.visible ? CursorLockMode.None : CursorLockMode.Locked;
-
-            if (entity == null) return;
 
             UpdateCameraDistance();
         }
 
         private void FixedUpdate() {
-            if (entity == null) return;
+            if (Player.current?.entity == null) return;
 
             UpdateCameraPosition();
         }
         private void UpdateCameraDistance() {
-            Vector3 cameraRelativePosition = entity.state.cameraPosition;
+            Vector3 cameraRelativePosition = Player.current.entity.state.cameraPosition;
             Vector3 cameraTargetVector = new Vector3( cameraRelativePosition.x, cameraRelativePosition.y, cameraRelativePosition.z * distanceToPlayer -additionalDistance);
 
             cameraVector = Vector3.Slerp(cameraVector, cameraTargetVector, 3f * GameUtility.timeDelta);
         }
 
         private void UpdateCameraPosition() {
-            entityRotation = Quaternion.Slerp( entityRotation, entity.rotation, 4f * GameUtility.timeDelta );
+            entityRotation = Quaternion.Slerp( entityRotation, Player.current.entity.rotation, 4f * GameUtility.timeDelta );
             
-            transform.rotation = entityRotation * entity.cameraRotation;
+            transform.rotation = entityRotation * Player.current.entity.cameraRotation;
 
-            delayedPosition = Vector3.SmoothDamp(delayedPosition, entity["head"].transform.position, ref velocity, 0.06f);
+            delayedPosition = Vector3.SmoothDamp(delayedPosition, Player.current.entity["head"].transform.position, ref velocity, 0.06f);
             Vector3 camPosition = transform.rotation * cameraVector;
 
             float camDistance = camPosition.magnitude;

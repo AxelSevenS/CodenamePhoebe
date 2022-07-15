@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 using SeleneGame.Core;
 using SeleneGame.Entities;
-using SeleneGame.Utility;
+using SevenGame.Utility;
 
 namespace SeleneGame.States {
     
@@ -28,7 +29,7 @@ namespace SeleneGame.States {
         private Vector2 fallInput = Vector3.zero;
 
         private Vector3 fallDirection = Vector3.forward;
-        // private Quaternion fallRotation => Quaternion.LookRotation(fallDirection, entity.finalPlayerRotation * Vector3.up);
+        // private Quaternion fallRotation => Quaternion.LookRotation(fallDirection, entity.finalRotation * Vector3.up);
 
         private float additionalCameraDistance;
 
@@ -46,7 +47,7 @@ namespace SeleneGame.States {
             }
             gravityShifter = shifter;
 
-            landCursor = GameObject.Instantiate(Resources.Load("Prefabs/UI/LandCursor"), Global.ui.transform.GetChild(0)) as GameObject;
+            landCursor = GameObject.Instantiate(Resources.Load("Prefabs/UI/LandCursor"), HUDController.current.transform) as GameObject;
         }
 
         public override void OnExit(){
@@ -58,7 +59,7 @@ namespace SeleneGame.States {
             shiftFalling.SetVal( gravityShifter.evadeInput.trueTimer > 0.125f );
 
             // Gravity Shifting Movement
-            if ( gravityShifter.inWater || gravityShifter.shiftInput.trueTimer > Player.current.holdDuration ){
+            if ( gravityShifter.inWater || gravityShifter.shiftInput.trueTimer > Global.HOLDTIME ){
                 gravityShifter.StopShifting(Vector3.down);
             }
 
@@ -67,7 +68,7 @@ namespace SeleneGame.States {
             }
 
             if (shiftFalling.started){
-                fallDirection = gravityShifter.finalPlayerRotation * Vector3.forward;
+                fallDirection = gravityShifter.finalRotation * Vector3.forward;
                 randomRotation = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized;
 
                 Debug.DrawRay(gravityShifter.transform.position, 10f * fallDirection, Color.red, 3f);
@@ -122,7 +123,7 @@ namespace SeleneGame.States {
 
             if (shiftFalling){
 
-                Quaternion currentRotation = Quaternion.LookRotation(fallDirection, entity.finalPlayerRotation * Vector3.up);
+                Quaternion currentRotation = Quaternion.LookRotation(fallDirection, entity.finalRotation * Vector3.up);
 
                 Quaternion rotationDelta = Quaternion.AngleAxis(-fallInput.y, currentRotation * Vector3.right) * Quaternion.AngleAxis(fallInput.x, currentRotation * Vector3.up);
                 Vector3 newDirection = (rotationDelta * (fallDirection)).normalized;
@@ -143,7 +144,7 @@ namespace SeleneGame.States {
             }
             gravityShifter.absoluteForward = gravityShifter.moveDirection;
 
-            if (gravityShifter.shiftInput.trueTimer > Player.current.holdDuration)
+            if (gravityShifter.shiftInput.trueTimer > Global.HOLDTIME)
                 gravityShifter.StopShifting(Vector3.down);
             
 
@@ -159,7 +160,7 @@ namespace SeleneGame.States {
         protected void UpdateLandCursorPos(){
             if (landCursor == null) return;
 
-            if ( !(gravityShifter.isPlayer && shiftFalling) ) {
+            if ( !shiftFalling ) {
                 landCursor.SetActive(false);
                 return;
             }

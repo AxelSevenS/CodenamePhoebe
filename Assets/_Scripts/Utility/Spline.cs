@@ -1,12 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-// using SeleneGame.Core;
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
 
-namespace SeleneGame.Utility {
+using UnityEngine;
+
+namespace SevenGame.Utility {
     
     [RequireComponent(typeof(MeshFilter))]
     [RequireComponent(typeof(MeshCollider))]
@@ -50,7 +47,7 @@ namespace SeleneGame.Utility {
 
 
         private void Awake() {
-            UpdateMesh();
+            // UpdateMesh();
         }
 
         private void Reset(){
@@ -176,9 +173,9 @@ namespace SeleneGame.Utility {
             prevSegment = null;
         }
 
-        private void OnValidate(){
-            UpdateOtherSegments();
-        }
+        // private void OnValidate(){
+        //     UpdateOtherSegments();
+        // }
 
     }
 }

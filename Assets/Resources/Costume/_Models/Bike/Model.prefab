@@ -2620,6 +2620,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc,
         type: 3}
+      propertyPath: hurtColliders.pairs.Array.data[0].Key
+      value: main
+      objectReference: {fileID: 0}
+    - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc,
+        type: 3}
+      propertyPath: hurtColliders.pairs.Array.data[0].Value
+      value: 
+      objectReference: {fileID: 976302237}
+    - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc,
+        type: 3}
       propertyPath: hurtColliders.pairs.Array.data[0].valueOne
       value: main
       objectReference: {fileID: 0}

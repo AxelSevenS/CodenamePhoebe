@@ -4,7 +4,7 @@ using UnityEngine;
 
 using SeleneGame.Core;
 using SeleneGame.Entities;
-using SeleneGame.Utility;
+using SevenGame.Utility;
 
 namespace SeleneGame.States {
     
@@ -105,7 +105,7 @@ namespace SeleneGame.States {
                 additionalCameraDistance += -0.2f;
             }
 
-            if (entity.shiftInput.trueTimer > Player.current.holdDuration){
+            if (entity.shiftInput.trueTimer > Global.HOLDTIME){
                 entity.gravityDown = Vector3.down;
             }
         }

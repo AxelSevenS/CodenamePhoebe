@@ -3,7 +3,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace SeleneGame.Utility {
+namespace SevenGame.Utility {
     public static class GameUtility {
         
         

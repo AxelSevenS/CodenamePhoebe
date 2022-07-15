@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-using SeleneGame.Utility;
+using SevenGame.Utility;
 
 namespace SeleneGame.Core {
 
@@ -85,7 +85,7 @@ namespace SeleneGame.Core {
         public Vector3 gravityDown = Vector3.down;
 
         public Quaternion groundOrientation => Quaternion.FromToRotation(-gravityDown, groundHit.normal);
-        public Quaternion finalPlayerRotation => rotation * cameraRotation;
+        public Quaternion finalRotation => rotation * cameraRotation;
 
 
 
@@ -119,7 +119,6 @@ namespace SeleneGame.Core {
 
 
 
-        public bool isPlayer => Player.current.entity == this;
         public Vector3 bottom => transform.position - transform.up*data.size.y/2f;
         public float fallVelocity => Vector3.Dot(rb.velocity, -gravityDown);
         public bool inWater => physicsComponent.inWater;
@@ -138,10 +137,10 @@ namespace SeleneGame.Core {
 
 
         protected virtual void OnEnable(){
-            Global.entityManager.entityList.Add( this );
+            EntityManager.current.entityList.Add( this );
         }
         protected virtual void OnDisable(){
-            Global.entityManager.entityList.Remove( this );
+            EntityManager.current.entityList.Remove( this );
         }
 
         [ContextMenu("Initialize")]
@@ -177,9 +176,9 @@ namespace SeleneGame.Core {
             moveInput = new VectorData();
             cameraRotation = new QuaternionData();
         }
-        protected virtual void OnDestroy(){;}
+        protected virtual void OnDestroy() {;}
 
-        protected virtual void Start(){
+        protected virtual void Start() {
             rotation.SetVal(transform.rotation);
             relativeForward = Vector3.forward;
             rb.useGravity = false;
@@ -187,7 +186,7 @@ namespace SeleneGame.Core {
         }
 
 
-        protected virtual void Update(){
+        protected virtual void Update() {
             onGround?.SetVal( ColliderCast( Vector3.zero, gravityDown.normalized * 0.1f, out groundHit, 0.15f, Global.GroundMask ) );
             
             state?.HandleInput();
@@ -199,15 +198,15 @@ namespace SeleneGame.Core {
             }
         }
 
-        protected virtual void FixedUpdate(){
+        protected virtual void FixedUpdate() {
             state?.StateFixedUpdate();
         }
 
-        protected virtual void LateUpdate(){
+        protected virtual void LateUpdate() {
             state?.StateLateUpdate();
         }
 
-        protected virtual void EntityAnimation(){
+        protected virtual void EntityAnimation() {
             animator.SetBool("OnGround", onGround);
             // animator.SetBool("Falling", fallVelocity <= -20f);
             animator.SetBool("Idle", moveDirection.magnitude == 0f );
@@ -228,7 +227,7 @@ namespace SeleneGame.Core {
             gameObject.SetLayerRecursively(6);
         }
 
-        public virtual void DestroyModel(){
+        public virtual void DestroyModel() {
 
             model = GameUtility.SafeDestroy(model);
 
@@ -240,7 +239,7 @@ namespace SeleneGame.Core {
         }
 
 
-        public void SetState(State newState){
+        public void SetState(State newState) {
             state?.OnExit();
 
             newState.OnEnter(this);
@@ -252,14 +251,14 @@ namespace SeleneGame.Core {
             Debug.Log($"{name} switched state to {state.name}");
         }
 
-        public void SetWalkSpeed(WalkSpeed newSpeed){
+        public void SetWalkSpeed(WalkSpeed newSpeed) {
             if (walkSpeed != newSpeed){
                 // if ((int)walkSpeed < (int)newSpeed && !currentAnimationState.Contains("Run")) SetAnimationState("RunningStart", 0.1f);
                 walkSpeed = newSpeed;
             }
         }
 
-        public void SetCostume(EntityCostume newCostume){
+        public void SetCostume(EntityCostume newCostume) {
             costume = newCostume;
             LoadModel();
         }
@@ -275,7 +274,7 @@ namespace SeleneGame.Core {
 
             onDeath?.Invoke();
         }
-        public void Damage(float amount, Vector3 knockback = default){
+        public void Damage(float amount, Vector3 knockback = default) {
 
             currHealth = Mathf.Max(currHealth - amount, 0f);
 
@@ -292,13 +291,13 @@ namespace SeleneGame.Core {
         public void SetRotation(Vector3 newUp) {
             rotation.SetVal(Quaternion.FromToRotation(rotation * Vector3.up, newUp) * rotation);
         }
-        public void RotateTowardsRelative(Vector3 newDirection, Vector3 newUp){
+        public void RotateTowardsRelative(Vector3 newDirection, Vector3 newUp) {
 
             Quaternion apparentRotation = Quaternion.FromToRotation(rotation * Vector3.up, newUp) * rotation;
             Quaternion turnDirection = Quaternion.AngleAxis(Mathf.Atan2(newDirection.x, newDirection.z) * Mathf.Rad2Deg, Vector3.up) ;
             transform.rotation = Quaternion.Slerp(transform.rotation, apparentRotation * turnDirection, 12f*GameUtility.timeDelta);
         }
-        public void RotateTowardsAbsolute(Vector3 newDirection, Vector3 newUp){
+        public void RotateTowardsAbsolute(Vector3 newDirection, Vector3 newUp) {
 
             Vector3 inverse = Quaternion.Inverse(rotation) * newDirection;
             RotateTowardsRelative(inverse, newUp);
@@ -309,10 +308,10 @@ namespace SeleneGame.Core {
         }
 
 
-        public void Gravity(float force, Vector3 direction){
+        public void Gravity(float force, Vector3 direction) {
             JumpGravity(force, direction, false);
         }
-        public void JumpGravity(float force, Vector3 direction, bool slowFall){        
+        public void JumpGravity(float force, Vector3 direction, bool slowFall) {        
             rb.AddForce(force * GameUtility.timeDelta * direction);
 
             // Inertia that's only active when falling
@@ -328,7 +327,7 @@ namespace SeleneGame.Core {
             rb.velocity += multiplier * force * GameUtility.timeDelta * direction.normalized;
         
         }
-        public void Jump(Vector3 jumpDirection){
+        public void Jump(Vector3 jumpDirection) {
 
             // Debug.Log(data.jumpHeight * JumpMultiplier());
 
@@ -343,7 +342,7 @@ namespace SeleneGame.Core {
         }
 
         
-        public void GroundedMove(Vector3 dir, bool canStep = false){
+        public void GroundedMove(Vector3 dir, bool canStep = false) {
 
             if (dir.magnitude == 0f) return;
 
@@ -381,7 +380,7 @@ namespace SeleneGame.Core {
             Move(move);
 
         }
-        public void Move(Vector3 dir){
+        public void Move(Vector3 dir) {
             if (dir.magnitude == 0f) return;
 
             Vector3 move = dir / moveCollisionStep;
@@ -416,7 +415,7 @@ namespace SeleneGame.Core {
         }
 
         public void RawInputToGroundedMovement(out Vector3 camRight, out Vector3 camForward, out Vector3 groundDirection, out Vector3 groundDirection3D){
-            camRight = finalPlayerRotation * Vector3.right;
+            camRight = finalRotation * Vector3.right;
             camForward = Vector3.Cross(camRight, transform.up).normalized;
             groundDirection = (moveInput.x * camRight + moveInput.z * camForward).normalized;
             groundDirection3D = groundDirection + (cameraRotation * Vector3.up) * moveInput.y;
@@ -429,7 +428,7 @@ namespace SeleneGame.Core {
             // Debug.Log(modelData.hurtColliders["main"]);
 
             foreach (ValuePair<string, Collider> col in modelData.hurtColliders){
-                bool hasHitWall = col.valueTwo.ColliderCast( col.valueTwo.transform.position + position, direction, out RaycastHit tempHit, skinThickness, layerMask );
+                bool hasHitWall = col.Value.ColliderCast( col.Value.transform.position + position, direction, out RaycastHit tempHit, skinThickness, layerMask );
                 if ( !hasHitWall || tempHit.collider == null ) continue;
 
                 checkHit = tempHit;
@@ -440,7 +439,7 @@ namespace SeleneGame.Core {
         }
         public Collider[] ColliderOverlap( float skinThickness, LayerMask layerMask ) {
             foreach (ValuePair<string, Collider> col in modelData.hurtColliders){
-                Collider collider = col.valueTwo;
+                Collider collider = col.Value;
                 Collider[] hits = collider.ColliderOverlap( collider.transform.position, skinThickness, layerMask );
                 if ( hits.Length > 0 ) return hits;
             }
@@ -460,18 +459,6 @@ namespace SeleneGame.Core {
             wallHitOut = new RaycastHit();
             return false;
         }
-
-
-        // public string currentAnimationState = "";
-        // private float canAnimateAfter = 0f;
-        // public void SetAnimationState(string state, float fadeTime = 0f, float lockTime = 0f, int layer = 0) {
-        //     if (currentAnimationState == state) return;
-
-        //     canAnimateAfter = Time.time + lockTime;
-        //     animator.CrossFade(state, fadeTime, layer);
-
-        //     currentAnimationState = state;
-        // }
 
         public static Entity CreateEntity(System.Type entityType, Vector3 position, Quaternion rotation, EntityCostume costume){
             GameObject entityGO = new GameObject("Entity");

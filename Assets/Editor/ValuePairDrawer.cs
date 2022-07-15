@@ -1,9 +1,9 @@
 using UnityEngine;
 using UnityEditor;
 
-namespace SeleneGame.EditorUI {
+namespace SevenGame.Utility {
 
-    [CustomPropertyDrawer( typeof( SeleneGame.Core.ValuePair ), true )]
+    [CustomPropertyDrawer( typeof( ValuePair ), true )]
     public class ValuePairDrawer : PropertyDrawer {
 
         public override void OnGUI( Rect position, SerializedProperty property, GUIContent label ) {
@@ -13,8 +13,8 @@ namespace SeleneGame.EditorUI {
             Rect leftRect = new Rect(position.x - 2f, position.y, halfWidth, position.height);
             Rect rightRect = new Rect(position.x + halfWidth, position.y, halfWidth, position.height);
 
-            EditorGUI.PropertyField( leftRect, property.FindPropertyRelative( "valueOne" ), GUIContent.none );
-            EditorGUI.PropertyField( rightRect, property.FindPropertyRelative( "valueTwo" ), GUIContent.none );
+            EditorGUI.PropertyField( leftRect, property.FindPropertyRelative( "Key" ), GUIContent.none );
+            EditorGUI.PropertyField( rightRect, property.FindPropertyRelative( "Value" ), GUIContent.none );
 
             EditorGUI.EndProperty();
         }

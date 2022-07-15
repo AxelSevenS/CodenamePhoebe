@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 using SeleneGame.Core;
 
 namespace SeleneGame {
@@ -10,8 +11,8 @@ namespace SeleneGame {
         [SerializeField] private GameObject Sail;
         [SerializeField] private List<GameObject> floaters = new List<GameObject>();
         
-        void OnEnable() => Global.objectManager.objectList.Add( this.gameObject );
-        void OnDisable() => Global.objectManager.objectList.Remove( this.gameObject );
+        void OnEnable() => ObjectManager.current.objects.Add( this.gameObject );
+        void OnDisable() => ObjectManager.current.objects.Remove( this.gameObject );
 
         void Awake(){
             if (Sail != null){

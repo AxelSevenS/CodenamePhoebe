@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-using SeleneGame.Utility;
+using SevenGame.Utility;
 
 namespace SeleneGame.Core {
 

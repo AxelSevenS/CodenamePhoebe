@@ -2,15 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-using SeleneGame.Utility;
+using SevenGame.Utility;
 
 namespace SeleneGame.Core {
     
-    public class WeatherManager : ObjectFollower{
-
-        public static WeatherManager current;
-
-        [Space(15)]
+    public class WeatherManager : Singleton<WeatherManager>{
         
         [SerializeField] private GameObject rainEffects;
         [SerializeField] private GameObject snowEffects;
@@ -48,41 +44,24 @@ namespace SeleneGame.Core {
         public bool precipitation = false;
         public bool snow = false;
 
-        void OnEnable(){
-            if (current != null)
-                Destroy(current);
-            current = this;
-        }
-
-        void Awake(){
+        private void Awake(){
             rainParticles = rainEffects.GetComponentsInChildren<ParticleSystem>();
             snowParticles = snowEffects.GetComponentsInChildren<ParticleSystem>();
         }
 
-        void Start(){
+        private void Start(){
             sunSpeed = new Vector3(.85f, .15f);
             moonSpeed  = new Vector3(0, .15f);
 
             sunRotation = Quaternion.identity;
             moonRotation = Quaternion.Euler(35f, -15f, 0);
         }
-
-        // Update is called once per frame
-
-        #if UNITY_EDITOR
-        void OnValidate(){
-            ambientLight = _ambientLight;
-            SetGlobals();
-        }
-        #endif
-
-        private void SetGlobals(){
-            Shader.SetGlobalColor("_AmbientLight", new Color(ambientLight.r, ambientLight.g, ambientLight.b, ambientLight.a));
-            Shader.SetGlobalVector("_WindDirection", new Vector4(windDirection.x, windDirection.y, windDirection.z, 0));
-            Shader.SetGlobalFloat("_SnowAmount", snowAmount);
+        
+        private void OnEnable() {
+            SetCurrent();
         }
 
-        void Update(){
+        private void Update(){
             windDirection = Vector3.Slerp(windDirection, _windDirection, 2f * GameUtility.timeDelta).normalized;
             ambientLight = Color.Lerp(ambientLight, _ambientLight, 5f * GameUtility.timeDelta);
             snowAmount = Mathf.MoveTowards(snowAmount, System.Convert.ToSingle(snow && precipitation) * 2f, Mathf.Pow( 2f, Mathf.Min(snowAmount, 0.05f) ) * 0.01f * GameUtility.timeDelta);
@@ -113,8 +92,24 @@ namespace SeleneGame.Core {
             sun.transform.rotation = sunRotation;
             moon.transform.rotation = moonRotation;
 
-            FollowObject();
+            // FollowObject();
             
         }
+
+        #if UNITY_EDITOR
+        private void OnValidate(){
+            ambientLight = _ambientLight;
+            SetGlobals();
+        }
+        #endif
+
+
+
+        private void SetGlobals(){
+            Shader.SetGlobalColor("_AmbientLight", new Color(ambientLight.r, ambientLight.g, ambientLight.b, ambientLight.a));
+            Shader.SetGlobalVector("_WindDirection", new Vector4(windDirection.x, windDirection.y, windDirection.z, 0));
+            Shader.SetGlobalFloat("_SnowAmount", snowAmount);
+        }
+
     }
 }

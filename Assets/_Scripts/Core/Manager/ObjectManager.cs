@@ -1,40 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
+
 using UnityEngine;
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
+
+using SevenGame.Utility;
 
 namespace SeleneGame.Core {
 
-    public class ObjectManager : MonoBehaviour{
-        
-        public static ObjectManager current;
-        
-        public List<GameObject> objectList = new List<GameObject>();
-
-        void OnEnable(){
-            if (current != null)
-                Destroy(current);
-            current = this;
+    public class ObjectManager : Singleton<ObjectManager> {
+        private void OnEnable() {
+            SetCurrent();
         }
-
-
-    #if UNITY_EDITOR
-        void OnDrawGizmosSelected(){
-            // Handles.zTest = CompareFunction.LessEqual;
-
-            foreach (GameObject objectVar in objectList){
-                Vector3 offset = Vector3.up * ((transform.position.y + objectVar.transform.position.y)/4f);
-
-                Handles.DrawBezier(transform.position, objectVar.transform.position, transform.position + offset, objectVar.transform.position + offset, Color.white, EditorGUIUtility.whiteTexture, 1f);
-                // Gizmos.DrawLine(transform.position, objectVar.transform.position);
-            }
-        }
-    #endif
+        
+        public List<GameObject> objects = new List<GameObject>();
 
         public void DisableAllObjects(){
-            /* foreach (GameObject obj in objectList){
+            /* foreach (GameObject obj in objects){
                 obj.SetActive(false);
             } */
         }

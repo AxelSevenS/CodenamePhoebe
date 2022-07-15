@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+using SevenGame.Utility;
 using SeleneGame.Core;
 using SeleneGame.Entities;
 using SeleneGame.States;
@@ -11,17 +13,17 @@ namespace SeleneGame.Weapons {
     public class HypnosWeapon : Weapon{
         public override WeaponType weaponType => WeaponType.spear;
 
-        private Vector3 wallRunDir;
-        private Vector3 wallRunNormal;
-        [SerializeField] private float wallRunTimer = 4f;
+        // private Vector3 wallRunDir;
+        // private Vector3 wallRunNormal;
+        // [SerializeField] private float wallRunTimer = 4f;
 
 
         
 
-        private BoolData wallData = new BoolData();
-        private BoolData wallRun = new BoolData();
+        // private BoolData wallData = new BoolData();
+        // private BoolData wallRun = new BoolData();
 
-        public RaycastHit wallHit;
+        // public RaycastHit wallHit;
 
 
         protected override float GetWeightModifier() => 0.75f;
@@ -31,11 +33,11 @@ namespace SeleneGame.Weapons {
 
             if (!isEquipped) return;
             
-            wallData.SetVal( entity.WallCheck( out wallHit, Global.GroundMask ) );
-            wallRun.SetVal(entity.sliding && wallData);
+            // wallData.SetVal( entity.WallCheck( out wallHit, Global.GroundMask ) );
+            // wallRun.SetVal(entity.sliding && wallData);
 
-            if (entity.onGround.stopped)
-                wallRunTimer = 7f;
+            // if (entity.onGround.stopped)
+            //     wallRunTimer = 7f;
 
         }
 
@@ -84,8 +86,8 @@ namespace SeleneGame.Weapons {
 
         private void OnStartWallRunning(){
             
-            wallRunNormal = wallHit.normal;
-            wallRunDir = Vector3.ProjectOnPlane(entity.moveDirection, wallHit.normal).normalized;
+            // wallRunNormal = wallHit.normal;
+            // wallRunDir = Vector3.ProjectOnPlane(entity.moveDirection, wallHit.normal).normalized;
 
             // entity.inertia = wallRunDir * Mathf.Min(entity.inertiaMultiplier + 3.5f, 10f);
         }

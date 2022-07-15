@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 using SeleneGame.Core;
 using SeleneGame.Entities;
-using SeleneGame.Utility;
+using SevenGame.Utility;
 
 namespace SeleneGame.States {
     
@@ -14,7 +15,7 @@ namespace SeleneGame.States {
             // if (entity is ArmedEntity armed)
             //     return armed.weapons.current.cameraPosition;
                 
-            return Player.current.defaultCameraPosition;
+            return Global.cameraDefaultPosition;
         }
 
         public override void OnEnter(Entity entity){
