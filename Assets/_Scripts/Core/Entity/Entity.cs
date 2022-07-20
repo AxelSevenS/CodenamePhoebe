@@ -71,8 +71,8 @@ namespace SeleneGame.Core {
 
         const int moveCollisionStep = 1;
 
-        public VectorData moveDirection;
-        public QuaternionData rotation;
+        public VectorData moveDirection = new VectorData();
+        public QuaternionData rotation = new QuaternionData();
 
         private Vector3 _absoluteForward;
         public Vector3 absoluteForward { get => _absoluteForward; set { _absoluteForward = value; _relativeForward = Quaternion.Inverse(rotation) * value; } }
@@ -106,14 +106,14 @@ namespace SeleneGame.Core {
 
         [Header("Input")]
 
-        public KeyInputData lightAttackInput;
-        public KeyInputData heavyAttackInput;
-        public KeyInputData jumpInput;
-        public KeyInputData evadeInput;
-        public KeyInputData walkInput;
-        public KeyInputData crouchInput;
-        public KeyInputData focusInput;
-        public KeyInputData shiftInput;
+        public BoolData lightAttackInput;
+        public BoolData heavyAttackInput;
+        public BoolData jumpInput;
+        public BoolData evadeInput;
+        public BoolData walkInput;
+        public BoolData crouchInput;
+        public BoolData focusInput;
+        public BoolData shiftInput;
         public VectorData moveInput;
         public QuaternionData cameraRotation;
 
@@ -161,7 +161,20 @@ namespace SeleneGame.Core {
             if (model == null) LoadModel();
 
             if (state == null) SetState(defaultState);
-            
+
+            onGround = new BoolData();
+            sliding = new BoolData();
+
+            lightAttackInput = new BoolData();
+            heavyAttackInput = new BoolData();
+            jumpInput = new BoolData();
+            evadeInput = new BoolData();
+            walkInput = new BoolData();
+            crouchInput = new BoolData();
+            focusInput = new BoolData();
+            shiftInput = new BoolData();
+            moveInput = new VectorData();
+            cameraRotation = new QuaternionData();
         }
         protected virtual void OnDestroy() {;}
 
@@ -174,7 +187,7 @@ namespace SeleneGame.Core {
 
 
         protected virtual void Update() {
-            onGround.SetVal( ColliderCast( Vector3.zero, gravityDown.normalized * 0.1f, out groundHit, 0.15f, Global.GroundMask ) );
+            onGround?.SetVal( ColliderCast( Vector3.zero, gravityDown.normalized * 0.1f, out groundHit, 0.15f, Global.GroundMask ) );
             
             state?.HandleInput();
             state?.StateUpdate();
@@ -387,16 +400,16 @@ namespace SeleneGame.Core {
 
         public void EntityInput(Vector3 rawInput, Quaternion camRotation, SafeDictionary<string, bool> inputDictionary){
 
-            lightAttackInput.SetVal( inputDictionary["LightAttack"] );
-            heavyAttackInput.SetVal( inputDictionary["HeavyAttack"] );
-            jumpInput.SetVal( inputDictionary["Jump"] );
-            evadeInput.SetVal( inputDictionary["Evade"] );
-            walkInput.SetVal( inputDictionary["Walk"] );
-            crouchInput.SetVal( inputDictionary["Crouch"] );
-            focusInput.SetVal( inputDictionary["Focus"] );
-            shiftInput.SetVal( inputDictionary["Shift"] );
-            moveInput.SetVal( rawInput );
-            cameraRotation.SetVal( camRotation );
+            lightAttackInput?.SetVal( inputDictionary["LightAttack"] );
+            heavyAttackInput?.SetVal( inputDictionary["HeavyAttack"] );
+            jumpInput?.SetVal( inputDictionary["Jump"] );
+            evadeInput?.SetVal( inputDictionary["Evade"] );
+            walkInput?.SetVal( inputDictionary["Walk"] );
+            crouchInput?.SetVal( inputDictionary["Crouch"] );
+            focusInput?.SetVal( inputDictionary["Focus"] );
+            shiftInput?.SetVal( inputDictionary["Shift"] );
+            moveInput?.SetVal( rawInput );
+            cameraRotation?.SetVal( camRotation );
 
             // Debug.Log(shiftInput.falseTimer.ToString() + " ____ " + shiftInput.trueTimer.ToString());
         }

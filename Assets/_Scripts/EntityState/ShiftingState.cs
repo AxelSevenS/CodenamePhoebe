@@ -59,7 +59,7 @@ namespace SeleneGame.States {
             shiftFalling.SetVal( gravityShifter.evadeInput.trueTimer > 0.125f );
 
             // Gravity Shifting Movement
-            if ( gravityShifter.inWater ){
+            if ( gravityShifter.inWater || gravityShifter.shiftInput.trueTimer > Global.HOLDTIME ){
                 gravityShifter.StopShifting(Vector3.down);
             }
 
@@ -143,6 +143,10 @@ namespace SeleneGame.States {
 
             }
             gravityShifter.absoluteForward = gravityShifter.moveDirection;
+
+            if (gravityShifter.shiftInput.trueTimer > Global.HOLDTIME)
+                gravityShifter.StopShifting(Vector3.down);
+            
 
             
             float newSpeed = gravityShifter.data.baseSpeed * 0.5f;
