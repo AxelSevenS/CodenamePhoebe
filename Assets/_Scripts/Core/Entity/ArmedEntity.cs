@@ -29,8 +29,6 @@ namespace SeleneGame.Core {
 
         protected override void Awake(){
             base.Awake();
-            
-            evading = new BoolData();
 
             // weapons = new WeaponInventory(this, 1);
         }
@@ -43,9 +41,8 @@ namespace SeleneGame.Core {
             evadeTimer = Mathf.MoveTowards( evadeTimer, 0f, GameUtility.timeDelta );
             parryTimer = Mathf.MoveTowards( parryTimer, 0f, GameUtility.timeDelta );
 
-            bool lightActuated = lightAttackInput.trueTimer < 0.15f && lightAttackInput && heavyAttackInput.started;
-            bool heavyActuated = heavyAttackInput.trueTimer < 0.15f && heavyAttackInput && lightAttackInput.started;
-            if (lightActuated || heavyActuated)
+
+            if ( KeyInputData.SimultaneousTap( lightAttackInput, heavyAttackInput ) )
                 Parry();
             
             foreach (Weapon weapon in weapons)

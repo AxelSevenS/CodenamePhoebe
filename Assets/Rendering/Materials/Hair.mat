@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  version: 4
+  version: 5
 --- !u!21 &2100000
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -23,7 +23,11 @@ Material:
   m_Name: Hair
   m_Shader: {fileID: -6465566751694194690, guid: 6566a88970a4a3a419d928f0c3db33a5,
     type: 3}
-  m_ShaderKeywords: HATCHING_ON PROXIMITYDITHER_ON
+  m_ValidKeywords:
+  - CEL_SPECULAR_ON
+  m_InvalidKeywords:
+  - HATCHING_ON
+  - PROXIMITYDITHER_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
@@ -197,6 +201,7 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
     - ACCENTGRADIENT: 0
     - Boolean_1: 0
@@ -205,7 +210,7 @@ Material:
     - Boolean_62b895750dbe44d9bb512d647701feaf: 0
     - Boolean_746f00cdd21a463a8f7db0eed7f65639: 1
     - CEL_ACCENT: 0
-    - CEL_SPECULAR: 0
+    - CEL_SPECULAR: 1
     - EMISSIONMAP: 0
     - EMISSIONMAP_ON: 1
     - FLOWMAP_ON: 0
@@ -213,8 +218,8 @@ Material:
     - NORMALMAP_ON: 0
     - PROXIMITYDITHER: 1
     - SPECULARGRADIENT: 0
-    - Vector1_1: 0.5
-    - Vector1_38eeab6d9e3146b49202d29537ff230c: 0.5
+    - Vector1_1: 0.751
+    - Vector1_38eeab6d9e3146b49202d29537ff230c: 0.016
     - Vector1_693d76d6835a455fba9b2a18be0e2bec: 0
     - Vector1_83717f647fb949a0b96857d7ef1efef2: 0
     - Vector1_a62ab1db54d34856836ce0b6d78fe08f: 1.5
@@ -226,6 +231,7 @@ Material:
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1
+    - _CastShadows: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 2
@@ -240,6 +246,7 @@ Material:
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
+    - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _Smoothness: 0.5
@@ -248,7 +255,9 @@ Material:
     - _SrcBlend: 1
     - _Surface: 0
     - _WorkflowMode: 1
+    - _ZTest: 4
     - _ZWrite: 1
+    - _ZWriteControl: 0
     m_Colors:
     - Color_0f915c3fbe4045b294e1149c13889c54: {r: 0, g: 0, b: 0, a: 0}
     - Color_1a287ec675fe4899bb4a792f25de7640: {r: 0, g: 0, b: 0, a: 0}

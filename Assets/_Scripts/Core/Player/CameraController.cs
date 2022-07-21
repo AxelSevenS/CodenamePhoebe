@@ -18,8 +18,7 @@ namespace SeleneGame.Core {
         private Vector3 velocity = Vector3.zero;
         private float additionalDistance = 0f;
 
-        private void Awake() {
-        }
+
         private void Update() {
 
             if (Player.current?.entity == null) return;
@@ -71,8 +70,19 @@ namespace SeleneGame.Core {
             transform.position = finalPos;
         }
 
-        // public void LookTowards(Vector3 forward){
-        //     mousePos = (Quaternion.Inverse(entityRotation) * Quaternion.LookRotation(forward, entityRotation * Vector3.down)).eulerAngles;
-        // }
+
+        public Texture replacement;
+        public Material material;
+
+        private void OnRenderImage(RenderTexture src, RenderTexture dest) {
+            if (material == null) return;
+            // To overwrite the entire screen
+            // Graphics.Blit(replacement, null);
+
+            // Or to overwrite only what this specific Camera renders
+            // Graphics.Blit(src, dest, material);
+            Graphics.Blit(replacement, null as RenderTexture);
+        }
+
     }
 }

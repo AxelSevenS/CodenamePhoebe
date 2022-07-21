@@ -4,12 +4,14 @@
 #include "Utility.hlsl"
 #include "CelLighting.hlsl"
 
-void CelLighting_half( half4 baseColor, float3 positionWS, half3 viewDirectionWS, half3 normalWS, half specularIntensity, half smoothness, half3 accentColor, out half4 finalColor ){
-    finalColor = CelLighting( baseColor, positionWS, viewDirectionWS, normalWS, specularIntensity, smoothness, accentColor );
+void CelLighting_half( half4 baseColor, float3 positionOS, half3 normalOS, half specularIntensity, half smoothness, half3 accentColor, out half4 finalColor ){
+    LightingInput lightingInput = GetLightingInput( positionOS, normalOS );
+    finalColor = CelLighting( baseColor, lightingInput, specularIntensity, smoothness, accentColor );
 }
 
-void SimpleCelLighting_half( half4 baseColor, float3 positionWS, half3 normalWS, out half4 finalColor ){
-    finalColor = SimpleCelLighting( baseColor, positionWS, normalWS );
+void SimpleCelLighting_half( half4 baseColor, float3 positionOS, half3 normalOS, out half4 finalColor ){
+    LightingInput lightingInput = GetLightingInput( positionOS, normalOS );
+    finalColor = SimpleCelLighting( baseColor, lightingInput );
 }
 
 void FlowMap_half( UnityTexture2D sampledTexture, UnityTexture2D flowMap, half2 uv, half scale, half offset, bool isNormalMap, out half4 flowColor ){

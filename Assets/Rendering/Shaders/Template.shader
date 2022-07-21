@@ -1,4 +1,4 @@
-Shader "Unlit/Template" {
+Shader "Selene/Template" {
     Properties {
         // Define the properties in a way Unity can understand
         [NoScaleOffset]_MainTex ("Main Texture", 2D) = "white" {}
@@ -30,10 +30,9 @@ Shader "Unlit/Template" {
             };
 
             struct VertexOutput{
-                float4 position : SV_POSITION;
-                float3 normal : TEXCOORD1;
-                float3 worldPosition : TEXCOORD2;
-                float3 worldNormal : TEXCOORD3;
+                float4 positionCS : SV_POSITION;
+                float3 normal : TEXCOORD2;
+                float4 position : TEXCOORD3;
                 float2 uv : TEXCOORD0;
             };
 
@@ -51,12 +50,10 @@ Shader "Unlit/Template" {
                 VertexOutput vert(VertexInput input) {
                     VertexOutput output;
 
-                    output.position = TransformObjectToHClip(input.position.xyz);
-                    output.normal = input.normal;
-                    output.worldPosition = TransformObjectToWorld(input.position.xyz);
-                    output.worldNormal = normalize(TransformObjectToWorldNormal(input.normal.xyz));
+                    output.position = input.position;
+                    output.positionCS = TransformObjectToHClip(output.position);
+                    output.normal = normalize(input.normal);
                     output.uv = input.uv;
-
 
                     return output;
                 }
@@ -70,7 +67,9 @@ Shader "Unlit/Template" {
                 float4 frag(VertexOutput input) : SV_Target {
                     half4 baseColor = tex2D(_MainTex, input.uv);
 
-                    return SimpleCelLighting(baseColor, input.worldPosition.xyz, input.worldNormal);
+                    LightingInput lightingInput = GetLightingInput(input.position, input.normal);
+
+                    return SimpleCelLighting(baseColor, lightingInput);
                     // return baseColor;
                 }
 
@@ -89,16 +88,10 @@ Shader "Unlit/Template" {
 
                 VertexOutput vert(VertexInput input) {
                     VertexOutput output;
-
-
-                    half3 normal = input.normal;
-                    float3 position = input.position.xyz + input.normal * 2;
-
-
-                    output.position = TransformObjectToHClip(position);
-                    output.normal = input.normal;
-                    output.worldPosition = TransformObjectToWorld(input.position.xyz);
-                    output.worldNormal = normalize(TransformObjectToWorldNormal(input.normal.xyz));
+                    
+                    output.position = input.position + half4(input.normal, 0);
+                    output.positionCS = TransformObjectToHClip(output.position);
+                    output.normal = normalize(input.normal);
                     output.uv = input.uv;
 
 
@@ -114,7 +107,8 @@ Shader "Unlit/Template" {
                 float4 frag(VertexOutput input) : SV_Target {
                     half4 baseColor = tex2D(_MainTex, input.uv);
 
-                    return SimpleCelLighting(float4(0,1,0,0.5), input.worldPosition.xyz, input.worldNormal);
+                    LightingInput lightingInput = GetLightingInput(input.position, input.normal);
+                    return SimpleCelLighting(float4(0,1,0,0.5), lightingInput);
                     // return baseColor;
                 }
 

@@ -1,4 +1,4 @@
-Shader "Unlit/Eidolon" {
+Shader "Selene/Eidolon" {
     Properties {
         // Define the properties in a way Unity can understand
         [NoScaleOffset]_MainTex ("Main Texture", 2D) = "white" {}
@@ -40,10 +40,9 @@ Shader "Unlit/Eidolon" {
             };
 
             struct VertexOutput{
-                float4 position : SV_POSITION;
-                float3 normal : TEXCOORD1;
-                float3 worldPosition : TEXCOORD2;
-                float3 worldNormal : TEXCOORD3;
+                float4 positionCS : SV_POSITION;
+                float3 normal : TEXCOORD2;
+                float4 position : TEXCOORD3;
                 float2 uv : TEXCOORD0;
             };
 
@@ -61,10 +60,9 @@ Shader "Unlit/Eidolon" {
                 VertexOutput vert(VertexInput input) {
                     VertexOutput output;
 
-                    output.position = TransformObjectToHClip(input.position.xyz);
-                    output.normal = input.normal;
-                    output.worldPosition = TransformObjectToWorld(input.position.xyz);
-                    output.worldNormal = normalize(TransformObjectToWorldNormal(input.normal.xyz));
+                    output.positionCS = TransformObjectToHClip(input.position.xyz);
+                    output.normal = normalize(input.normal);
+                    output.position = input.position;
                     output.uv = input.uv;
 
 
@@ -82,7 +80,8 @@ Shader "Unlit/Eidolon" {
 
                     clip (baseColor.a <= 0.5 ? -1 : 0);
 
-                    return SimpleCelLighting(baseColor, input.worldPosition.xyz, input.worldNormal);
+                    LightingInput lightingInput = GetLightingInput(input.position, input.normal);
+                    return SimpleCelLighting(baseColor, lightingInput);
                     // return baseColor;
                 }
 
@@ -102,13 +101,9 @@ Shader "Unlit/Eidolon" {
                 VertexOutput vert(VertexInput input) {
                     VertexOutput output;
 
-                    half3 normal = input.normal;
-                    float3 position = input.position.xyz + input.normal * _HuskDistance;
-
-                    output.position = TransformObjectToHClip(position);
-                    output.normal = input.normal;
-                    output.worldPosition = TransformObjectToWorld(input.position.xyz);
-                    output.worldNormal = normalize(TransformObjectToWorldNormal(input.normal.xyz));
+                    output.position = input.position + half4(input.normal, 0) * _HuskDistance;
+                    output.positionCS = TransformObjectToHClip(output.position);
+                    output.normal = normalize(input.normal);
                     output.uv = input.uv;
 
 
@@ -118,7 +113,9 @@ Shader "Unlit/Eidolon" {
                 float4 frag(VertexOutput input) : SV_Target {
                     half4 baseColor = tex2D(_HuskTex, input.uv);
 
-                    half4 shadedColor = SimpleCelLighting(baseColor, input.worldPosition.xyz, input.worldNormal);
+                    LightingInput lightingInput = GetLightingInput(input.position, input.normal); 
+
+                    half4 shadedColor = SimpleCelLighting(baseColor, lightingInput);
 
                     if (shadedColor.a > 0.5) {
                         float waveScale = 5 * _Scale;

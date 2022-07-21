@@ -63,7 +63,7 @@ namespace SeleneGame.Entities {
 
             shiftCooldown = Mathf.MoveTowards( shiftCooldown, 0f, GameUtility.timeDelta );
             
-            if (shiftInput.stopped && shiftInput.trueTimer < Global.HOLDTIME){
+            if (shiftInput.tapped){
                 
                 ToggleShift();
             }
@@ -141,7 +141,6 @@ namespace SeleneGame.Entities {
 
         public void StopShifting(Vector3 newDown){
             gravityDown = newDown;
-
             SetState( defaultState );
         }
 
