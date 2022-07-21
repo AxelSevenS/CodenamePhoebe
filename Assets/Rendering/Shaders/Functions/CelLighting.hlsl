@@ -60,8 +60,8 @@ LightingInput GetLightingInput(half3 ObjectPosition, half3 ObjectNormal) {
 }
 
 
-half GetLuminance (LightingInput input, half3 lightDirectionWS) {
-    return saturate(dot(input.worldNormal, lightDirectionWS));
+half GetLuminance (LightingInput input, half3 lightDirectionWS, half shadowAttenuation) {
+    return saturate(dot(input.worldNormal, lightDirectionWS)) * shadowAttenuation;
     // return NdotL;
 }
 
@@ -100,8 +100,8 @@ half3 CelColor (half3 lightColor, float attenuation) {
 half3 CelShade( LightingInput input, half3 lightColor, half3 lightDir, half lightShadowAtten, half lightDistanceAtten, half specularIntensity, half smoothness, half3 accentColor ) {
     lightDir = normalize(lightDir);
     
-    half luminance = GetLuminance(input, lightDir);
-    half shade = GetShade(luminance) * lightShadowAtten;
+    half luminance = GetLuminance(input, lightDir, lightShadowAtten);
+    half shade = GetShade(luminance);
 
     half specular = GetSpecular(input, lightDir, smoothness) * shade;
     specular = smoothstep(0.15, 1.0, specular) * specularIntensity;
@@ -120,8 +120,8 @@ half3 CelShade( LightingInput input, half3 lightColor, half3 lightDir, half ligh
 }
 
 half3 SimpleCelShade( LightingInput input, half3 lightColor, half3 lightDir, half lightShadowAtten, half lightDistanceAtten ) {
-    half luminance = GetLuminance(input, normalize(lightDir));
-    half shade = GetShade(luminance) * lightShadowAtten;
+    half luminance = GetLuminance(input, normalize(lightDir), lightShadowAtten);
+    half shade = GetShade(luminance);
 
     return CelColor(lightColor * lightDistanceAtten, shade);
 }
