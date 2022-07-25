@@ -7,6 +7,19 @@ float remap(float In, float InMin, float InMax, float OutMin, float OutMax) {
     return OutMin + (In - InMin) * (OutMax - OutMin) / (InMax - InMin);
 }
 
+float3 NormalBlend( float3 A, float3 B) {
+    return normalize(float3(A.rg + B.rg, A.b * B.b));
+}
+
+float3 NormalStrength(float3 normal, float Strength) {
+    return float3(normal.rg * Strength, lerp(1, normal.b, saturate(Strength)));
+}
+
+float Saturation(float In, float Saturation) {
+    float luma = dot(In, float3(0.2126729, 0.7151522, 0.0721750));
+    return luma.xxx + Saturation.xxx * (In - luma.xxx);
+}
+
 float rand(float2 uv){
     return frac(sin(dot(uv, float2(12.9898, 78.233))) * 43758.5453);
 }
@@ -105,6 +118,13 @@ float Dither(float2 ScreenPosition) {
     };
     uint index = (uint(uv.x) % 4) * 4 + uint(uv.y) % 4;
     return 1 - DITHER_THRESHOLDS[index];
+}
+
+void ProximityDither(float3 worldPosition, float4 screenPosition) {
+    float proximityAlphaMultiplier = (distance(_WorldSpaceCameraPos, worldPosition) - 0.25) * 3;
+
+    float ditherMask = Dither( screenPosition.xy/screenPosition.w );
+    clip (ditherMask <= 1 - proximityAlphaMultiplier ? -1 : 0);
 }
 
 #endif

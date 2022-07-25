@@ -24,6 +24,7 @@ Material:
   m_Shader: {fileID: -6465566751694194690, guid: 6566a88970a4a3a419d928f0c3db33a5,
     type: 3}
   m_ValidKeywords:
+  - CEL_ACCENT_ON
   - CEL_SPECULAR_ON
   m_InvalidKeywords:
   - HATCHING_ON
@@ -209,10 +210,10 @@ Material:
     - Boolean_4dcb652bd35946169f20fa329ff261b7: 1
     - Boolean_62b895750dbe44d9bb512d647701feaf: 0
     - Boolean_746f00cdd21a463a8f7db0eed7f65639: 1
-    - CEL_ACCENT: 0
+    - CEL_ACCENT: 1
     - CEL_SPECULAR: 1
     - EMISSIONMAP: 0
-    - EMISSIONMAP_ON: 1
+    - EMISSIONMAP_ON: 0
     - FLOWMAP_ON: 0
     - HATCHING: 1
     - NORMALMAP_ON: 0

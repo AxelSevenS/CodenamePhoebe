@@ -69,12 +69,6 @@ Shader "Selene/Eidolon" {
                     return output;
                 }
 
-                // VertexOutput frag(VertexOutput input) : SV_Target {
-                //     float4 baseTex = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, input.uv);
-
-                //     return baseTex * _AmbientLight;
-                // }
-
                 float4 frag(VertexOutput input) : SV_Target {
                     half4 baseColor = FlowMap(_MainTex, _FlowTex, input.uv, _Time[0] * 2, 0.5);
 
