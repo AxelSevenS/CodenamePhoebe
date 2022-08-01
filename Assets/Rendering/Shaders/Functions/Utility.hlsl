@@ -2,6 +2,116 @@
 #define HLSL_UTILITY_INCLUDED
 
 SamplerState flowmap_point_repeat_sampler;
+float Epsilon = 1e-10;
+
+
+struct LightingInput{
+    float4 clipPosition;
+    float3 worldPosition;
+    half3 worldNormal;
+    half3 worldViewDirection;
+    float4 screenPosition;
+    float4 shadowCoord;
+};
+
+LightingInput GetLightingInput(half3 ObjectPosition, half3 ObjectNormal) {
+
+    LightingInput lightingInput;
+    lightingInput.clipPosition = TransformObjectToHClip(ObjectPosition);
+    
+    lightingInput.worldPosition = TransformObjectToWorld(ObjectPosition.xyz);
+    lightingInput.worldNormal = normalize(TransformObjectToWorldNormal(ObjectNormal.xyz));
+    lightingInput.worldViewDirection = normalize( _WorldSpaceCameraPos.xyz - lightingInput.worldPosition );
+    #ifdef SHADERGRAPH_PREVIEW
+        lightingInput.screenPosition = float4(0,0,0,0);
+        lightingInput.shadowCoord = float4(0,0,0,0);
+    #else
+        lightingInput.screenPosition = ComputeScreenPos( lightingInput.clipPosition );
+        #if SHADOWS_SCREEN
+            lightingInput.shadowCoord = lightingInput.screenPosition;
+        #else 
+            lightingInput.shadowCoord = TransformWorldToShadowCoord(lightingInput.worldPosition);
+        #endif
+    #endif
+    return lightingInput;
+}
+
+
+float3 RGBtoHSV(float3 rgb)
+{
+    float3 hsv;
+    float minVal, maxVal, delta;
+
+    minVal = min(rgb.x, min(rgb.y, rgb.z));
+    maxVal = max(rgb.x, max(rgb.y, rgb.z));
+
+    hsv.z = maxVal;				// v
+    delta = maxVal - minVal;
+
+    if (maxVal != 0)
+        hsv.y = delta / maxVal;		// s
+    else {
+        hsv.y = 0;
+        hsv.x = -1;
+        return hsv;
+    }
+
+    if (rgb.x == maxVal)
+        hsv.x = (rgb.y - rgb.z) / delta;		// between yellow & magenta
+    else if (rgb.y == maxVal)
+        hsv.x = 2 + (rgb.z - rgb.x) / delta;	// between cyan & yellow
+    else
+        hsv.x = 4 + (rgb.x - rgb.y) / delta;	// between magenta & cyan
+
+    hsv.x *= 60;				// degrees
+    if (hsv.x < 0)
+        hsv.x += 360;
+
+    return hsv;
+}
+
+float3 HSVtoRGB(float3 HSV) {
+    float3 RGB = HSV.z;
+
+    float var_h = HSV.x * 6;
+    float var_i = floor(var_h);   // Or ... var_i = floor( var_h )
+    float var_1 = HSV.z * (1.0 - HSV.y);
+    float var_2 = HSV.z * (1.0 - HSV.y * (var_h-var_i));
+    float var_3 = HSV.z * (1.0 - HSV.y * (1-(var_h-var_i)));
+    if (var_i == 0) 
+        RGB = float3(HSV.z, var_3, var_1);
+    else if (var_i == 1) 
+        RGB = float3(var_2, HSV.z, var_1);
+    else if (var_i == 2) 
+        RGB = float3(var_1, HSV.z, var_3);
+    else if (var_i == 3) 
+        RGB = float3(var_1, var_2, HSV.z);
+    else if (var_i == 4) 
+        RGB = float3(var_3, var_1, HSV.z);
+    else                 
+        RGB = float3(HSV.z, var_1, var_2);
+    
+    return (RGB);
+}
+
+
+float4 ColorSaturation(float4 color, float saturation) {
+    float3 hsl = RGBtoHSV(color);
+    hsl.y = hsl.y * saturation;
+    return float4( HSVtoRGB(hsl), color.a );
+}
+float3 ColorSaturation(float3 color, float saturation) {
+    float3 hsl = RGBtoHSV(color);
+    hsl.y = hsl.y * saturation;
+    return HSVtoRGB(hsl);
+}
+    // float4 saturatedColor = mix(
+    //     float3( dot(color, float3(0.299, 0.587, 0.114)) ),
+    //     color,
+    //     saturation
+    // )
+    // saturatedColor.a = color.a;
+    // return saturatedColor;
 
 float remap(float In, float InMin, float InMax, float OutMin, float OutMax) {
     return OutMin + (In - InMin) * (OutMax - OutMin) / (InMax - InMin);
@@ -120,11 +230,22 @@ float Dither(float2 ScreenPosition) {
     return 1 - DITHER_THRESHOLDS[index];
 }
 
-void ProximityDither(float3 worldPosition, float4 screenPosition) {
+bool ProximityDither(float3 worldPosition, float4 screenPosition) {
     float proximityAlphaMultiplier = (distance(_WorldSpaceCameraPos, worldPosition) - 0.25) * 3;
 
-    float ditherMask = Dither( screenPosition.xy/screenPosition.w );
-    clip (ditherMask <= 1 - proximityAlphaMultiplier ? -1 : 0);
+    float ditherMask = Dither( screenPosition.xy / screenPosition.w );
+    bool shouldClip = ditherMask <= 1 - proximityAlphaMultiplier;
+    clip ( shouldClip ? -1 : 0 );
+    return shouldClip;
+}
+
+float3 ComputeNormals(float3 normalWS, float3 tangentWS, float3 bitangentWS, float3 normalTS){
+    float3x3 mtxTangentToWorld = {
+        bitangentWS.x, tangentWS.x, normalWS.x, 
+        bitangentWS.y, tangentWS.y, normalWS.y, 
+        bitangentWS.z, tangentWS.z, normalWS.z
+    };
+    return normalize( mul(mtxTangentToWorld, normalTS) );
 }
 
 #endif

@@ -10,12 +10,25 @@ namespace SeleneGame.Core {
 
     public abstract class ArmedEntity : Entity {
         
-        public WeaponInventory weapons;
+        [SerializeField]
+        protected WeaponInventory _weapons = null;
+
+        public WeaponInventory weapons {
+            get {
+                if (_weapons == null) {
+                    ResetWeapons();
+                }
+                return _weapons;
+            }
+        }
+
+        protected virtual void ResetWeapons() {
+            _weapons = new WeaponInventory(this, 1);
+        }
 
 
         [Header("Parrying")]
         public float parryTimer;
-        public event Action onParry;
 
 
         [Header("Evading")]
@@ -23,14 +36,19 @@ namespace SeleneGame.Core {
         public Vector3 evadeDirection = Vector3.forward;
         public float evadeTimer;
         public float evadeCount = 1f;
+
         public event Action<Vector3> onEvade;
+        public event Action onParry;
 
         public override bool CanTurn() => !evading;
 
         protected override void Awake(){
             base.Awake();
+        }
 
-            // weapons = new WeaponInventory(this, 1);
+        protected override void Reset(){
+            _weapons = null;
+            base.Reset();
         }
 
         protected override void Update(){
@@ -42,7 +60,7 @@ namespace SeleneGame.Core {
             parryTimer = Mathf.MoveTowards( parryTimer, 0f, GameUtility.timeDelta );
 
 
-            if ( KeyInputData.SimultaneousTap( lightAttackInput, heavyAttackInput ) )
+            if ( KeyInputData.SimultaneousTap( controller.lightAttackInput, controller.heavyAttackInput ) )
                 Parry();
             
             foreach (Weapon weapon in weapons)
@@ -52,7 +70,7 @@ namespace SeleneGame.Core {
         protected override void FixedUpdate() {
             base.FixedUpdate();
 
-            if ( moveDirection.magnitude > 0f && evadeTimer > data.totalEvadeDuration - 0.15f )
+            if ( moveDirection.sqrMagnitude > 0f && evadeTimer > data.totalEvadeDuration - 0.15f )
                 evadeDirection = moveDirection.normalized;
 
             foreach (Weapon weapon in weapons)
@@ -65,8 +83,8 @@ namespace SeleneGame.Core {
             animator.SetFloat("WeaponType", (float)(weapons.current.weaponType) );
         }
 
-        public override void SetStyle(int style) {
-            weapons.Switch(style);
+        public override void SetStyle(int newStyle) {
+            weapons.Switch(newStyle);
         }
 
         public void Parry(){
@@ -92,11 +110,11 @@ namespace SeleneGame.Core {
         public void GroundedEvade(Vector3 evadeDirection){
             if (evadeTimer > 0f) return;
             
-            Vector3 newVelocity = rb.velocity.NullifyInDirection( gravityDown );
+            Vector3 newVelocity = rigidbody.velocity.NullifyInDirection( gravityDown );
             if (!onGround){
                 newVelocity += -gravityDown.normalized * 5f;
             }
-            rb.velocity = newVelocity;
+            rigidbody.velocity = newVelocity;
 
             StartEvade(evadeDirection);
         }

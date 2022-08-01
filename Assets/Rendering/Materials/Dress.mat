@@ -21,12 +21,12 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Dress
-  m_Shader: {fileID: -6465566751694194690, guid: 6566a88970a4a3a419d928f0c3db33a5,
-    type: 3}
+  m_Shader: {fileID: 4800000, guid: 5ec9723f1de93114abc5e30ef50c50b2, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords:
   - ACCENTGRADIENT_ON
   - PROXIMITYDITHER_ON
+  - _PROXIMITYDITHER_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
@@ -169,10 +169,14 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 79ca79c86878ba94d8bf89e8cf4db7c7, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -237,6 +241,8 @@ Material:
     - Vector1_eba81f4ec9494ffc89d831e650dc2eee: 0
     - Vector1_f99686aaeca44c4687bb480feabfa5fb: 0
     - Vector1_f99686aaeca44c4687bb480feabfa5fb_1: 0
+    - _AccentBrightness: 0.707
+    - _AccentIntensity: 2.39
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1
@@ -247,19 +253,26 @@ Material:
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
+    - _EmissionIntensity: 1.04
     - _EnvironmentReflections: 1
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _Metallic: 0
+    - _NormalIntensity: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
+    - _ProximityDither: 1
+    - _QueueControl: -1
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _Smoothness: 0.5
+    - _Smoothness: 0.01
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
+    - _SpecularIntensity: 0.42
     - _SrcBlend: 1
+    - _StencilComp: 0
+    - _StencilID: 0
     - _Surface: 0
     - _WorkflowMode: 1
     - _ZWrite: 1

@@ -5,7 +5,7 @@
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "11c14a27283e247f57662038f58d7f41ade9d686"
+      "hash": "cfcde2d6cc694e631290a7110c9bf26ce2452f66"
     },
     "com.needle.shadergraph-markdown": {
       "version": "file:com.needle.shadergraph-markdown",
@@ -18,7 +18,7 @@
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "e5951eeaaf1825080bd677b80f3b4f986db327c6"
+      "hash": "8efb8a65ef8a580a06c46ba718c24e5896183d33"
     },
     "com.unity.2d.sprite": {
       "version": "1.0.0",

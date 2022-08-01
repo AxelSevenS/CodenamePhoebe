@@ -6,8 +6,8 @@ namespace SeleneGame.Core {
     
     public abstract class Costume : ScriptableObject{
 
-        public GameObject model;
         public Sprite portrait;
+        public GameObject model;
 
     }
 }

@@ -4,13 +4,13 @@
 #include "Utility.hlsl"
 #include "CelLighting.hlsl"
 
-void CelLighting_half( half4 baseColor, float3 positionOS, half3 normalOS, half specularIntensity, half smoothness, half3 accentColor, out half4 finalColor ){
-    LightingInput lightingInput = GetLightingInput( positionOS, normalOS );
-    finalColor = CelLighting( baseColor, lightingInput, specularIntensity, smoothness, accentColor );
+void CelLighting_half( half4 baseColor, float3 positionOS, half3 normalOS, half specularIntensity, half smoothness, half accentIntensity, out half4 finalColor ){
+    CelLightingInput lightingInput = GetCelLightingInput( positionOS, normalOS, specularIntensity, smoothness, accentIntensity );
+    finalColor = CelLighting( baseColor, lightingInput );
 }
 
 void SimpleCelLighting_half( half4 baseColor, float3 positionOS, half3 normalOS, out half4 finalColor ){
-    LightingInput lightingInput = GetLightingInput( positionOS, normalOS );
+    CelLightingInput lightingInput = GetCelLightingInput( positionOS, normalOS );
     finalColor = SimpleCelLighting( baseColor, lightingInput );
 }
 

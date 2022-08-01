@@ -20,41 +20,42 @@ const half3 defaultLightColor = half3(1,1,1);
 const half3 defaultLightDir = half3(0.5,0.5,0.5);
 
 
-struct LightingInput{
 
+struct CelLightingInput {
     float4 clipPosition;
     float3 worldPosition;
     half3 worldNormal;
     half3 worldViewDirection;
     float4 screenPosition;
     float4 shadowCoord;
+    half specularIntensity;
+    half smoothness;
+    half accentIntensity;
 };
 
-LightingInput GetLightingInput(half3 ObjectPosition, half3 ObjectNormal) {
+CelLightingInput GetCelLightingInput( LightingInput lightingInput, half specularIntensity = 0, half smoothness = 0, half accentIntensity = 0 ) {
+    CelLightingInput celLightingInput;
+    celLightingInput.clipPosition = lightingInput.clipPosition;
+    celLightingInput.worldPosition = lightingInput.worldPosition;
+    celLightingInput.worldNormal = lightingInput.worldNormal;
+    celLightingInput.worldViewDirection = lightingInput.worldViewDirection;
+    celLightingInput.screenPosition = lightingInput.screenPosition;
+    celLightingInput.shadowCoord = lightingInput.shadowCoord;
+    celLightingInput.specularIntensity = specularIntensity;
+    celLightingInput.smoothness = smoothness;
+    celLightingInput.accentIntensity = accentIntensity;
+    return celLightingInput;
+}
 
-    LightingInput lightingInput;
-    lightingInput.clipPosition = TransformObjectToHClip(ObjectPosition);
-    
-    lightingInput.worldPosition = TransformObjectToWorld(ObjectPosition.xyz);
-    lightingInput.worldNormal = normalize(TransformObjectToWorldNormal(ObjectNormal.xyz));
-    lightingInput.worldViewDirection = normalize( _WorldSpaceCameraPos.xyz - lightingInput.worldPosition );
-    #ifdef SHADERGRAPH_PREVIEW
-        lightingInput.screenPosition = float4(0,0,0,0);
-        lightingInput.shadowCoord = float4(0,0,0,0);
-    #else
-        lightingInput.screenPosition = ComputeScreenPos( lightingInput.clipPosition );
-        #if SHADOWS_SCREEN
-            lightingInput.shadowCoord = lightingInput.screenPosition;
-        #else 
-            lightingInput.shadowCoord = TransformWorldToShadowCoord(lightingInput.worldPosition);
-        #endif
-    #endif
-    return lightingInput;
+CelLightingInput GetCelLightingInput( half3 ObjectPosition, half3 ObjectNormal, half specularIntensity = 0, half smoothness = 0, half accentIntensity = 0 ) {
+    return GetCelLightingInput( GetLightingInput(ObjectPosition, ObjectNormal), specularIntensity, smoothness, accentIntensity );
 }
 
 
-half GetLuminance (LightingInput input, half3 lightDirectionWS, half shadowAttenuation) {
-    return saturate(dot(input.worldNormal, lightDirectionWS)) * shadowAttenuation;
+
+
+half GetLuminance (CelLightingInput input, half3 lightDirectionWS, half shadowAttenuation) {
+    return saturate( dot(input.worldNormal, lightDirectionWS) ) * shadowAttenuation;
     // return NdotL;
 }
 
@@ -63,70 +64,71 @@ half GetShade (half luminance) {
     // Color is dark until 15% luminance then it transitions to light until 55% luminance where it plateaus
     // the minimum value is 0.25 and the maximum is 1.0
     
-    // ||                                    -------- 1 ---------------------------------- ||
-    // ||                          ---------                                               ||
+    // ||                                   -------- 1 ----------------------------------- || This is a curve graph in case you couldn't tell...
+    // ||                          --------                                                ||
     // || ---------- 0.25 --------                                                         ||
     // ||  0  |  0.1  |  0.2  |  0.3  | 0.4  |  0.5  |  0.6  |  0.7  |  0.8  |  0.9  |  1  ||
 
     half shade = smoothstep(0.15, 0.55, luminance);
-    return remap(shade, 0, 1, 0.25, 1);
+    return shade;
 }
 
-half GetSpecular (LightingInput input, half3 lightDirectionWS, half smoothness) {
-    if (smoothness == 0)
-        return 0;
-    return PhongReflection(input.worldNormal, input.worldViewDirection, lightDirectionWS, smoothness*100);
+half GetSpecular (CelLightingInput input, half3 lightDirectionWS, half shade) {
+    half phong = PhongReflection(input.worldNormal, input.worldViewDirection, lightDirectionWS, input.smoothness*100);
+    return smoothstep(0.15, 1.0, phong * shade) * input.specularIntensity;
 }
 
+half GetAccent (half luminance) {
 
-half3 CelColor (half3 lightColor, float attenuation, float specular, float accent, half3 accentColor) {
+    // accent is how near luminance is to 0.2, it transitions from 1 when the difference is 0 to 0 when the difference is 0.65, then it plateaus
+    // sqrt is to make the transition less linear
 
-    half3 radiance = lightColor * _AmbientLight;
-    half3 shade = radiance*0.2;
-
-    half3 finalColor = lerp(shade, radiance, attenuation);
-
-    finalColor = lerp(finalColor, finalColor * accentColor, accent);
+    // || --------------- 1 ---------------                                                ||
+    // ||                                   ----------------                               ||
+    // ||                                                    --------------- 0 ----------- ||
+    // ||  0  |  0.1  |  0.2  |  0.3  | 0.4  |  0.5  |  0.6  |  0.7  |  0.8  |  0.9  |  1  ||
     
-    finalColor += radiance * specular;
-    
-    return finalColor;
-}
-half3 CelColor (half3 lightColor, float attenuation) {
-    return CelColor(lightColor, attenuation, 0, 0, half3(1,1,1));
+    return ( 1 - sqrt( abs(0.2 - luminance) ) ) * 0.35;
 }
 
 
-half3 CelShade( LightingInput input, half3 lightColor, half3 lightDir, half lightShadowAtten, half lightDistanceAtten, half specularIntensity, half smoothness, half3 accentColor ) {
+
+
+half3 CelShade( CelLightingInput input, half3 lightColor, half3 lightDir, half lightShadowAtten, half lightDistanceAtten ) {
     lightDir = normalize(lightDir);
     
     half luminance = GetLuminance(input, lightDir, lightShadowAtten);
     half shade = GetShade(luminance);
 
-    half specular = 0;
-    if (specularIntensity != 0) {
-        specular = GetSpecular(input, lightDir, smoothness) * shade;
-        specular = smoothstep(0.15, 1.0, specular) * specularIntensity;
+    half3 litColor = lightColor * lightDistanceAtten * _AmbientLight;
+    half3 shadedColor = litColor*0.2;
+
+    half3 finalColor = lerp(shadedColor, litColor, shade);
+
+    if (input.accentIntensity > 0) {
+
+        half accent = GetAccent(luminance);
+        finalColor = lerp(finalColor, ColorSaturation(finalColor, input.accentIntensity + 1).rgb, accent);
     }
 
-    // accent is how near luminance is to 0.2, it transitions from 1 when the difference is 0 to 0 when the difference is 0.65, then it plateaus
-    // sqrt is to make the transition less linear
+    if (input.specularIntensity > 0 && input.smoothness > 0) {
 
-    // ||      ---------- 1 ----------                                                     ||
-    // || 0.5                          ----------                                          ||
-    // ||                                         ---------- 0 --------------------------- ||
-    // ||  0  |  0.1  |  0.2  |  0.3  | 0.4  |  0.5  |  0.6  |  0.7  |  0.8  |  0.9  |  1  ||
+        half specular = GetSpecular(input, lightDir, shade);
+        finalColor += litColor * specular;
+    }
 
-    half accent = ( 1 - sqrt(abs(0.2 - luminance) ) ) * 0.7;
+    return finalColor;
 
-    return CelColor(lightColor * lightDistanceAtten, shade, specular, accent, accentColor);
 }
 
-half3 SimpleCelShade( LightingInput input, half3 lightColor, half3 lightDir, half lightShadowAtten, half lightDistanceAtten ) {
+half3 SimpleCelShade( CelLightingInput input, half3 lightColor, half3 lightDir, half lightShadowAtten, half lightDistanceAtten ) {
     half luminance = GetLuminance(input, normalize(lightDir), lightShadowAtten);
     half shade = GetShade(luminance);
 
-    return CelColor(lightColor * lightDistanceAtten, shade);
+    half3 litColor = lightColor * lightDistanceAtten * _AmbientLight;
+    half3 shadedColor = litColor*0.2;
+
+    return lerp(shadedColor, litColor, shade);
 }
 
 
@@ -139,22 +141,13 @@ half3 SimpleCelShade( LightingInput input, half3 lightColor, half3 lightDir, hal
 
 
 
-half4 CelLighting( half4 baseColor, LightingInput input, half specularIntensity, half smoothness, half3 accentColor ) {
+half4 CelLighting( half4 baseColor, CelLightingInput input ) {
     input.worldNormal = normalize(input.worldNormal);
     input.worldViewDirection = normalize(input.worldViewDirection);
 
     #ifdef SHADERGRAPH_PREVIEW
 
-        half3 celColor = CelShade(
-            input,
-            defaultLightColor,
-            defaultLightDir,
-            1,
-            1,
-            specularIntensity,
-            smoothness,
-            accentColor
-        );
+        half3 celColor = CelShade( input, defaultLightColor, defaultLightDir, 1, 1 );
 
         return baseColor * half4(celColor, 1);
 
@@ -162,32 +155,14 @@ half4 CelLighting( half4 baseColor, LightingInput input, half specularIntensity,
     
         Light light = GetMainLight(input.shadowCoord, input.worldPosition, 1);
 
-        half3 celColor = CelShade(
-            input,
-            light.color, 
-            light.direction, 
-            light.shadowAttenuation,
-            light.distanceAttenuation,
-            specularIntensity, 
-            smoothness, 
-            accentColor
-        );
+        half3 celColor = CelShade( input, light.color, light.direction, light.shadowAttenuation, light.distanceAttenuation );
 
         #ifdef _ADDITIONAL_LIGHTS
             uint lightsCount = GetAdditionalLightsCount();
             for (uint lightIndex = 0u; lightIndex < lightsCount; ++lightIndex) {
                 light = GetAdditionalLight(lightIndex, input.worldPosition, 1);
 
-                celColor += CelShade(
-                    input,
-                    light.color, 
-                    light.direction, 
-                    light.shadowAttenuation,
-                    light.distanceAttenuation,
-                    specularIntensity, 
-                    smoothness, 
-                    accentColor
-                );
+                celColor += CelShade( input, light.color, light.direction, light.shadowAttenuation, light.distanceAttenuation );
             }
         #endif
         
@@ -196,44 +171,26 @@ half4 CelLighting( half4 baseColor, LightingInput input, half specularIntensity,
     #endif
 }
 
-half4 SimpleCelLighting( half4 baseColor, LightingInput input ) {
+half4 SimpleCelLighting( half4 baseColor, CelLightingInput input ) {
     input.worldViewDirection = normalize(input.worldViewDirection);
 
     #ifdef SHADERGRAPH_PREVIEW
 
-        half3 celColor = SimpleCelShade(
-            input,
-            defaultLightColor, 
-            defaultLightDir,
-            1,
-            1
-        );
+        half3 celColor = SimpleCelShade( input, defaultLightColor, defaultLightDir, 1, 1 );
         return baseColor * half4(celColor, 1);
 
     #else
 
         Light light = GetMainLight(input.shadowCoord, input.worldPosition, 1);
         
-        half3 celColor = SimpleCelShade(
-            input,
-            light.color,
-            light.direction,
-            light.shadowAttenuation,
-            light.distanceAttenuation
-        );
+        half3 celColor = SimpleCelShade( input, light.color, light.direction, light.shadowAttenuation, light.distanceAttenuation );
 
         #ifdef _ADDITIONAL_LIGHTS
             uint lightsCount = GetAdditionalLightsCount();
             for (uint lightIndex = 0u; lightIndex < lightsCount; ++lightIndex) {
                 light = GetAdditionalLight(lightIndex, input.worldPosition, 1);
 
-                celColor += SimpleCelShade(
-                    input,
-                    light.color,
-                    light.direction,
-                    light.shadowAttenuation,
-                    light.distanceAttenuation
-                );
+                celColor += SimpleCelShade( input, light.color, light.direction, light.shadowAttenuation, light.distanceAttenuation );
             }
         #endif
         

@@ -7,6 +7,22 @@
     #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/LODCrossFade.hlsl"
 #endif
 
+// Required to compile gles 2.0 with standard srp library
+#pragma prefer_hlslcc gles
+#pragma exclude_renderers d3d11_9x gles
+//#pragma target 4.5
+
+// Material Keywords
+#pragma shader_feature _ALPHATEST_ON
+#pragma shader_feature _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
+
+// GPU Instancing
+#pragma multi_compile_instancing
+#pragma multi_compile _ DOTS_INSTANCING_ON
+                    
+#pragma vertex ShadowPassVertex
+#pragma fragment ShadowPassFragment
+
 // Shadow Casting Light geometric parameters. These variables are used when applying the shadow Normal Bias and are set by UnityEngine.Rendering.Universal.ShadowUtils.SetupShadowCasterConstantBuffer in com.unity.render-pipelines.universal/Runtime/ShadowUtils.cs
 // For Directional lights, _LightDirection is used when applying shadow Normal Bias.
 // For Spot lights and Point lights, _LightPosition is used to compute the actual light direction because it is different at each shadow caster geometry vertex.

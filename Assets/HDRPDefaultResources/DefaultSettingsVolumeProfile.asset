@@ -13,12 +13,9 @@ MonoBehaviour:
   m_Name: ChromaticAberration
   m_EditorClassIdentifier: 
   active: 1
-  m_AdvancedMode: 0
   intensity:
     m_OverrideState: 1
     m_Value: 0.205
-    min: 0
-    max: 1
 --- !u!114 &-7089757308646879465
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -93,31 +90,21 @@ MonoBehaviour:
   m_Name: ColorAdjustments
   m_EditorClassIdentifier: 
   active: 1
-  m_AdvancedMode: 0
   postExposure:
     m_OverrideState: 1
-    m_Value: 0.44
+    m_Value: -0.13
   contrast:
-    m_OverrideState: 0
-    m_Value: -29.61
-    min: -100
-    max: 100
+    m_OverrideState: 1
+    m_Value: 0.75
   colorFilter:
     m_OverrideState: 0
     m_Value: {r: 1, g: 0, b: 0, a: 1}
-    hdr: 1
-    showAlpha: 0
-    showEyeDropper: 1
   hueShift:
     m_OverrideState: 0
     m_Value: -180
-    min: -180
-    max: 180
   saturation:
-    m_OverrideState: 1
-    m_Value: 14
-    min: -100
-    max: 100
+    m_OverrideState: 0
+    m_Value: -58.6
 --- !u!114 &-4406145546346288909
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -131,20 +118,15 @@ MonoBehaviour:
   m_Name: FilmGrain
   m_EditorClassIdentifier: 
   active: 1
-  m_AdvancedMode: 0
   type:
     m_OverrideState: 1
     m_Value: 0
   intensity:
     m_OverrideState: 1
     m_Value: 0.154
-    min: 0
-    max: 1
   response:
     m_OverrideState: 1
     m_Value: 0.258
-    min: 0
-    max: 1
   texture:
     m_OverrideState: 1
     m_Value: {fileID: 0}
@@ -355,6 +337,7 @@ MonoBehaviour:
   - {fileID: -4406145546346288909}
   - {fileID: 7126164936376470561}
   - {fileID: 378639820071699815}
+  - {fileID: 8384951194570879237}
 --- !u!114 &378639820071699815
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -368,17 +351,12 @@ MonoBehaviour:
   m_Name: PaniniProjection
   m_EditorClassIdentifier: 
   active: 1
-  m_AdvancedMode: 0
   distance:
     m_OverrideState: 1
-    m_Value: 0.141
-    min: 0
-    max: 1
+    m_Value: 0.025
   cropToFit:
     m_OverrideState: 1
     m_Value: 1
-    min: 0
-    max: 1
 --- !u!114 &448115243408767295
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -804,26 +782,18 @@ MonoBehaviour:
   m_Name: Vignette
   m_EditorClassIdentifier: 
   active: 1
-  m_AdvancedMode: 0
   color:
     m_OverrideState: 1
     m_Value: {r: 0, g: 0, b: 0, a: 1}
-    hdr: 0
-    showAlpha: 0
-    showEyeDropper: 1
   center:
     m_OverrideState: 1
     m_Value: {x: 0.5, y: 0.5}
   intensity:
     m_OverrideState: 1
     m_Value: 0.246
-    min: 0
-    max: 1
   smoothness:
     m_OverrideState: 1
     m_Value: 0.268
-    min: 0.01
-    max: 1
   rounded:
     m_OverrideState: 1
     m_Value: 0
@@ -1025,6 +995,22 @@ MonoBehaviour:
   cascadeShadowBorder3:
     m_OverrideState: 1
     m_Value: 0.1
+--- !u!114 &8384951194570879237
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97c23e3b12dc18c42a140437e53d3951, type: 3}
+  m_Name: Tonemapping
+  m_EditorClassIdentifier: 
+  active: 1
+  mode:
+    m_OverrideState: 1
+    m_Value: 1
 --- !u!114 &8766038716031857439
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -1038,42 +1024,30 @@ MonoBehaviour:
   m_Name: Bloom
   m_EditorClassIdentifier: 
   active: 1
-  m_AdvancedMode: 0
   threshold:
     m_OverrideState: 1
-    m_Value: 0.75
-    min: 0
+    m_Value: 0.15
   intensity:
     m_OverrideState: 1
-    m_Value: 1
-    min: 0
+    m_Value: 0.45
   scatter:
     m_OverrideState: 1
-    m_Value: 1
-    min: 0
-    max: 1
+    m_Value: 0.7
   clamp:
-    m_OverrideState: 1
+    m_OverrideState: 0
     m_Value: 65472
-    min: 0
   tint:
-    m_OverrideState: 1
+    m_OverrideState: 0
     m_Value: {r: 1, g: 1, b: 1, a: 1}
-    hdr: 0
-    showAlpha: 0
-    showEyeDropper: 1
   highQualityFiltering:
-    m_OverrideState: 1
+    m_OverrideState: 0
     m_Value: 0
   skipIterations:
-    m_OverrideState: 1
+    m_OverrideState: 0
     m_Value: 1
-    min: 0
-    max: 16
   dirtTexture:
-    m_OverrideState: 1
+    m_OverrideState: 0
     m_Value: {fileID: 0}
   dirtIntensity:
-    m_OverrideState: 1
+    m_OverrideState: 0
     m_Value: 0
-    min: 0

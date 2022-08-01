@@ -240,7 +240,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalMap:
-        m_Texture: {fileID: 2800000, guid: cb2ee8ccdd671764e9726546a85ac5d1, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -330,6 +330,8 @@ Material:
     - Vector1_dbe98fbfd091484698b433c5a69f2e97: 0.64
     - Vector1_eba81f4ec9494ffc89d831e650dc2eee: 0
     - Vector1_f99686aaeca44c4687bb480feabfa5fb: 0
+    - _AccentBrightness: 1
+    - _AccentIntensity: 0
     - _AddPrecomputedVelocity: 0
     - _AlphaClip: 0
     - _AlphaCutoffEnable: 0
@@ -372,6 +374,7 @@ Material:
     - _Metallic2: 0
     - _Metallic3: 0
     - _Mode: 0
+    - _NormalIntensity: 0
     - _NumLayersCount: 1
     - _OcclusionStrength: 0
     - _OpaqueCullMode: 2
@@ -400,6 +403,8 @@ Material:
     - _SpecularHighlights: 1
     - _SpecularIntensity: 0
     - _SrcBlend: 1
+    - _StencilComp: 0
+    - _StencilID: 0
     - _StencilRef: 0
     - _StencilRefDepth: 8
     - _StencilRefDistortionVec: 4
@@ -422,6 +427,7 @@ Material:
     - _TransparentZWrite: 0
     - _UVSec: 0
     - _UseShadowThreshold: 0
+    - _UseStencil: 0
     - _WorkflowMode: 1
     - _ZTestDepthEqualForOpaque: 3
     - _ZTestGBuffer: 4

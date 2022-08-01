@@ -1,13 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
+
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.InputSystem;
 
 using SevenGame.Utility;
 
 namespace SeleneGame.Core {
     
-    public class CameraController : MonoBehaviour{
+    public class CameraController : Singleton<CameraController>{
+
+        public Camera camera;
+        public UniversalAdditionalCameraData cameraData;
 
         private Quaternion entityRotation;
         private Vector3 delayedPosition;
@@ -19,34 +24,45 @@ namespace SeleneGame.Core {
         private float additionalDistance = 0f;
 
 
-        private void Update() {
+        private void OnEnable(){
+            SetCurrent();
+        }
 
-            if (Player.current?.entity == null) return;
+        private void Reset() => Awake();
+        private void Awake(){
+            camera = Camera.main;
+            cameraData = camera.GetComponent<UniversalAdditionalCameraData>();
+        }
 
-            Cursor.visible = Player.current.menu;
+
+        private void Update(){
+
+            if (PlayerEntityController.current?.entity == null) return;
+
+            Cursor.visible = PlayerEntityController.current.menu;
             Cursor.lockState = Cursor.visible ? CursorLockMode.None : CursorLockMode.Locked;
 
             UpdateCameraDistance();
         }
 
-        private void FixedUpdate() {
-            if (Player.current?.entity == null) return;
+        private void FixedUpdate(){
+            if (PlayerEntityController.current?.entity == null) return;
 
             UpdateCameraPosition();
         }
-        private void UpdateCameraDistance() {
-            Vector3 cameraRelativePosition = Player.current.entity.state.cameraPosition;
+        private void UpdateCameraDistance(){
+            Vector3 cameraRelativePosition = PlayerEntityController.current.entity.state.cameraPosition;
             Vector3 cameraTargetVector = new Vector3( cameraRelativePosition.x, cameraRelativePosition.y, cameraRelativePosition.z * distanceToPlayer -additionalDistance);
 
             cameraVector = Vector3.Slerp(cameraVector, cameraTargetVector, 3f * GameUtility.timeDelta);
         }
 
-        private void UpdateCameraPosition() {
-            entityRotation = Quaternion.Slerp( entityRotation, Player.current.entity.rotation, 4f * GameUtility.timeDelta );
+        private void UpdateCameraPosition(){
+            entityRotation = Quaternion.Slerp( entityRotation, PlayerEntityController.current.entity.rotation, 4f * GameUtility.timeDelta );
             
-            transform.rotation = entityRotation * Player.current.entity.cameraRotation;
+            transform.rotation = PlayerEntityController.current.worldCameraRotation;
 
-            delayedPosition = Vector3.SmoothDamp(delayedPosition, Player.current.entity["head"].transform.position, ref velocity, 0.06f);
+            delayedPosition = Vector3.SmoothDamp(delayedPosition, PlayerEntityController.current.entity["head"].transform.position, ref velocity, 0.06f);
             Vector3 camPosition = transform.rotation * cameraVector;
 
             float camDistance = camPosition.magnitude;
@@ -68,20 +84,6 @@ namespace SeleneGame.Core {
             Vector3 finalPos = delayedPosition + camPosition.normalized * camDistance;
             
             transform.position = finalPos;
-        }
-
-
-        public Texture replacement;
-        public Material material;
-
-        private void OnRenderImage(RenderTexture src, RenderTexture dest) {
-            if (material == null) return;
-            // To overwrite the entire screen
-            // Graphics.Blit(replacement, null);
-
-            // Or to overwrite only what this specific Camera renders
-            // Graphics.Blit(src, dest, material);
-            Graphics.Blit(replacement, null as RenderTexture);
         }
 
     }

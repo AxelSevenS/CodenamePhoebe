@@ -3,6 +3,7 @@
     "rootNamespace": "SeleneGame",
     "references": [
         "Unity.InputSystem",
+        "Unity.RenderPipelines.Universal.Runtime",
         "Unity.TextMeshPro",
         "Seven.Utility"
     ],

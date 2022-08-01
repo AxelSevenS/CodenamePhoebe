@@ -23,10 +23,6 @@ namespace SeleneGame.Core {
             onToggleMenu?.Invoke();
         }
 
-        public static void StartDialogue(Dialogue dialogue, GameObject dialogueObject){
-            DialogueController.current.StartDialogue(dialogue, dialogueObject);
-        }
-
 
         public static event Action<Guid> onUpdateKeybind;
         public static void UpdateKeybind(Guid keybindId){

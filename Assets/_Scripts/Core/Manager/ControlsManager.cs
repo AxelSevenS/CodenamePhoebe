@@ -12,6 +12,10 @@ namespace SeleneGame.Core {
         
         public InputActionAsset actionAsset;
 
+        public const float cameraSpeed = 0.1f;
+        public float mouseSpeed = 1f;
+        public float stickSpeed = 5f;
+
 
         public InputActionMap playerMap { get; private set; }
         public Dictionary<string, InputAction> playerBindings { get; private set; }
@@ -41,10 +45,12 @@ namespace SeleneGame.Core {
             #endif
 
             EnableControls();
+            ControlsManager.current.playerMap.actionTriggered += ctx => ControllerAction(ctx);
 
         }
         private void OnDisable() {
             DisableControls();
+            ControlsManager.current.playerMap.actionTriggered -= ctx => ControllerAction(ctx);
         }
 
         public void EnableControls(){
@@ -58,6 +64,29 @@ namespace SeleneGame.Core {
             #if UNITY_EDITOR
                 debugMap.Disable();
             #endif
+        }
+
+
+
+        public enum ControllerType{ MouseKeyboard, Controller };
+
+        public ControllerType controllerType = ControllerType.MouseKeyboard;
+
+        private void ControllerAction(InputAction.CallbackContext context){
+            string path = context.control.path;
+
+            if ( path.Contains("Keyboard") || path.Contains("Mouse")  ){
+                if (controllerType == ControllerType.MouseKeyboard) return;
+
+                controllerType = ControllerType.MouseKeyboard;
+                Debug.Log("Switched to Keyboard and Mouse Controls.");
+
+            }else{
+                if (controllerType == ControllerType.Controller) return;
+                
+                controllerType = ControllerType.Controller;
+                Debug.Log("Switched to Controller Controls.");
+            }
         }
     }
 }

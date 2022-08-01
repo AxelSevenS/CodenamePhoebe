@@ -12,7 +12,7 @@ namespace SeleneGame.Core {
         public WaterController waterController;
         public Collider waterCollider;
 
-        Collider[] _colliderBuffer = new Collider[5];
+        Collider[] _colliderBuffer = new Collider[1];
 
         public Entity entity;
         [SerializeField] private Rigidbody rb;
@@ -33,10 +33,10 @@ namespace SeleneGame.Core {
 
         private void FixedUpdate(){
 
-            Physics.OverlapSphereNonAlloc(transform.position, 1f, _colliderBuffer, Global.WaterMask) /* : entity.ColliderOverlap(0f, Global.WaterMask) */;
-            waterCollider = _colliderBuffer.Length > 0 ? _colliderBuffer[0] : null;
+            _colliderBuffer[0] = null;
+            Physics.OverlapSphereNonAlloc(transform.position, 1f, _colliderBuffer, Global.WaterMask);
+            waterCollider = _colliderBuffer[0];
             
-            // Debug.DrawRay(new Vector3(transform.position.x, waterHeight, transform.position.z), Vector3.up, Color.red);
         }
 
         private float CalculateNoise(){
@@ -50,9 +50,9 @@ namespace SeleneGame.Core {
             // return Mathfs.CalculateWave(waterController.waveStrength, Time.time*2f * waterController.waveSpeed, Vector3.Scale(transform.position, WeatherManager.current.windDirection), waterController.waveFrequency);
         }
 
-        public void UpdateWaterBody(WaterController controller){
-            waterController = controller;
-        }
+        // public void UpdateWaterBody(WaterController controller){
+        //     waterController = controller;
+        // }
 
         public void BodyFloat(Rigidbody rb, Vector3 position, float floatability){
             if (position.y > waterHeight || !inWater) return;

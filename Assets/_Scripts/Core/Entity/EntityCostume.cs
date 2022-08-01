@@ -28,34 +28,52 @@ namespace SeleneGame.Core {
             }
         }
 
-        public static EntityCostume GetEntityBaseCostume(string entityTypeName){
-            string defaultCostume = entityTypeName.Replace("Entity", "Base");
-            return GetEntityCostume(defaultCostume);
+        const string defaultPath = "Costume/ec_SeleneBase";
+        
+        private static string CostumeNameToPath(string costumeName) {
+            if ( costumeName.Contains("ec_") )
+                return $"Costume/{costumeName}";
+            return $"Costume/ec_{costumeName}";
         }
-        public static EntityCostume GetEntityBaseCostume(System.Type entityType){
-            string defaultCostume = entityType.Name.Replace("Entity", "Base");
-            return GetEntityCostume(defaultCostume);
-        }
-        public static EntityCostume TryGetEntityCostumeOrBase(System.Type entityType, string costumeName) {
-            string path = $"Costume/Entity/{costumeName}";
-            EntityCostume costume = Resources.Load<EntityCostume>(path);
-            if (costume == null) {
-                string baseCostumeName = entityType.Name.Replace("Entity", "Base");
-                string basePath = $"Costume/Entity/{baseCostumeName}";
-                Debug.LogError($"No Costume was found at Path {path} ; Using entity base costume at Path {basePath}");
-                costume = GetEntityCostume(baseCostumeName);
-            }
-            return costume;
-        }
+
         public static EntityCostume GetEntityCostume(string costumeName) {
-            string path = $"Costume/Entity/{costumeName}";
+            string path = CostumeNameToPath(costumeName);
             EntityCostume costume = Resources.Load<EntityCostume>(path);
             if (costume == null) {
-                const string defaultPath = "Costume/Entity/SeleneBase";
                 Debug.LogError($"No Costume was found at Path {path} ; Using default costume at Path {defaultPath}");
                 costume = Resources.Load<EntityCostume>(defaultPath);
             }
             return costume;
+        }
+
+
+        public static EntityCostume TryGetEntityCostumeOrBase(string entityTypeName, string costumeName) {
+            string path = CostumeNameToPath(costumeName);
+            EntityCostume costume = Resources.Load<EntityCostume>(path);
+            if (costume == null) {
+                costume = GetEntityBaseCostume(entityTypeName);
+            }
+            return costume;
+        }
+
+        public static EntityCostume TryGetEntityCostumeOrBase(System.Type entityType, string costumeName) {
+            string path = CostumeNameToPath(costumeName);
+            EntityCostume costume = Resources.Load<EntityCostume>(path);
+            if (costume == null) {
+                costume = GetEntityBaseCostume(entityType);
+            }
+            return costume;
+        }
+
+
+        public static EntityCostume GetEntityBaseCostume(string entityTypeName){
+            string defaultCostume = entityTypeName.Replace("Entity", "Base");
+            return GetEntityCostume(defaultCostume);
+        }
+
+        public static EntityCostume GetEntityBaseCostume(System.Type entityType){
+            string defaultCostume = entityType.Name.Replace("Entity", "Base");
+            return GetEntityCostume(defaultCostume);
         }
         
     }

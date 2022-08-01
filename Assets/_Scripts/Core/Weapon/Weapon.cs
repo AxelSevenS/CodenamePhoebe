@@ -14,24 +14,30 @@ namespace SeleneGame.Core {
         [HideInInspector] public string name;
 
         
-        [HideInInspector] public ArmedEntity entity;
+        [HideInInspector] public ArmedEntity entity { get; private set; }
 
-        public WeaponCostume costume;
-        public GameObject model;
+        [SerializeField]
+        private WeaponCostume _costume;
 
-        public bool isEquipped => entity.weapons.current == this;
+        public GameObject rightHandModel;
+        public GameObject leftHandModel;
+
+
+        public WeaponCostume costume { 
+            get => _costume; 
+            private set => _costume = value; 
+        }
 
 
         public float weightModifier => GetWeightModifier();
-        public Vector3 jumpDirection => GetJumpDirection();
 
 
         protected virtual float GetWeightModifier() => 1f;
-        protected virtual Vector3 GetJumpDirection() => -entity.gravityDown;
 
-        public virtual void OnAdd() {
+        public virtual void OnAdd( ArmedEntity entity ) {
             name = GetType().Name.Replace("Weapon","");
-            SetCostume( WeaponCostume.GetWeaponBaseCostume( GetType() ) );
+            this.entity = entity;
+            SetCostume( WeaponCostume.GetWeaponBaseCostume( GetType().Name ) );
         }
         public virtual void OnRemove() {
             DestroyModel();
@@ -42,12 +48,12 @@ namespace SeleneGame.Core {
 
 
         // [ContextMenu("LoadModel")]
-        public void SetCostume(WeaponCostume newCostume){
+        public void SetCostume(WeaponCostume costume){
             if (entity == null) return;
 
             DestroyModel();
 
-            costume = newCostume;
+            this.costume = costume;
             
             LoadModel();
             Hide();
@@ -55,28 +61,41 @@ namespace SeleneGame.Core {
         }
 
         public virtual void LoadModel(){
-            if (costume == null || costume.model == null) return;
+            if (entity == null || costume == null) return;
 
-            Transform rightWeapon = entity["weaponRight"].transform;
-            model = GameObject.Instantiate(costume.model, rightWeapon.position, rightWeapon.rotation, rightWeapon);
-            model.name = "WeaponModel";
+            if (costume == null || (costume.model == null && costume.leftHandModel == null) ) return;
+
+            if (costume.model != null) {
+                Transform rightWeapon = entity["weaponRight"].transform;
+                rightHandModel = GameObject.Instantiate(costume.model, rightWeapon.position, rightWeapon.rotation, rightWeapon);
+                rightHandModel.name = $"{name}WeaponModel";
+            }
+
+            if (costume.leftHandModel != null) {
+                Transform leftWeapon = entity["weaponLeft"].transform;
+                leftHandModel = GameObject.Instantiate(costume.leftHandModel, leftWeapon.position, leftWeapon.rotation, leftWeapon);
+                leftHandModel.name = $"{name}WeaponModel";
+            }
                 
         }
         public virtual void DestroyModel(){
-            model = GameUtility.SafeDestroy(model);
+            rightHandModel = GameUtility.SafeDestroy(rightHandModel);
+            leftHandModel = GameUtility.SafeDestroy(leftHandModel);
         }
 
 
         public virtual void Display(){
             if (entity == null) return;
 
-            if (model != null) model.SetActive(true);
+            if (rightHandModel != null) rightHandModel.SetActive(true);
+            if (leftHandModel != null) leftHandModel.SetActive(true);
             // if (secondaryModel != null) secondaryModel.SetActive(true);
         }
         public virtual void Hide(){
             if (entity == null) return;
 
-            if (model != null) model.SetActive(false);
+            if (rightHandModel != null) rightHandModel.SetActive(false);
+            if (leftHandModel != null) leftHandModel.SetActive(false);
             // if (secondaryModel != null) secondaryModel.SetActive(false);
         }
 

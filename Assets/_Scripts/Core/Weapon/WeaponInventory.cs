@@ -12,6 +12,8 @@ namespace SeleneGame.Core {
         private const int defaultIndex = 0;
         [SerializeField] private int currentIndex;
 
+        public int Count => items.Length;
+
         public Weapon this[int index] => items[index];
 
         public Weapon current { get {
@@ -23,8 +25,11 @@ namespace SeleneGame.Core {
             }
         } }
 
-        public WeaponInventory(ArmedEntity entity, byte size){
+        public WeaponInventory(ArmedEntity entity, int size){
+            currentIndex = defaultIndex;
+            
             this.entity = entity;
+
             items = new Weapon[size];
             for (int i = 0; i < items.Length; i++) {
                 Set( i, new UnarmedWeapon());
@@ -32,24 +37,17 @@ namespace SeleneGame.Core {
         }
 
         public void Set(int index, Weapon weapon){
-            weapon.entity = entity;
-            weapon.OnAdd();
             try {
                 items[index] = weapon;
-            } catch {
-                Debug.LogError("WeaponInventory: Index out of range; Set");
+                items[index].OnAdd(entity);
+            } catch (System.Exception e) {
+                Debug.LogError($"Error setting weapon at index {index} in WeaponInventory : {e.Message}.");
             }
         }
 
         public void Set(int index, System.Type weaponType){
             Weapon weapon = (Weapon)System.Activator.CreateInstance(weaponType);
-            weapon.entity = entity;
-            weapon.OnAdd();
-            try {
-                items[index] = weapon;
-            } catch {
-                Debug.LogError("WeaponInventory: Index out of range; Set");
-            }
+            Set(index, weapon);
         }
 
         public void Remove(int index) {
@@ -58,8 +56,8 @@ namespace SeleneGame.Core {
             try {
                 items[index].OnRemove();
                 items[index] = new UnarmedWeapon();
-            } catch {
-                Debug.LogError("WeaponInventory: Index out of range; Remove");
+            } catch (System.Exception e) {
+                Debug.LogError($"Error removing weapon at index {index} in WeaponInventory : {e.Message}.");
             }
         }
 
@@ -72,8 +70,8 @@ namespace SeleneGame.Core {
             try {
                 Weapon newItem = items[index];
                 currentIndex = index;
-            } catch {
-                Debug.LogError("WeaponInventory: Index out of range; Switching to default weapon");
+            } catch (System.Exception e) {
+                Debug.LogError($"Error switching to weapon at index {index} in WeaponInventory : {e.Message}; Switching to Default Weapon");
                 currentIndex = defaultIndex;
             }
 
@@ -81,7 +79,5 @@ namespace SeleneGame.Core {
         }
 
         public IEnumerator GetEnumerator() => items.GetEnumerator();
-
-        public int Length => items.Length;
     }
 }
