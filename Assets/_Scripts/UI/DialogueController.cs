@@ -119,7 +119,7 @@ namespace SeleneGame.UI {
                 dNumber++;
 
                 dialogueName.SetText( line.entity.name );
-                dialoguePortrait.sprite = line.entity.costume.GetPortrait(line.emotion);
+                dialoguePortrait.sprite = line.entity.character.costume.GetPortrait(line.emotion);
 
                 foreach (InvokableEvent dialogueEvent in line.dialogueEvents){
                     dialogueEvent.Invoke(dialogueObject);

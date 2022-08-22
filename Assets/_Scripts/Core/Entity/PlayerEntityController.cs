@@ -199,8 +199,8 @@ namespace SeleneGame.Core {
 
             if (entity == null || !entity.enabled) return;
 
-            EntityControl();
             PlayerInput();
+            EntityControl();
         }
 
 

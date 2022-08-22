@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a109dd2cedd80e645a305042806b286f, type: 3}
+  m_Name: Selene
+  m_EditorClassIdentifier: 
+  displayName: Selene
+  defaultCostume: {fileID: 11400000, guid: dc629ef132d887b4696c909c7ba4033c, type: 2}
+  maxHealth: 0
+  size: {x: 0.25, y: 3.34, z: 0.25}
+  stepHeight: 0
+  acceleration: 90
+  weight: 12.5
+  jumpHeight: 17
+  baseSpeed: 14
+  sprintMultiplier: 1.35
+  slowMultiplier: 0.7
+  swimMultiplier: 0.85
+  evadeSpeed: 23.5
+  evadeDuration: 0.6
+  evadeCooldown: 0.06

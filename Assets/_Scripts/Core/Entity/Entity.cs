@@ -1,7 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+
 using UnityEngine;
+using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEngine.AddressableAssets;
 
 using SevenGame.Utility;
 
@@ -9,31 +12,9 @@ namespace SeleneGame.Core {
 
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(CustomPhysicsComponent))]
-    public abstract class Entity : MonoBehaviour, IDamageable, ICostumable<EntityCostume>{
+    [RequireComponent(typeof(Animator))]
+    public class Entity : MonoBehaviour, IDamageable {
 
-        [System.Serializable]
-        public struct EntityData {
-            public string displayName;
-            
-            public float maxHealth;
-            public Vector3 size;
-            public float stepHeight;
-            public float acceleration;
-            public float weight;
-            public float jumpHeight;
-
-            [Header("Movement Speed")]
-            public float baseSpeed;
-            public float sprintMultiplier;
-            public float slowMultiplier;
-            public float swimMultiplier;
-
-            [Header("Evade")]
-            public float evadeSpeed;
-            public float evadeDuration;
-            public float evadeCooldown;
-            public float totalEvadeDuration => evadeDuration + evadeCooldown;
-        }
 
         #region Constants
         
@@ -44,18 +25,15 @@ namespace SeleneGame.Core {
 
         #region Editor Fields
 
-
-            [Space(10)]
-            [Header("Costume")]
+            [SerializeField] private AssetReferenceT<Character> characterToLoad;
         
-            [Tooltip("The entity's current Costume, defines their game Model, display name as well as their portraits when in Dialogue.")]
-            [SerializeField]
-            private EntityCostume _costume;
-            
-
-            [Tooltip("The data associated with the Entity's currently loaded Model. This is used to define the Hit Colliders and other properties of the Costume.")]
-            [SerializeField]
-            public CostumeData _costumeData;
+            [Tooltip("The entity's current Character, defines their game Model, portraits, display name and base Stats.")]
+            [SerializeReference]
+            private Character.Instance _character;
+        
+            [Tooltip("The entity's current Animator.")]
+            [SerializeReference]
+            private Animator _animator;
 
 
 
@@ -137,7 +115,6 @@ namespace SeleneGame.Core {
             private Rigidbody _rigidbody;
             private CustomPhysicsComponent _physicsComponent;
             private EntityController _controller;
-            private GameObject _model;
 
             private Vector3 _totalMovement;
 
@@ -150,25 +127,23 @@ namespace SeleneGame.Core {
         #region Properties
 
 
-            public EntityCostume costume {
+            public Character.Instance character {
                 get {
-                    if ( _costume == null )
-                        SetCostume( EntityCostume.GetEntityBaseCostume( GetType().Name ) );
-                    return _costume;
+                    // if ( _character == null ){
+                    //     LoadCharacter();
+                    // }
+                    return _character;
                 }
-                private set => _costume = value;
+                private set => _character = value;
             }
-
-
-            public CostumeData costumeData {
+            public Animator animator {
                 get {
-                    if ( _costumeData == null )
-                        _costumeData = model.GetComponent<CostumeData>();
-                    return _costumeData;
+                    if ( _animator == null )
+                        _animator = GetComponent<Animator>();
+                    return _animator;
                 }
-                private set => _costumeData = value;
+                private set => _animator = value;
             }
-
 
             public State state {
                 get {
@@ -176,29 +151,14 @@ namespace SeleneGame.Core {
                         SetState( defaultState );
                     return _state;
                 }
-                private set => SetState(value);
+                private set => _state = value;
             }
 
 
             /// <summary>
             /// The default state of the entity.
             /// </summary>
-            public abstract State defaultState {
-                get;
-            }
-
-
-            /// <summary>
-            /// The Stats of this Entity, is defined by the Entity Type.
-            /// </summary>
-            public abstract EntityData data {
-                get;
-            }
-
-
-            public Animator animator {
-                get => costumeData?.animator;
-            }
+            public virtual State defaultState => new WalkingState(); 
 
 
             public float health {
@@ -271,7 +231,7 @@ namespace SeleneGame.Core {
 
             public float fallVelocity => Vector3.Dot(rigidbody.velocity, -gravityDown);
             public bool inWater => physicsComponent.inWater;
-            public bool isOnWaterSurface => inWater && transform.position.y > (physicsComponent.waterHeight - data.size.y);
+            public bool isOnWaterSurface => inWater && transform.position.y > (physicsComponent.waterHeight - character.size.y);
 
 
             public Rigidbody rigidbody {
@@ -307,17 +267,8 @@ namespace SeleneGame.Core {
             }
 
 
-            public GameObject model {
-                get {
-                    if ( _model == null )
-                        LoadModel();
-                    return _model;
-                }
-            }
-
-
             public GameObject this[string key]{
-                get { try{ return costumeData.bones[key]; } catch{ return model; } }
+                get { try{ return character.costumeData.bones[key]; } catch{ return character.model; } }
             }
 
 
@@ -339,7 +290,7 @@ namespace SeleneGame.Core {
         public virtual bool CanTurn() => true;
         public virtual bool CanWaterHover() => false;
         public virtual bool CanSink() => false;
-        public virtual float GravityMultiplier() => data.weight;
+        public virtual float GravityMultiplier() => character.weight;
         public virtual float JumpMultiplier() => 1f;
 
         // public Vector3 ConstrainMovementToGround( Vector3 ) {
@@ -360,39 +311,6 @@ namespace SeleneGame.Core {
             // animator.SetFloat("ForwardRight", Vector3.Dot(absoluteForward, Vector3.Cross(-transform.up, transform.forward)));
         }
 
-        /// <summary>
-        /// Set the current costume of the Entity as well as load its model.
-        /// </summary>
-        /// <param name="newCostume">The costume to set the Entity to</param>
-        public void SetCostume(EntityCostume newCostume) {
-            costume = newCostume;
-            LoadModel();
-        }
-
-        /// <summary>
-        /// Load the model that is stored in the current costume.
-        /// </summary>
-        [ContextMenu("Load Model")]
-        public virtual void LoadModel() {
-            DestroyModel();
-            _model = Instantiate(costume.model, transform.position, transform.rotation, transform);
-            _model.name = "Model";
-            costumeData = _model.GetComponent<CostumeData>();
-            gameObject.SetLayerRecursively(6);
-        }
-
-        /// <summary>
-        /// Destroy the currently loaded entity Model.
-        /// </summary>
-        public virtual void DestroyModel() {
-            _model = GameUtility.SafeDestroy(_model);
-
-            foreach (Transform child in transform) {
-                if (child.gameObject.name.Contains("Model")) 
-                    GameUtility.SafeDestroy(child.gameObject);
-                    
-            }
-        }
 
         [ContextMenu("Make Player Entity")]
         public void SetAsPlayer() {
@@ -409,8 +327,8 @@ namespace SeleneGame.Core {
             newState.OnEnter(this);
             _state = newState;
 
-            animator?.SetInteger( "State", (int)_state.stateType );
-            animator?.SetTrigger( "SetState" );
+            animator.SetInteger( "State", (int)_state.stateType );
+            animator.SetTrigger( "SetState" );
 
             Debug.Log($"{name} switched state to {_state.name}");
         }
@@ -420,7 +338,7 @@ namespace SeleneGame.Core {
         /// (e. g. the different equipped weapons, the current stance, etc.)
         /// </summary>
         /// <param name="newStyle">The style to set the Entity to</param>
-        public abstract void SetStyle(int newStyle);
+        public virtual void SetStyle(int newStyle){;}
 
 
         /// <summary>
@@ -495,6 +413,37 @@ namespace SeleneGame.Core {
             // transform.rotation = Quaternion.Slerp(transform.rotation, apparentRotation * turnDirection, 12f*GameUtility.timeDelta);
         }
 
+        [ContextMenu("Load Character")]
+        public void LoadCharacter() {
+            Character loadedCharacter;
+            if ( characterToLoad == null ){
+                loadedCharacter = Character.GetDefault();
+            } else {
+                if ( characterToLoad.Asset == null ) {
+                    AsyncOperationHandle<Character> opHandle = characterToLoad.LoadAssetAsync();
+                    loadedCharacter = opHandle.WaitForCompletion();
+                } else {
+                    loadedCharacter = characterToLoad.Asset as Character;
+                }
+            }
+            _character = new Character.Instance( this, loadedCharacter );
+        }
+
+        public virtual void LoadModel() {
+            character?.LoadModel();
+        }
+
+        public virtual void UnloadModel() {
+            character?.UnloadModel();
+        }
+
+        public void SetCostume(string costumeName) {
+            character.SetCostume(costumeName);
+        }
+        public void SetCostume(CharacterCostume costume) {
+            character.SetCostume(costume);
+        }
+
 
         /// <summary>
         /// Apply a gravity force to the Entity.
@@ -535,13 +484,13 @@ namespace SeleneGame.Core {
         /// </summary>
         public void Jump(Vector3 jumpDirection) {
 
-            Debug.Log(data.jumpHeight * JumpMultiplier());
+            Debug.Log(character.jumpHeight * JumpMultiplier());
 
             Vector3 newVelocity = rigidbody.velocity.NullifyInDirection( -jumpDirection );
-            newVelocity += data.jumpHeight * JumpMultiplier() * jumpDirection;
+            newVelocity += character.jumpHeight * JumpMultiplier() * jumpDirection;
             rigidbody.velocity = newVelocity;
 
-            animator?.SetTrigger("Jump");
+            animator.SetTrigger("Jump");
 
             jumpCooldownTimer.SetDuration( 0.4f );
             onJump?.Invoke(jumpDirection);
@@ -630,7 +579,7 @@ namespace SeleneGame.Core {
         public bool ColliderCast( Vector3 position, Vector3 direction, out RaycastHit castHit, float skinThickness, LayerMask layerMask ) {
             // Debug.Log(costumeData.hurtColliders["main"]);
 
-            foreach (ValuePair<string, Collider> pair in costumeData.hurtColliders){
+            foreach (ValuePair<string, Collider> pair in character?.costumeData.hurtColliders){
                 Collider collider = pair.Value;
                 bool hasHitWall = collider.ColliderCast( collider.transform.position + position, direction, out RaycastHit tempHit, skinThickness, layerMask );
                 if ( !hasHitWall ) continue;
@@ -649,7 +598,7 @@ namespace SeleneGame.Core {
         /// <param name="skinThickness">The thickness of the skin of the overlap, set to a low number to keep the overlap accurate but not zero as to not overlap with the terrain</param>
         /// <param name="layerMask">The layer mask to use for the overlap.</param>
         public Collider[] ColliderOverlap( float skinThickness, LayerMask layerMask ) {
-            foreach (ValuePair<string, Collider> pair in costumeData.hurtColliders){
+            foreach (ValuePair<string, Collider> pair in character?.costumeData.hurtColliders){
                 Collider collider = pair.Value;
                 Collider[] hits = collider.ColliderOverlap( collider.transform.position, skinThickness, layerMask );
                 if ( hits.Length > 0 ) return hits;
@@ -677,15 +626,16 @@ namespace SeleneGame.Core {
         /// Create an Entity using the given Parameters
         /// </summary>
         /// <param name="entityType">The type of entity to create</param>
+        /// <param name="character">The character of the entity to create</param>
         /// <param name="position">The position of the entity</param>
         /// <param name="rotation">The rotation of the entity</param>
-        /// <param name="costume">The costume of the entity</param>
-        public static Entity CreateEntity(System.Type entityType, Vector3 position, Quaternion rotation, EntityCostume costume){
+        /// <param name="costume">The costume of the entity, leave empty to use character's default costume</param>
+        public static Entity CreateEntity(System.Type entityType, Character character, Vector3 position, Quaternion rotation, CharacterCostume costume = null){
             GameObject entityGO = new GameObject("Entity");
             Entity entity = (Entity)entityGO.AddComponent(entityType);
+            entity.character = new Character.Instance(entity, character, costume);
             entity.transform.position = position;
             entity.transform.rotation = rotation;
-            entity.SetCostume(costume);
             return entity;
         }
 
@@ -694,16 +644,18 @@ namespace SeleneGame.Core {
         /// Create an Entity with a PlayerEntityController.
         /// </summary>
         /// <param name="entityType">The type of entity to create</param>
+        /// <param name="character">The character of the entity to create</param>
         /// <param name="position">The position of the entity</param>
         /// <param name="rotation">The rotation of the entity</param>
-        /// <param name="costume">The costume of the entity</param>
-        public static Entity CreatePlayerEntity(System.Type entityType, Vector3 position, Quaternion rotation, EntityCostume costume){
+        /// <param name="costume">The costume of the entity, leave empty to use character's default costume</param>
+        public static Entity CreatePlayerEntity(System.Type entityType, Character character, Vector3 position, Quaternion rotation, CharacterCostume costume = null){
             GameObject entityGO = new GameObject("Entity");
             entityGO.AddComponent<PlayerEntityController>();
             Entity entity = (Entity)entityGO.AddComponent(entityType);
+            entity.character = new Character.Instance(entity, character, costume);
             entity.transform.position = position;
             entity.transform.rotation = rotation;
-            entity.SetCostume(costume);
+            return entity;
             return entity;
         }
 
@@ -711,7 +663,11 @@ namespace SeleneGame.Core {
 
         
             protected virtual void Reset(){
-                DestroyModel();
+                foreach (Transform child in transform) {
+                    if ( child.gameObject.name.Contains("Model") )
+                        GameUtility.SafeDestroy(child.gameObject);
+                }
+                _animator = GetComponent<Animator>();
             }
 
             protected virtual void OnEnable(){
@@ -759,10 +715,6 @@ namespace SeleneGame.Core {
                 state?.StateFixedUpdate();
 
                 ExecuteMovement();
-            }
-
-            protected virtual void LateUpdate(){
-                state?.StateLateUpdate();
             }
 
         #endregion

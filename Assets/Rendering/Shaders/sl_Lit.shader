@@ -102,8 +102,9 @@ Shader "Selene/Lit" {
 
                     CelLightingInput lightingInput = GetCelLightingInput(input.position, input.normal, _SpecularIntensity, _Smoothness, _AccentIntensity);
                     
-                    if ( _ProximityDither == 1 && ProximityDither(lightingInput.worldPosition, lightingInput.screenPosition) )
-                        return half4(0, 0, 0, 0);
+                    if ( _ProximityDither == 1 )
+                        if ( ProximityDither(lightingInput.worldPosition, lightingInput.screenPosition) )
+                            return half4(0, 0, 0, 0);
 
                     if (_NormalIntensity > 0) {
                         float3 normal = UnpackNormal( tex2D(_NormalMap, input.uv) );

@@ -6,11 +6,15 @@ using System.IO;
 
 using UnityEngine;
 using UnityEditor;
+using UnityEditor.AddressableAssets;
+using UnityEditor.AddressableAssets.Settings;
 
 using SeleneGame.Core;
 using SeleneGame.Entities;
 using SeleneGame.States;
 using SeleneGame.Weapons;
+
+using SevenGame.Utility;
 
 
 namespace SeleneGame {
@@ -23,51 +27,104 @@ namespace SeleneGame {
         public static List<Type> stateTypes;
 
         [InitializeOnLoadMethod]
-        private static void OnLoaded(){
+        private static void OnLoaded() {
 
             assemblies = new List<Assembly>();
             assemblies.Add(Assembly.Load("SeleneGame.Core"));
             assemblies.Add(Assembly.Load("SeleneGame.Content"));
-            
+
             types = new List<Type>();
             foreach (Assembly assembly in assemblies) {
                 foreach (Type assemblyType in assembly.GetTypes()) {
                     types.Add(assemblyType);
                 }
-            } 
-            
+            }
 
-            CreateAllProceduralConstructors();
+            UpdateAddressables();
+
+
+            // CreateAllProceduralConstructors();
 
         }
 
-        [MenuItem("Utility/Regenerate All Constructors")]
-        private static void CreateAllProceduralConstructors() {
-            
-            weaponTypes = CreateProceduralConstructor(typeof(Weapon), typeof(UnarmedWeapon), "SeleneGame.Weapons", @"Assets\_Scripts\Content\EntityWeapon\");
-            stateTypes = CreateProceduralConstructor(typeof(State), typeof(WalkingState), "SeleneGame.States", @"Assets\_Scripts\Content\EntityState\");
+        [MenuItem("Utility/UpdateAddressables")]
+        public static void UpdateAddressables() {
+            var addressablesSettings = AddressableAssetSettingsDefaultObject.GetSettings(false);
+            var entries = addressablesSettings.DefaultGroup.entries.ToList();
+            foreach (var entry in entries) {
+                if ( entry.labels.Contains("WeaponCostume") ) {
+                    UpdateWeaponCostumeAddress(entry);
+                    continue;
+                }
+                if ( entry.labels.Contains("Weapon") ) {
+                    UpdateWeaponAddress(entry);
+                    continue;
+                }
+                if ( entry.labels.Contains("CharacterCostume") ) {
+                    UpdateCharacterCostumeAddress(entry);
+                    continue;
+                }
+                if ( entry.labels.Contains("Character") ) {
+                    UpdateCharacterAddress(entry);
+                    continue;
+                }
+            }
         }
 
-        // // The String {{TypeName}} in the template is replaced by the TypeName when generating Classes.
-        // private static void CreateDrawerForAllGenericClasses(string nameFilter, string templatePath){
-        //     var inheriting = types.Where(
-        //         t => t.BaseType != null && t.BaseType.IsGenericType && t.ToString().Contains(nameFilter)
-        //     );
+        public static void UpdateWeaponCostumeAddress(AddressableAssetEntry entry) {
+            string path = AssetDatabase.GUIDToAssetPath(entry.guid);
+            try {
+                WeaponCostume asset = AssetDatabase.LoadAssetAtPath(path, typeof(WeaponCostume)) as WeaponCostume;
+                string name = asset.name;
 
-        //     string projectFolderPath = Directory.GetCurrentDirectory();
-        //     string template = File.ReadAllText($@"{projectFolderPath}{templatePath}");
-        //     string folderPath = ($@"{projectFolderPath}\Assets\Editor\");
+                string[] split = name.Split('_');
+                entry.address = $"Weapons/Costumes/{split[0]}/{split[1]}";
+            } catch (Exception) {
+                return;
+            }
+        }
 
-        //     foreach(var inheritingType in inheriting){
-        //         string fileName = $"{inheritingType.ToString()}Drawer.cs";
-        //         string filePath = Path.Combine(folderPath, fileName);
+        public static void UpdateWeaponAddress(AddressableAssetEntry entry) {
+            string path = AssetDatabase.GUIDToAssetPath(entry.guid);
+            try {
+                Weapon asset = AssetDatabase.LoadAssetAtPath(path, typeof(Weapon)) as Weapon;
+                string name = asset.name;
 
-        //         // Generate Contents
-        //         string fileContents = template;
-        //         fileContents = fileContents.Replace("{{TypeName}}", inheritingType.ToString());
+                entry.address = $"Weapons/{name}";
+            } catch (Exception) {
+                return;
+            }
+        }
+        public static void UpdateCharacterCostumeAddress(AddressableAssetEntry entry) {
+            string path = AssetDatabase.GUIDToAssetPath(entry.guid);
+            try {
+                CharacterCostume asset = AssetDatabase.LoadAssetAtPath(path, typeof(CharacterCostume)) as CharacterCostume;
+                string name = asset.name;
 
-        //         File.WriteAllText( filePath, fileContents );
-        //     }
+                string[] split = name.Split('_');
+                entry.address = $"Characters/Costumes/{split[0]}/{split[1]}";
+            } catch (Exception) {
+                return;
+            }
+        }
+
+        public static void UpdateCharacterAddress(AddressableAssetEntry entry) {
+            string path = AssetDatabase.GUIDToAssetPath(entry.guid);
+            try {
+                Character asset = AssetDatabase.LoadAssetAtPath(path, typeof(Character)) as Character;
+                string name = asset.name;
+
+                entry.address = $"Characters/{name}";
+            } catch (Exception) {
+                return;
+            }
+        }
+
+        // [MenuItem("Utility/Regenerate All Constructors")]
+        // private static void CreateAllProceduralConstructors() {
+
+        //     weaponTypes = CreateProceduralConstructor(typeof(Weapon), typeof(UnarmedWeapon), "SeleneGame.Weapons", @"Assets\_Scripts\Content\EntityWeapon\");
+        //     stateTypes = CreateProceduralConstructor(typeof(State), typeof(WalkingState), "SeleneGame.States", @"Assets\_Scripts\Content\EntityState\");
         // }
 
         private static List<Type> CreateProceduralConstructor(Type type, Type defaultType, string nameSpace, string outputPath){

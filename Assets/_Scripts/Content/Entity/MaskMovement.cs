@@ -33,14 +33,14 @@ namespace SeleneGame {
         }
 
         void FixedUpdate(){
-            if (entity == null || !(entity is GravityShifterEntity gravityShifter)) return;
+            if (entity == null || !(entity is MaskedEntity maskedEntity)) return;
 
-            bool onFace = gravityShifter.isMasked() || (positionBlocked(leftPosition) && positionBlocked(rightPosition));
+            bool onFace = maskedEntity.isMasked() || (positionBlocked(leftPosition) && positionBlocked(rightPosition));
 
             if (!onFace && (positionBlocked(relativePos)))
                 onRight = !onRight;
 
-            flyingPosition = Vector3.Lerp(flyingPosition, gravityShifter.transform.position + relativePos, 15f * GameUtility.timeDelta);
+            flyingPosition = Vector3.Lerp(flyingPosition, maskedEntity.transform.position + relativePos, 15f * GameUtility.timeDelta);
             maskPosT = Mathf.MoveTowards(maskPosT, System.Convert.ToSingle(onFace), 4f * GameUtility.timeDelta);
 
             animator.SetBool("OnFace", onFace);

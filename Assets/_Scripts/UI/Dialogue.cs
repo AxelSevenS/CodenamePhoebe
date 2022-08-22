@@ -8,7 +8,7 @@ namespace SeleneGame.UI {
 
     [System.Serializable]
     public class DialogueLine{
-        public EntityCostume.Emotion emotion;
+        public CharacterCostume.Emotion emotion;
 
         [SerializeField] private bool usePlayerEntity;
         [SerializeField] private Entity _entity;

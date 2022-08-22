@@ -13,23 +13,23 @@ namespace SeleneGame.Entities {
 
         public override EntityController controller { get => seat?.seatOccupant?.controller ?? base.controller; }
 
-        public override EntityData data { 
-            get => new EntityData(){
-                displayName = "Gravity Bicycle",
-                acceleration = 20f,
-                weight = 20f,
-                jumpHeight = 20f,
+        // public override EntityData data { 
+        //     get => new EntityData(){
+        //         displayName = "Gravity Bicycle",
+        //         acceleration = 20f,
+        //         weight = 20f,
+        //         jumpHeight = 20f,
 
-                baseSpeed = 32f,
-                sprintMultiplier = 1f,
-                slowMultiplier = 1f,
-                swimMultiplier = 0f,
+        //         baseSpeed = 32f,
+        //         sprintMultiplier = 1f,
+        //         slowMultiplier = 1f,
+        //         swimMultiplier = 0f,
 
-                evadeSpeed = 0f,
-                evadeDuration = 0f,
-                evadeCooldown = 0f
-            };
-        }
+        //         evadeSpeed = 0f,
+        //         evadeDuration = 0f,
+        //         evadeCooldown = 0f
+        //     };
+        // }
         
         public override bool CanTurn() => base.CanTurn();
         public override bool CanWaterHover() => base.CanWaterHover();
@@ -67,10 +67,7 @@ namespace SeleneGame.Entities {
             base.FixedUpdate();
 
         }
-        protected override void LateUpdate(){
-            base.LateUpdate();
-
-        }
+        
 
         protected override void EntityAnimation(){
             base.EntityAnimation();
@@ -81,8 +78,8 @@ namespace SeleneGame.Entities {
             base.LoadModel();
 
         }
-        public override void DestroyModel(){
-            base.DestroyModel();
+        public override void UnloadModel(){
+            base.UnloadModel();
 
         }
 

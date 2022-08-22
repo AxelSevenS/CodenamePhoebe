@@ -8,15 +8,13 @@ using SeleneGame.Entities;
 
 namespace SeleneGame.Weapons {
     
+    [CreateAssetMenu(fileName = "Eris", menuName = "Weapon/Eris")]
     public sealed class ErisWeapon : Weapon{
 
-        public override WeaponType weaponType => WeaponType.heavySword;
-
         // [SerializeField] private BoolData gravitySlide = new BoolData();
-
-        protected override float GetWeightModifier() => 1.4f;
         
-        public override void WeaponUpdate(){
+        public override void WeaponUpdate( Entity entity ){
+            base.WeaponUpdate( entity );
 
             // gravitySlide.SetVal(entity.sliding && entity.onGround);
 

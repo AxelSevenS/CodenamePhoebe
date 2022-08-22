@@ -63,7 +63,7 @@ namespace SeleneGame.States {
 
             // // When the Entity is sliding
             // if (entity.sliding)
-            //     entity.rigidbody.velocity += entity.groundOrientation * entity.evadeDirection *entity.data.baseSpeed * entity.inertiaMultiplier * GameUtility.timeDelta;
+            //     entity.rigidbody.velocity += entity.groundOrientation * entity.evadeDirection *entity.character.baseSpeed * entity.inertiaMultiplier * GameUtility.timeDelta;
 
 
         }
@@ -85,10 +85,10 @@ namespace SeleneGame.States {
             if ( entity.controller.jumpInput.started && entity.jumpCount != 0 && entity.onGround.falseTimer <= 0.4f )
                 entity.Jump( -entity.gravityDown );
             
-            float newSpeed = Vector3.Dot(entity.moveDirection, inputDirection) * accelerationLinger * entity.data.baseSpeed;
+            float newSpeed = Vector3.Dot(entity.moveDirection, inputDirection) * accelerationLinger * entity.character.baseSpeed;
 
             float speedDelta = newSpeed > entity.moveSpeed ? 1f : 0.65f;
-            entity.moveSpeed = Mathf.MoveTowards(entity.moveSpeed, newSpeed, speedDelta * entity.data.acceleration * GameUtility.timeDelta);
+            entity.moveSpeed = Mathf.MoveTowards(entity.moveSpeed, newSpeed, speedDelta * entity.character.acceleration * GameUtility.timeDelta);
         }
 
         private void OnEntityJump(Vector3 jumpDirection){

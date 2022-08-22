@@ -6,53 +6,16 @@ using SeleneGame.Entities;
 
 namespace SeleneGame.Weapons {
     
+    [CreateAssetMenu(fileName = "#SCRIPTNAME#", menuName = "Weapon/#SCRIPTNAME#")]
     public class #SCRIPTNAME# : Weapon{
 
-        public override WeaponType weaponType => WeaponType.sparring;
-
-        protected override float GetWeightModifier() {
-            return base.GetWeightModifier();
-        }
-        protected override Vector3 GetJumpDirection() {
-            return base.GetJumpDirection();
-        }
-
-            
-        public override void OnAdd() {
-            base.OnAdd();
-#NOTRIM#
-        }
-        public override void OnRemove() {
-            base.OnRemove();
+        public virtual void WeaponUpdate( Entity entity ){
+            base.WeaponUpdate( entity );
 #NOTRIM#
         }
 
-        public override void WeaponUpdate(){
-            base.WeaponUpdate();
-#NOTRIM#
-        }
-        public override void WeaponFixedUpdate(){
-            base.WeaponFixedUpdate();
-#NOTRIM#
-        }
-
-
-
-        public override void LoadModel(){
-            base.LoadModel();
-#NOTRIM#
-        }
-        public override void DestroyModel(){
-            base.DestroyModel();
-#NOTRIM#
-        }
-
-        public override void Display(){
-            base.Display();
-#NOTRIM#
-        }
-        public override void Hide(){
-            base.Hide();
+        public virtual void WeaponFixedUpdate( Entity entity ){
+            base.WeaponFixedUpdate( entity );
 #NOTRIM#
         }
     }

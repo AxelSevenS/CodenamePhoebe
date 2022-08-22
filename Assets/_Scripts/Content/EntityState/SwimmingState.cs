@@ -79,10 +79,10 @@ namespace SeleneGame.States {
                 entity.Jump( -entity.gravityDown );
             }
 
-            float newSpeed = entity.isIdle ? 0f : entity.data.baseSpeed;
+            float newSpeed = entity.isIdle ? 0f : entity.character.baseSpeed;
 
             float speedDelta = newSpeed > entity.moveSpeed ? 1f : 0.65f;
-            entity.moveSpeed = Mathf.MoveTowards(entity.moveSpeed, newSpeed, speedDelta * entity.data.acceleration * GameUtility.timeDelta);
+            entity.moveSpeed = Mathf.MoveTowards(entity.moveSpeed, newSpeed, speedDelta * entity.character.acceleration * GameUtility.timeDelta);
         }
     }
 }

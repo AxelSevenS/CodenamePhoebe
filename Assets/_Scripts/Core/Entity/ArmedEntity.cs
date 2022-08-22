@@ -8,9 +8,9 @@ using SevenGame.Utility;
 
 namespace SeleneGame.Core {
 
-    public abstract class ArmedEntity : Entity {
+    public class ArmedEntity : Entity {
         
-        [SerializeField]
+        [SerializeReference]
         protected WeaponInventory _weapons = null;
 
         public WeaponInventory weapons {
@@ -22,8 +22,8 @@ namespace SeleneGame.Core {
             }
         }
 
-        protected virtual void ResetWeapons() {
-            _weapons = new WeaponInventory(this, 1);
+        public virtual void ResetWeapons(){
+            _weapons = new ListWeaponInventory(this, 1);
         }
 
 
@@ -42,19 +42,26 @@ namespace SeleneGame.Core {
 
         public override bool CanTurn() => !evading;
 
+        public override void LoadModel() {
+            base.LoadModel();
+            foreach(Weapon.Instance weapon in weapons) {
+                weapon.LoadModel();
+            }
+        }
+
         protected override void Awake(){
             base.Awake();
         }
 
         protected override void Reset(){
-            _weapons = null;
             base.Reset();
+            ResetWeapons();
         }
 
         protected override void Update(){
             base.Update();
 
-            evading.SetVal( evadeTimer > data.evadeCooldown );
+            evading.SetVal( evadeTimer > character.evadeCooldown );
             
             evadeTimer = Mathf.MoveTowards( evadeTimer, 0f, GameUtility.timeDelta );
             parryTimer = Mathf.MoveTowards( parryTimer, 0f, GameUtility.timeDelta );
@@ -63,24 +70,24 @@ namespace SeleneGame.Core {
             if ( KeyInputData.SimultaneousTap( controller.lightAttackInput, controller.heavyAttackInput ) )
                 Parry();
             
-            foreach (Weapon weapon in weapons)
-                weapon?.WeaponUpdate();
+            foreach (Weapon.Instance weapon in weapons)
+                weapon?.Update();
         }
 
         protected override void FixedUpdate() {
             base.FixedUpdate();
 
-            if ( moveDirection.sqrMagnitude > 0f && evadeTimer > data.totalEvadeDuration - 0.15f )
+            if ( moveDirection.sqrMagnitude > 0f && evadeTimer > character.totalEvadeDuration - 0.15f )
                 evadeDirection = moveDirection.normalized;
 
-            foreach (Weapon weapon in weapons)
-                weapon?.WeaponFixedUpdate();
+            foreach (Weapon.Instance weapon in weapons)
+                weapon?.FixedUpdate();
         }
 
         protected override void EntityAnimation() {
             base.EntityAnimation();
 
-            animator.SetFloat("WeaponType", (float)(weapons.current.weaponType) );
+            // animator.SetFloat("WeaponType", (float)(weapons.current.weaponType) );
         }
 
         public override void SetStyle(int newStyle) {
@@ -102,7 +109,7 @@ namespace SeleneGame.Core {
                 return false;
             }
 
-            evadeTime = Mathf.Clamp01( 1 - ( (evadeTimer - data.evadeCooldown) / data.evadeDuration ) );
+            evadeTime = Mathf.Clamp01( 1 - ( (evadeTimer - character.evadeCooldown) / character.evadeDuration ) );
             evadeCurve = Mathf.Clamp01( EntityManager.current.evadeCurve.Evaluate( evadeTime ) );
             return true;
         }
@@ -126,9 +133,9 @@ namespace SeleneGame.Core {
 
         protected void StartEvade(Vector3 evadeDirection) {
             this.evadeDirection = evadeDirection;
-            evadeTimer = data.totalEvadeDuration;
+            evadeTimer = character.totalEvadeDuration;
 
-            animator?.SetTrigger("Evade");
+            animator.SetTrigger("Evade");
 
 
             onEvade?.Invoke(evadeDirection);

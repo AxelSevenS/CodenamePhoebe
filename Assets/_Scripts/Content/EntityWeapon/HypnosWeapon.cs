@@ -9,9 +9,8 @@ using SeleneGame.States;
 
 namespace SeleneGame.Weapons {
     
-    [System.Serializable]
+    [CreateAssetMenu(fileName = "Hypnos", menuName = "Weapon/Hypnos")]
     public sealed class HypnosWeapon : Weapon{
-        public override WeaponType weaponType => WeaponType.spear;
 
         // private Vector3 wallRunDir;
         // private Vector3 wallRunNormal;
@@ -25,11 +24,8 @@ namespace SeleneGame.Weapons {
 
         // public RaycastHit wallHit;
 
-
-        protected override float GetWeightModifier() => 0.75f;
-
-        public override void WeaponUpdate(){
-            base.WeaponUpdate();
+        public override void WeaponUpdate( Entity entity ){
+            base.WeaponUpdate( entity );
             
             // wallData.SetVal( entity.WallCheck( out wallHit, Global.GroundMask ) );
             // wallRun.SetVal(entity.sliding && wallData);
@@ -39,8 +35,8 @@ namespace SeleneGame.Weapons {
 
         }
 
-        public override void WeaponFixedUpdate(){
-            base.WeaponFixedUpdate();
+        public override void WeaponFixedUpdate( Entity entity ){
+            base.WeaponFixedUpdate( entity );
 
             // // Wall-stand when standing against a wall. (Feather Grip)
             // if ( wallStand ){
@@ -80,12 +76,12 @@ namespace SeleneGame.Weapons {
         //     entity.inertiaMultiplier = Mathf.Max( entity.inertiaMultiplier, 12f );
         // }
 
-        private void OnStartWallRunning(){
+        // private void OnStartWallRunning(){
             
-            // wallRunNormal = wallHit.normal;
-            // wallRunDir = Vector3.ProjectOnPlane(entity.moveDirection, wallHit.normal).normalized;
+        //     wallRunNormal = wallHit.normal;
+        //     wallRunDir = Vector3.ProjectOnPlane(entity.moveDirection, wallHit.normal).normalized;
 
-            // entity.inertia = wallRunDir * Mathf.Min(entity.inertiaMultiplier + 3.5f, 10f);
-        }
+        //     entity.inertia = wallRunDir * Mathf.Min(entity.inertiaMultiplier + 3.5f, 10f);
+        // }
     }
 }

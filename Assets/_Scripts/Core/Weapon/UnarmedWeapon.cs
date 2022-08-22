@@ -4,8 +4,8 @@ using UnityEngine;
 
 namespace SeleneGame.Core {
     
+    [CreateAssetMenu(fileName = "Unarmed", menuName = "Weapon/Unarmed")]
     public sealed class UnarmedWeapon : Weapon{
-        public override WeaponType weaponType => WeaponType.sparring;
 
 
     }

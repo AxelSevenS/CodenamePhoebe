@@ -30,8 +30,8 @@ namespace SeleneGame.Core {
             this.entity = entity;
         }
         public virtual void OnExit(){;}
+        
         public virtual void StateUpdate(){;}
-        public virtual void StateLateUpdate(){;}
         public virtual void StateFixedUpdate(){;}
 
         public virtual void StateAnimation(){;}

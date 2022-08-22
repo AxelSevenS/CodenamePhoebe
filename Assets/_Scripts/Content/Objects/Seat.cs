@@ -26,7 +26,7 @@ namespace SeleneGame {
         [SerializeField] private List<Vector4> sittingDirections;
         public Vector3 sitPosition { get {
                 Vector3 seatOccupantUp = isSeated ? seatOccupant.transform.up : transform.up;
-                float seatOccupantSize = isSeated ? seatOccupant.data.size.y/2f : 1.67f;
+                float seatOccupantSize = isSeated ? seatOccupant.character.size.y/2f : 1.67f;
 
                 return transform.position + transform.rotation*(sittingDir) + (seatOccupantUp * seatOccupantSize);
             }

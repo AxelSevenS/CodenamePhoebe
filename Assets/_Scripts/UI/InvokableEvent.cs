@@ -14,7 +14,7 @@ namespace SeleneGame.UI {
 
         public Dialogue dialogue;
         public Entity entity;
-        public EntityCostume entityCostume;
+        public CharacterCostume characterCostume;
 
         public void Invoke(GameObject gameObject){
             switch (eventType){
@@ -23,12 +23,12 @@ namespace SeleneGame.UI {
                     DialogueController.current.StartDialogue(dialogue, gameObject);
                     break;
                 case EventType.SetEntityCostume:
-                    if (entity == null || entityCostume == null) break;
-                    entity.SetCostume(entityCostume);
+                    if (entity == null || characterCostume == null) break;
+                    entity.SetCostume(characterCostume);
                     break;
                 case EventType.SetPlayerCostume:
-                    if (entityCostume == null) break;
-                    PlayerEntityController.current.entity.SetCostume(entityCostume);
+                    if (characterCostume == null) break;
+                    PlayerEntityController.current.entity.SetCostume(characterCostume);
                     break;
                 case EventType.Destroy:
                     Object.Destroy(gameObject);
