@@ -10,6 +10,74 @@ using SevenGame.Utility;
 namespace SeleneGame.Core {
     
     public abstract class Weapon : ScriptableObject {
+        
+
+        const string defaultPath = "Weapons/Unarmed";
+
+
+        public WeaponType weaponType;
+
+        public float weightModifier = 1f;
+        public string displayName;
+        [TextArea] public string description;
+
+        public WeaponCostume baseCostume;
+
+
+
+
+
+
+
+        private static string WeaponNameToPath(string weaponName){
+            return $"Weapons/{weaponName}";
+        }
+
+        public static Weapon Get(string weaponName) {
+            // Get Requested Weapon
+            AsyncOperationHandle<Weapon> opHandle = Addressables.LoadAssetAsync<Weapon>( WeaponNameToPath(weaponName) );
+            Weapon result = opHandle.WaitForCompletion();
+
+            // If not found, get Default Weapon : Unarmed
+            if (result == null) {
+                Debug.LogWarning($"Error getting weapon {weaponName}");
+                return GetDefault();
+            }
+
+            return result;
+        }
+        public static Weapon GetDefault() {
+            AsyncOperationHandle<Weapon> opHandle = Addressables.LoadAssetAsync<Weapon>( defaultPath );
+            return opHandle.WaitForCompletion();
+        }
+
+        public static void GetAsync(string weaponName, Action<Weapon> callback) {
+            // Get Requested Weapon
+            AsyncOperationHandle<Weapon> opHandle = Addressables.LoadAssetAsync<Weapon>( WeaponNameToPath(weaponName) );
+            opHandle.Completed += operation => {
+
+                // If not found, get Default Weapon : Unarmed
+                if (operation.Status == AsyncOperationStatus.Failed) {
+                    Debug.LogWarning($"Error getting Weapon {weaponName}");
+                    GetDefaultAsync(callback);
+                    return;
+                }
+
+                callback(operation.Result);
+            };
+        }
+        public static void GetDefaultAsync(Action<Weapon> callback) {
+            AsyncOperationHandle<Weapon> opHandle = Addressables.LoadAssetAsync<Weapon>( defaultPath );
+            opHandle.Completed += operation => {
+                callback(operation.Result);
+            };
+        }
+
+        public virtual void WeaponCreation( Instance instance ){;}
+
+        public virtual void WeaponUpdate( Entity entity ){;}
+        public virtual void WeaponFixedUpdate( Entity entity ){;}
+        
 
         [System.Serializable]
         public class Instance {
@@ -22,12 +90,16 @@ namespace SeleneGame.Core {
             public string name => weapon.name;
             public WeaponType weaponType => weapon.weaponType;
             public float weightModifier => weapon.weightModifier;
-            public WeaponCostume defaultCostume => weapon.defaultCostume;
+            public WeaponCostume baseCostume => weapon.baseCostume;
 
             public Instance(ArmedEntity entity, Weapon weapon, WeaponCostume costume = null) {
                 this.entity = entity;
+                SetWeapon(weapon, costume);
+            }
+
+            public void SetWeapon(Weapon weapon, WeaponCostume costume = null) {
                 this.weapon = weapon;
-                SetCostume( costume == null ? weapon.defaultCostume : costume );
+                SetCostume( costume == null ? weapon.baseCostume : costume );
                 weapon.WeaponCreation(this);
             }
 
@@ -81,57 +153,13 @@ namespace SeleneGame.Core {
             public void FixedUpdate() => weapon.WeaponFixedUpdate(entity);
         }
 
-        public enum WeaponType {lightSword, heavySword, spear, swordAndShield, sparring};
-
-        public WeaponType weaponType;
-
-        public float weightModifier = 1f;
-        public string displayName;
-
-        [SerializeField] private WeaponCostume defaultCostume;
-
-        const string defaultPath = "Weapons/Unarmed";
-
-        private static string WeaponNameToPath(string weaponName){
-            return $"Weapons/{weaponName}";
-        }
-
-        public static Weapon Get(string weaponName) {
-            AsyncOperationHandle<Weapon> opHandle = Addressables.LoadAssetAsync<Weapon>( WeaponNameToPath(weaponName) );
-            Weapon result = opHandle.WaitForCompletion();
-            if (result == null) {
-                Debug.LogError($"Error getting weapon {weaponName}");
-                return GetDefault();
-            }
-            return result;
-        }
-        public static Weapon GetDefault() {
-            AsyncOperationHandle<Weapon> opHandle = Addressables.LoadAssetAsync<Weapon>( defaultPath );
-            return opHandle.WaitForCompletion();
-        }
-
-        public static void GetAsync(string weaponName, Action<Weapon> callback) {
-            AsyncOperationHandle<Weapon> opHandle = Addressables.LoadAssetAsync<Weapon>( WeaponNameToPath(weaponName) );
-            opHandle.Completed += operation => {
-                if (operation.Status == AsyncOperationStatus.Succeeded) {
-                    callback(operation.Result);
-                } else {
-                    GetDefaultAsync(callback);
-                }
-            };
-        }
-        public static void GetDefaultAsync(Action<Weapon> callback) {
-            AsyncOperationHandle<Weapon> opHandle = Addressables.LoadAssetAsync<Weapon>( defaultPath );
-            opHandle.Completed += operation => {
-                callback(operation.Result);
-            };
-        }
-
-        public virtual void WeaponCreation( Instance instance ){;}
-
-        public virtual void WeaponUpdate( Entity entity ){;}
-        public virtual void WeaponFixedUpdate( Entity entity ){;}
-
+        public enum WeaponType {
+            OneHanded = 1,
+            TwoHanded,
+            Staff,
+            DoubleOneHanded,
+            Sparring
+        };
 
     }
 }

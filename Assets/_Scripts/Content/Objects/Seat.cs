@@ -22,7 +22,7 @@ namespace SeleneGame {
 
         [Space(15)]
         
-        [SerializeField] private int speed = 4;
+        // [SerializeField] private int speed = 4;
         [SerializeField] private List<Vector4> sittingDirections;
         public Vector3 sitPosition { get {
                 Vector3 seatOccupantUp = isSeated ? seatOccupant.transform.up : transform.up;
@@ -51,9 +51,20 @@ namespace SeleneGame {
 
 
         protected virtual string seatedInteractionText => "";
-        public string InteractDescription() => seatOccupant ? seatedInteractionText : "Sit Down";
+        public string InteractDescription {
+            get {
+                return seatOccupant ? seatedInteractionText : "Sit Down";
+            }
+            set {;}
+        }
 
-        public virtual bool IsInteractable() => !isSeated;
+        public virtual bool IsInteractable {
+            get {
+                return !isSeated;
+            }
+            set {;}
+        }
+
         public void Interact(Entity entity){
             if (entity == seatOccupant){
                 SeatedInteract(entity);
@@ -65,7 +76,7 @@ namespace SeleneGame {
 
         
 
-        private async void StartSitting(Entity entity){
+        private /* async */ void StartSitting(Entity entity){
             previousAnchor = entity.transform.parent;
             
             StopSitting();

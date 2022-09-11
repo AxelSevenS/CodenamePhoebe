@@ -8,7 +8,7 @@ using SeleneGame.States;
 
 namespace SeleneGame {
 
-    public class SpeedlinesEffect : ObjectFollower{
+    public class SpeedlinesEffect : ObjectFollower {
         
         public Entity entity;
         [SerializeField] private ParticleSystem weakLines;

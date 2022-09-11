@@ -355,8 +355,8 @@ GameObject:
   - component: {fileID: 1080874531905611227}
   - component: {fileID: 1080874531905611205}
   - component: {fileID: 1080874531905611204}
-  - component: {fileID: 1080874531905611206}
   - component: {fileID: 4148130873687434142}
+  - component: {fileID: 1080874531905611206}
   m_Layer: 5
   m_Name: SaveSlot
   m_TagString: Untagged
@@ -414,7 +414,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -424,27 +424,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &1080874531905611206
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1080874531905611226}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 25c84ba5ad13d654db6126c866e9a9fe, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  slotNumber: 1
-  saveInfo: {fileID: 1080874530665410874}
-  slotNumberText: {fileID: 1937663121190942950}
-  playTime: {fileID: 1080874531612739198}
-  saveDateTime: {fileID: 1080874531896823263}
-  slotBackground: {fileID: 1080874531905611204}
-  slotEmpty: {fileID: 21300000, guid: 8a10af8152aab514a919fecaa9ea2176, type: 3}
-  slotFull: {fileID: 21300000, guid: e78baf8ef50c6bd4ba0b3d12703348ff, type: 3}
-  slotSelected: {fileID: 21300000, guid: 5db2718264e244d49a421606a2c82c99, type: 3}
 --- !u!114 &4148130873687434142
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -471,6 +450,30 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &1080874531905611206
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1080874531905611226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25c84ba5ad13d654db6126c866e9a9fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  background: {fileID: 1080874531905611204}
+  bgUnselected: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  bgSelected: {fileID: 10911, guid: 0000000000000000f000000000000000, type: 0}
+  bgClicked: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  bgEmptyUnselected: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  bgEmptySelected: {fileID: 10911, guid: 0000000000000000f000000000000000, type: 0}
+  bgEmptyClicked: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  slotNumber: 1
+  saveInfo: {fileID: 1080874530665410874}
+  slotNumberText: {fileID: 1937663121190942950}
+  playTime: {fileID: 1080874531612739198}
+  saveDateTime: {fileID: 1080874531896823263}
 --- !u!1 &6631406344457018729
 GameObject:
   m_ObjectHideFlags: 0
@@ -571,8 +574,8 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0

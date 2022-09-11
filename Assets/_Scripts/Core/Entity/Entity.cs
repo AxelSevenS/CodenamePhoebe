@@ -13,6 +13,7 @@ namespace SeleneGame.Core {
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(CustomPhysicsComponent))]
     [RequireComponent(typeof(Animator))]
+    [SelectionBase]
     public class Entity : MonoBehaviour, IDamageable {
 
 
@@ -25,7 +26,26 @@ namespace SeleneGame.Core {
 
         #region Editor Fields
 
-            [SerializeField] private AssetReferenceT<Character> characterToLoad;
+            #if UNITY_EDITOR
+                [HideInInspector] public AssetReferenceT<Character> m_loadedCharacter;
+
+                [ContextMenu("Load Character")]
+                public void LoadCharacter() {
+                    UnloadModel();
+                    if (m_loadedCharacter.Asset != null)
+                        m_loadedCharacter.ReleaseAsset();
+
+                    Character loadedCharacter;
+                    // Runtime key is a string for some reason, even though in the documentation it says it's a Hash128.
+                    if ( string.IsNullOrEmpty( (string)m_loadedCharacter.RuntimeKey )  ) {
+                        loadedCharacter = Character.GetDefault();
+                    } else {
+                        AsyncOperationHandle<Character> opHandle = m_loadedCharacter.LoadAssetAsync();
+                        loadedCharacter = opHandle.WaitForCompletion();
+                    }
+                    _character = new Character.Instance( this, loadedCharacter );
+                }
+            #endif
         
             [Tooltip("The entity's current Character, defines their game Model, portraits, display name and base Stats.")]
             [SerializeReference]
@@ -119,6 +139,8 @@ namespace SeleneGame.Core {
             private Vector3 _totalMovement;
 
             public RaycastHit groundHit;
+
+            [HideInInspector] public float subState;
 
 
         #endregion
@@ -271,6 +293,9 @@ namespace SeleneGame.Core {
                 get { try{ return character.costumeData.bones[key]; } catch{ return character.model; } }
             }
 
+            public virtual float weight => character.weight;
+            public virtual float jumpMultiplier => 1f;
+
 
         #endregion
 
@@ -283,19 +308,7 @@ namespace SeleneGame.Core {
             
         #endregion
 
-        [HideInInspector] public float subState;
 
-
-
-        public virtual bool CanTurn() => true;
-        public virtual bool CanWaterHover() => false;
-        public virtual bool CanSink() => false;
-        public virtual float GravityMultiplier() => character.weight;
-        public virtual float JumpMultiplier() => 1f;
-
-        // public Vector3 ConstrainMovementToGround( Vector3 ) {
-
-        // }
         
 
 
@@ -303,7 +316,7 @@ namespace SeleneGame.Core {
         protected virtual void EntityAnimation() {
             animator.SetBool("OnGround", onGround);
             // animator.SetBool("Falling", fallVelocity <= -20f);
-            animator.SetBool("Idle", moveDirection.sqrMagnitude == 0f );
+            animator.SetBool("Idle", isIdle );
             // animator.SetInteger("State", state.id);
             // animator.SetFloat("SubState", subState);
             // animator.SetFloat("WalkSpeed", (float)walkSpeed);
@@ -413,22 +426,6 @@ namespace SeleneGame.Core {
             // transform.rotation = Quaternion.Slerp(transform.rotation, apparentRotation * turnDirection, 12f*GameUtility.timeDelta);
         }
 
-        [ContextMenu("Load Character")]
-        public void LoadCharacter() {
-            Character loadedCharacter;
-            if ( characterToLoad == null ){
-                loadedCharacter = Character.GetDefault();
-            } else {
-                if ( characterToLoad.Asset == null ) {
-                    AsyncOperationHandle<Character> opHandle = characterToLoad.LoadAssetAsync();
-                    loadedCharacter = opHandle.WaitForCompletion();
-                } else {
-                    loadedCharacter = characterToLoad.Asset as Character;
-                }
-            }
-            _character = new Character.Instance( this, loadedCharacter );
-        }
-
         public virtual void LoadModel() {
             character?.LoadModel();
         }
@@ -484,10 +481,10 @@ namespace SeleneGame.Core {
         /// </summary>
         public void Jump(Vector3 jumpDirection) {
 
-            Debug.Log(character.jumpHeight * JumpMultiplier());
+            Debug.Log(character.jumpHeight * jumpMultiplier);
 
             Vector3 newVelocity = rigidbody.velocity.NullifyInDirection( -jumpDirection );
-            newVelocity += character.jumpHeight * JumpMultiplier() * jumpDirection;
+            newVelocity += character.jumpHeight * jumpMultiplier * jumpDirection;
             rigidbody.velocity = newVelocity;
 
             animator.SetTrigger("Jump");
@@ -607,19 +604,19 @@ namespace SeleneGame.Core {
         }
 
 
-        public bool WallCheck( out RaycastHit wallHitOut, LayerMask layerMask ) {
-            for (int i = 0; i < 11; i++){
-                float angle = (i%2 == 0 && i != 0) ? (i-1 * -30f) : i * 30f;
-                Quaternion angleTurn = Quaternion.AngleAxis( angle, rotation * Vector3.down);
-                bool hasHitWall = ColliderCast( Vector3.zero, angleTurn * absoluteForward * 0.3f, out RaycastHit tempHit, 0.05f, layerMask );
-                if (hasHitWall){
-                    wallHitOut = tempHit;
-                    return true;
-                }
-            }
-            wallHitOut = new RaycastHit();
-            return false;
-        }
+        // public bool WallCheck( out RaycastHit wallHitOut, LayerMask layerMask ) {
+        //     for (int i = 0; i < 11; i++){
+        //         float angle = (i%2 == 0 && i != 0) ? (i-1 * -30f) : i * 30f;
+        //         Quaternion angleTurn = Quaternion.AngleAxis( angle, rotation * Vector3.down);
+        //         bool hasHitWall = ColliderCast( Vector3.zero, angleTurn * absoluteForward * 0.3f, out RaycastHit tempHit, 0.05f, layerMask );
+        //         if (hasHitWall){
+        //             wallHitOut = tempHit;
+        //             return true;
+        //         }
+        //     }
+        //     wallHitOut = new RaycastHit();
+        //     return false;
+        // }
 
 
         /// <summary>
@@ -656,11 +653,30 @@ namespace SeleneGame.Core {
             entity.transform.position = position;
             entity.transform.rotation = rotation;
             return entity;
-            return entity;
         }
 
         #region MonoBehaviour
 
+
+            // [ContextMenu("Initialize")]
+            protected virtual void Awake(){
+
+                // Ensure only One Entity is on a single GameObject
+                // Entity[] entities = GetComponents<Entity>();
+                // for (int i = 0; i < entities.Length; i++) {
+                //     if (entities[i] != this) {
+                //         GameUtility.SafeDestroy(entities[i]);
+                //     }
+                // }
+                
+            }
+
+            protected virtual void Start(){
+                rotation.SetVal(transform.rotation);
+                relativeForward = Vector3.forward;
+                rigidbody.useGravity = false;
+                rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
+            }
         
             protected virtual void Reset(){
                 foreach (Transform child in transform) {
@@ -676,32 +692,11 @@ namespace SeleneGame.Core {
             protected virtual void OnDisable(){
                 EntityManager.current.entityList.Remove( this );
             }
-
-            // [ContextMenu("Initialize")]
-            protected virtual void Awake(){
-
-                // Ensure only One Entity is on a single GameObject
-                // Entity[] entities = GetComponents<Entity>();
-                // for (int i = 0; i < entities.Length; i++) {
-                //     if (entities[i] != this) {
-                //         GameUtility.SafeDestroy(entities[i]);
-                //     }
-                // }
-                
-            }
             
             protected virtual void OnDestroy(){;}
 
-            protected virtual void Start(){
-                rotation.SetVal(transform.rotation);
-                relativeForward = Vector3.forward;
-                rigidbody.useGravity = false;
-                rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
-            }
-
-
             protected virtual void Update(){
-                onGround.SetVal(ColliderCast(Vector3.zero, gravityDown.normalized * 0.1f, out groundHit, 0.15f, Global.GroundMask));
+                onGround.SetVal( ColliderCast(Vector3.zero, gravityDown.normalized * 0.2f, out groundHit, 0.15f, Global.GroundMask) );
 
                 state?.HandleInput();
                 state?.StateUpdate();

@@ -1,12 +1,13 @@
 using System.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
+
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-using SevenGame.Utility;
 using SeleneGame.Core;
-using SeleneGame.Weapons;
+
+using SevenGame.Utility;
 
 namespace SeleneGame.Saving {
 
@@ -71,7 +72,7 @@ namespace SeleneGame.Saving {
             inputOverrides.Clear();
 
             // Save Input Overrides
-            InputActionMap map = ControlsManager.current.playerMap;
+            InputActionMap map = ControlsManager.playerMap;
             foreach (var binding in map.bindings){
                 if (!string.IsNullOrEmpty(binding.overridePath))
                     inputOverrides[binding.id] = binding.overridePath;
@@ -79,22 +80,23 @@ namespace SeleneGame.Saving {
         }
         public void LoadControls() {
 
+            ControlsManager.playerMap.Disable();
+
             // Load Input Overrides
-            InputActionMap map = ControlsManager.current.playerMap;
-            map.RemoveAllBindingOverrides();
+            ControlsManager.playerMap.RemoveAllBindingOverrides();
 
-            for (int i = 0; i < map.bindings.Count; ++i){
-                InputBinding binding = map.bindings[i];
+            for (int i = 0; i < ControlsManager.playerMap.bindings.Count; ++i){
+                InputBinding binding = ControlsManager.playerMap.bindings[i];
 
-                if ( !binding.groups.Contains("Keyboard&Mouse") ) continue;
+                if ( string.IsNullOrEmpty(binding.groups) || !binding.groups.Contains("Keyboard&Mouse") ) continue;
 
                 if (inputOverrides.TryGetValue(binding.id, out string overridePath))
-                    map.ApplyBindingOverride(i, new InputBinding { overridePath = overridePath });
+                    ControlsManager.playerMap.ApplyBindingOverride(i, new InputBinding { overridePath = overridePath });
                 
-                GameEvents.UpdateKeybind( binding.id );
+                ControlsManager.UpdateKeybind( binding.id );
             }
-            
-            // Player.current.controls.Enable();
+
+            ControlsManager.playerMap.Enable();
         }
 
     }
@@ -104,23 +106,20 @@ namespace SeleneGame.Saving {
     [System.Serializable]
     public class EntitySaveData {
 
-        // Entity Save Data
         public string entityTypeName = "SeleneGame.Core.Entity";
         public string characterName = "Selene";
         public string characterCostumeName = "Base";
         public float[] position = new float[3]{0f, 0f, 0f};
         public float[] rotation = new float[4]{0f, 0f, 0f, 0f};
         public float[] gravity = new float[3]{0f, -1f, 0f};
-
-        // Weapon Save Data
-        public string[] weaponNames = new string[0];
-        public string[] weaponCostumeNames = new string[0];
+        
+        public WeaponSaveData[] weaponData = new WeaponSaveData[0];
 
         public void Save(Entity entity){
             System.Type entityType = entity.GetType();
             entityTypeName = entityType.FullName;
             characterName = entity.character.name ?? "Selene";
-            characterCostumeName = entity.character?.costume?.name.Split('_')[1] ?? "Base";
+            characterCostumeName = entity.character?.costume?.name ?? "Base";
             position = new float[3]{entity.transform.position.x, entity.transform.position.y, entity.transform.position.z};
             rotation = new float[4]{entity.rotation.x, entity.rotation.y, entity.rotation.z, entity.rotation.w};
             gravity = new float[3]{entity.gravityDown.x, entity.gravityDown.y, entity.gravityDown.z};
@@ -130,12 +129,9 @@ namespace SeleneGame.Saving {
                 ArmedEntity armed = entity as ArmedEntity;
 
                 int weaponCount = armed.weapons.Count;
-                weaponNames = new string[weaponCount];
-                weaponCostumeNames = new string[weaponCount];
+                weaponData = new WeaponSaveData[weaponCount];
                 for (int i = 0; i < weaponCount; i++) {
-                    weaponNames[i] = armed.weapons[i]?.name ?? "Unarmed";
-                    weaponCostumeNames[i] = armed.weapons[i]?.costume.name.Split('_')[1] ?? "Base";
-                    Debug.Log( $"{weaponNames[i]} has costume named {weaponCostumeNames[i]}" );
+                    weaponData[i] = new WeaponSaveData(armed.weapons[i]);
                 }
             }
 
@@ -155,16 +151,17 @@ namespace SeleneGame.Saving {
 
 
             if ( typeof(ArmedEntity).IsAssignableFrom(entityType) ) {
-                ArmedEntity armed = entity as ArmedEntity;
+                ArmedEntity armed = (ArmedEntity)entity;
 
                 armed.ResetWeapons();
                 for (int i = 0; i < armed.weapons.Count; i++) {
                     
                     // We have to do this or the index will be wrong when the async operation is completed.
                     int currIndex = i;
+                    WeaponSaveData currWeaponData = weaponData[currIndex];
                     
-                    Weapon.GetAsync(weaponNames[currIndex], (weapon) => {
-                        WeaponCostume.GetAsync(weaponNames[currIndex], weaponCostumeNames[currIndex], costume => {
+                    Weapon.GetAsync(currWeaponData.name, (weapon) => {
+                        WeaponCostume.GetAsync(currWeaponData.name, currWeaponData.costumeName, costume => {
                             Debug.Log(costume);
                             armed.weapons.Set( currIndex, weapon, costume );
                         });
@@ -172,6 +169,25 @@ namespace SeleneGame.Saving {
                 }
             }
             return entity;
+        }
+
+        [System.Serializable]
+        public class WeaponSaveData {
+            public string name = "Unarmed";
+            public string costumeName = "Unarmed_Base";
+
+            public WeaponSaveData(string name, string costumeName) {
+                this.name = name;
+                this.costumeName = costumeName;
+            }
+
+            public WeaponSaveData(Weapon.Instance weapon){
+                if (weapon == null)
+                    return;
+
+                name = weapon.name;
+                costumeName = weapon.costume.name;
+            }
         }
     }
 }

@@ -26,9 +26,21 @@ namespace SeleneGame.Core {
             if (!grabbed) return;
 
         }
-        
-        public bool IsInteractable() => !grabbed;
-        public string InteractDescription() => "Pick up";
+
+        public bool IsInteractable {
+            get {
+                return !grabbed;
+            }
+            set {;}
+        }
+
+        public string InteractDescription {
+            get {
+                return "Pick up";
+            }
+            set {;}
+        }
+
         public void Interact(Entity entity) => entity.Grab(this);
 
     }

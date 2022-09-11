@@ -11,8 +11,8 @@ namespace SeleneGame.Core {
     public class WaterController : MonoBehaviour {
         
         public new Collider collider;
-
         new Renderer renderer;
+
     
         void Awake(){
             collider = GetComponent<Collider>();

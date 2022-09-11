@@ -7,10 +7,10 @@ using SeleneGame.Entities;
 
 namespace SeleneGame.States {
     
-    public class SittingState : State{
+    public class SittingState : State {
         
         public override StateType stateType => StateType.immobileState;
-        protected override Vector3 GetCameraPosition() => seat.seatEntity?.state.cameraPosition ?? base.GetCameraPosition();
+        public override Vector3 cameraPosition => seat.seatEntity?.state.cameraPosition ?? base.cameraPosition;
 
         // public override bool masked => true;
 

@@ -9,7 +9,11 @@ using TMPro;
 using SeleneGame.Saving;
 
 namespace SeleneGame.UI {
-    public class SaveSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler {
+    public class SaveSlot : CustomButton {
+
+        [SerializeField] private Sprite bgEmptyUnselected;
+        [SerializeField] private Sprite bgEmptySelected;
+        [SerializeField] private Sprite bgEmptyClicked;
 
         [SerializeField] uint slotNumber = 1;
 
@@ -18,13 +22,8 @@ namespace SeleneGame.UI {
         [SerializeField] private TextMeshProUGUI playTime;
         [SerializeField] private TextMeshProUGUI saveDateTime;
 
-        [SerializeField] private Image slotBackground;
-
-        [SerializeField] private Sprite slotEmpty;
-        [SerializeField] private Sprite slotFull;
-        [SerializeField] private Sprite slotSelected;
-
         private SaveData saveData;
+        
 
         public void LoadPreviewData(){
             slotNumberText.text = $"0{slotNumber}";
@@ -34,38 +33,55 @@ namespace SeleneGame.UI {
                 saveInfo.SetActive(true);
                 playTime.text = saveData.GetTotalPlaytime().ToString();
                 saveDateTime.text = saveData.GetTimeOfLastSave().ToString();
-                slotBackground.sprite = slotFull;
+
+                SetBackground( bgUnselected );
             }else {
                 saveInfo.SetActive(false);
                 playTime.text = "";
                 saveDateTime.text = "";
-                slotBackground.sprite = slotEmpty;
+
+                SetBackground( bgEmptyUnselected );
             }
         }
 
-        public void OnPointerEnter(PointerEventData eventData) {
-            if (saveData != null){
-                slotBackground.sprite = slotSelected;
-            }
+        public override void OnSelect(BaseEventData eventData) {
+            if (saveData == null)
+                SetBackground( bgEmptySelected );
+            else
+                SetBackground( bgSelected );
         }
 
-        public void OnPointerExit(PointerEventData eventData) {
-            if (saveData != null){
-                slotBackground.sprite = slotFull;
-            }else {
-                slotBackground.sprite = slotEmpty;
-            }
+        public override void OnDeselect(BaseEventData eventData) {
+            if (saveData == null)
+                SetBackground( bgEmptyUnselected );
+            else
+                SetBackground( bgUnselected );
         }
 
-        public void OnPointerClick(PointerEventData eventData) {
+        public override void OnPointerDown(PointerEventData eventData) {
+            if (saveData == null)
+                SetBackground( bgEmptyClicked );
+            else
+                SetBackground( bgClicked );
+        }
+
+        public override void OnPointerUp(PointerEventData eventData) {
+            if (saveData == null)
+                SetBackground( bgEmptySelected );
+            else
+                SetBackground( bgSelected );
+        }
+
+        public override void OnPointerClick(PointerEventData eventData) {
+
             if (eventData.button == PointerEventData.InputButton.Left) {
                 SavingSystem.SavePlayerData(slotNumber);
                 LoadPreviewData();
-            } else if (eventData.button == PointerEventData.InputButton.Right) {
+            } else if (eventData.button == PointerEventData.InputButton.Right && saveData != null) {
                 SavingSystem.LoadPlayerData(slotNumber);
             }
 
-            UIController.current.ToggleSaveMenu();
+            SaveMenuController.current.Disable();
         }
     }
 }

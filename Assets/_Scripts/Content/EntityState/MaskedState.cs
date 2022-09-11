@@ -8,15 +8,16 @@ using SevenGame.Utility;
 
 namespace SeleneGame.States {
     
-    public class MaskedState : State{
+    public class MaskedState : State {
 
         public override StateType stateType => StateType.flyingState;
-        // protected override float GetSpeedMultiplier() => entity.GravityMultiplier();
-        protected override Vector3 GetCameraPosition(){
-            if (shiftFalling){
-                return new Vector3(0f, 1f, -4f) - new Vector3(0,0,additionalCameraDistance);
-            }else{
-                return new Vector3(0.7f, 0.8f, -2.5f) - new Vector3(0,0,additionalCameraDistance);
+        public override Vector3 cameraPosition {
+            get {
+                if (shiftFalling){
+                    return new Vector3(0f, 1f, -4f) - new Vector3(0,0,additionalCameraDistance);
+                }else{
+                    return new Vector3(0.7f, 0.8f, -2.5f) - new Vector3(0,0,additionalCameraDistance);
+                }
             }
         }
 

@@ -57,7 +57,7 @@ namespace SeleneGame.Saving {
         public static void SavePlayerData(uint slot){
 
             SaveData data = loadedData == null ? new SaveData() : loadedData;
-            data.Save();
+            data.Save(); 
 
             SaveDataToFile(data, slot);
             Debug.Log($"Data Saved in Slot {slot} at {Application.persistentDataPath}");

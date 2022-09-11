@@ -12,6 +12,8 @@ namespace SeleneGame.Core {
         private const int defaultIndex = 0;
         [SerializeField] private int currentIndex;
 
+
+
         public override int Count => items.Length;
 
         public override Weapon.Instance current { get {
@@ -23,6 +25,8 @@ namespace SeleneGame.Core {
             }
         } }
 
+
+
         public ListWeaponInventory(ArmedEntity entity, int size){
             currentIndex = defaultIndex;
             
@@ -33,6 +37,7 @@ namespace SeleneGame.Core {
                 SetToDefault( i );
             }
         }
+
 
         public override Weapon.Instance Get(int index) => items[index];
 
@@ -69,6 +74,8 @@ namespace SeleneGame.Core {
 
             current.Display();
         }
+
+
 
         public override IEnumerator GetEnumerator() => items.GetEnumerator();
     }

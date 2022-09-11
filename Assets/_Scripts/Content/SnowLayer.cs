@@ -9,7 +9,7 @@ namespace SeleneGame {
         [SerializeField] private RenderTexture thickness;
         public RenderTexture snowThickness;
 
-        private new Renderer _renderer;
+        private Renderer _renderer;
         private MaterialPropertyBlock mpb;
 
         private void Awake() {

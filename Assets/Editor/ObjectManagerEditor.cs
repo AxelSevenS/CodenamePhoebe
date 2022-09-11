@@ -17,7 +17,6 @@ namespace SeleneGame.Core {
             }
         }
 
-
         [DrawGizmo(GizmoType.InSelectionHierarchy | GizmoType.Active)]
         private static void OnDrawGizmosSelected(ObjectManager scr, GizmoType gizmoType) {
             // Handles.zTest = CompareFunction.LessEqual;

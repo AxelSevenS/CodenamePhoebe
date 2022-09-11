@@ -6,9 +6,9 @@ namespace SeleneGame.Core {
     
     public interface IInteractable {
 
-        string InteractDescription();
+        string InteractDescription{ get; set; }
 
-        bool IsInteractable();
+        bool IsInteractable{ get; set; }
 
         void Interact(Entity entity);
     }

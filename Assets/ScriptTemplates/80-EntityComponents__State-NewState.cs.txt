@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 using SeleneGame.Core;
-using SeleneGame.Entities;
 
 namespace SeleneGame.States {
     
@@ -10,12 +10,9 @@ namespace SeleneGame.States {
 
         public override StateType stateType => StateType.groundState;
 
-        protected override Vector3 GetJumpDirection(){
-            return base.GetJumpDirection();
-        }
-        protected override Vector3 GetCameraPosition() {
-            return base.GetCameraPosition();
-        }
+        public override Vector3 jumpDirection => base.jumpDirection;
+
+        public override Vector3 cameraPosition => base.cameraPosition;
 
 
 
@@ -25,6 +22,10 @@ namespace SeleneGame.States {
         }
         public override void OnExit(){
             base.OnExit();
+#NOTRIM#
+        }
+        
+        public override void HandleInput(){
 #NOTRIM#
         }
         
@@ -38,9 +39,6 @@ namespace SeleneGame.States {
 #NOTRIM#
         }
 
-        public override void HandleInput(){
-#NOTRIM#
-        }
 
     }
 }

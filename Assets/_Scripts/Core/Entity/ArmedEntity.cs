@@ -22,10 +22,6 @@ namespace SeleneGame.Core {
             }
         }
 
-        public virtual void ResetWeapons(){
-            _weapons = new ListWeaponInventory(this, 1);
-        }
-
 
         [Header("Parrying")]
         public float parryTimer;
@@ -40,48 +36,21 @@ namespace SeleneGame.Core {
         public event Action<Vector3> onEvade;
         public event Action onParry;
 
-        public override bool CanTurn() => !evading;
+
+        public override float weight => Mathf.Min( base.weight, weapons.current.weightModifier ); 
+
+
+
+        public virtual void ResetWeapons(){
+            _weapons = new ListWeaponInventory(this, 1);
+        }
+
 
         public override void LoadModel() {
             base.LoadModel();
             foreach(Weapon.Instance weapon in weapons) {
                 weapon.LoadModel();
             }
-        }
-
-        protected override void Awake(){
-            base.Awake();
-        }
-
-        protected override void Reset(){
-            base.Reset();
-            ResetWeapons();
-        }
-
-        protected override void Update(){
-            base.Update();
-
-            evading.SetVal( evadeTimer > character.evadeCooldown );
-            
-            evadeTimer = Mathf.MoveTowards( evadeTimer, 0f, GameUtility.timeDelta );
-            parryTimer = Mathf.MoveTowards( parryTimer, 0f, GameUtility.timeDelta );
-
-
-            if ( KeyInputData.SimultaneousTap( controller.lightAttackInput, controller.heavyAttackInput ) )
-                Parry();
-            
-            foreach (Weapon.Instance weapon in weapons)
-                weapon?.Update();
-        }
-
-        protected override void FixedUpdate() {
-            base.FixedUpdate();
-
-            if ( moveDirection.sqrMagnitude > 0f && evadeTimer > character.totalEvadeDuration - 0.15f )
-                evadeDirection = moveDirection.normalized;
-
-            foreach (Weapon.Instance weapon in weapons)
-                weapon?.FixedUpdate();
         }
 
         protected override void EntityAnimation() {
@@ -102,17 +71,6 @@ namespace SeleneGame.Core {
         }
 
 
-        public bool EvadeUpdate(out float evadeTime, out float evadeCurve){
-            if ( !evading ) {
-                evadeTime = 0f;
-                evadeCurve = 0f;
-                return false;
-            }
-
-            evadeTime = Mathf.Clamp01( 1 - ( (evadeTimer - character.evadeCooldown) / character.evadeDuration ) );
-            evadeCurve = Mathf.Clamp01( EntityManager.current.evadeCurve.Evaluate( evadeTime ) );
-            return true;
-        }
 
         public void GroundedEvade(Vector3 evadeDirection){
             if (evadeTimer > 0f) return;
@@ -139,6 +97,52 @@ namespace SeleneGame.Core {
 
 
             onEvade?.Invoke(evadeDirection);
+        }
+
+        public bool EvadeUpdate(out float evadeTime, out float evadeCurve){
+            if ( !evading ) {
+                evadeTime = 0f;
+                evadeCurve = 0f;
+                return false;
+            }
+
+            evadeTime = Mathf.Clamp01( 1 - ( (evadeTimer - character.evadeCooldown) / character.evadeDuration ) );
+            evadeCurve = Mathf.Clamp01( EntityManager.current.evadeCurve.Evaluate( evadeTime ) );
+            return true;
+        }
+
+
+
+
+        protected override void Reset(){
+            base.Reset();
+            ResetWeapons();
+        }
+
+        protected override void Update(){
+            base.Update();
+
+            evading.SetVal( evadeTimer > character.evadeCooldown );
+            
+            evadeTimer = Mathf.MoveTowards( evadeTimer, 0f, GameUtility.timeDelta );
+            parryTimer = Mathf.MoveTowards( parryTimer, 0f, GameUtility.timeDelta );
+
+
+            if ( KeyInputData.SimultaneousTap( controller.lightAttackInput, controller.heavyAttackInput ) )
+                Parry();
+            
+            foreach (Weapon.Instance weapon in weapons)
+                weapon?.Update();
+        }
+
+        protected override void FixedUpdate() {
+            base.FixedUpdate();
+
+            if ( !isIdle && evadeTimer > character.totalEvadeDuration - 0.15f )
+                evadeDirection = moveDirection.normalized;
+
+            foreach (Weapon.Instance weapon in weapons)
+                weapon?.FixedUpdate();
         }
 
     }

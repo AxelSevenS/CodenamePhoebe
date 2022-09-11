@@ -35,34 +35,34 @@ MonoBehaviour:
     - Weapon
     - default
   - m_GUID: 88d05d19418b5cb4eb2b9561a0f90b20
-    m_Address: Weapons/Costumes/Eris/Base
+    m_Address: Weapons/Costumes/Eris_Base
     m_ReadOnly: 0
     m_SerializedLabels:
     - WeaponCostume
   - m_GUID: 01507fe7b51003a4ebc926fba9781970
-    m_Address: Weapons/Costumes/Hypnos/Base
+    m_Address: Weapons/Costumes/Hypnos_Base
     m_ReadOnly: 0
     m_SerializedLabels:
     - WeaponCostume
   - m_GUID: f1c6cebfdf4f4554288c95a4539c3610
-    m_Address: Weapons/Costumes/Hypnos/Test
+    m_Address: Weapons/Costumes/Hypnos_Test
     m_ReadOnly: 0
     m_SerializedLabels:
     - WeaponCostume
   - m_GUID: 4fcb14e16ae7e7b4287ef3e8b382de17
-    m_Address: Weapons/Costumes/Unarmed/Base
+    m_Address: Weapons/Costumes/Unarmed_Base
     m_ReadOnly: 0
     m_SerializedLabels:
     - WeaponCostume
     - default
   - m_GUID: dc629ef132d887b4696c909c7ba4033c
-    m_Address: Characters/Costumes/Selene/Base
+    m_Address: Characters/Costumes/Selene_Base
     m_ReadOnly: 0
     m_SerializedLabels:
     - default
     - CharacterCostume
   - m_GUID: 32c5215d78678094a90500600c9a8ab2
-    m_Address: Characters/Costumes/GravityBike/Base
+    m_Address: Characters/Costumes/GravityBike_Base
     m_ReadOnly: 0
     m_SerializedLabels:
     - CharacterCostume

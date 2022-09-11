@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd3b3ea335dad2e46bab788af7f1c33f, type: 3}
   m_Name: Hypnos
   m_EditorClassIdentifier: 
-  weaponType: 2
+  weaponType: 3
   weightModifier: 0.75
   displayName: Hypnos
-  defaultCostume: {fileID: 11400000, guid: 01507fe7b51003a4ebc926fba9781970, type: 2}
+  description: 
+  baseCostume: {fileID: 11400000, guid: 01507fe7b51003a4ebc926fba9781970, type: 2}

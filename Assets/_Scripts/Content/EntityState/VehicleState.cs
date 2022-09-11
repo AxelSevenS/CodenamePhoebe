@@ -7,10 +7,10 @@ using SevenGame.Utility;
 
 namespace SeleneGame.States {
     
-    public class VehicleState : State{
+    public class VehicleState : State {
 
         public override StateType stateType => StateType.groundState;
-        protected override Vector3 GetCameraPosition() => new Vector3(0.3f, 0.5f, -6.5f);
+        public override Vector3 cameraPosition => new Vector3(0.3f, 0.5f, -6.5f);
 
         // public override bool masked => false;
 
@@ -38,7 +38,7 @@ namespace SeleneGame.States {
 
         public override void StateFixedUpdate(){
 
-            entity.JumpGravity(entity.GravityMultiplier(), entity.gravityDown, entity.controller.jumpInput);
+            entity.JumpGravity(entity.weight, entity.gravityDown, entity.controller.jumpInput);
             
             if ( entity.onGround ){
                 if( entity.jumpCooldownTimer.isDone )

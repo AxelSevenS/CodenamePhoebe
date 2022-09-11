@@ -1,20 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 using SeleneGame.Core;
-using SeleneGame.Entities;
 
 namespace SeleneGame.Weapons {
     
     [CreateAssetMenu(fileName = "#SCRIPTNAME#", menuName = "Weapon/#SCRIPTNAME#")]
     public class #SCRIPTNAME# : Weapon{
 
-        public virtual void WeaponUpdate( Entity entity ){
+        public override void WeaponCreation( Instance instance ){
+            base.WeaponCreation( instance );
+#NOTRIM#
+        }
+
+        public override void WeaponUpdate( Entity entity ){
             base.WeaponUpdate( entity );
 #NOTRIM#
         }
 
-        public virtual void WeaponFixedUpdate( Entity entity ){
+        public override void WeaponFixedUpdate( Entity entity ){
             base.WeaponFixedUpdate( entity );
 #NOTRIM#
         }

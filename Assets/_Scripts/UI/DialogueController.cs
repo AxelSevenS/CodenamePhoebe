@@ -13,10 +13,7 @@ using SevenGame.Utility;
 
 namespace SeleneGame.UI {
 
-    public class DialogueController : MonoBehaviour{
-
-
-        public static DialogueController current;
+    public class DialogueController : MenuController<DialogueController> {
 
 
         
@@ -32,50 +29,69 @@ namespace SeleneGame.UI {
         [Space(15)]
 
         [SerializeField] private Dialogue dialogue;
-        [SerializeField] private DialogueLine line;
+        [SerializeField] private Dialogue.Line line;
         [SerializeField] private GameObject dialogueObject;
 
 
         [Space(15)]
         [SerializeField] private string displayText;
-        public bool isActive; 
-        private bool isDone => displayText.Length >= line.text.Length;
-        private int dNumber;
+        private int lineIndex;
 
         [SerializeField] private float currOpacity;
         private Image[] imageList;
         private TextMeshProUGUI[] textList;
 
-        private void OnEnable() {
-            if (current != null && current != this)
-                Destroy(current);
-            current = this;
+
+        private bool isTyping => displayText.Length < line.text.Length;
+
+
+        public override void Toggle(){;}
+
+        public override void Enable(){
+            base.Enable();
+
+            StopCoroutine(AdvanceText());
+            dialogueBox.SetActive( true );
+
+            displayText = "";
+            lineIndex = 0;
         }
 
-        private void Awake(){
-            imageList = dialogueBox.transform.GetComponentsInChildren<Image>();
-            textList = dialogueBox.transform.GetComponentsInChildren<TextMeshProUGUI>();
+        public override void Disable(){
+            base.Disable();
+
+            StopCoroutine(AdvanceText());
+            Enabled = false;
+            dialogueBox.SetActive( false );
         }
-        
-        private void Update(){
 
-            currOpacity = Mathf.MoveTowards(currOpacity, (isActive ? 1f : 0f), 7f * GameUtility.timeDelta);
-            dialogueBox.SetActive(isActive);
+        public override void SetSelectedObject(){
+        }
 
-            foreach (Image i in imageList){
-                i.color = new Color(i.color.r, i.color.g, i.color.b, currOpacity);
-            }
-            foreach (TextMeshProUGUI i in textList){
-                i.color = new Color(i.color.r, i.color.g, i.color.b, currOpacity);
-            }
+
+        public void StartDialogue(Dialogue newDialogue, GameObject newDialogueObject = null){
+            Enable();
             
+            dialogueObject = newDialogueObject;
+            dialogue = newDialogue;
 
-            if (PlayerEntityController.current == null) return;
+            NextLine();
+        }
 
-            if (PlayerEntityController.current.lightAttackInput.started || PlayerEntityController.current.heavyAttackInput.started || PlayerEntityController.current.jumpInput.started)
-                SkipLine();
+        private void EndDialogue(){
+            Disable();
+        }
 
-            
+
+        private void UpdateOpacity(){
+
+            currOpacity = Mathf.MoveTowards(currOpacity, (Enabled ? 1f : 0f), 7f * GameUtility.timeDelta);
+
+            foreach (Image i in imageList)
+                i.color = new Color(i.color.r, i.color.g, i.color.b, currOpacity);
+
+            foreach (TextMeshProUGUI i in textList)
+                i.color = new Color(i.color.r, i.color.g, i.color.b, currOpacity);
         }
 
         IEnumerator AdvanceText(){
@@ -83,7 +99,7 @@ namespace SeleneGame.UI {
             dialogueIndicator.enabled = false;
 
             for(int i = 0; i < line.text.Length; i++){
-                if (isDone) {
+                if ( !isTyping ) {
                     dialogueIndicator.enabled = true;
                     yield break;
                 }
@@ -93,30 +109,12 @@ namespace SeleneGame.UI {
             }
         }
 
-        public void StartDialogue(Dialogue newDialogue, GameObject newDialogueObject = null){
-            StopCoroutine(AdvanceText());
-            isActive = true;
-            
-            dialogueObject = newDialogueObject;
-            dialogue = newDialogue;
-
-            displayText = "";
-            dNumber = 0;
-
-            NextLine();
-        }
-
-        private void EndDialogue(){
-            StopCoroutine(AdvanceText());
-            isActive = false;
-        }
-
         private void NextLine(){
             if (!dialogueBox.activeSelf) return;
 
-            if (dNumber < dialogue.lines.Length){
-                line = dialogue.lines[dNumber];
-                dNumber++;
+            if (lineIndex < dialogue.lines.Length) {
+                line = dialogue.lines[lineIndex];
+                lineIndex++;
 
                 dialogueName.SetText( line.entity.name );
                 dialoguePortrait.sprite = line.entity.character.costume.GetPortrait(line.emotion);
@@ -125,7 +123,7 @@ namespace SeleneGame.UI {
                     dialogueEvent.Invoke(dialogueObject);
                 }
                 StartCoroutine(AdvanceText());
-            }else 
+            } else 
                 EndDialogue();
         }
 
@@ -137,10 +135,28 @@ namespace SeleneGame.UI {
         private void SkipLine(){
             if (!dialogueBox.activeSelf) return;
 
-            if (isDone)
-                NextLine();
-            else
+            if ( isTyping )
                 EndLine();
+            else
+                NextLine();
+        }
+
+
+
+        private void Awake(){
+            imageList = dialogueBox.transform.GetComponentsInChildren<Image>();
+            textList = dialogueBox.transform.GetComponentsInChildren<TextMeshProUGUI>();
+        }
+        
+        private void Update(){
+
+            UpdateOpacity();
+
+            if (PlayerEntityController.current == null) return;
+
+            if (PlayerEntityController.current.lightAttackInput.started || PlayerEntityController.current.heavyAttackInput.started || PlayerEntityController.current.jumpInput.started)
+                SkipLine();
+
         }
 
     }

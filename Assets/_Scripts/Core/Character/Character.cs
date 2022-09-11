@@ -21,7 +21,7 @@ namespace SeleneGame.Core {
 
 
             public string name => character.name;
-            public CharacterCostume defaultCostume => character.defaultCostume;
+            public CharacterCostume baseCostume => character.baseCostume;
             public float maxHealth => character.maxHealth;
             public Vector3 size => character.size;
             public float stepHeight => character.stepHeight;
@@ -44,7 +44,7 @@ namespace SeleneGame.Core {
             public Instance(Entity entity, Character character, CharacterCostume costume = null) {
                 this.entity = entity;
                 this.character = character;
-                SetCostume( costume == null ? character.defaultCostume : costume );
+                SetCostume( costume == null ? character.baseCostume : costume );
                 character.CharacterCreation(this);
             }
 
@@ -87,7 +87,7 @@ namespace SeleneGame.Core {
         }
 
         public string displayName = "Default Entity Name";
-        public CharacterCostume defaultCostume;
+        public CharacterCostume baseCostume;
         
         public float maxHealth;
         public Vector3 size;
@@ -115,12 +115,16 @@ namespace SeleneGame.Core {
         }
 
         public static Character Get(string characterName) {
+            // Get Requested Character
             AsyncOperationHandle<Character> opHandle = Addressables.LoadAssetAsync<Character>( CharacterNameToPath(characterName) );
             Character result = opHandle.WaitForCompletion();
+
+            // If not found, get Default Character : Selene
             if (result == null) {
-                Debug.LogError($"Error getting weapon {characterName}");
+                Debug.LogWarning($"Error getting Character {characterName}");
                 return GetDefault();
             }
+
             return result;
         }
         public static Character GetDefault() {
@@ -129,13 +133,18 @@ namespace SeleneGame.Core {
         }
 
         public static void GetAsync(string characterName, Action<Character> callback) {
+            // Get Requested Character
             AsyncOperationHandle<Character> opHandle = Addressables.LoadAssetAsync<Character>( CharacterNameToPath(characterName) );
             opHandle.Completed += operation => {
-                if (operation.Status == AsyncOperationStatus.Succeeded) {
-                    callback(operation.Result);
-                } else {
+
+                // If not found, get Default Character : Selene
+                if (operation.Status == AsyncOperationStatus.Failed) {
+                    Debug.LogWarning($"Error getting Character {characterName}");
                     GetDefaultAsync(callback);
+                    return;
                 }
+
+                callback(operation.Result);
             };
         }
         public static void GetDefaultAsync(Action<Character> callback) {

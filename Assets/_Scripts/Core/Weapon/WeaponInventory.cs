@@ -8,20 +8,18 @@ namespace SeleneGame.Core {
     [System.Serializable]
     public abstract class WeaponInventory : IEnumerable {
 
-        /* [SerializeReference]  */protected ArmedEntity entity;
+        protected ArmedEntity entity;
         
 
         public abstract int Count { get; }
-
         public Weapon.Instance this[int index] => Get(index);
-
-
         public abstract Weapon.Instance current { get; }
+
+
 
         public abstract Weapon.Instance Get(int index);
 
         public abstract void Set(int index, Weapon weapon, WeaponCostume costume = null);
-
         public void Set(int index, string weaponName, WeaponCostume costume = null) {
             Weapon.GetAsync(weaponName, (weapon) => {
                 Set(index, weapon, costume);

@@ -16,4 +16,5 @@ MonoBehaviour:
   rightHandModel: {fileID: 0}
   leftHandModel: {fileID: 0}
   displayName: Test Costume
-  equippableOn: 6
+  description: Default Costume Description
+  equippableOn: 4

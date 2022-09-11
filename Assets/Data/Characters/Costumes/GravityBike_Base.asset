@@ -12,6 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 025a79ffa39d7bd4989a03b4b7bd3c8b, type: 3}
   m_Name: GravityBike_Base
   m_EditorClassIdentifier: 
+  portrait: {fileID: 0}
+  displayName: Base
+  description: Default Costume Description
+  model: {fileID: 5534340132901445963, guid: ca96c8816e56c6545a6823b2bcc89684, type: 3}
+  costumeData: {fileID: 5534340132901445965, guid: ca96c8816e56c6545a6823b2bcc89684,
+    type: 3}
   neutralPortrait: {fileID: 0}
   determinedPortrait: {fileID: 0}
   hesitantPortrait: {fileID: 0}
@@ -19,5 +25,3 @@ MonoBehaviour:
   disgustedPortrait: {fileID: 0}
   sadPortrait: {fileID: 0}
   happyPortrait: {fileID: 0}
-  model: {fileID: 5534340132901445963, guid: ca96c8816e56c6545a6823b2bcc89684, type: 3}
-  displayName: Base

@@ -18,25 +18,34 @@ MonoBehaviour:
     _entity: {fileID: 0}
     text: "Guillaume est une tr\xE8s belle Salope"
     dialogueEvents:
-    - eventType: 2
-      dialogue: {fileID: 0}
+    - eventType: 1
       entity: {fileID: 0}
-      entityCostume: {fileID: 11400000, guid: 99793ed8a8b4b9046a71eca92f0b7cdf, type: 2}
+      characterCostume:
+        m_AssetGUID: 32c5215d78678094a90500600c9a8ab2
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_EditorAssetChanged: 0
   - emotion: 1
     usePlayerEntity: 1
     _entity: {fileID: 0}
     text: Une vraiment belle Salope
     dialogueEvents:
-    - eventType: 2
-      dialogue: {fileID: 0}
+    - eventType: 1
       entity: {fileID: 0}
-      entityCostume: {fileID: 11400000, guid: bad0e400899943c43af368f1c7710c38, type: 2}
+      characterCostume:
+        m_AssetGUID: dc629ef132d887b4696c909c7ba4033c
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_EditorAssetChanged: 0
   - emotion: 2
     usePlayerEntity: 1
     _entity: {fileID: 0}
     text: ...
     dialogueEvents:
-    - eventType: 3
-      dialogue: {fileID: 0}
+    - eventType: 2
       entity: {fileID: 0}
-      entityCostume: {fileID: 11400000, guid: bad0e400899943c43af368f1c7710c38, type: 2}
+      characterCostume:
+        m_AssetGUID: 
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_EditorAssetChanged: 0

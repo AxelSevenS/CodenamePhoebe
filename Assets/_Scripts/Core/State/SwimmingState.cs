@@ -2,21 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-using SeleneGame.Core;
-using SeleneGame.Entities;
 using SevenGame.Utility;
 
-namespace SeleneGame.States {
+namespace SeleneGame.Core {
     
-    public class SwimmingState : State{
+    public class SwimmingState : State {
+
+        public const float entityWeightSinkTreshold = 16.25f;
 
         public override StateType stateType => StateType.waterState;
-        protected override Vector3 GetCameraPosition() {
-            // if (entity is ArmedEntity armed)
-            //     return armed.weapons.current.cameraPosition;
-                
-            return Global.cameraDefaultPosition;
-        }
+        public override Vector3 cameraPosition => Global.cameraDefaultPosition;
 
         public override void OnEnter(Entity entity){
             base.OnEnter(entity);
@@ -26,10 +21,26 @@ namespace SeleneGame.States {
             entity.jumpCount = 1;
         }
 
+        public override void HandleInput(){
+            
+            entity.controller.RawInputToCameraRelativeMovement(out Quaternion cameraRotation, out Vector3 cameraRelativeMovement);
+            float verticalInput = (entity.controller.jumpInput ? 1f: 0f) - (entity.controller.crouchInput ? 1f: 0f);
+            entity.moveDirection.SetVal( cameraRelativeMovement + (cameraRotation * Vector3.up * verticalInput) );
+            
+            if (entity.controller.jumpInput && entity.isOnWaterSurface && entity.jumpCount != 0 && entity.jumpCooldownTimer.isDone ){
+                entity.Jump( -entity.gravityDown );
+            }
+
+            float newSpeed = entity.isIdle ? 0f : entity.character.baseSpeed;
+
+            float speedDelta = newSpeed > entity.moveSpeed ? 1f : 0.65f;
+            entity.moveSpeed = Mathf.MoveTowards(entity.moveSpeed, newSpeed, speedDelta * entity.character.acceleration * GameUtility.timeDelta);
+        }
+
         public override void StateUpdate(){
 
 
-            if (!entity.inWater || entity.CanSink()){
+            if ( !entity.inWater || entity.weight > entityWeightSinkTreshold ){
                 entity.SetState(entity.defaultState);
             }
 
@@ -52,7 +63,7 @@ namespace SeleneGame.States {
             // }
 
 
-            if (entity.moveDirection.sqrMagnitude > 0f){
+            if (!entity.isIdle){
 
                 entity.absoluteForward = entity.moveDirection.normalized;
                 Vector3 newUp = Vector3.Cross(entity.absoluteForward, Vector3.Cross(entity.absoluteForward, entity.gravityDown));
@@ -67,22 +78,6 @@ namespace SeleneGame.States {
 
 
 
-        }
-
-        public override void HandleInput(){
-            
-            entity.controller.RawInputToCameraRelativeMovement(out Quaternion cameraRotation, out Vector3 cameraRelativeMovement);
-            float verticalInput = (entity.controller.jumpInput ? 1f: 0f) - (entity.controller.crouchInput ? 1f: 0f);
-            entity.moveDirection.SetVal( cameraRelativeMovement + (cameraRotation * Vector3.up * verticalInput) );
-            
-            if (entity.controller.jumpInput && entity.isOnWaterSurface && entity.jumpCount != 0 && entity.jumpCooldownTimer.isDone ){
-                entity.Jump( -entity.gravityDown );
-            }
-
-            float newSpeed = entity.isIdle ? 0f : entity.character.baseSpeed;
-
-            float speedDelta = newSpeed > entity.moveSpeed ? 1f : 0.65f;
-            entity.moveSpeed = Mathf.MoveTowards(entity.moveSpeed, newSpeed, speedDelta * entity.character.acceleration * GameUtility.timeDelta);
         }
     }
 }

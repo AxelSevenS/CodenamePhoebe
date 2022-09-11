@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Selene
   m_EditorClassIdentifier: 
   displayName: Selene
-  defaultCostume: {fileID: 11400000, guid: dc629ef132d887b4696c909c7ba4033c, type: 2}
+  baseCostume: {fileID: 11400000, guid: dc629ef132d887b4696c909c7ba4033c, type: 2}
   maxHealth: 0
   size: {x: 0.25, y: 3.34, z: 0.25}
   stepHeight: 0

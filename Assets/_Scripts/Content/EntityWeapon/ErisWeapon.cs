@@ -9,7 +9,7 @@ using SeleneGame.Entities;
 namespace SeleneGame.Weapons {
     
     [CreateAssetMenu(fileName = "Eris", menuName = "Weapon/Eris")]
-    public sealed class ErisWeapon : Weapon{
+    public sealed class ErisWeapon : Weapon {
 
         // [SerializeField] private BoolData gravitySlide = new BoolData();
         

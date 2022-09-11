@@ -10,22 +10,7 @@ using SevenGame.Utility;
 namespace SeleneGame.Entities {
 
     public class MaskedEntity : ArmedEntity {
-        
-        public sealed override void ResetWeapons() {
-            _weapons = new MaskedWeaponInventory(this);
-        }
-        
-        public override State defaultState => new WalkingState();
 
-        public override float GravityMultiplier() => character.weight * (weapons?.current?.weightModifier ?? 1f);
-        public override float JumpMultiplier() => 2 - (GravityMultiplier() / 15f);
-        
-        public override bool CanWaterHover() {
-            return weapons.current.weightModifier < 0.8f && controller.moveInput.zeroTimer < 0.6f;
-        }
-        public override bool CanSink() {
-            return weapons.current.weightModifier > 1.3f;
-        }     
         
         public bool focusing;
         public float shiftCooldown;
@@ -39,9 +24,16 @@ namespace SeleneGame.Entities {
         };
 
         private SpeedlinesEffect speedlines;
-
-
         public float shiftEnergy = 0f;
+
+        public MaskMovement mask;
+
+        
+        public override float weight => character.weight * weapons.current.weightModifier;
+        public override float jumpMultiplier => 2 - (weight / 15f);
+
+        public override State defaultState => new WalkingState();
+
 
         public bool isMasked() {
             if (state is MaskedState || state is SwimmingState)
@@ -53,6 +45,69 @@ namespace SeleneGame.Entities {
 
             return false;
         }
+        public sealed override void ResetWeapons() {
+            _weapons = new MaskedWeaponInventory(this);
+        }
+
+        public override void LoadModel() {
+            base.LoadModel();
+        }
+
+        public override void UnloadModel(){
+            base.UnloadModel();
+            
+            GameUtility.SafeDestroy(speedlines);
+        }   
+        
+        public override void Grab(Grabbable grabbable){
+            if (grabbedObjects.Count >= 4) return;
+            
+            grabbedObjects.Add( new ValueTuple<Vector3, Grabbable>( UnityEngine.Random.insideUnitSphere.normalized * 0.3f, grabbable) );
+            grabbable.grabbed = true;
+        }
+        public override void Throw(Grabbable grabbable){
+
+            foreach (ValueTuple<Vector3, Grabbable> grabbed in grabbedObjects) {
+                if (grabbed.Item2 == grabbable) {
+                    grabbedObjects.Remove(grabbed);
+                    grabbable.grabbed = false;
+                    break;
+                }
+            }
+
+            /// TODO: Get the direction to Target
+            Vector3 targetDirection = absoluteForward;
+
+            grabbable.rb.AddForce(targetDirection * 30f, ForceMode.Impulse);
+
+            var impulseParticle = Instantiate(Global.LoadParticle("ShiftImpulseParticles"), transform.position + targetDirection*2f, Quaternion.LookRotation(targetDirection, rotation * Vector3.up));
+            Destroy(impulseParticle, 1.2f);
+        }
+
+        public void Shift(){
+            shiftCooldown = 0.3f;
+            if (onGround) rigidbody.velocity += -gravityDown*3f;
+            
+            SetState( new MaskedState() );
+        }
+
+        public void StopShifting(Vector3 newDown){
+            gravityDown = newDown;
+            SetState( defaultState );
+        }
+        
+        protected void ToggleShift(){
+            if (shiftCooldown > 0f) return;
+
+            if (state is MaskedState) 
+                StopShifting(Vector3.down);
+            else if (state is WalkingState) {
+                Shift();
+            }
+        }
+
+
+
 
         protected override void Awake() {
             base.Awake();
@@ -99,64 +154,7 @@ namespace SeleneGame.Entities {
                 shiftCooldown -= GameUtility.timeDelta;
             }
         }
-
-        public override void LoadModel() {
-            base.LoadModel();
-        }
-
-        public override void UnloadModel(){
-            base.UnloadModel();
-            
-            GameUtility.SafeDestroy(speedlines);
-        }   
         
-        public override void Grab(Grabbable grabbable){
-            if (grabbedObjects.Count >= 4) return;
-            
-            grabbedObjects.Add( new ValueTuple<Vector3, Grabbable>( UnityEngine.Random.insideUnitSphere.normalized * 0.3f, grabbable) );
-            grabbable.grabbed = true;
-        }
-        public override void Throw(Grabbable grabbable){
-
-            foreach (ValueTuple<Vector3, Grabbable> grabbed in grabbedObjects) {
-                if (grabbed.Item2 == grabbable) {
-                    grabbedObjects.Remove(grabbed);
-                    grabbable.grabbed = false;
-                    break;
-                }
-            }
-
-            /// TODO: Get the direction to Target
-            Vector3 targetDirection = absoluteForward;
-
-            grabbable.rb.AddForce(targetDirection * 30f, ForceMode.Impulse);
-
-            var impulseParticle = Instantiate(Global.LoadParticle("ShiftImpulseParticles"), transform.position + targetDirection*2f, Quaternion.LookRotation(targetDirection, rotation * Vector3.up));
-            Destroy(impulseParticle, 1.2f);
-        }
-
-        
-        protected void ToggleShift(){
-            if (shiftCooldown > 0f) return;
-
-            if (state is MaskedState) 
-                StopShifting(Vector3.down);
-            else {
-                Shift();
-            }
-        }
-
-        public void StopShifting(Vector3 newDown){
-            gravityDown = newDown;
-            SetState( defaultState );
-        }
-
-        public void Shift(){
-            shiftCooldown = 0.3f;
-            if (onGround) rigidbody.velocity += -gravityDown*3f;
-            
-            SetState( new MaskedState() );
-        }
 
     }
 }

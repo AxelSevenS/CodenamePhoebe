@@ -9,6 +9,8 @@ namespace SeleneGame.Core {
         [SerializeField] protected GameObject followedObject;
         [SerializeField] protected Vector3 relativePlacement = new Vector3(0,0,0);
         [SerializeField] protected Vector3 directionalPlacement = new Vector3(0,0,0);
+
+        
         public virtual void SetFollowedObject(GameObject newTarget) => followedObject = newTarget;
         protected void FollowObject(){
             if (followedObject == null) return;

@@ -7,8 +7,10 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
-namespace SeleneGame.Core {
-    public class RebindButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler {
+using SeleneGame.Core;
+
+namespace SeleneGame.UI {
+    public class RebindButton : CustomButton {
 
         public InputAction action;
         public int bindingIndex;
@@ -16,40 +18,30 @@ namespace SeleneGame.Core {
         [SerializeField] private Text bindLabel;
         [SerializeField] private Text bindText;
 
+
         private void Awake() {
-            GameEvents.onUpdateKeybind += UpdateKeybind;
+            ControlsManager.onUpdateKeybind += UpdateKeybind;
         }
         private void OnDestroy() {
-            GameEvents.onUpdateKeybind -= UpdateKeybind;
+            ControlsManager.onUpdateKeybind -= UpdateKeybind;
         }
 
         private void UpdateKeybind(Guid keybindId){
 
             if ( action.bindings[bindingIndex].id == keybindId ) {
-                // Debug.Log( $"{keybindId}, {action.bindings[bindingIndex].id} : {action.GetBindingDisplayString(bindingIndex)}" );
                 UpdateKeyBinding();
             }
         }
 
-        public void OnPointerClick(PointerEventData eventData) {
-            // if (eventData.button == PointerEventData.InputButton.Left) {
-            //     GameEvents.PlayerInput();
-            // }
-            // Debug.Log("Pointer Click");
+        public override void OnSelect(BaseEventData eventData) {
+            base.OnSelect(eventData);
+        }
+        public override void OnDeselect(BaseEventData eventData) {
+            base.OnDeselect(eventData);
+        }
+        public override void OnPointerClick(PointerEventData eventData) {
+            base.OnPointerClick(eventData);
             StartAssignment();
-        }
-
-        public void OnPointerEnter(PointerEventData eventData) {
-            // if (eventData.button == PointerEventData.InputButton.Left) {
-            //     GameEvents.PlayerInput();
-            // }
-            Debug.Log("Pointer Enter");
-        }
-        public void OnPointerExit(PointerEventData eventData) {
-            // if (eventData.button == PointerEventData.InputButton.Left) {
-            //     GameEvents.PlayerInput();
-            // }
-            Debug.Log("Pointer Exit");
         }
 
         public void StartAssignment(){
@@ -71,8 +63,6 @@ namespace SeleneGame.Core {
             void CompleteRebind(InputActionRebindingExtensions.RebindingOperation operation){
                 UpdateKeyBinding();
                 operation.Dispose();
-                
-                // FindObjectOfType<EventSystem>().SetSelectedGameObject(null);
             }
         }
 

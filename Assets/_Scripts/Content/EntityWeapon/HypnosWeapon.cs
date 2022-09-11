@@ -10,7 +10,7 @@ using SeleneGame.States;
 namespace SeleneGame.Weapons {
     
     [CreateAssetMenu(fileName = "Hypnos", menuName = "Weapon/Hypnos")]
-    public sealed class HypnosWeapon : Weapon{
+    public sealed class HypnosWeapon : Weapon {
 
         // private Vector3 wallRunDir;
         // private Vector3 wallRunNormal;

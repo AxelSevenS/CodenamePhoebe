@@ -24,10 +24,6 @@ namespace SeleneGame.Core {
         }
 
 
-        public static event Action<Guid> onUpdateKeybind;
-        public static void UpdateKeybind(Guid keybindId){
-            onUpdateKeybind?.Invoke(keybindId);
-        }
         // public static void SetEntityCostume(Entity entity, EntityCostume costume){
         //     entity.SetCostume(costume);
         // }

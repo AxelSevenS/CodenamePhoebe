@@ -20,34 +20,14 @@ namespace SeleneGame.UI {
         [SerializeField] private TextMeshProUGUI interactDescription;
         [SerializeField] private TextMeshProUGUI interactBind;
 
-        private static InputBinding interactBinding;
-
-
         
-        private void Awake(){
-            interactBinding = ControlsManager.current.playerMap["Interact"].bindings[0];
-            interactBind.text = interactBinding.ToDisplayString();
-        }
-        
-        protected void OnEnable(){
-            SetCurrent();
-            
-            GameEvents.onUpdateKeybind += UpdateKeybind;
-        }
-        private void OnDisable(){
-            GameEvents.onUpdateKeybind -= UpdateKeybind;
-        }
-
-        private void Update() {
-            UpdateInteractionDisplay();
-        }
 
         private void UpdateInteractionDisplay() {
 
             if ( PlayerEntityController.current == null ) return;
             
             IInteractable interactCandidate = PlayerEntityController.current.interactionCandidate;
-            bool playerCanInteract = PlayerEntityController.current.canInteract && interactCandidate != null && interactCandidate.InteractDescription() != String.Empty;
+            bool playerCanInteract = PlayerEntityController.current.canInteract && interactCandidate != null && interactCandidate.InteractDescription != String.Empty;
 
             interactCursor.gameObject.SetActive(playerCanInteract);
 
@@ -58,7 +38,7 @@ namespace SeleneGame.UI {
 
             if ( !playerCanInteract ) return;
 
-            interactDescription.text = interactCandidate.InteractDescription();
+            interactDescription.text = interactCandidate.InteractDescription;
                 
             MonoBehaviour interactionCandidate = interactCandidate as MonoBehaviour;
 
@@ -68,12 +48,6 @@ namespace SeleneGame.UI {
             interactCursor.position = ClampHUDToScreen(screenPos, interactCursor.rect.width, interactCursor.rect.height, 0);
         }
 
-
-        private void UpdateKeybind(Guid keybindId){
-            if (keybindId == interactBinding.id){
-                interactBind.text = interactBinding.ToDisplayString();
-            }
-        }
 
 
 
@@ -93,5 +67,41 @@ namespace SeleneGame.UI {
             float clampedY = Mathf.Clamp(rect.position.y, verticalMargin, Screen.height - verticalMargin);
             return new Vector3( clampedX, clampedY, 0 );
         }
+
+        private void UpdateKeybind(Guid keybindId){
+            if (keybindId == ControlsManager.GetMouseAndKeyboardInputBinding("Interact").id){
+                SetInteractionBindDisplay();
+            }
+        }
+        private void UpdateControllerType( ControlsManager.ControllerType controllerType ){
+            SetInteractionBindDisplay();
+        }
+
+        private void SetInteractionBindDisplay() {
+            interactBind.text = ControlsManager.GetInputBinding("Interact").ToDisplayString();
+        }
+
+
+
+
+        private void Awake(){
+            SetInteractionBindDisplay();
+        }
+        
+        protected void OnEnable(){
+            SetCurrent();
+            
+            ControlsManager.onUpdateKeybind += UpdateKeybind;
+            ControlsManager.onControllerTypeChange += UpdateControllerType;
+        }
+        private void OnDisable(){
+            ControlsManager.onUpdateKeybind -= UpdateKeybind;
+            ControlsManager.onControllerTypeChange -= UpdateControllerType;
+        }
+
+        private void Update() {
+            UpdateInteractionDisplay();
+        }
+
     }
 }
