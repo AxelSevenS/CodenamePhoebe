@@ -13,7 +13,7 @@ Shader "Selene/Lit" {
         _Smoothness ("Smoothness", Range(0,1)) = 0
         
         _AccentIntensity ("Accent Intensity", Range(0, 5)) = 0
-        _AccentBrightness ("Accent Brightness", Range(0, 1)) = 1
+        // _AccentBrightness ("Accent Brightness", Range(0, 1)) = 1
 
         _EmissionIntensity ("Emission Intensity", Float) = 1
 
@@ -44,7 +44,7 @@ Shader "Selene/Lit" {
                 float _Smoothness;
 
                 float _AccentIntensity;
-                float _AccentBrightness;
+                // float _AccentBrightness;
 
                 float _EmissionIntensity;
 

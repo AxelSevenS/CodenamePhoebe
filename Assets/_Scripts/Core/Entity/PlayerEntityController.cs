@@ -10,10 +10,8 @@ namespace SeleneGame.Core {
 
         public bool talking;
         public bool nearInteractable;
-        public bool canInteract => interactionCandidate != null;
 
         public bool menu;
-        public bool canLook => (!menu);
 
 
         public static Vector3 defaultCameraPosition = new Vector3(1f, 0f, -3.5f);
@@ -37,17 +35,32 @@ namespace SeleneGame.Core {
 
         public Quaternion softEntityRotation;
         public QuaternionData localCameraRotation;
+
+
+
+        public bool canInteract => interactionCandidate != null;
+        public bool canLook => (!menu);
         public Quaternion worldCameraRotation => softEntityRotation * localCameraRotation;
+
+
 
         protected override void SetController() {
             base.SetController();
+
             if (Application.isEditor) {
                 foreach (PlayerEntityController playerController in FindObjectsOfType<PlayerEntityController>() ) {
-                    if (playerController != this)
-                        playerController.gameObject.AddComponent<EntityController>();
+                    if (playerController != this) {
+                        GameObject go = playerController.gameObject;
+                        DestroyImmediate(playerController);
+                        go.AddComponent<EntityController>();
+                    }
                 }
-            } else if (current != null && current != this) {
-                current.gameObject.AddComponent<EntityController>();
+            }
+            
+            if (current != null && current != this) {
+                GameObject go = current.gameObject;
+                GameUtility.SafeDestroy(current);
+                go.AddComponent<EntityController>();
             }
 
             current = this;
@@ -141,6 +154,7 @@ namespace SeleneGame.Core {
                     entity.Damage(50);
             #endif
         }
+        
         private Quaternion UpdateCameraRotation(Quaternion currentRotation){
             softEntityRotation = Quaternion.Slerp(softEntityRotation, entity.rotation, GameUtility.timeDelta * 6f);
 
@@ -192,8 +206,9 @@ namespace SeleneGame.Core {
         }
 
 
+        private void OnEnable() => SetController();
 
-        
+        private void Reset() => SetController();
 
         private void Update() {
 

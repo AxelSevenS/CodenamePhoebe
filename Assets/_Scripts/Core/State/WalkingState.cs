@@ -102,28 +102,17 @@ namespace SeleneGame.Core {
             if ( !entity.isIdle )
                 entity.absoluteForward = Vector3.Lerp( entity.absoluteForward, entity.moveDirection.normalized, 100f * GameUtility.timeDelta);
 
-
-            Vector3 walkingMovement = entity.moveSpeed * GameUtility.timeDelta * entity.absoluteForward;
-            if (entity is ArmedEntity armed) {
+            if ( entity is ArmedEntity armed ) {
 
                 if ( armed.evading.started)
                     armed.evadeCount--;
-                if ( armed.onGround && !armed.evading )
+                if ( armed.onGround )
                     armed.evadeCount = 1;
 
                 if ( armed.controller.evadeInput.started && armed.evadeCount > 0 )
                     armed.GroundedEvade( armed.isIdle ? -armed.absoluteForward : armed.moveDirection );
-
-
-                // Move when evading
-                if ( armed.EvadeUpdate(out _, out float evadeSpeed) )
-                    armed.GroundedMove( GameUtility.timeDelta * evadeSpeed * armed.character.evadeSpeed * armed.evadeDirection );
-
-                walkingMovement *= (1 - evadeSpeed);
-
+                    
             }
-            entity.GroundedMove(walkingMovement, entity.onGround);
-
 
 
             /* const float jumpBufferTime = 0.1f; */
@@ -158,6 +147,20 @@ namespace SeleneGame.Core {
             base.StateFixedUpdate();
 
             entity.JumpGravity(entity.weight, entity.gravityDown, entity.controller.jumpInput);
+
+
+
+            Vector3 walkingMovement = entity.moveSpeed * GameUtility.timeDelta * entity.absoluteForward;
+            if (entity is ArmedEntity armed) {
+
+                // Move when evading
+                if ( armed.EvadeUpdate(out _, out float evadeSpeed) )
+                    armed.GroundedMove( GameUtility.timeDelta * evadeSpeed * armed.character.evadeSpeed * armed.evadeDirection );
+
+                walkingMovement *= (1 - evadeSpeed);
+
+            }
+            entity.GroundedMove(walkingMovement, entity.onGround);
 
             
 

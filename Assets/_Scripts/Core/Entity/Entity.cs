@@ -13,6 +13,7 @@ namespace SeleneGame.Core {
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(CustomPhysicsComponent))]
     [RequireComponent(typeof(Animator))]
+    [DisallowMultipleComponent]
     [SelectionBase]
     public class Entity : MonoBehaviour, IDamageable {
 
@@ -280,8 +281,6 @@ namespace SeleneGame.Core {
                         if ( !TryGetComponent<EntityController>(out _controller) )
                             _controller = gameObject.AddComponent<EntityController>();
                     }
-
-                    _controller.entity = this;
                     return _controller;
                 
                 } 
@@ -290,7 +289,13 @@ namespace SeleneGame.Core {
 
 
             public GameObject this[string key]{
-                get { try{ return character.costumeData.bones[key]; } catch{ return character.model; } }
+                get { 
+                    try { 
+                        return character.costumeData.bones[key]; 
+                    } catch { 
+                        return character.model; 
+                    } 
+                }
             }
 
             public virtual float weight => character.weight;
@@ -325,9 +330,12 @@ namespace SeleneGame.Core {
         }
 
 
-        [ContextMenu("Make Player Entity")]
+        [ContextMenu("Set As Player Entity")]
         public void SetAsPlayer() {
-            controller = gameObject.AddComponent<PlayerEntityController>();
+            if ( PlayerEntityController.current == controller ) return;
+
+            GameUtility.SafeDestroy( controller );
+            controller = gameObject.AddComponent<PlayerEntityController>(); 
         }
 
         /// <summary>
@@ -660,6 +668,11 @@ namespace SeleneGame.Core {
 
             // [ContextMenu("Initialize")]
             protected virtual void Awake(){
+                
+                if ( controller == null && !TryGetComponent<EntityController>( out _controller ) )
+                    controller = gameObject.AddComponent<EntityController>();
+
+                controller.entity = this;
 
                 // Ensure only One Entity is on a single GameObject
                 // Entity[] entities = GetComponents<Entity>();

@@ -12,21 +12,28 @@ namespace SeleneGame.UI {
 
     public class WeaponSlot : CustomButton {
         
-        private Weapon.Instance weapon;
+        private Weapon.Instance _weapon;
 
         [SerializeField] private Image weaponPortrait;
         [SerializeField] private TextMeshProUGUI weaponName;
 
 
-        public void SetWeapon(Weapon.Instance weapon) {
-            this.weapon = weapon;
-            weaponPortrait.sprite = weapon.costume.portrait;
-            weaponName.text = weapon.name;
+
+        public Weapon.Instance weapon {
+            get => _weapon;
+            set {
+                _weapon = value;
+                weaponPortrait.sprite = _weapon.baseCostume.portrait;
+                weaponName.text = _weapon.name;
+            }
         }
+
+
 
         public override void OnPointerClick(PointerEventData eventData) {
             base.OnPointerClick(eventData);
             Debug.Log($"Weapon slot {weapon.name} clicked");
+            WeaponSelectionMenuController.current.ReplaceWeapon( weapon );
         }
     }
     

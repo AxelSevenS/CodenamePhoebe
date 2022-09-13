@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using UnityEngine;
@@ -31,6 +32,21 @@ namespace SeleneGame.Core {
 
         private static string WeaponNameToPath(string weaponName){
             return $"Weapons/{weaponName}";
+        }
+
+        public static void GetWeapons(Action<Weapon> callback) {
+
+            AsyncOperationHandle<IList<Weapon>> opHandle = Addressables.LoadAssetsAsync<Weapon>(
+                "Weapon",
+                (weapon) => {
+
+                    if ( weapon == null )
+                        return;
+
+                    callback?.Invoke( weapon );
+
+                }
+            );
         }
 
         public static Weapon Get(string weaponName) {

@@ -80,14 +80,14 @@ namespace SeleneGame.UI {
 
         private void CreateWeaponSlot(Weapon.Instance weapon){
             var slotObject = Instantiate(weaponSlotTemplate, weaponInventoryContainer.transform);
-            var slot = slotObject.GetComponentInChildren<WeaponSlot>();
-            slot.SetWeapon(weapon);
+            var weaponSlot = slotObject.GetComponentInChildren<WeaponSlot>();
+            weaponSlot.weapon = weapon;
             
-            weapons.Add( slot );
+            weapons.Add( weaponSlot );
             if (weapons.Count > 1) {
                 WeaponSlot previousSlot = weapons[weapons.Count - 2];
-                previousSlot.elementDown = slot;
-                slot.elementUp = previousSlot;
+                previousSlot.elementDown = weaponSlot;
+                weaponSlot.elementUp = previousSlot;
             }
 
         }

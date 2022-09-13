@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Hypnos_Base
   m_EditorClassIdentifier: 
   portrait: {fileID: 0}
-  rightHandModel: {fileID: 0}
-  leftHandModel: {fileID: 0}
   displayName: Default Costume Name
   description: Default Costume Description
+  rightHandModel: {fileID: 0}
+  leftHandModel: {fileID: 0}
   equippableOn: 0

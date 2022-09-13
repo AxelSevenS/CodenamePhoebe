@@ -3,6 +3,8 @@ using UnityEngine;
 using SevenGame.Utility;
 
 namespace SeleneGame.Core {
+
+    [DisallowMultipleComponent]
     public class EntityController : MonoBehaviour {
 
         public Entity entity;
@@ -20,6 +22,8 @@ namespace SeleneGame.Core {
         public Vector2Data moveInput;
         public Vector2Data lookInput;
 
+
+
         public virtual void RawInputToGroundedMovement(out Quaternion camRotation, out Vector3 groundedMovement){
             Vector3 camUp = entity.rotation * Vector3.up;
             Vector3 camForward = Vector3.Cross(Vector3.right, camUp).normalized;
@@ -30,6 +34,8 @@ namespace SeleneGame.Core {
             camRotation = Quaternion.identity;
             cameraRelativeMovement = new Vector3(moveInput.x, 0, moveInput.y);
         }
+        
+        
 
         protected virtual void OnEnable() => SetController(); 
         protected virtual void Reset() => SetController();

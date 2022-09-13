@@ -69,7 +69,10 @@ half GetShade (half luminance) {
     // || ---------- 0.25 --------                                                         ||
     // ||  0  |  0.1  |  0.2  |  0.3  | 0.4  |  0.5  |  0.6  |  0.7  |  0.8  |  0.9  |  1  ||
 
-    half shade = smoothstep(0.15, 0.55, luminance);
+    // half shade = smoothstep(0.15, 0.55, luminance);
+    half halfShade = luminance * 0.5;
+    half shade = luminance < 0.15 ? halfShade + 0.075 : luminance < 0.55 ? halfShade + 0.175 : halfShade + 0.25;
+
     return shade;
 }
 
@@ -101,7 +104,9 @@ half3 CelShade( CelLightingInput input, half3 lightColor, half3 lightDir, half l
     half shade = GetShade(luminance);
 
     half3 litColor = lightColor * lightDistanceAtten * _AmbientLight;
-    half3 shadedColor = litColor*0.2;
+    half3 shadedColor = litColor*0.1;
+
+    // half3 finalColor = litColor * shade;
 
     half3 finalColor = lerp(shadedColor, litColor, shade);
 

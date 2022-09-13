@@ -39,9 +39,6 @@ namespace SeleneGame.Core {
 
             if (PlayerEntityController.current?.entity == null) return;
 
-            Cursor.visible = PlayerEntityController.current.menu;
-            Cursor.lockState = Cursor.visible ? CursorLockMode.None : CursorLockMode.Locked;
-
             UpdateCameraDistance();
         }
 
