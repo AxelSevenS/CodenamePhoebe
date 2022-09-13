@@ -10,6 +10,7 @@ using SeleneGame.Core;
 using SevenGame.Utility;
 
 namespace SeleneGame.UI {
+    
     public class HUDController : Singleton<HUDController> {
 
         private const float SCREENMARGIN = 25f;

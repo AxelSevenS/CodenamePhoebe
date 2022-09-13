@@ -13,7 +13,7 @@ using SevenGame.Utility;
 
 namespace SeleneGame.UI {
 
-    public class DialogueController : MenuController<DialogueController> {
+    public class DialogueController : UI<DialogueController> {
 
 
         
@@ -45,10 +45,10 @@ namespace SeleneGame.UI {
         private bool isTyping => displayText.Length < line.text.Length;
 
 
-        public override void Toggle(){;}
-
         public override void Enable(){
-            base.Enable();
+            
+            if (Enabled) return;
+            Enabled = true;
 
             StopCoroutine(AdvanceText());
             dialogueBox.SetActive( true );
@@ -58,14 +58,13 @@ namespace SeleneGame.UI {
         }
 
         public override void Disable(){
-            base.Disable();
+
+            if (!Enabled) return;
+            Enabled = false;
 
             StopCoroutine(AdvanceText());
             Enabled = false;
             dialogueBox.SetActive( false );
-        }
-
-        public override void SetSelectedObject(){
         }
 
 

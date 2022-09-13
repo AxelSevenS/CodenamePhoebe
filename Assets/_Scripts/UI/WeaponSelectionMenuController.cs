@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,9 +14,9 @@ using SevenGame.Utility;
 
 namespace SeleneGame.UI {
     
-    public class WeaponSelectionMenuController : MenuController<WeaponSelectionMenuController> {
+    public class WeaponSelectionMenuController : UIMenu<WeaponSelectionMenuController> {
 
-        public const int WEAPON_CASES_PER_ROW = 5;
+        public const int WEAPON_CASES_PER_ROW = 7;
 
         
 
@@ -28,16 +29,11 @@ namespace SeleneGame.UI {
 
         private Weapon.Instance currentWeapon;
 
+        private Action<Weapon> onWeaponSelected;
 
 
-        public void ReplaceWeapon(Weapon.Instance weapon) {
-            currentWeapon = weapon;
-            Enable();
-        }
 
         public override void Enable() {
-            if (!Enabled)
-                UIController.current.DisableAllMenus();
 
             base.Enable();
 
@@ -46,12 +42,13 @@ namespace SeleneGame.UI {
 
             weaponSelectionMenu.SetActive( true );
 
-            SetSelectedObject();
+            ResetGamePadSelection();
 
             UIController.current.UpdateMenuState();
         }
 
         public override void Disable() {
+
             base.Disable();
 
             weaponSelectionMenu.SetActive( false );
@@ -59,9 +56,30 @@ namespace SeleneGame.UI {
             UIController.current.UpdateMenuState();
         }
 
-        public override void SetSelectedObject(){
-            if ( Enabled && ControlsManager.controllerType != ControlsManager.ControllerType.MouseKeyboard )
-                EventSystem.current.SetSelectedGameObject(weapons[0].gameObject);
+        public override void ResetGamePadSelection(){
+            EventSystem.current.SetSelectedGameObject(weapons[0].gameObject);
+        }
+
+        public override void OnCancel() {
+            WeaponInventoryMenuController.current.Enable();
+        }
+        
+
+        public void ReplaceWeapon(Weapon.Instance weapon) {
+            currentWeapon = weapon;
+
+            onWeaponSelected = (weapon) => {
+                currentWeapon.SetWeapon(weapon);
+                OnCancel();
+            };
+
+            Enable();
+        }
+
+
+        public void OnSelectWeapon(Weapon weapon) {
+            if ( !Enabled ) return;
+            onWeaponSelected?.Invoke(weapon);
         }
 
         private void GetAllEquippedWeapons() {
@@ -75,6 +93,11 @@ namespace SeleneGame.UI {
         }
 
         private void GetAllAvailableWeapons() {
+
+            foreach ( WeaponCase weapon in weapons ) {
+                GameUtility.SafeDestroy(weapon.gameObject);
+            }
+            weapons = new();
             
             Weapon.GetDefaultAsync( (defaultWeapon) => {
 
@@ -103,7 +126,6 @@ namespace SeleneGame.UI {
 
         }
 
-
         private void CreateWeaponCase(Weapon weapon, int equippedIndex = -1){
             var caseObject = Instantiate(weaponCaseTemplate, weaponSelectionContainer.transform);
             var weaponCase = caseObject.GetComponentInChildren<WeaponCase>();
@@ -122,6 +144,12 @@ namespace SeleneGame.UI {
                 weaponCase.elementUp = aboveCase;
             }
 
+        }
+
+
+
+        private void Awake() {
+            weaponSelectionContainer.GetComponent<GridLayoutGroup>().constraintCount = WEAPON_CASES_PER_ROW;
         }
 
     }

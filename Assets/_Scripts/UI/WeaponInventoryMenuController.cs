@@ -12,7 +12,7 @@ using SevenGame.Utility;
 
 namespace SeleneGame.UI {
     
-    public class WeaponInventoryMenuController : MenuController<WeaponInventoryMenuController> {
+    public class WeaponInventoryMenuController : UIMenu<WeaponInventoryMenuController> {
 
         [SerializeField] private GameObject weaponInventoryMenu;
         [SerializeField] private GameObject weaponInventoryContainer;
@@ -24,8 +24,6 @@ namespace SeleneGame.UI {
 
         [ContextMenu("Enable")]
         public override void Enable() {
-            if (!Enabled)
-                UIController.current.DisableAllMenus();
 
             base.Enable();
 
@@ -33,7 +31,7 @@ namespace SeleneGame.UI {
 
             weaponInventoryMenu.SetActive( true );
 
-            SetSelectedObject();
+            ResetGamePadSelection();
 
             UIController.current.UpdateMenuState();
         }
@@ -47,9 +45,8 @@ namespace SeleneGame.UI {
             UIController.current.UpdateMenuState();
         }
 
-        public override void SetSelectedObject(){
-            if ( Enabled && ControlsManager.controllerType != ControlsManager.ControllerType.MouseKeyboard )
-                EventSystem.current.SetSelectedGameObject(weapons[0].gameObject);
+        public override void ResetGamePadSelection(){
+            EventSystem.current.SetSelectedGameObject(weapons[0].gameObject);
         }
 
 
@@ -82,6 +79,9 @@ namespace SeleneGame.UI {
             var slotObject = Instantiate(weaponSlotTemplate, weaponInventoryContainer.transform);
             var weaponSlot = slotObject.GetComponentInChildren<WeaponSlot>();
             weaponSlot.weapon = weapon;
+            weaponSlot.primaryAction = (weapon) => {
+                WeaponSelectionMenuController.current.ReplaceWeapon(weapon);
+            };
             
             weapons.Add( weaponSlot );
             if (weapons.Count > 1) {

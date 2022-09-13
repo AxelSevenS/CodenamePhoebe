@@ -13,15 +13,11 @@ namespace SeleneGame.UI {
 
     public class UIController : Singleton<UIController>{
 
+        public static IUIMenu currentMenu;
+
         private BoolData keyBindMenuInput;
         private BoolData saveMenuInput;
 
-
-        public void DisableAllMenus() {
-            SaveMenuController.current.Disable();
-            KeyBindingMenuController.current.Disable();
-            WeaponInventoryMenuController.current.Disable();
-        }
 
         public void UpdateMenuState(){
 
@@ -49,9 +45,26 @@ namespace SeleneGame.UI {
         }
 
 
+        private void OnCancelEvent() {
+            currentMenu?.OnCancel();
+        }
+
+        private void OnControllerTypeChange(ControlsManager.ControllerType controllerType) {
+            if ( controllerType != ControlsManager.ControllerType.MouseKeyboard )
+                currentMenu?.ResetGamePadSelection();
+        }
+
+
 
         private void OnEnable() { 
             SetCurrent();
+            ControlsManager.onCancelEvent += OnCancelEvent;
+            ControlsManager.onControllerTypeChange += OnControllerTypeChange;
+        }
+
+        private void OnDisable() {
+            ControlsManager.onCancelEvent -= OnCancelEvent;
+            ControlsManager.onControllerTypeChange += OnControllerTypeChange;
         }
 
         private void Update() {

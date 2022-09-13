@@ -9,7 +9,7 @@ using SeleneGame.Core;
 using SevenGame.Utility;
 
 namespace SeleneGame.UI {
-    public class SaveMenuController : MenuController<SaveMenuController> {
+    public class SaveMenuController : UIMenu<SaveMenuController> {
         [SerializeField] private GameObject saveMenu;
         
         [SerializeField] private SaveSlot saveSlot1;
@@ -19,8 +19,6 @@ namespace SeleneGame.UI {
 
 
         public override void Enable(){
-            if (!Enabled)
-                UIController.current.DisableAllMenus();
 
             base.Enable();
 
@@ -30,7 +28,7 @@ namespace SeleneGame.UI {
 
             saveMenu.SetActive( true );
 
-            SetSelectedObject();
+            ResetGamePadSelection();
 
             UIController.current.UpdateMenuState();
         }
@@ -43,9 +41,8 @@ namespace SeleneGame.UI {
             UIController.current.UpdateMenuState();
         }
 
-        public override void SetSelectedObject(){
-            if ( Enabled && ControlsManager.controllerType != ControlsManager.ControllerType.MouseKeyboard )
-                EventSystem.current.SetSelectedGameObject(saveSlot1.gameObject);
+        public override void ResetGamePadSelection(){
+            EventSystem.current.SetSelectedGameObject(saveSlot1.gameObject);
         }
 
     }

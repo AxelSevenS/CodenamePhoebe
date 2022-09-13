@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -13,6 +14,9 @@ namespace SeleneGame.UI {
     public class WeaponSlot : CustomButton {
         
         private Weapon.Instance _weapon;
+
+        public Action<Weapon.Instance> primaryAction;
+        public Action<Weapon.Instance> secondaryAction;
 
         [SerializeField] private Image weaponPortrait;
         [SerializeField] private TextMeshProUGUI weaponName;
@@ -33,7 +37,11 @@ namespace SeleneGame.UI {
         public override void OnPointerClick(PointerEventData eventData) {
             base.OnPointerClick(eventData);
             Debug.Log($"Weapon slot {weapon.name} clicked");
-            WeaponSelectionMenuController.current.ReplaceWeapon( weapon );
+            if (eventData.button == PointerEventData.InputButton.Left) {
+                primaryAction?.Invoke(weapon);
+            } else if (eventData.button == PointerEventData.InputButton.Right) {
+                secondaryAction?.Invoke(weapon);
+            }
         }
     }
     

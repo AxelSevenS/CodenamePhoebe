@@ -33,6 +33,7 @@ namespace SeleneGame.UI {
         public override void OnPointerClick(PointerEventData eventData) {
             base.OnPointerClick(eventData);
             Debug.Log($"Weapon case {_weapon.name} clicked");
+            WeaponSelectionMenuController.current.OnSelectWeapon(_weapon);
         }
     }
     

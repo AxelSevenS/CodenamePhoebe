@@ -12,7 +12,7 @@ using SevenGame.Utility;
 
 namespace SeleneGame.UI {
     
-    public class KeyBindingMenuController : MenuController<KeyBindingMenuController> {
+    public class KeyBindingMenuController : UIMenu<KeyBindingMenuController> {
 
         [SerializeField] private GameObject keyBindingMenu;
         [SerializeField] private GameObject keyBindingContainer;
@@ -23,14 +23,12 @@ namespace SeleneGame.UI {
 
 
         public override void Enable() {
-            if (!Enabled)
-                UIController.current.DisableAllMenus();
 
             base.Enable();
 
             keyBindingMenu.SetActive( true );
 
-            SetSelectedObject();
+            ResetGamePadSelection();
 
             UIController.current.UpdateMenuState();
         }
@@ -43,9 +41,8 @@ namespace SeleneGame.UI {
             UIController.current.UpdateMenuState();
         }
 
-        public override void SetSelectedObject(){
-            if ( Enabled && ControlsManager.controllerType != ControlsManager.ControllerType.MouseKeyboard )
-                EventSystem.current.SetSelectedGameObject(rebinds[0].gameObject);
+        public override void ResetGamePadSelection(){
+            EventSystem.current.SetSelectedGameObject(rebinds[0].gameObject);
         }
 
 
