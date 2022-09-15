@@ -9,6 +9,7 @@ using SeleneGame.Core;
 using SevenGame.Utility;
 
 namespace SeleneGame.UI {
+    
     public abstract class UIMenu<T> : UI<T>, IUIMenu where T : MonoBehaviour, IUIMenu {
 
         

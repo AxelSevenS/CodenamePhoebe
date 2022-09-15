@@ -11,8 +11,6 @@ namespace SeleneGame.Core {
         public bool talking;
         public bool nearInteractable;
 
-        public bool menu;
-
 
         public static Vector3 defaultCameraPosition = new Vector3(1f, 0f, -3.5f);
 
@@ -39,7 +37,7 @@ namespace SeleneGame.Core {
 
 
         public bool canInteract => interactionCandidate != null;
-        public bool canLook => (!menu);
+        public bool canLook => true;
         public Quaternion worldCameraRotation => softEntityRotation * localCameraRotation;
 
 
@@ -88,7 +86,7 @@ namespace SeleneGame.Core {
 
         private IInteractable GetInteractionCandidate(Collider[] buffer){
 
-            if ( menu || talking /* || entity.walkingTo */ ) return null;
+            if ( talking /* || entity.walkingTo */ ) return null;
 
             const float interactionDistance = 5f;
             const float interactionAngle = 0.75f;
@@ -172,6 +170,8 @@ namespace SeleneGame.Core {
 
         private void EntityControl(){
 
+            if ( Time.timeScale == 0f ) return;
+
             lightAttackInput.SetVal( ControlsManager.playerMap.IsBindPressed("LightAttack") );
             heavyAttackInput.SetVal( ControlsManager.playerMap.IsBindPressed("HeavyAttack") );
             jumpInput.SetVal( ControlsManager.playerMap.IsBindPressed("Jump") );
@@ -205,10 +205,6 @@ namespace SeleneGame.Core {
             cameraRelativeMovement = camRotation * new Vector3(moveInput.x, 0, moveInput.y);
         }
 
-
-        private void OnEnable() => SetController();
-
-        private void Reset() => SetController();
 
         private void Update() {
 

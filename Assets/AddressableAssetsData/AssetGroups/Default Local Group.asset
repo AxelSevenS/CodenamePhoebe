@@ -77,6 +77,11 @@ MonoBehaviour:
     m_SerializedLabels:
     - Character
     - default
+  - m_GUID: 25dcad45bff2b8640ae4c50dfd408e46
+    m_Address: Characters/Costumes/Selene_Test
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - CharacterCostume
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 9fff86865a633c0488e9533aaa0b59b1, type: 2}
   m_SchemaSet:

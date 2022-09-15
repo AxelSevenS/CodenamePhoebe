@@ -19,23 +19,26 @@ namespace SeleneGame.UI {
         private BoolData saveMenuInput;
 
 
+
+        public static bool IsMenuOpen => currentMenu != null;
+
+
+
         public void UpdateMenuState(){
 
-            bool menuUI = SaveMenuController.current.Enabled | KeyBindingMenuController.current.Enabled | WeaponInventoryMenuController.current.Enabled | WeaponSelectionMenuController.current.Enabled;
+            bool menuUI = currentMenu != null;
 
             if (menuUI) {
                 ControlsManager.playerMap.Disable();
-                PlayerEntityController.current.menu = true;
                 Cursor.visible = true;
                 Cursor.lockState = CursorLockMode.None;
             } else {
                 ControlsManager.playerMap.Enable();
-                PlayerEntityController.current.menu = false;
                 Cursor.visible = false;
                 Cursor.lockState = CursorLockMode.Locked;
             }
 
-            bool gameInterrupted = menuUI && ( KeyBindingMenuController.current.Enabled | SaveMenuController.current.Enabled );
+            bool gameInterrupted = menuUI && currentMenu is IUIPausedMenu;
 
             if ( gameInterrupted ){
                 Time.timeScale = 0;
@@ -56,8 +59,9 @@ namespace SeleneGame.UI {
 
 
 
-        private void OnEnable() { 
+        private void OnEnable() {
             SetCurrent();
+            UpdateMenuState();
             ControlsManager.onCancelEvent += OnCancelEvent;
             ControlsManager.onControllerTypeChange += OnControllerTypeChange;
         }
