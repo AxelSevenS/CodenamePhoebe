@@ -48,7 +48,7 @@ namespace SeleneGame.UI {
         }
 
 
-        private void OnCancelEvent() {
+        private void OnCancel() {
             currentMenu?.OnCancel();
         }
 
@@ -62,12 +62,12 @@ namespace SeleneGame.UI {
         private void OnEnable() {
             SetCurrent();
             UpdateMenuState();
-            ControlsManager.onCancelEvent += OnCancelEvent;
+            ControlsManager.onCancel += OnCancel;
             ControlsManager.onControllerTypeChange += OnControllerTypeChange;
         }
 
         private void OnDisable() {
-            ControlsManager.onCancelEvent -= OnCancelEvent;
+            ControlsManager.onCancel -= OnCancel;
             ControlsManager.onControllerTypeChange += OnControllerTypeChange;
         }
 

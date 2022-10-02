@@ -11,59 +11,70 @@ namespace SeleneGame {
     
     public class Seat : ObjectFollower, IInteractable{
 
+        protected const string SEAT_INTERACT_DESCRIPTION = "Sit Down";
+
+
+
         [Space(15)]
 
         public Entity seatEntity;
         public Entity seatOccupant;
-        private Transform previousAnchor;
-
-
-        public bool isSeated => seatOccupant != null;
+        private Transform previousParent;
 
         [Space(15)]
         
-        // [SerializeField] private int speed = 4;
-        [SerializeField] private List<Vector4> sittingDirections;
-        public Vector3 sitPosition { get {
-                Vector3 seatOccupantUp = isSeated ? seatOccupant.transform.up : transform.up;
-                float seatOccupantSize = isSeated ? seatOccupant.character.size.y/2f : 1.67f;
-
-                return transform.position + transform.rotation*(sittingDir) + (seatOccupantUp * seatOccupantSize);
-            }
-        }
-        [HideInInspector] public Vector3 sittingDir;
-
-
-        private void OnDisable(){
-            StopSitting();
-        }
-
-        private void Update(){
-            FollowObject();
-        }
-
-        private void OnDrawGizmosSelected(){
-            Gizmos.color = Color.blue;
-            Gizmos.DrawSphere(sitPosition, 0.3f);
-            Gizmos.DrawLine(transform.position, transform.position + transform.rotation * sittingDir);
-        }
+        [SerializeField] private List<SittingPosition> _sittingPositions = new List<SittingPosition>();
+        private int sittingIndex = 0;
 
 
 
         protected virtual string seatedInteractionText => "";
-        public string InteractDescription {
+
+        protected List<SittingPosition> sittingPositions {
             get {
-                return seatOccupant ? seatedInteractionText : "Sit Down";
+                if (_sittingPositions == null || _sittingPositions.Count == 0)
+                    _sittingPositions = defaultSittingPositions;
+
+                return _sittingPositions;
             }
-            set {;}
         }
 
-        public virtual bool IsInteractable {
+        protected virtual List<SittingPosition> defaultSittingPositions {
             get {
-                return !isSeated;
+                return new List<SittingPosition>() {
+                    new SittingPosition(
+                        new Vector3(0f, 0f, 1f),
+                        Quaternion.LookRotation(Vector3.forward),
+                        0
+                    )
+                };
             }
-            set {;}
         }
+        
+        public SittingPosition sittingPosition => sittingPositions[sittingIndex];
+
+        public Vector3 sitPosition { 
+            get {
+                Vector3 seatOccupantUp = seatOccupant?.transform.up ?? transform.up;
+                float seatOccupantSize = seatOccupant?.character.size.y/2f ?? 1.67f;
+
+                return transform.TransformPoint(sittingPosition.position) + (seatOccupantUp * seatOccupantSize);
+            }
+        }
+
+        public Quaternion sitRotation {
+            get {
+                return transform.rotation * sittingPosition.rotation;
+            }
+        }
+
+        public bool isSeated => seatOccupant != null;
+
+        public string InteractDescription => seatOccupant ? seatedInteractionText : SEAT_INTERACT_DESCRIPTION;
+
+        public virtual bool IsInteractable => !isSeated;
+
+
 
         public void Interact(Entity entity){
             if (entity == seatOccupant){
@@ -72,19 +83,19 @@ namespace SeleneGame {
             }
             StartSitting(entity);
         }
+
         protected virtual void SeatedInteract(Entity entity){;}
 
-        
-
+    
         private /* async */ void StartSitting(Entity entity){
-            previousAnchor = entity.transform.parent;
+            previousParent = entity.transform.parent;
             
             StopSitting();
 
             seatOccupant = entity;
             seatOccupant.SetState(seatOccupant.defaultState);
             
-            CalculateClosestDirection(out sittingDir, out seatOccupant.subState);
+            SelectSittingPosition();
 
             // if (speed < 4){
             //     seatOccupant.walkingTo = true;
@@ -93,8 +104,9 @@ namespace SeleneGame {
             //     seatOccupant.walkingTo = false;
             // }
             
-            entity.SetState( new SittingState() );
-            ( (SittingState)entity.state ).seat = this;
+            SittingState sittingState = new SittingState();
+            entity.SetState( sittingState );
+            sittingState.seat = this;
             GameUtility.SetLayerRecursively(entity.gameObject, 8);
 
             seatOccupant.transform.SetParent(this.transform);
@@ -109,28 +121,55 @@ namespace SeleneGame {
             seatOccupant.SetState(seatOccupant.defaultState);
             GameUtility.SetLayerRecursively(seatOccupant.gameObject, 6);
 
-            seatOccupant.transform.SetParent(previousAnchor);
+            seatOccupant.transform.SetParent(previousParent);
 
             seatOccupant = null;
         }
 
-        private void CalculateClosestDirection(out Vector3 finalDirection, out float subState){
-            finalDirection = (transform.position - seatOccupant.transform.position).normalized;
-            subState = 0f;
+        private void SelectSittingPosition(){
+            sittingIndex = 0;
 
-            foreach (Vector4 currentDirection in sittingDirections){
-                Vector3 direction = new Vector3( currentDirection.x, currentDirection.y, currentDirection.z ).normalized;
-                Vector3 directionToOccupant = (seatOccupant.transform.position - transform.position).normalized;
-
-                if ( Vector3.Dot( transform.rotation * direction, directionToOccupant) > Vector3.Dot( transform.rotation * finalDirection, directionToOccupant ) ){
-                    finalDirection = direction;
-                    subState = currentDirection.w;
+            for (int i = 0; i < sittingPositions.Count; i++){
+                float distanceToOldPosition = Vector3.Distance(transform.TransformPoint(sittingPosition.position), seatOccupant.transform.position);
+                float distanceToCurrentPosition = Vector3.Distance(transform.TransformPoint(sittingPositions[i].position), seatOccupant.transform.position);
+                if (distanceToCurrentPosition < distanceToOldPosition){
+                    sittingIndex = i;
                 }
             }
         }
 
-        public void SetDirections(List<Vector4> sittingDirections){
-            this.sittingDirections = sittingDirections;
+
+
+        private void OnDisable(){
+            StopSitting();
+        }
+
+        private void Update(){
+            FollowObject();
+
+            if ( seatOccupant != null && seatOccupant.controller.crouchInput.started )
+                StopSitting();
+        }
+
+        private void OnDrawGizmosSelected(){
+            Gizmos.color = Color.blue;
+            Gizmos.DrawSphere(sitPosition, 0.3f);
+            Gizmos.DrawLine(transform.position, sitPosition);
+        }
+
+
+
+        [System.Serializable]
+        public struct SittingPosition {
+            public Vector3 position;
+            public Quaternion rotation;
+            public int subState;
+
+            public SittingPosition(Vector3 position, Quaternion rotation, int subState){
+                this.position = position;
+                this.rotation = rotation;
+                this.subState = subState;
+            }
         }
 
     }

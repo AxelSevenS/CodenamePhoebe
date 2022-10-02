@@ -13,11 +13,32 @@ namespace SeleneGame.Core {
     public class ControlsManager : Singleton<ControlsManager> {
         
 
-        public const float cameraSpeed = 0.1f;
+        public const float HOLD_TIME = 0.2f;
+
+
+
         public float mouseSpeed = 1f;
         public float stickSpeed = 5f;
 
+        public static float cameraSpeed = 0.1f;
+
+
         private static InputControls _inputControls;
+
+        public static ControllerType controllerType = ControllerType.MouseKeyboard;
+
+
+        private KeyInputData cancelInput;
+
+
+
+        public static event Action onCancel;
+
+        public static event Action<ControllerType> onControllerTypeChange;
+        public static event Action<Guid> onUpdateKeybind;
+
+
+
         public static InputControls inputControls {
             get {
                 if (_inputControls == null)
@@ -34,15 +55,6 @@ namespace SeleneGame.Core {
             public static InputActionMap debugMap => inputControls.Debug.Get();
 
         #endif
-
-        public static ControllerType controllerType = ControllerType.MouseKeyboard;
-
-
-        private KeyInputData cancelInput;
-
-        public static event Action onCancelEvent;
-        public static event Action<ControllerType> onControllerTypeChange;
-        public static event Action<Guid> onUpdateKeybind;
 
 
 
@@ -139,15 +151,11 @@ namespace SeleneGame.Core {
 
 
 
-
-
-
         private void Update() {
             cancelInput.SetVal( uiMap.IsBindPressed("Cancel") ) ;
 
-            if (cancelInput.started) {
-                onCancelEvent?.Invoke();
-            }
+            if (cancelInput.started)
+                onCancel?.Invoke();
         }
 
         private void OnEnable() {
@@ -163,6 +171,7 @@ namespace SeleneGame.Core {
             playerMap.actionTriggered -= ctx => ControllerAction(ctx);
             uiMap.actionTriggered -= ctx => ControllerAction(ctx);
         }
+
 
 
         public enum ControllerType{ MouseKeyboard, Gamepad, Dualshock, Xbox, Switch };

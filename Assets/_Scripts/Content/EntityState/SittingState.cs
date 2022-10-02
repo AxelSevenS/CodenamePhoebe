@@ -22,15 +22,12 @@ namespace SeleneGame.States {
         public override void StateFixedUpdate(){
             // Sitting
             entity.transform.position = seat.sitPosition;
+            entity.RotateTowardsAbsolute(seat.sitRotation);
             entity.absoluteForward = entity.transform.forward;
-            entity.RotateTowardsAbsolute(Vector3.ProjectOnPlane(seat.transform.rotation * -seat.sittingDir, seat.transform.up), seat.transform.up);
         }
 
         public override void HandleInput(){
             if (seat.seatEntity == null) return;
-
-            if (entity.controller.crouchInput.started)
-                seat.StopSitting();
 
             entity.moveSpeed = 0;
         }

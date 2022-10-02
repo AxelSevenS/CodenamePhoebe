@@ -48,7 +48,7 @@ namespace SeleneGame.Core {
 
             if (entity == null) return;
 
-            if (entity.controller.shiftInput.trueTimer > Global.HOLDTIME){
+            if (entity.controller.shiftInput.trueTimer > ControlsManager.HOLD_TIME){
                 entity.gravityDown = Vector3.down;
             }
 

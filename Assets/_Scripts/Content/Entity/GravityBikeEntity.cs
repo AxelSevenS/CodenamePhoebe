@@ -8,11 +8,12 @@ using SeleneGame.States;
 
 namespace SeleneGame.Entities {
 
-    [RequireComponent(typeof(Seat))]
+    [RequireComponent(typeof(BikeSeat))]
     public sealed class GravityBikeEntity : Entity {
 
 
         [SerializeField]private Seat _seat;
+
 
 
         public override EntityController controller { get => seat?.seatOccupant?.controller ?? base.controller; }
@@ -20,21 +21,12 @@ namespace SeleneGame.Entities {
         public Seat seat {
             get {
                 if (_seat == null) {
-                    _seat = GetComponent<Seat>();
+                    _seat = GetComponent<BikeSeat>();
 
                     seat.seatEntity = this;
-                    SetSeatSittingPositions();
                 }
                 return _seat;
             }
-        }
-
-
-        protected /* virtual */ void SetSeatSittingPositions() {
-            seat.SetDirections( new List<Vector4>() {
-                new Vector4(1, 0, 0, 1),
-                new Vector4(-1, 0, 0, 2)
-            } );
         }
         
 
@@ -58,7 +50,6 @@ namespace SeleneGame.Entities {
 
 
         protected override void Reset(){
-            
             base.Reset();
 
         }

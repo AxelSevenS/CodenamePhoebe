@@ -407,6 +407,27 @@ namespace SeleneGame.Core {
 
 
         /// <summary>
+        /// Rotate the Entity towards a given rotation in relative space.
+        /// </summary>
+        /// <param name="newRotation">The rotation to rotate towards</param>
+        public void RotateTowardsRelative(Quaternion newRotation) {
+
+            RotateTowardsRelative(newRotation * Vector3.forward, newRotation * Vector3.up);
+
+        }
+
+
+        /// <summary>
+        /// Rotate the Entity towards a given rotation in absolute space.
+        /// </summary>
+        /// <param name="newRotation">The rotation to rotate towards</param>
+        public void RotateTowardsAbsolute(Quaternion newRotation) {
+
+            Quaternion inverse = Quaternion.Inverse(rotation) * newRotation;
+            RotateTowardsRelative(inverse);
+        }
+
+        /// <summary>
         /// Rotate the Entity towards a given direction in relative space.
         /// </summary>
         /// <param name="newDirection">The direction to rotate towards</param>
@@ -415,7 +436,7 @@ namespace SeleneGame.Core {
 
             Quaternion apparentRotation = Quaternion.FromToRotation(rotation * Vector3.up, newUp) * rotation;
             Quaternion turnDirection = Quaternion.AngleAxis(Mathf.Atan2(newDirection.x, newDirection.z) * Mathf.Rad2Deg, Vector3.up) ;
-            transform.rotation = Quaternion.Slerp(transform.rotation, apparentRotation * turnDirection, 12f*GameUtility.timeDelta);
+            transform.rotation = Quaternion.Slerp(transform.rotation, apparentRotation * turnDirection, 12f * GameUtility.timeDelta);
         }
 
 
@@ -429,9 +450,6 @@ namespace SeleneGame.Core {
             Vector3 inverse = Quaternion.Inverse(rotation) * newDirection;
             RotateTowardsRelative(inverse, newUp);
 
-            // Quaternion apparentRotation = Quaternion.FromToRotation(rotation * Vector3.up, newUp) * rotation;
-            // Quaternion turnDirection = Quaternion.AngleAxis(Mathf.Atan2(inverse.x, inverse.z) * Mathf.Rad2Deg, Vector3.up) ;
-            // transform.rotation = Quaternion.Slerp(transform.rotation, apparentRotation * turnDirection, 12f*GameUtility.timeDelta);
         }
 
         public virtual void LoadModel() {
