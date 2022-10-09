@@ -86,12 +86,12 @@ namespace SeleneGame.Core {
 
         private IInteractable GetInteractionCandidate(Collider[] buffer){
 
-            if ( talking /* || entity.walkingTo */ ) return null;
+            if ( talking ) return null;
 
             const float interactionDistance = 5f;
-            const float interactionAngle = 0.75f;
+            const float interactionAngle = 0.85f;
 
-            Physics.OverlapSphereNonAlloc(entity.transform.position, 5f, buffer, Global.EntityObjectMask);
+            Physics.OverlapSphereNonAlloc(entity.transform.position, interactionDistance, buffer, Global.EntityObjectMask);
 
             IInteractable candidate = null;
             float closestDistance = float.MaxValue;
@@ -135,22 +135,40 @@ namespace SeleneGame.Core {
                 debugInput.SetVal( ControlsManager.debugMap.IsBindPressed("Debug1") );
             #endif
 
-
+            Entity targetEntity = entity;
+            if (targetEntity.state is SittingState sittingState && sittingState.seat.seatEntity != null) {
+                sittingState.HandleInput(this);
+                targetEntity = sittingState.seat.seatEntity;
+            }
 
             if (interactInput.started && canInteract)
-                interactionCandidate.Interact(entity);
+                interactionCandidate.Interact(targetEntity);
 
             if (switchStyle1Input.started)
-                entity.SetStyle(0);
+                targetEntity.SetStyle(0);
             if (switchStyle2Input.started)
-                entity.SetStyle(1);
+                targetEntity.SetStyle(1);
             if (switchStyle3Input.started)
-                entity.SetStyle(2);
+                targetEntity.SetStyle(2);
 
-            #if UNITY_EDITOR
-                if (debugInput.started)
-                    entity.Damage(50);
-            #endif
+
+            targetEntity.state.HandleInput(this);
+
+
+            if ( targetEntity.state.canJump && jumpInput ) {
+
+                targetEntity.Jump(targetEntity.state.jumpDirection);
+            }
+
+            if ( targetEntity is ArmedEntity armed) {
+
+                if ( armed.evadeCount > 0 && armed.state.canEvade && evadeInput.started )
+                    armed.Evade( armed.state.evadeDirection );
+
+                if ( KeyInputData.SimultaneousTap( lightAttackInput, heavyAttackInput ) )
+                    armed.Parry();
+
+            }
         }
         
         private Quaternion UpdateCameraRotation(Quaternion currentRotation){

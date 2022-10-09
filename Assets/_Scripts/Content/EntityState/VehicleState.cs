@@ -9,27 +9,78 @@ namespace SeleneGame.States {
     
     public class VehicleState : State {
 
-        public override StateType stateType => StateType.groundState;
-        public override Vector3 cameraPosition => new Vector3(0.3f, 0.5f, -6.5f);
+        private float _gravityMultiplier = 1f;
 
-        // public override bool masked => false;
-
+        private float moveSpeed;
         private float accelerationLinger = 0f;
         private Vector3 finalDirection = Vector3.zero;
         private Vector3 inputDirection;
+
+        [SerializeField] private int jumpCount;
+
+
+
+        public override float gravityMultiplier => _gravityMultiplier;
+
+        public override bool canJump => base.canJump && jumpCount > 0;
+
+        public override Vector3 cameraPosition => new Vector3(0.3f, 0.5f, -6.5f);
         
+
 
         public override void OnEnter(Entity entity){
             base.OnEnter(entity);
 
-            entity.onJump += OnEntityJump;
+            entity.onJump += OnJump;
         }
         public override void OnExit(){
 
-            entity.onJump -= OnEntityJump;
+            entity.onJump -= OnJump;
+        }
+
+
+        private void OnJump(Vector3 jumpDirection){
+            jumpCount--;
+        }
+
+        public override void HandleInput(EntityController controller){
+
+            controller.RawInputToGroundedMovement(out _, out Vector3 groundedMovement);
+
+            if (groundedMovement.sqrMagnitude != 0f)
+                inputDirection = groundedMovement.normalized;
+
+            float newLinger = groundedMovement.magnitude;
+            accelerationLinger = Mathf.Lerp(accelerationLinger, newLinger, GameUtility.timeDelta * (newLinger > accelerationLinger ? 3f : 2f) );
+            
+            float newSpeed = Vector3.Dot(entity.absoluteForward, inputDirection) * accelerationLinger * entity.character.baseSpeed;
+            float speedDelta = newSpeed > moveSpeed ? 1f : 0.65f;
+            moveSpeed = Mathf.MoveTowards(moveSpeed, newSpeed, speedDelta * entity.character.acceleration * GameUtility.timeDelta);
+
+
+            entity.absoluteForward = Vector3.Slerp(entity.absoluteForward, inputDirection, GameUtility.timeDelta * 3f).normalized;
+            
+
+
+            // If Jump input is pressed, slow down the fall.
+            _gravityMultiplier = controller.jumpInput ? 0.75f : 1f;
         }
 
         public override void StateUpdate(){
+
+            bool terrainFlatEnough = Vector3.Dot(entity.groundHit.normal, -entity.gravityDown) > 0.75f;
+
+            Vector3 groundUp = terrainFlatEnough ? entity.groundHit.normal : -entity.gravityDown;
+            Vector3 rightDir = Vector3.Cross(entity.absoluteForward, groundUp);
+            Vector3 finalUp = (groundUp*4f + (Vector3.Dot( inputDirection, rightDir ) * rightDir)).normalized;
+
+
+            entity.RotateTowardsAbsolute(entity.absoluteForward, finalUp);
+
+
+            if ( entity.onGround )
+                jumpCount = 1;
+
 
             // if (entity.onGround.started)
                 // entity.StartWalkAnim();
@@ -38,26 +89,8 @@ namespace SeleneGame.States {
 
         public override void StateFixedUpdate(){
 
-            entity.JumpGravity(entity.weight, entity.gravityDown, entity.controller.jumpInput);
-            
-            if ( entity.onGround ){
-                if( entity.jumpCooldownTimer.isDone )
-                    entity.jumpCount = 1;
-            }
 
-            entity.absoluteForward = Vector3.Slerp(entity.absoluteForward, inputDirection, GameUtility.timeDelta * 3f).normalized;
-            entity.moveDirection.SetVal(entity.absoluteForward);
-
-            entity.GroundedMove( entity.moveSpeed * GameUtility.timeDelta * entity.moveDirection, false );
-
-            bool terrainFlatEnough = Vector3.Dot(entity.groundHit.normal, -entity.gravityDown) > 0.75f;
-
-            Vector3 groundUp = terrainFlatEnough ? entity.groundHit.normal : -entity.gravityDown;
-            Vector3 rightDir = Vector3.Cross(entity.absoluteForward, groundUp);
-            Vector3 finalUp = (groundUp*4f + (Vector3.Dot( inputDirection, rightDir ) * rightDir)).normalized;
-            // finalUp = entity.onGround ? finalUp : (finalUp + finalUp + finalUp - entity.transform.forward).normalized;
-
-            entity.RotateTowardsAbsolute(entity.absoluteForward, finalUp);
+            entity.Move( moveSpeed * entity.absoluteForward );
 
 
 
@@ -66,33 +99,6 @@ namespace SeleneGame.States {
             //     entity.rigidbody.velocity += entity.groundOrientation * entity.evadeDirection *entity.character.baseSpeed * entity.inertiaMultiplier * GameUtility.timeDelta;
 
 
-        }
-
-
-        public override void HandleInput(){
-
-            entity.controller.RawInputToGroundedMovement(out _, out Vector3 groundedMovement);
-
-            if (groundedMovement.sqrMagnitude != 0f)
-                inputDirection = groundedMovement.normalized;
-
-            float newLinger = groundedMovement.magnitude;
-            accelerationLinger = Mathf.Lerp(accelerationLinger, newLinger, GameUtility.timeDelta * (newLinger > accelerationLinger ? 3f : 2f) );
-
-            // entity.sliding.SetVal(entity.controller.evadeInput && entity.onGround);
-            
-            // Jump if the Jump key is pressed.
-            if ( entity.controller.jumpInput.started && entity.jumpCount != 0 && entity.onGround.falseTimer <= 0.4f )
-                entity.Jump( -entity.gravityDown );
-            
-            float newSpeed = Vector3.Dot(entity.moveDirection, inputDirection) * accelerationLinger * entity.character.baseSpeed;
-
-            float speedDelta = newSpeed > entity.moveSpeed ? 1f : 0.65f;
-            entity.moveSpeed = Mathf.MoveTowards(entity.moveSpeed, newSpeed, speedDelta * entity.character.acceleration * GameUtility.timeDelta);
-        }
-
-        private void OnEntityJump(Vector3 jumpDirection){
-            entity.jumpCount--;
         }
     }
 }

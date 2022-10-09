@@ -13,10 +13,17 @@ namespace SeleneGame.Core {
         public Entity entity { get; private set; }
 
 
-        public abstract StateType stateType { get; }
-        public virtual Vector3 cameraPosition => Global.cameraDefaultPosition;
-        public virtual Vector3 jumpDirection => -entity.gravityDown;
 
+        public virtual float gravityMultiplier => 1f;
+
+        public virtual Vector3 jumpDirection => -entity.gravityDown;
+        public virtual bool canJump => entity.onGround.falseTimer < 0.2f;
+
+        public virtual Vector3 evadeDirection => entity.absoluteForward;
+        public virtual bool canEvade => true;
+
+
+        public virtual Vector3 cameraPosition => Global.cameraDefaultPosition;
 
 
 
@@ -27,12 +34,8 @@ namespace SeleneGame.Core {
         public virtual void OnExit(){;}
         
         public virtual void StateAnimation(){;}
-        public abstract void HandleInput();
+        public abstract void HandleInput(EntityController controller);
         public virtual void StateUpdate(){;}
         public virtual void StateFixedUpdate(){;}
-
-
-
-        public enum StateType { groundState, waterState, flyingState, immobileState };
     }
 }

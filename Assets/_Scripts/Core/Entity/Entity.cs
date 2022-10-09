@@ -20,7 +20,7 @@ namespace SeleneGame.Core {
 
         #region Constants
         
-            private const int moveCollisionStep = 1;
+            private const int MOVE_COLLISION_STEP_COUNT = 1;
         
 
         #endregion
@@ -97,11 +97,6 @@ namespace SeleneGame.Core {
             [SerializeField] 
             private Vector3Data _moveDirection;
 
-
-            [Tooltip("The current movement speed of the Entity.")]
-            [SerializeField] 
-            private float _moveSpeed;
-
         
             [Tooltip("The direction in which the Entity is attracted by Gravity.")]
             [SerializeField] 
@@ -112,9 +107,9 @@ namespace SeleneGame.Core {
             [Space(10)]
             [Header("Jumping")]
 
-            [Tooltip("The current allowed number of Jumps the Entity can make before having to \"Refresh\".")]
-            [SerializeField] 
-            private int _jumpCount = 1;
+            // [Tooltip("The current allowed number of Jumps the Entity can make before having to \"Refresh\".")]
+            // [SerializeField] 
+            // private int _jumpCount = 1;
 
             [Tooltip("The amount of time needed to wait for the Entity to be able to jump again.")]
             [SerializeField] 
@@ -133,11 +128,11 @@ namespace SeleneGame.Core {
 
         #region Fields
 
+            private Vector3 _totalMovement = Vector3.zero; 
+
             private Rigidbody _rigidbody;
             private CustomPhysicsComponent _physicsComponent;
             private EntityController _controller;
-
-            private Vector3 _totalMovement;
 
             public RaycastHit groundHit;
 
@@ -146,17 +141,21 @@ namespace SeleneGame.Core {
 
         #endregion
 
+        #region Events
+
+            public event Action<Vector3> onJump;
+            public event Action<float> onHeal;
+            public event Action<float> onDamage;
+            public event Action onDeath;
+            
+        #endregion
+
 
         #region Properties
 
 
             public Character.Instance character {
-                get {
-                    // if ( _character == null ){
-                    //     LoadCharacter();
-                    // }
-                    return _character;
-                }
+                get => _character;
                 private set => _character = value;
             }
             public Animator animator {
@@ -223,14 +222,10 @@ namespace SeleneGame.Core {
             }
 
 
-            public ref Vector3Data moveDirection { 
-                get => ref _moveDirection;
-            }
-
-            public float moveSpeed { 
-                get => _moveSpeed; 
-                set => _moveSpeed = Mathf.Max( value, 0f );
-            }
+            // public Vector3Data moveDirection { 
+            //     get => _moveDirection;
+            //     protected set => _moveDirection = value;
+            // }
 
 
             public Vector3 gravityDown { 
@@ -238,10 +233,12 @@ namespace SeleneGame.Core {
                 set => _gravityDown = value.normalized;
             }
 
-            public int jumpCount { 
-                get => _jumpCount; 
-                set => _jumpCount = Math.Max(value, 0);
-            }
+            public float gravityMultiplier => state.gravityMultiplier;
+
+            // public int jumpCount { 
+            //     get => _jumpCount; 
+            //     set => _jumpCount = Math.Max(value, 0);
+            // }
 
             public ref TimeUntil jumpCooldownTimer { 
                 get => ref _jumpCooldownTimer;
@@ -250,7 +247,7 @@ namespace SeleneGame.Core {
 
             // public Quaternion groundOrientation => Quaternion.FromToRotation(-gravityDown, groundHit.normal);
 
-            public bool isIdle => moveDirection.sqrMagnitude == 0;
+            public bool isIdle => _moveDirection.sqrMagnitude == 0;
 
             public float fallVelocity => Vector3.Dot(rigidbody.velocity, -gravityDown);
             public bool inWater => physicsComponent.inWater;
@@ -275,7 +272,7 @@ namespace SeleneGame.Core {
             }
 
 
-            public virtual EntityController controller { 
+            protected virtual EntityController controller { 
                 get {
                     if ( _controller == null ) {
                         if ( !TryGetComponent<EntityController>(out _controller) )
@@ -284,7 +281,7 @@ namespace SeleneGame.Core {
                     return _controller;
                 
                 } 
-                protected set => _controller = value; 
+                set => _controller = value; 
             }
 
 
@@ -302,15 +299,6 @@ namespace SeleneGame.Core {
             public virtual float jumpMultiplier => 1f;
 
 
-        #endregion
-
-        #region Events
-
-            public event Action<Vector3> onJump;
-            public event Action<float> onHeal;
-            public event Action<float> onDamage;
-            public event Action onDeath;
-            
         #endregion
 
 
@@ -348,7 +336,8 @@ namespace SeleneGame.Core {
             newState.OnEnter(this);
             _state = newState;
 
-            animator.SetInteger( "State", (int)_state.stateType );
+            //  TODO : add a way to set the corresponding animator for the current Entity State.
+            // animator.SetInteger( "State", (int)_state.stateType );
             animator.SetTrigger( "SetState" );
 
             Debug.Log($"{name} switched state to {_state.name}");
@@ -469,43 +458,11 @@ namespace SeleneGame.Core {
 
 
         /// <summary>
-        /// Apply a gravity force to the Entity.
-        /// </summary>
-        /// <param name="force">The force to apply</param>
-        /// <param name="direction">The direction to apply the force in</param>
-        public void Gravity(float force, Vector3 direction) {
-            JumpGravity(force, direction, false);
-        }
-
-
-        /// <summary>
-        /// Apply a gravity force to the Entity. the force is lowered if the slowfall flag is set.
-        /// </summary>
-        /// <param name="force">The force to apply</param>
-        /// <param name="direction">The direction to apply the force in</param>
-        /// <param name="slowfall">Whether the force should be reduced by a factor of 0.75</param>
-        public void JumpGravity(float force, Vector3 direction, bool slowFall) {        
-            rigidbody.AddForce(force * GameUtility.timeDelta * direction);
-
-            // Inertia that's only active when falling
-            if ( onGround ) return;
-
-            const float slowFallMultiplier = 2.25f;
-            const float regularFallMultiplier = 3f;
-            const float fallingMultiplier = 2f;
-            
-            float floatingMultiplier = slowFall ? slowFallMultiplier : regularFallMultiplier;
-            float multiplier = floatingMultiplier * (fallVelocity >= 0 ? 1f : fallingMultiplier);
-
-            rigidbody.velocity += multiplier * force * GameUtility.timeDelta * direction.normalized;
-        
-        }
-
-
-        /// <summary>
         /// Make the Entity Jump in the given direction.
         /// </summary>
         public void Jump(Vector3 jumpDirection) {
+
+            if ( !jumpCooldownTimer.isDone ) return; 
 
             Debug.Log(character.jumpHeight * jumpMultiplier);
 
@@ -521,47 +478,61 @@ namespace SeleneGame.Core {
 
 
         /// <summary>
-        /// Move in the given direction, while conforming to the ground's orientation
+        /// Move in the given direction.
         /// </summary>
         /// <param name="direction">The direction to move in</param>
-        /// <param name="canStep">Whether or not the Entity can step to higher surfaces</param>
-        public void GroundedMove(Vector3 direction, bool canStep = false) {
-
+        /// <param name="canStep">If the Entity can move up or down stair steps, like on a slope.</param>
+        public void Move(Vector3 direction, bool canStep = false) {
             if (direction.sqrMagnitude == 0f) return;
 
-            if (onGround) {
+            if (onGround && gravityMultiplier > 0f) {
                 Vector3 rightOfDirection = Vector3.Cross(direction, -gravityDown).normalized;
                 Vector3 directionConstrainedToGround = Vector3.Cross(groundHit.normal, rightOfDirection).normalized;
 
                 direction = directionConstrainedToGround * direction.magnitude;
+
+                // Vector3 move = Vector3.ProjectOnPlane(direction, groundOrientation * -gravityDown);
+
+                // bool walkCollision = ColliderCast( Vector3.zero, direction, out RaycastHit walkHit, 0.15f, Global.GroundMask);
             }
 
-            // Vector3 move = Vector3.ProjectOnPlane(direction, groundOrientation * -gravityDown);
-
-            // bool walkCollision = ColliderCast( Vector3.zero, direction, out RaycastHit walkHit, 0.15f, Global.GroundMask);
-
-            Move(direction);
+            _totalMovement += direction * GameUtility.timeDelta;
 
         }
 
 
         /// <summary>
-        /// Move in the given direction.
+        /// Apply gravity to the Entity.
         /// </summary>
-        /// <param name="direction">The direction to move in</param>
-        public void Move(Vector3 direction) {
-            if (direction.sqrMagnitude == 0f) return;
+        private void Gravity() {
 
-            _totalMovement += direction;
+            if ( onGround ) return;
 
+            Vector3 gravityForce = weight * gravityDown * GameUtility.timeDelta;
+
+            rigidbody.AddForce(gravityForce);
+
+            const float regularFallMultiplier = 3.25f;
+            const float fallingMultiplier = 2f;
+            
+            float floatingMultiplier = regularFallMultiplier * gravityMultiplier;
+            float multiplier = floatingMultiplier * (fallVelocity >= 0 ? 1f : fallingMultiplier);
+
+            rigidbody.velocity += multiplier * gravityForce;
+        
         }
 
-
+        /// <summary>
+        /// Apply all instructed movement to the Entity.
+        /// </summary>
         private void ExecuteMovement() {
+
+            _moveDirection.SetVal( _totalMovement.normalized ) ;
+
             if (_totalMovement.sqrMagnitude == 0f) return;
 
-            Vector3 step = _totalMovement / moveCollisionStep;
-            for (int i = 0; i < moveCollisionStep; i++) {
+            Vector3 step = _totalMovement / MOVE_COLLISION_STEP_COUNT;
+            for (int i = 0; i < MOVE_COLLISION_STEP_COUNT; i++) {
 
                 bool walkCollision = ColliderCast(Vector3.zero, step, out RaycastHit walkHit, 0.15f, Global.GroundMask);
 
@@ -586,7 +557,6 @@ namespace SeleneGame.Core {
                     rigidbody.MovePosition(rigidbody.position + step);
                 }
             }
-
             _totalMovement = Vector3.zero;
         }
 
@@ -686,11 +656,6 @@ namespace SeleneGame.Core {
 
             // [ContextMenu("Initialize")]
             protected virtual void Awake(){
-                
-                if ( controller == null && !TryGetComponent<EntityController>( out _controller ) )
-                    controller = gameObject.AddComponent<EntityController>();
-
-                controller.entity = this;
 
                 // Ensure only One Entity is on a single GameObject
                 // Entity[] entities = GetComponents<Entity>();
@@ -729,7 +694,6 @@ namespace SeleneGame.Core {
             protected virtual void Update(){
                 onGround.SetVal( ColliderCast(Vector3.zero, gravityDown.normalized * 0.2f, out groundHit, 0.15f, Global.GroundMask) );
 
-                state?.HandleInput();
                 state?.StateUpdate();
 
                 if (animator.runtimeAnimatorController != null) {
@@ -738,8 +702,10 @@ namespace SeleneGame.Core {
             }
 
             protected virtual void FixedUpdate(){
+                
                 state?.StateFixedUpdate();
 
+                Gravity();
                 ExecuteMovement();
             }
 

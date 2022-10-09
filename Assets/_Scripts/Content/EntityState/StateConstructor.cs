@@ -14,9 +14,9 @@ namespace SeleneGame.States {
         public static SeleneGame.Core.State CreateState(string type){
             switch (type) {
                 default: return new SeleneGame.Core.WalkingState();
+                case "SittingState": return new SeleneGame.Core.SittingState();
                 case "SwimmingState": return new SeleneGame.Core.SwimmingState();
                 case "MaskedState": return new SeleneGame.States.MaskedState();
-                case "SittingState": return new SeleneGame.States.SittingState();
                 case "VehicleState": return new SeleneGame.States.VehicleState();
             }
         }

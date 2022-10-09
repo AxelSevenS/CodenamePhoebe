@@ -7,7 +7,7 @@ namespace SeleneGame.Core {
     [DisallowMultipleComponent]
     public class EntityController : MonoBehaviour {
 
-        public Entity entity;
+        private Entity _entity;
 
         [Header("Input")]
 
@@ -21,6 +21,18 @@ namespace SeleneGame.Core {
         public KeyInputData shiftInput;
         public Vector2Data moveInput;
         public Vector2Data lookInput;
+
+
+
+
+        public Entity entity {
+            get {
+                if (_entity == null) {
+                    _entity = GetComponent<Entity>();
+                }
+                return _entity;
+            }
+        }
 
 
 

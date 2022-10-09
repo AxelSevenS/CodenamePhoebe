@@ -41,7 +41,7 @@ namespace SeleneGame.Weapons {
             // // Wall-stand when standing against a wall. (Feather Grip)
             // if ( wallStand ){
             //     entity.rb.velocity = entity.rb.velocity.NullifyInDirection(entity.gravityDown);
-            //     entity.Move( -wallHit.normal * GameUtility.timeDelta * (wallHit.distance - 0.2f) );
+            //     entity.Move( -wallHit.normal * (wallHit.distance - 0.2f) );
             // }
 
             // // Wall-run when running against a wall. (Feather Grip)
@@ -62,7 +62,7 @@ namespace SeleneGame.Weapons {
 
             //     wallRunTimer = Mathf.MoveTowards(wallRunTimer, 0f, GameUtility.timeDelta);
 
-            //     entity.Move(wallRunDir * GameUtility.timeDelta * entity.data.baseSpeed * 0.45f);
+            //     entity.Move(wallRunDir * entity.data.baseSpeed * 0.45f);
 
             //     if ( entity.jumpInput )
             //         entity.Jump( (wallRunDir + wallHit.normal*1.2f - entity.gravityDown*2f).normalized * 1.4f );

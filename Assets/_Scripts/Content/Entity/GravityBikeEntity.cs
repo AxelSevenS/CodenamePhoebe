@@ -16,7 +16,6 @@ namespace SeleneGame.Entities {
 
 
 
-        public override EntityController controller { get => seat?.seatOccupant?.controller ?? base.controller; }
         public override State defaultState => new VehicleState();
         public Seat seat {
             get {

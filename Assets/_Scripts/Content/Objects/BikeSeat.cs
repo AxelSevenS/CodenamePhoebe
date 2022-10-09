@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using SeleneGame.Core;
+
 namespace SeleneGame {
     
     public sealed class BikeSeat : Seat {
