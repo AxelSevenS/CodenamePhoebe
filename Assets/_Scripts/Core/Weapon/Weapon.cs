@@ -16,16 +16,28 @@ namespace SeleneGame.Core {
         const string defaultPath = "Weapons/Unarmed";
 
 
-        public WeaponType weaponType;
 
-        public float weightModifier = 1f;
-        public string displayName;
-        [TextArea] public string description;
 
         public WeaponCostume baseCostume;
 
+        public WeaponType weaponType;
+
+        [SerializeField] private string _displayName;
+        
+        [SerializeField] [TextArea] private string _description;
 
 
+        public float weightModifier = 1f;
+
+
+        public ArmedEntity entity;
+        public WeaponCostume costume;
+
+
+
+
+        public string displayName => _displayName;
+        public string description => _description;
 
 
 
@@ -43,7 +55,10 @@ namespace SeleneGame.Core {
                     if ( weapon == null )
                         return;
 
-                    callback?.Invoke( weapon );
+                    Weapon weaponInstance = ScriptableObject.Instantiate(weapon);
+                    weaponInstance.name = weaponInstance.name.Replace("(Clone)", "");
+
+                    callback?.Invoke( weaponInstance );
 
                 }
             );
@@ -51,20 +66,28 @@ namespace SeleneGame.Core {
 
         public static Weapon Get(string weaponName) {
             // Get Requested Weapon
-            AsyncOperationHandle<Weapon> opHandle = Addressables.LoadAssetAsync<Weapon>( WeaponNameToPath(weaponName) );
-            Weapon result = opHandle.WaitForCompletion();
+            AsyncOperationHandle<Weapon> opHandle = Addressables.LoadAssetAsync<Weapon>( WeaponNameToPath(weaponName) ); 
+
+            Weapon weaponInstance = opHandle.WaitForCompletion();
 
             // If not found, get Default Weapon : Unarmed
-            if (result == null) {
+            if (weaponInstance == null) {
                 Debug.LogWarning($"Error getting weapon {weaponName}");
                 return GetDefault();
             }
 
-            return result;
+            weaponInstance = ScriptableObject.Instantiate( weaponInstance );
+            weaponInstance.name = weaponInstance.name.Replace("(Clone)", "");
+
+            return weaponInstance;
         }
         public static Weapon GetDefault() {
             AsyncOperationHandle<Weapon> opHandle = Addressables.LoadAssetAsync<Weapon>( defaultPath );
-            return opHandle.WaitForCompletion();
+
+            Weapon weaponInstance = ScriptableObject.Instantiate( opHandle.WaitForCompletion() );
+            weaponInstance.name = weaponInstance.name.Replace("(Clone)", "");
+
+            return weaponInstance;
         }
 
         public static void GetAsync(string weaponName, Action<Weapon> callback) {
@@ -79,95 +102,55 @@ namespace SeleneGame.Core {
                     return;
                 }
 
-                callback(operation.Result);
+                Weapon weaponInstance = ScriptableObject.Instantiate( operation.Result );
+                weaponInstance.name = weaponInstance.name.Replace("(Clone)", "");
+
+                callback?.Invoke(weaponInstance);
             };
         }
         public static void GetDefaultAsync(Action<Weapon> callback) {
             AsyncOperationHandle<Weapon> opHandle = Addressables.LoadAssetAsync<Weapon>( defaultPath );
             opHandle.Completed += operation => {
-                callback(operation.Result);
+
+                Weapon weaponInstance = ScriptableObject.Instantiate( operation.Result );
+                weaponInstance.name = weaponInstance.name.Replace("(Clone)", "");
+
+                callback?.Invoke(weaponInstance);
             };
         }
 
-        public virtual void WeaponCreation( Instance instance ){;}
 
-        public virtual void WeaponUpdate( Entity entity ){;}
-        public virtual void WeaponFixedUpdate( Entity entity ){;}
+        public void SetCostume(WeaponCostume costume){
+            this.costume = costume;
+            
+            LoadModel();
+
+        }
+
+        public virtual void OnEquip(){
+            Display();
+        }
+        public virtual void OnUnequip(){
+            Hide();
+        }
+
+        public abstract void LoadModel();
+        public abstract void UnloadModel();
+
+        public abstract void Display();
+        public abstract void Hide();
+
+
+        public virtual void Initialize( ArmedEntity entity, WeaponCostume costume = null) {
+            this.entity = entity;
+            SetCostume( costume ?? baseCostume );
+        }
+
+        public virtual void Update( ){;}
+        public virtual void FixedUpdate( ){;}
         
 
-        [System.Serializable]
-        public class Instance {
-            [ReadOnly] public Weapon weapon;
-            [ReadOnly] public ArmedEntity entity;
-            public WeaponCostume costume;
-            public GameObject rightHandModel;
-            public GameObject leftHandModel;
 
-            public string name => weapon.name;
-            public WeaponType weaponType => weapon.weaponType;
-            public float weightModifier => weapon.weightModifier;
-            public WeaponCostume baseCostume => weapon.baseCostume;
-
-            public Instance(ArmedEntity entity, Weapon weapon, WeaponCostume costume = null) {
-                this.entity = entity;
-                SetWeapon(weapon, costume);
-            }
-
-            public void SetWeapon(Weapon weapon, WeaponCostume costume = null) {
-                this.weapon = weapon;
-                SetCostume( costume == null ? weapon.baseCostume : costume );
-                weapon.WeaponCreation(this);
-            }
-
-
-            public void SetCostume(WeaponCostume costume){
-                this.costume = costume;
-                
-                LoadModel();
-                Hide();
-
-            }
-
-            public void LoadModel(){
-                if (entity == null || costume == null) return;
-
-                UnloadModel();
-
-                if (costume.rightHandModel != null) {
-                    Transform rightWeapon = entity["weaponRight"].transform;
-                    rightHandModel = GameObject.Instantiate(costume.rightHandModel, rightWeapon.position, rightWeapon.rotation, rightWeapon);
-                    rightHandModel.name = $"{weapon.name}WeaponModel";
-                }
-
-                if (costume.leftHandModel != null) {
-                    Transform leftWeapon = entity["weaponLeft"].transform;
-                    leftHandModel = GameObject.Instantiate(costume.leftHandModel, leftWeapon.position, leftWeapon.rotation, leftWeapon);
-                    leftHandModel.name = $"{weapon.name}WeaponModel";
-                }
-                    
-            }
-            public void UnloadModel(){
-                rightHandModel = GameUtility.SafeDestroy(rightHandModel);
-                leftHandModel = GameUtility.SafeDestroy(leftHandModel);
-            }
-
-
-            public void Display(){
-                if (entity == null) return;
-
-                if (rightHandModel != null) rightHandModel.SetActive(true);
-                if (leftHandModel != null) leftHandModel.SetActive(true);
-            }
-            public void Hide(){
-                if (entity == null) return;
-
-                if (rightHandModel != null) rightHandModel.SetActive(false);
-                if (leftHandModel != null) leftHandModel.SetActive(false);
-            }
-
-            public void Update() => weapon.WeaponUpdate(entity);
-            public void FixedUpdate() => weapon.WeaponFixedUpdate(entity);
-        }
 
         public enum WeaponType {
             OneHanded = 1,

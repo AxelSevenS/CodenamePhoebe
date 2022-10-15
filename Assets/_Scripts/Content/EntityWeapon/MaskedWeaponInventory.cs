@@ -12,13 +12,13 @@ namespace SeleneGame.Weapons {
         private enum WeaponIndex { primary = 0, secondary = 1, tertiary = 2 }
         private WeaponIndex _currentIndex;
 
-        [SerializeReference] public Weapon.Instance primaryWeapon;
-        [SerializeReference] public Weapon.Instance secondaryWeapon;
-        [SerializeReference] public Weapon.Instance tertiaryWeapon;
+        [SerializeReference] public Weapon primaryWeapon;
+        [SerializeReference] public Weapon secondaryWeapon;
+        [SerializeReference] public Weapon tertiaryWeapon;
 
         public override int Count => 3;
 
-        public override Weapon.Instance Get(int index) {
+        public override Weapon Get(int index) {
             switch (index) {
                 case (int)WeaponIndex.primary:
                     return primaryWeapon;
@@ -32,7 +32,7 @@ namespace SeleneGame.Weapons {
         }
 
 
-        public override Weapon.Instance current {
+        public override Weapon current {
             get {
                 try {
                     return this[(int)_currentIndex];
@@ -56,13 +56,16 @@ namespace SeleneGame.Weapons {
             Debug.Log(weapon);
             switch (index) {
                 case 0:
-                    primaryWeapon = new Weapon.Instance(entity, weapon, costume);
+                    primaryWeapon = weapon;
+                    primaryWeapon.Initialize(entity, costume);
                     break;
                 case 1:
-                    secondaryWeapon = new Weapon.Instance(entity, weapon, costume);
+                    secondaryWeapon = weapon;
+                    secondaryWeapon.Initialize(entity, costume);
                     break;
                 case 2:
-                    tertiaryWeapon = new Weapon.Instance(entity, weapon, costume);
+                    tertiaryWeapon = weapon;
+                    tertiaryWeapon.Initialize(entity, costume);
                     break;
                 default:
                     Debug.LogError($"Error setting weapon at index {index} in WeaponInventory : Index out of bounds.");

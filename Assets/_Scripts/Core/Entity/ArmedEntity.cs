@@ -49,7 +49,7 @@ namespace SeleneGame.Core {
 
         public override void LoadModel() {
             base.LoadModel();
-            foreach(Weapon.Instance weapon in weapons) {
+            foreach(Weapon weapon in weapons) {
                 weapon.LoadModel();
             }
         }
@@ -122,7 +122,7 @@ namespace SeleneGame.Core {
                 evadeCurve = Mathf.Clamp01( EntityManager.current.evadeCurve.Evaluate( evadeTime ) );
             }
             
-            foreach (Weapon.Instance weapon in weapons)
+            foreach (Weapon weapon in weapons)
                 weapon?.Update();
         }
 
@@ -132,7 +132,7 @@ namespace SeleneGame.Core {
             if (evading)
                 Move( evadeCurve * character.evadeSpeed * evadeDirection );
 
-            foreach (Weapon.Instance weapon in weapons)
+            foreach (Weapon weapon in weapons)
                 weapon?.FixedUpdate();
         }
 

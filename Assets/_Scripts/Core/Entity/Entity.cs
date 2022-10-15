@@ -28,29 +28,53 @@ namespace SeleneGame.Core {
         #region Editor Fields
 
             #if UNITY_EDITOR
-                [HideInInspector] public AssetReferenceT<Character> m_loadedCharacter;
+                [HideInInspector] public AssetReferenceT<Character> m_selectedCharacter;
+                [HideInInspector] public AssetReferenceT<CharacterCostume> m_selectedCharacterCostume;
 
                 [ContextMenu("Load Character")]
                 public void LoadCharacter() {
                     UnloadModel();
-                    if (m_loadedCharacter.Asset != null)
-                        m_loadedCharacter.ReleaseAsset();
+                    if (m_selectedCharacter.Asset != null)
+                        m_selectedCharacter.ReleaseAsset();
 
-                    Character loadedCharacter;
+                    Character selectedCharacter;
                     // Runtime key is a string for some reason, even though in the documentation it says it's a Hash128.
-                    if ( string.IsNullOrEmpty( (string)m_loadedCharacter.RuntimeKey )  ) {
-                        loadedCharacter = Character.GetDefault();
+                    if ( string.IsNullOrEmpty( (string)m_selectedCharacter.RuntimeKey )  ) {
+                        selectedCharacter = Character.GetDefault();
                     } else {
-                        AsyncOperationHandle<Character> opHandle = m_loadedCharacter.LoadAssetAsync();
-                        loadedCharacter = opHandle.WaitForCompletion();
+                        AsyncOperationHandle<Character> opHandle = m_selectedCharacter.LoadAssetAsync();
+                        selectedCharacter = opHandle.WaitForCompletion();
                     }
-                    _character = new Character.Instance( this, loadedCharacter );
+                    
+                    _character = ScriptableObject.Instantiate(selectedCharacter);
+                    _character.Initialize(this);
+                }
+
+                [ContextMenu("Load Character Costume")]
+                public void LoadCharacterCostume() {
+                    UnloadModel();
+                    if (m_selectedCharacterCostume.Asset != null)
+                        m_selectedCharacterCostume.ReleaseAsset();
+
+
+                    CharacterCostume selectedCharacterCostume;
+                    // Runtime key is a string for some reason, even though in the documentation it says it's a Hash128.
+                    if ( string.IsNullOrEmpty( (string)m_selectedCharacterCostume.RuntimeKey )  ) {
+                        if ( _character == null )
+                            return;
+                        selectedCharacterCostume = CharacterCostume.GetBase(_character.name);
+                    } else {
+                        AsyncOperationHandle<CharacterCostume> opHandle = m_selectedCharacterCostume.LoadAssetAsync();
+                        selectedCharacterCostume = opHandle.WaitForCompletion();
+                    }
+                    
+                    _character.SetCostume(selectedCharacterCostume);
                 }
             #endif
         
             [Tooltip("The entity's current Character, defines their game Model, portraits, display name and base Stats.")]
             [SerializeReference]
-            private Character.Instance _character;
+            private Character _character;
         
             [Tooltip("The entity's current Animator.")]
             [SerializeReference]
@@ -154,7 +178,7 @@ namespace SeleneGame.Core {
         #region Properties
 
 
-            public Character.Instance character {
+            public Character character {
                 get => _character;
                 private set => _character = value;
             }
@@ -580,6 +604,7 @@ namespace SeleneGame.Core {
                 castHit = tempHit;
                 return true;
             }
+
             castHit = new RaycastHit();
             return false;
         }
@@ -626,7 +651,10 @@ namespace SeleneGame.Core {
         public static Entity CreateEntity(System.Type entityType, Character character, Vector3 position, Quaternion rotation, CharacterCostume costume = null){
             GameObject entityGO = new GameObject("Entity");
             Entity entity = (Entity)entityGO.AddComponent(entityType);
-            entity.character = new Character.Instance(entity, character, costume);
+
+            entity.character = character;
+            entity.character.Initialize(entity, costume);
+
             entity.transform.position = position;
             entity.transform.rotation = rotation;
             return entity;
@@ -645,7 +673,10 @@ namespace SeleneGame.Core {
             GameObject entityGO = new GameObject("Entity");
             entityGO.AddComponent<PlayerEntityController>();
             Entity entity = (Entity)entityGO.AddComponent(entityType);
-            entity.character = new Character.Instance(entity, character, costume);
+            
+            entity.character = character;
+            entity.character.Initialize(entity, costume);
+
             entity.transform.position = position;
             entity.transform.rotation = rotation;
             return entity;

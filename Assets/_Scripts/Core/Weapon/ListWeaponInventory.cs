@@ -7,7 +7,7 @@ namespace SeleneGame.Core {
     [System.Serializable]
     public class ListWeaponInventory : WeaponInventory {
 
-        [SerializeReference] private Weapon.Instance[] items;
+        [SerializeReference] private Weapon[] items;
         
         private const int defaultIndex = 0;
         [SerializeField] private int currentIndex;
@@ -16,7 +16,7 @@ namespace SeleneGame.Core {
 
         public override int Count => items.Length;
 
-        public override Weapon.Instance current { get {
+        public override Weapon current { get {
             try {
                 return items[currentIndex];
             } catch {
@@ -32,18 +32,19 @@ namespace SeleneGame.Core {
             
             this.entity = entity;
 
-            items = new Weapon.Instance[size];
+            items = new Weapon[size];
             for (int i = 0; i < items.Length; i++) {
                 SetToDefault( i );
             }
         }
 
 
-        public override Weapon.Instance Get(int index) => items[index];
+        public override Weapon Get(int index) => items[index];
 
         public override void Set(int index, Weapon weapon, WeaponCostume costume = null){
             try {
-                items[index] = new Weapon.Instance(entity, weapon, costume);
+                items[index] = weapon;
+                items[index].Initialize(entity, costume);
             } catch (System.Exception e) {
                 Debug.LogError($"Error setting weapon at index {index} in WeaponInventory : {e.Message}.");
             }
@@ -62,7 +63,7 @@ namespace SeleneGame.Core {
         public override void Switch(int index){
             if (index == currentIndex) return;
 
-            foreach ( Weapon.Instance weapon in items )
+            foreach ( Weapon weapon in items )
                 weapon.Hide();
 
             if ( items[index] != null ) {

@@ -28,8 +28,7 @@ namespace SeleneGame.Core {
         public string description = "Default Costume Description";
 
 
-        public GameObject rightHandModel;
-        public GameObject leftHandModel;
+        public GameObject model;
 
 
         [EnumFlag] public Weapon.WeaponType equippableOn;

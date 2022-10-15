@@ -3,6 +3,7 @@ using UnityEngine;
 using SevenGame.Utility;
 
 namespace SeleneGame.Core {
+    
     public class PlayerEntityController : EntityController {
 
         public static PlayerEntityController current;

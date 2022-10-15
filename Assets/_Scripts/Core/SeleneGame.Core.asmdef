@@ -4,10 +4,10 @@
     "references": [
         "Unity.InputSystem",
         "Unity.RenderPipelines.Universal.Runtime",
+        "Unity.ResourceManager",
         "Unity.TextMeshPro",
         "Seven.Utility",
-        "Unity.Addressables",
-        "Unity.ResourceManager"
+        "Unity.Addressables"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -9,12 +9,14 @@ namespace SeleneGame.Core {
     public class EntityEditor : Editor{
 
         Entity targetEntity;
-        SerializedProperty soLoadedCharacter;
+        SerializedProperty soSelectedCharacter;
+        SerializedProperty soSelectedCharacterCostume;
 
 
         private void OnEnable(){
 
-            soLoadedCharacter = serializedObject.FindProperty( "m_loadedCharacter" );
+            soSelectedCharacter = serializedObject.FindProperty( "m_selectedCharacter" );
+            soSelectedCharacterCostume = serializedObject.FindProperty( "m_selectedCharacterCostume" );
 
             targetEntity = (Entity)target;
         }
@@ -23,11 +25,20 @@ namespace SeleneGame.Core {
 
             EditorGUI.BeginChangeCheck();
 
-            EditorGUILayout.PropertyField( soLoadedCharacter );
+            EditorGUILayout.PropertyField( soSelectedCharacter );
 
-            if ( EditorGUI.EndChangeCheck() ){
+            if ( EditorGUI.EndChangeCheck() )
                 targetEntity.LoadCharacter();
-            }
+
+
+            EditorGUI.BeginChangeCheck();
+
+            EditorGUILayout.PropertyField( soSelectedCharacterCostume );
+
+            if ( EditorGUI.EndChangeCheck() )
+                targetEntity.LoadCharacterCostume();
+
+                
 
             DrawDefaultInspector();
         }
