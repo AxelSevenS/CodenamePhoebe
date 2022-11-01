@@ -48,15 +48,15 @@ namespace SeleneGame.Entities {
 
             return false;
         }
-        public sealed override void ResetWeapons() {
+        protected sealed override void ResetWeapons() {
             _weapons = new MaskedWeaponInventory(this);
         }
 
-        public override void LoadModel() {
+        protected override void LoadModel() {
             base.LoadModel();
         }
 
-        public override void UnloadModel(){
+        protected override void UnloadModel(){
             base.UnloadModel();
             
             GameUtility.SafeDestroy(speedlines);
@@ -87,6 +87,7 @@ namespace SeleneGame.Entities {
             Destroy(impulseParticle, 1.2f);
         }
 
+
         public void Shift(){
             shiftCooldown = 0.3f;
             if (onGround) rigidbody.velocity += -gravityDown*3f;
@@ -108,7 +109,6 @@ namespace SeleneGame.Entities {
                 Shift();
             }
         }
-
 
 
 

@@ -57,8 +57,11 @@ namespace SeleneGame {
 
             UpdateAddressableAddress<WeaponCostume>(addressablesSettings, "Assets/Data/Weapons/Costumes");
 
-            UpdateAddressableAddressAndCreateBaseCostume<Weapon, WeaponCostume>(addressablesSettings, "Assets/Data/Weapons", "Assets/Data/Weapons/Costumes", (weapon, weaponCostume) => {
-                
+            UpdateAddressableAddressAndCreateBaseCostume<Weapon, WeaponCostume>(
+                addressablesSettings, 
+                "Assets/Data/Weapons", 
+                "Assets/Data/Weapons/Costumes", 
+                (weapon, weaponCostume) => {
                     weapon.baseCostume = weaponCostume;
                     Debug.Log($"Created missing base costume for {weapon.name}, {weaponCostume}");
                 }
@@ -67,8 +70,11 @@ namespace SeleneGame {
             
             UpdateAddressableAddress<CharacterCostume>(addressablesSettings, "Assets/Data/Characters/Costumes");
             
-            UpdateAddressableAddressAndCreateBaseCostume<Character, CharacterCostume>(addressablesSettings, "Assets/Data/Characters", "Assets/Data/Characters/Costumes", (character, characterCostume) => {
-                
+            UpdateAddressableAddressAndCreateBaseCostume<Character, CharacterCostume>(
+                addressablesSettings, 
+                "Assets/Data/Characters", 
+                "Assets/Data/Characters/Costumes", 
+                (character, characterCostume) => {
                     character.baseCostume = characterCostume;
                     Debug.Log($"Created missing base costume for {character.name}, {characterCostume}");
                 }
@@ -83,17 +89,14 @@ namespace SeleneGame {
                 TAsset asset = AssetDatabase.LoadAssetAtPath(assetEntry.AssetPath, typeof(TAsset)) as TAsset;
 
                 assetEntry.address = AddressableAsset<TAsset>.GetPath(asset.name);
-            }
-            catch (Exception) {
-            }
+            } catch (Exception) {;}
         }
 
         private static void UpdateAddressableAddress<TAsset>(AddressableAssetSettings addressablesSettings, string filePath, Action<AddressableAssetEntry> callback = null) where TAsset : AddressableAsset<TAsset> {
             string typeName = typeof(TAsset).Name;
             string[] assetGUIDs = AssetDatabase.FindAssets($"t:{typeName}", new string[] { filePath });
-            foreach (string assetGUID in assetGUIDs)
-            {
-
+            foreach (string assetGUID in assetGUIDs) {
+                
                 AddressableAssetEntry assetEntry = addressablesSettings.CreateOrMoveEntry(assetGUID, addressablesSettings.DefaultGroup);
                 assetEntry.labels.Add(typeName);
                 UpdateAssetEntryAddress<TAsset>(assetEntry);

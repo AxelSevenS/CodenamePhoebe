@@ -12,16 +12,16 @@ namespace SeleneGame.Core {
 
         public override float gravityMultiplier => 0f; 
 
-        public override Vector3 jumpDirection => Vector3.zero;
-        public override bool canJump => false;
-
-        public override Vector3 evadeDirection => Vector3.zero;
-        public override bool canEvade => false;
-
-        public override bool canParry => false;
-
-
         public override Vector3 cameraPosition => seat.seatEntity?.state.cameraPosition ?? base.cameraPosition;
+
+
+        protected override Vector3 jumpDirection => Vector3.zero;
+        protected override bool canJump => false;
+
+        protected override Vector3 evadeDirection => Vector3.zero;
+        protected override bool canEvade => false;
+
+        protected override bool canParry => false;
 
 
 
@@ -33,10 +33,21 @@ namespace SeleneGame.Core {
                 seat.seatEntity.state.HandleInput(controller);
         }
 
-        public override void StateUpdate(){
+
+        public override void Move(Vector3 direction) {;}
+        public override void Jump() {;}
+        public override void Evade(Vector3 direction) {;}
+        public override void Parry() {;}
+        public override void LightAttack() {;}
+        public override void HeavyAttack() {;}
+        public override void SetSpeed(MovementSpeed speed) {;}
+
+
+
+        protected internal override void StateUpdate(){
         }
 
-        public override void StateFixedUpdate(){
+        protected internal override void StateFixedUpdate(){
             // Sitting
             entity.transform.position = seat.sitPosition;
             entity.RotateTowardsAbsolute(seat.sitRotation);

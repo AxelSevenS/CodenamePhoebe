@@ -15,15 +15,20 @@ namespace SeleneGame.Core {
         
         [System.Serializable]
         public class Line{
+            
             public CharacterCostume.Emotion emotion;
 
             [SerializeField] private bool usePlayerEntity;
             [SerializeField] private Entity _entity;
-            public Entity entity => usePlayerEntity ? PlayerEntityController.current.entity : _entity;
 
             [TextArea] public string text;
 
             public List<InvokableEvent> dialogueEvents;
+
+
+
+            public Entity entity => usePlayerEntity ? PlayerEntityController.current.entity : _entity;
+
         }
     }
 }

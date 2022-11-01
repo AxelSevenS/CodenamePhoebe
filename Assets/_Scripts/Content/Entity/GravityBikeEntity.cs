@@ -29,42 +29,21 @@ namespace SeleneGame.Entities {
         }
         
 
-        public override void LoadModel(){
+        protected override void LoadModel(){
             base.LoadModel();
 
         }
-        public override void UnloadModel(){
+        protected override void UnloadModel(){
             base.UnloadModel();
 
         }
 
         public override void SetStyle(int style){;}
-        
-        protected override void EntityAnimation(){
-            base.EntityAnimation();
 
+
+        protected override void Start() {
+            base.Start();
+            // rigidbody.constraints = RigidbodyConstraints.None;
         }
-
-        
-
-
-        protected override void Reset(){
-            base.Reset();
-
-        }
-        protected override void OnDestroy(){
-            base.OnDestroy();
-
-        }
-
-        protected override void Update(){
-            base.Update();
-
-        }
-        protected override void FixedUpdate(){
-            base.FixedUpdate();
-
-        }
-
     }
 }

@@ -8,29 +8,23 @@ using SevenGame.Utility;
 
 namespace SeleneGame.States {
     
-    public class MaskedState : State {
+    public class MaskedState : HumanoidState {
 
         private MaskedEntity maskedEntity;
 
         public BoolData shiftFalling = new BoolData();
 
-        private float moveSpeed;
         private Vector2 randomRotation = Vector3.zero;
-        private Vector2 fallInput = Vector3.zero;
         private Vector3 fallDirection = Vector3.forward;
         private Vector3 flyDirection = Vector3.forward;
+
+        private Vector2 fallInput = Vector3.zero;
 
         private GameObject landCursor;
 
 
 
         public override float gravityMultiplier => 0f; 
-
-        public override Vector3 jumpDirection => Vector3.zero;
-        public override bool canJump => false;
-
-
-
         public override Vector3 cameraPosition {
             get {
                 float additionalCameraDistance = 0f; //(maskedEntity.focusing ? -0.7f : 0f) + (maskedEntity.walkSpeed == Entity.WalkSpeed.sprint ? 0.4f : 0f);
@@ -43,8 +37,17 @@ namespace SeleneGame.States {
         }
 
 
+        protected override Vector3 jumpDirection => Vector3.zero;
+        protected override bool canJump => false;
 
-        public override void OnEnter(Entity entity){
+        protected override Vector3 evadeDirection => base.evadeDirection;
+        protected override bool canEvade => base.canEvade;
+
+        protected override bool canParry => base.canParry;
+
+
+
+        protected override void OnEnter(Entity entity){
             base.OnEnter(entity);
 
             shiftFalling = new BoolData();
@@ -58,14 +61,16 @@ namespace SeleneGame.States {
 
             // landCursor = GameObject.Instantiate(Resources.Load("Prefabs/UI/LandCursor"), HUDController.current.transform) as GameObject;
         }
-
-        public override void OnExit(){
+        protected override void OnExit(){
+            base.OnExit();
             landCursor = GameUtility.SafeDestroy(landCursor);
         }
 
-        public override void HandleInput(EntityController controller){
 
-            shiftFalling.SetVal( controller.evadeInput.trueTimer > 0.125f );
+        public override void HandleInput(EntityController controller){
+            base.HandleInput(controller);
+
+            SetSpeed( controller.jumpInput ? MovementSpeed.Normal : MovementSpeed.Slow );
 
             if (shiftFalling.started){
                 controller.RawInputToCameraRelativeMovement(out Quaternion cameraRotation, out _);
@@ -76,7 +81,7 @@ namespace SeleneGame.States {
             }
 
 
-
+            Vector3 movementDirection;
 
             if (shiftFalling){
 
@@ -88,85 +93,75 @@ namespace SeleneGame.States {
                 Quaternion currentRotation = Quaternion.LookRotation(fallDirection, cameraRotation * Vector3.up);
 
                 Quaternion rotationDelta = Quaternion.AngleAxis(-fallInput.y, currentRotation * Vector3.right) * Quaternion.AngleAxis(fallInput.x, currentRotation * Vector3.up);
-                Vector3 newDirection = (rotationDelta * (fallDirection)).normalized;
-
-                maskedEntity.rotation.SetVal( Quaternion.FromToRotation(fallDirection, newDirection) * maskedEntity.rotation );
-
-                fallDirection = newDirection;
-                maskedEntity.absoluteForward = fallDirection;
+                movementDirection = (rotationDelta * (fallDirection)).normalized;
 
             }else {
 
                 controller.RawInputToGroundedMovement(out _, out Vector3 groundedMovement);
                 float verticalInput = (controller.jumpInput ? 1f: 0f) - (controller.crouchInput ? 1f: 0f);
-                Vector3 verticalGroundedMovement = groundedMovement + (maskedEntity.rotation * Vector3.up) * verticalInput;
-                
-                if (verticalGroundedMovement.sqrMagnitude != 0f){
-
-                    maskedEntity.absoluteForward = verticalGroundedMovement;
-                    maskedEntity.rigidbody.velocity += maskedEntity.character.baseSpeed * GameUtility.timeDelta * verticalGroundedMovement;
-                }
-
-                flyDirection = Vector3.Lerp(flyDirection, verticalGroundedMovement, 0.5f * GameUtility.timeDelta);
+                movementDirection = groundedMovement + (maskedEntity.rotation * Vector3.up) * verticalInput;
 
             }
+
+            Move(movementDirection);
 
         }
 
-        public override void StateUpdate(){
 
-            // Gravity Shifting Movement
-            if ( maskedEntity.inWater ){
-                maskedEntity.StopShifting(Vector3.down);
-            }
+        public override void Move(Vector3 direction) {
+            if (shiftFalling) {
 
-            if ( maskedEntity.onGround && shiftFalling ) {
-                maskedEntity.StopShifting(fallDirection);
-            }
+                maskedEntity.rotation.SetVal( Quaternion.FromToRotation(fallDirection, direction) * maskedEntity.rotation );
+                maskedEntity.absoluteForward = direction;
 
-            
-            float newSpeed = maskedEntity.character.baseSpeed * 0.5f;
-            newSpeed = shiftFalling ? newSpeed * 0.75f : newSpeed;
-
-            float speedDelta = newSpeed > moveSpeed ? 1f : 0.65f;
-            moveSpeed = Mathf.MoveTowards(moveSpeed, newSpeed, speedDelta * maskedEntity.character.acceleration * GameUtility.timeDelta);
-
-
-            Vector3 finalRotation;
-            Vector3 finalUp;
-            if (shiftFalling){
-
-                finalRotation = new Vector3(randomRotation.x, 0f, randomRotation.y);
-                finalUp = -fallDirection;
-
-            }else{
-
-                finalRotation = maskedEntity.relativeForward;
-                finalUp = maskedEntity.rotation * Vector3.up;
-            }
-
-            maskedEntity.gravityDown = -finalUp;
-
-            UpdateLandCursorPos();
-
-
-            maskedEntity.RotateTowardsRelative(finalRotation, finalUp);
-
-        }
-
-        public override void StateFixedUpdate(){
-
-            if (shiftFalling){
-            
-                maskedEntity.rigidbody.AddForce(fallDirection * 27f);
-
+                fallDirection = direction;
             } else {
-                    
-                maskedEntity.Move( moveSpeed * flyDirection );
-    
+
+                flyDirection = Vector3.Lerp(flyDirection, direction, 0.5f * GameUtility.timeDelta);
+
+                if (direction.sqrMagnitude != 0f){
+
+                    maskedEntity.absoluteForward = direction;
+                    maskedEntity.rigidbody.velocity += direction * maskedEntity.character.baseSpeed * GameUtility.timeDelta;
+                }
             }
+        }
+        public override void Evade(Vector3 direction) {
+            base.Evade(direction);
+        }
+        public override void Jump() {
             
         }
+        public override void Parry() {
+            base.Parry();
+        }
+        public override void LightAttack() {
+            base.LightAttack();
+        }
+        public override void HeavyAttack() {
+            base.HeavyAttack();
+        }
+        public override void SetSpeed(MovementSpeed speed) {
+            shiftFalling.SetVal(speed != MovementSpeed.Slow);
+        }
+
+
+        protected override void JumpAction(Vector3 direction) {
+
+        }
+        protected override void EvadeAction(Vector3 direction) {
+            base.EvadeAction(direction);
+        }
+        protected override void ParryAction() {
+            base.ParryAction();
+        }
+        protected override void LightAttackAction() {
+            base.LightAttackAction();
+        }
+        protected override void HeavyAttackAction() {
+            base.HeavyAttackAction();
+        }
+
 
         protected void UpdateLandCursorPos(){
             if (landCursor == null) return;
@@ -187,6 +182,55 @@ namespace SeleneGame.States {
             landCursor.SetActive(true);
 
             landCursor.transform.position = CameraController.current.camera.WorldToScreenPoint(fallCursorHit.point);
+        }
+
+
+        protected override void StateUpdate(){
+
+            // Gravity Shifting Movement
+            if ( maskedEntity.inWater ){
+                maskedEntity.StopShifting(Vector3.down);
+            }
+
+            if ( maskedEntity.onGround && shiftFalling ) {
+                maskedEntity.StopShifting(fallDirection);
+            }
+
+
+
+            Vector3 finalRotation;
+            Vector3 finalUp;
+            if (shiftFalling){
+
+                finalRotation = new Vector3(randomRotation.x, 0f, randomRotation.y);
+                finalUp = -fallDirection;
+
+            }else{
+
+                finalRotation = maskedEntity.relativeForward;
+                finalUp = maskedEntity.rotation * Vector3.up;
+            }
+
+            maskedEntity.gravityDown = -finalUp;
+
+            // UpdateLandCursorPos();
+
+
+            maskedEntity.RotateTowardsRelative(finalRotation, finalUp);
+
+        }
+        protected override void StateFixedUpdate(){
+
+            if (shiftFalling){
+            
+                maskedEntity.rigidbody.AddForce(fallDirection * 27f);
+
+            } else {
+                    
+                maskedEntity.Move( (maskedEntity.character.baseSpeed * 0.5f) * flyDirection );
+    
+            }
+            
         }
 
     }

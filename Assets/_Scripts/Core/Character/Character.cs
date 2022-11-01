@@ -103,6 +103,9 @@ namespace SeleneGame.Core {
 
 
         public virtual void Initialize( Entity entity, CharacterCostume costume = null) {
+            if (this.entity != null)
+                return;
+
             this.entity = entity;
             SetCostume( costume ?? baseCostume );
         }
@@ -117,7 +120,7 @@ namespace SeleneGame.Core {
             LoadModel();
         }
 
-        public void LoadModel(){
+        protected internal void LoadModel(){
             UnloadModel();
 
             if (entity == null || costume == null) return;
@@ -135,13 +138,13 @@ namespace SeleneGame.Core {
             entity.animator.Rebind();
 
         }
-        public void UnloadModel(){
+        protected internal void UnloadModel(){
             _model = GameUtility.SafeDestroy(model);
             _costumeData = null;
         }
 
-        public virtual void CharacterUpdate( Entity entity ){;}
-        public virtual void CharacterFixedUpdate( Entity entity ){;}
+        protected internal virtual void CharacterUpdate( Entity entity ){;}
+        protected internal virtual void CharacterFixedUpdate( Entity entity ){;}
 
     }
 }

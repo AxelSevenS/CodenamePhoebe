@@ -33,30 +33,20 @@ namespace SeleneGame.Core {
 
 
 
-        public event Action onParry;
-
+        protected internal virtual void ResetWeapons(){
+            _weapons = new ListWeaponInventory(this, 1);
+        }
 
 
         public override void SetStyle(int newStyle) {
             weapons.Switch(newStyle);
         }
 
-
-        public override void LoadModel() {
+        protected internal override void LoadModel() {
             base.LoadModel();
             foreach(Weapon weapon in weapons) {
                 weapon.LoadModel();
             }
-        }
-
-        public virtual void ResetWeapons(){
-            _weapons = new ListWeaponInventory(this, 1);
-        }
-
-        protected override void EntityAnimation() {
-            base.EntityAnimation();
-
-            // animator.SetFloat("WeaponType", (float)(weapons.current.weaponType) );
         }
 
         public virtual void Parry(){
@@ -65,8 +55,15 @@ namespace SeleneGame.Core {
                 Debug.Log("Parry");
                 parryTimer.SetDuration(0.1f);
 
-                onParry?.Invoke();
+                // onParry?.Invoke();
             }
+        }
+
+
+        protected override void EntityAnimation() {
+            base.EntityAnimation();
+
+            // animator.SetFloat("WeaponType", (float)(weapons.current.weaponType) );
         }
 
 

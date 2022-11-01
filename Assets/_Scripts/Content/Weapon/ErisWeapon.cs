@@ -15,26 +15,27 @@ namespace SeleneGame.Weapons {
 
         // [SerializeField] private BoolData gravitySlide = new BoolData();
 
-        public override void LoadModel() {
+        protected override void LoadModel() {
             if (costume.model != null) {
                 model = Instantiate(costume.model, entity.transform);
             }
         }
-
-        public override void UnloadModel() {
+        protected override void UnloadModel() {
             model = GameUtility.SafeDestroy(model);
         }
 
+
         public override void Display() {
-            Debug.Log(entity);
             model?.SetActive(true);
         }
 
         public override void Hide() {
             model?.SetActive(false);
         }
+
+
         
-        public override void Update( ){
+        protected override void Update( ){
             base.Update();
 
             // gravitySlide.SetVal(entity.sliding && entity.onGround);

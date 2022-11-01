@@ -8,35 +8,89 @@ namespace SeleneGame.States {
     
     public class #SCRIPTNAME# : State {
 
-        public override StateType stateType => StateType.groundState;
-
-        public override Vector3 jumpDirection => base.jumpDirection;
-
+        public override float gravityMultiplier => base.gravityMultiplier;
         public override Vector3 cameraPosition => base.cameraPosition;
 
 
+        protected override Vector3 jumpDirection => base.jumpDirection;
+        protected override bool canJump => base.canJump;
 
-        public override void OnEnter(Entity entity){
+        protected override Vector3 evadeDirection => base.evadeDirection;
+        protected override bool canEvade => base.canEvade;
+
+        protected override bool canParry => base.canParry;
+
+
+
+        protected internal override void OnEnter(Entity entity){
             base.OnEnter(entity);
-#NOTRIM#
         }
-        public override void OnExit(){
+        protected internal override void OnExit(){
             base.OnExit();
-#NOTRIM#
         }
         
-        public override void HandleInput(){
-#NOTRIM#
-        }
-        
-        public override void StateUpdate(){
-            base.StateUpdate();
-#NOTRIM#
+
+
+        public override void HandleInput(EntityController controller) {
+
         }
 
-        public override void StateFixedUpdate(){
+
+        public override void Move(Vector3 direction) {
+
+        }
+        public virtual void Jump() {
+            if (canJump)
+                JumpAction(jumpDirection);
+        }
+        public virtual void Evade(Vector3 direction) {
+            if (canEvade)
+                EvadeAction(evadeDirection);
+        }
+        public virtual void Parry() {
+            if (canParry)
+                ParryAction();
+        }
+        public virtual void LightAttack() {
+            if (true)
+                LightAttackAction();
+        }
+        public virtual void HeavyAttack() {
+            if (true)
+                HeavyAttackAction();
+        }
+        public virtual void HeavyAttack() {
+            if (true)
+                HeavyAttackAction();
+        }
+
+
+        protected override void JumpAction(Vector3 jumpDirection) {
+            base.JumpAction(jumpDirection);
+        }
+        protected override void EvadeAction(Vector3 direction) {
+            base.EvadeAction(direction);
+        }
+        protected override void ParryAction() {
+            base.ParryAction();
+        }
+        protected override void LightAttackAction() {
+            base.LightAttackAction();
+        }
+        protected override void HeavyAttackAction() {
+            base.HeavyAttackAction();
+        }
+
+
+
+        protected internal override void StateUpdate(){
+            base.StateUpdate();
+        }
+        protected internal override void StateFixedUpdate(){
             base.StateFixedUpdate();
-#NOTRIM#
+        }
+        protected internal override void StateAnimation(){
+            base.StateAnimation();
         }
 
 

@@ -14,20 +14,60 @@ namespace SeleneGame.Core {
         public BoolData evading;
         public Vector3 currentEvadeDirection = Vector3.forward;
         public TimeUntil evadeTimer;
-        public float evadeCount = 1f;
-
-
-
+        
         public float evadeTime { get; protected set; }
         public float evadeCurve { get; protected set; }
 
 
 
-        public event Action<Vector3> onEvade;
+        public override float gravityMultiplier => base.gravityMultiplier;
+        public override Vector3 cameraPosition => base.cameraPosition;
 
-        public virtual void Evade(Vector3 evadeDirection){
 
-            if ( !evadeTimer.isDone ) return;
+        protected override Vector3 jumpDirection => base.jumpDirection;
+        protected override bool canJump => base.canJump;
+
+        protected override Vector3 evadeDirection => base.evadeDirection;
+        protected override bool canEvade => base.canEvade && evadeTimer.isDone;
+
+        protected override bool canParry => base.canParry;
+
+
+
+        public override void HandleInput(EntityController controller) {
+
+            if ( controller.evadeInput.started )
+                Evade(evadeDirection);
+
+            if ( KeyInputData.SimultaneousTap( controller.lightAttackInput, controller.heavyAttackInput ) )
+                Parry();
+        }
+
+
+        public override void Jump() {
+            base.Jump();
+        }
+        public override void Evade(Vector3 direction) {
+            base.Evade(direction);
+        }
+        public override void Parry() {
+            base.Parry();
+        }
+        public override void LightAttack() {
+            base.LightAttack();
+        }
+        public override void HeavyAttack() {
+            base.HeavyAttack();
+        }
+
+
+        protected override void JumpAction(Vector3 jumpDirection) {
+            base.JumpAction(jumpDirection);
+        }
+        protected override void EvadeAction(Vector3 direction) {
+            base.EvadeAction(direction);
+
+            currentEvadeDirection = direction;
             
             if (gravityMultiplier > 0f) {
 
@@ -38,30 +78,30 @@ namespace SeleneGame.Core {
                 entity.rigidbody.velocity = newVelocity;
             }
             
-
-            currentEvadeDirection = evadeDirection;
             evadeTimer.SetDuration(entity.character.totalEvadeDuration);
 
             entity.animator.SetTrigger("Evade");
-
-
-            onEvade?.Invoke(evadeDirection);
+            // onEvade?.Invoke(direction);
         }
 
-        public override void HandleInput(EntityController controller) {
-
-            if ( evadeCount > 0 && controller.evadeInput.started && canEvade )
-                Evade( evadeDirection );
+        protected override void ParryAction() {
+            base.ParryAction();
 
             if ( entity is ArmedEntity armed ) {
-                if ( KeyInputData.SimultaneousTap( controller.lightAttackInput, controller.heavyAttackInput ) && canParry )
-                    armed.Parry();
+                // entity.animator.SetTrigger("Parry");
+                armed.Parry();
             }
+        }
+        protected override void LightAttackAction() {
+            base.LightAttackAction();
+        }
+        protected override void HeavyAttackAction() {
+            base.HeavyAttackAction();
         }
 
 
-        public override void StateUpdate() {
 
+        protected internal override void StateUpdate() {
             base.StateUpdate();
 
             evading.SetVal( evadeTimer > entity.character.evadeCooldown );
@@ -78,7 +118,7 @@ namespace SeleneGame.Core {
             }
         }
 
-        public override void StateFixedUpdate() {
+        protected internal override void StateFixedUpdate() {
             base.StateFixedUpdate();
 
             if (evading)

@@ -11,34 +11,23 @@ namespace SeleneGame.Core {
 
         public EventType eventType;
         public Entity entity;
-        public AssetReferenceT<CharacterCostume> characterCostume;
+        public CharacterCostume characterCostume;
 
 
         public void Invoke(GameObject gameObject){
             switch (eventType){
                 case EventType.SetEntityCostume:
-                    if (entity == null) break;
-                    CharacterCostume entityCostume = LoadCostume(characterCostume);
-                    if (entityCostume == null) break;
-                    entity.SetCostume(entityCostume);
+                    if (entity == null || characterCostume == null) break;
+                    entity.SetCostume(characterCostume);
                     break;
                 case EventType.SetPlayerCostume:
-                    CharacterCostume playerCostume = LoadCostume(characterCostume);
-                    if (playerCostume == null) break;
-                    PlayerEntityController.current.entity.SetCostume(playerCostume);
+                    if (entity == null || characterCostume == null) break;
+                    entity.SetCostume(characterCostume);
+                    PlayerEntityController.current.entity.SetCostume(characterCostume);
                     break;
                 case EventType.Destroy:
                     Object.Destroy(gameObject);
                     break;
-            }
-
-            CharacterCostume LoadCostume(AssetReferenceT<CharacterCostume> costumeReference){
-                if ( string.IsNullOrEmpty( (string)costumeReference.RuntimeKey )  ) {
-                    return null;
-                } else {
-                    AsyncOperationHandle<CharacterCostume> opHandle = costumeReference.LoadAssetAsync();
-                    return opHandle.WaitForCompletion();
-                }
             }
         }
 

@@ -66,11 +66,6 @@ namespace SeleneGame.Core {
         [SerializeField] private Vector3 _gravityDown = Vector3.down;
 
 
-        [Header("Jumping")]
-
-        [Tooltip("The amount of time needed to wait for the Entity to be able to jump again.")]
-        [SerializeField] private TimeUntil _jumpCooldownTimer;
-
 
         [Header("Misc")]
 
@@ -82,11 +77,13 @@ namespace SeleneGame.Core {
 
 
 
-        public event Action<Vector3> onJump;
         public event Action<float> onHeal;
         public event Action<float> onDamage;
         public event Action onDeath;
 
+        public event Action<Vector3> onJump;
+        public event Action<Vector3> onEvade;
+        public event Action onParry;
 
 
         /// <summary>
@@ -216,6 +213,10 @@ namespace SeleneGame.Core {
             }
         }
 
+        public Vector3Data moveDirection {
+            get => _moveDirection;
+        }
+
         /// <summary>
         /// The direction in which the Entity is attracted by Gravity.
         /// </summary>
@@ -229,18 +230,11 @@ namespace SeleneGame.Core {
         /// </summary>
         public float gravityMultiplier => state.gravityMultiplier;
 
-        /// <summary>
-        /// The amount of time needed to wait for the Entity to be able to jump again.
-        /// </summary>
-        public ref TimeUntil jumpCooldownTimer { 
-            get => ref _jumpCooldownTimer;
-        }
-
         public bool isIdle => _moveDirection.sqrMagnitude == 0;
 
         public float fallVelocity => Vector3.Dot(rigidbody.velocity, -gravityDown);
         public bool inWater => physicsComponent.inWater;
-        public bool isOnWaterSurface => inWater && transform.position.y > (physicsComponent.waterHeight - character.size.y);
+        public bool isOnWaterSurface => inWater && Mathf.Abs(physicsComponent.waterHeight - transform.position.y) < 0.5f;
 
 
         public GameObject this[string key]{
@@ -362,14 +356,14 @@ namespace SeleneGame.Core {
         /// <summary>
         /// Load the Character Model.
         /// </summary>
-        public virtual void LoadModel() {
+        protected internal virtual void LoadModel() {
             character?.LoadModel();
         }
 
         /// <summary>
         /// Unload the Character Model.
         /// </summary>
-        public virtual void UnloadModel() {
+        protected internal virtual void UnloadModel() {
             character?.UnloadModel();
         }
 
@@ -489,26 +483,6 @@ namespace SeleneGame.Core {
 
 
         /// <summary>
-        /// Make the Entity Jump in the given direction.
-        /// </summary>
-        public void Jump(Vector3 jumpDirection) {
-
-            if ( !jumpCooldownTimer.isDone ) return; 
-
-            Debug.Log(character.jumpHeight * jumpMultiplier);
-
-            Vector3 newVelocity = rigidbody.velocity.NullifyInDirection( -jumpDirection );
-            newVelocity += character.jumpHeight * jumpMultiplier * jumpDirection;
-            rigidbody.velocity = newVelocity;
-
-            animator.SetTrigger("Jump");
-
-            jumpCooldownTimer.SetDuration( 0.4f );
-            onJump?.Invoke(jumpDirection);
-        }
-
-
-        /// <summary>
         /// Move in the given direction.
         /// </summary>
         /// <param name="direction">The direction to move in</param>
@@ -537,11 +511,13 @@ namespace SeleneGame.Core {
         /// </summary>
         private void Gravity() {
 
-            if ( onGround ) return;
+            if (gravityMultiplier == 0f || weight == 0f || gravityDown == Vector3.zero) return;
 
-            Vector3 gravityForce = weight * gravityDown * GameUtility.timeDelta;
+            Vector3 gravityForce = weight * gravityMultiplier * gravityDown * GameUtility.timeDelta;
 
-            rigidbody.AddForce(gravityForce);
+            rigidbody.velocity += gravityForce;
+
+            // if ( onGround ) return;
 
             const float regularFallMultiplier = 3.25f;
             const float fallingMultiplier = 2f;
@@ -648,7 +624,7 @@ namespace SeleneGame.Core {
 
         protected virtual void Start(){
             rotation.SetVal(transform.rotation);
-            relativeForward = Vector3.forward;
+            absoluteForward = transform.forward;
             rigidbody.useGravity = false;
             rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
         }

@@ -14,24 +14,20 @@ namespace SeleneGame.Core {
 
         private float _gravityMultiplier = 1f;
 
-        public WalkSpeed walkSpeed;
+        public MovementSpeed movementSpeed = MovementSpeed.Normal;
 
         private Vector3 rotationForward;
         private Vector3Data moveDirection;
         public float moveSpeed;
 
-        private int jumpCount;
+        private int jumpCount = 1;
+        [SerializeField] private TimeUntil jumpCooldownTimer;
+
+        private int evadeCount = 1;
 
 
 
         public override float gravityMultiplier => _gravityMultiplier;
-        
-
-        public override bool canJump => base.canJump && jumpCount > 0;
-
-        public override Vector3 evadeDirection => entity.isIdle ? -entity.absoluteForward : base.evadeDirection;
-
-
         public override Vector3 cameraPosition {
             get {
                 return base.cameraPosition - new Vector3(0, 0, moveSpeed / entity.character.baseSpeed);
@@ -39,21 +35,31 @@ namespace SeleneGame.Core {
         }
 
 
-        public override void OnEnter(Entity entity){
+        protected override Vector3 jumpDirection => base.jumpDirection;
+        protected override bool canJump => base.canJump && jumpCount > 0 && jumpCooldownTimer.isDone;
+
+        protected override Vector3 evadeDirection => entity.isIdle ? -entity.absoluteForward : base.evadeDirection;
+        protected override bool canEvade => base.canEvade && evadeCount > 0;
+
+        protected override bool canParry => base.canParry;
+
+
+
+        protected internal override void OnEnter(Entity entity){
             base.OnEnter(entity);
 
         }
-        public override void OnExit(){
+        protected internal override void OnExit(){
             base.OnExit();
         }
 
 
-        public void SetWalkSpeed(WalkSpeed newSpeed) {
-            if (walkSpeed != newSpeed){
-                // if ((int)walkSpeed < (int)newSpeed && !currentAnimationState.Contains("Run")) SetAnimationState("RunningStart", 0.1f);
-                walkSpeed = newSpeed;
-            }
-        }
+        // public void SetWalkSpeed(WalkSpeed newSpeed) {
+        //     if (walkSpeed != newSpeed){
+        //         // if ((int)walkSpeed < (int)newSpeed && !currentAnimationState.Contains("Run")) SetAnimationState("RunningStart", 0.1f);
+        //         walkSpeed = newSpeed;
+        //     }
+        // }
         
         public override void HandleInput(EntityController controller){
 
@@ -61,22 +67,18 @@ namespace SeleneGame.Core {
 
             controller.RawInputToGroundedMovement(out Quaternion cameraRotation, out Vector3 groundedMovement);
 
-            if (controller.crouchInput)
-                SetWalkSpeed(WalkSpeed.crouch);
-            else if ( (groundedMovement.sqrMagnitude <= 0.25 || controller.walkInput) && entity.onGround ) 
-                SetWalkSpeed(WalkSpeed.walk);
+            if ( (groundedMovement.sqrMagnitude <= 0.25 || controller.walkInput) && entity.onGround ) 
+                SetSpeed(MovementSpeed.Slow);
             else if ( controller.evadeInput )
-                SetWalkSpeed(WalkSpeed.sprint);
-            else 
-                SetWalkSpeed(WalkSpeed.run);
+                SetSpeed(MovementSpeed.Fast);
+            else if ( movementSpeed != MovementSpeed.Fast )
+                SetSpeed(MovementSpeed.Normal);
 
-            moveDirection.SetVal(groundedMovement.normalized);
+            Move(groundedMovement);
+
             
-            if ( controller.jumpInput && canJump ) {
-
-                entity.Jump(jumpDirection);
-                jumpCount--;
-            }
+            if ( controller.jumpInput )
+                Jump();
 
 
             if (controller.shiftInput.trueTimer > ControlsManager.HOLD_TIME){
@@ -89,9 +91,57 @@ namespace SeleneGame.Core {
         }
 
 
-        
-        public override void StateUpdate(){
+        public override void Move(Vector3 direction) {
+            moveDirection.SetVal( (direction.normalized).NullifyInDirection(entity.gravityDown) );
+            if (direction.sqrMagnitude == 0f)
+                SetSpeed(MovementSpeed.Normal);
 
+        }
+        public override void Jump() {
+            base.Jump();
+        }
+        public override void Evade(Vector3 direction) {
+            base.Evade(direction);
+        }
+        public override void Parry() {
+            base.Parry();
+        }
+        public override void LightAttack() {
+            base.LightAttack();
+        }
+        public override void HeavyAttack() {
+            base.HeavyAttack();
+        }
+        public override void SetSpeed(MovementSpeed speed) {
+            movementSpeed = speed;
+        }
+
+
+        protected override void JumpAction(Vector3 direction) {
+            base.JumpAction(direction);
+            jumpCooldownTimer.SetDuration( 0.4f );
+            jumpCount--;
+        }
+        protected override void EvadeAction(Vector3 direction) {
+            base.EvadeAction(direction);
+            evadeCount--;
+        }
+        protected override void ParryAction() {
+            base.ParryAction();
+            if (entity is ArmedEntity armed) {
+                armed.Parry();
+            }
+        }
+        protected override void LightAttackAction() {
+            base.LightAttackAction();
+        }
+        protected override void HeavyAttackAction() {
+            base.HeavyAttackAction();
+        }
+
+
+        
+        protected internal override void StateUpdate(){
             base.StateUpdate();
 
             entity.SetUp(-entity.gravityDown);
@@ -124,6 +174,7 @@ namespace SeleneGame.Core {
 
             if ( evading.started)
                 evadeCount--;
+                
             if ( entity.onGround ) {
                 evadeCount = 1;
                 entity.rigidbody.velocity *= 0.995f;
@@ -136,15 +187,16 @@ namespace SeleneGame.Core {
             
         }
 
-        public override void StateFixedUpdate(){
+        protected internal override void StateFixedUpdate(){
 
             base.StateFixedUpdate();
 
 
             float newSpeed = moveDirection.sqrMagnitude == 0f ? 0f : entity.character.baseSpeed;
-            if (walkSpeed != WalkSpeed.run) 
-                newSpeed *= walkSpeed == WalkSpeed.sprint ? entity.character.sprintMultiplier : entity.character.slowMultiplier;
+            if (movementSpeed != MovementSpeed.Normal) 
+                newSpeed *= movementSpeed == MovementSpeed.Fast ? entity.character.sprintMultiplier : entity.character.slowMultiplier;
 
+            // Acceleration is quicker than Deceleration 
             float speedDelta = newSpeed > moveSpeed ? 1f : 0.65f;
             moveSpeed = Mathf.MoveTowards(moveSpeed, newSpeed, speedDelta * entity.character.acceleration * GameUtility.timeDelta);
             
@@ -154,12 +206,6 @@ namespace SeleneGame.Core {
             entity.Move(entity.absoluteForward * moveSpeed);
 
         }
-
-
-
-        
-
-        public enum WalkSpeed {idle, crouch, walk, run, sprint};
 
     }
 }

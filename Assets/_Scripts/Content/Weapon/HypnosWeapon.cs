@@ -26,15 +26,15 @@ namespace SeleneGame.Weapons {
 
         // public RaycastHit wallHit;
 
-        public override void LoadModel() {
+        protected override void LoadModel() {
             if (costume.model != null) {
                 model = Instantiate(costume.model, entity.transform);
             }
         }
-
-        public override void UnloadModel() {
+        protected override void UnloadModel() {
             model = GameUtility.SafeDestroy(model);
         }
+
 
         public override void Display() {
             model?.SetActive(true);
@@ -45,7 +45,8 @@ namespace SeleneGame.Weapons {
         }
 
 
-        public override void Update(){
+
+        protected override void Update(){
             base.Update();
             
             // wallData.SetVal( entity.WallCheck( out wallHit, Global.GroundMask ) );
@@ -56,7 +57,7 @@ namespace SeleneGame.Weapons {
 
         }
 
-        public override void FixedUpdate(){
+        protected override void FixedUpdate(){
             base.FixedUpdate();
 
             // // Wall-stand when standing against a wall. (Feather Grip)

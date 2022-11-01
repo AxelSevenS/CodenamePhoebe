@@ -27,7 +27,7 @@ namespace SeleneGame.UI {
             get => _weapon;
             set {
                 _weapon = value;
-                if ( _weapon.costume.portrait != null )
+                if ( _weapon?.costume?.portrait != null )
                     weaponPortrait.sprite = _weapon.costume.portrait;
                 weaponName.text = _weapon.name;
             }

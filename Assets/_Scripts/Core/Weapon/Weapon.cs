@@ -12,7 +12,7 @@ namespace SeleneGame.Core {
     
     public abstract class Weapon : InstantiableAsset<Weapon> {
 
-        protected ArmedEntity entity;
+        [SerializeField] protected ArmedEntity entity;
 
 
         [Header("Weapon Info")]
@@ -62,33 +62,36 @@ namespace SeleneGame.Core {
 
 
 
-        public void SetCostume(WeaponCostume costume){
-            _costume = costume;
-            
-            LoadModel();
+        public void Initialize( ArmedEntity entity, WeaponCostume costume = null) {
+            if (this.entity != null)
+                return;
+
+            this.entity = entity;
+            SetCostume( costume ?? baseCostume );
         }
 
-        public virtual void OnEquip(){
+        protected internal virtual void OnEquip(){
             Display();
         }
-        public virtual void OnUnequip(){
+        protected internal virtual void OnUnequip(){
             Hide();
         }
 
-        public abstract void LoadModel();
-        public abstract void UnloadModel();
+        protected internal abstract void LoadModel();
+        protected internal abstract void UnloadModel();
+
+
+        public void SetCostume(WeaponCostume costume){
+            _costume = costume;
+            LoadModel();
+        }
 
         public abstract void Display();
         public abstract void Hide();
 
 
-        public virtual void Initialize( ArmedEntity entity, WeaponCostume costume = null) {
-            this.entity = entity;
-            SetCostume( costume ?? baseCostume );
-        }
-
-        public virtual void Update( ){;}
-        public virtual void FixedUpdate( ){;}
+        protected internal virtual void Update( ){;}
+        protected internal virtual void FixedUpdate( ){;}
         
 
 
