@@ -92,15 +92,16 @@ namespace SeleneGame.UI {
             }
             weapons = new();
             
-            Weapon.GetDefaultAsync( (defaultWeapon) => {
+            Weapon.GetDefaultInstanceAsync( (defaultWeapon) => {
 
                     // Get the Default Weapon (corresponds to an empty slot, should be in the first space)
                     CreateWeaponCase(defaultWeapon);
                     ResetGamePadSelection();
 
                     // and then get all the other weapons.
-                    Weapon.GetWeapons( (weapon) => {
-                            if ( weapons.Exists( (obj) => { return obj.weapon.name == weapon.name; }) ) 
+                    Weapon.GetInstances( (weapon) => {
+                            // Don't include this weapon if it is already included.
+                            if ( weapons.Exists( (existingCase) => { return existingCase.weapon.name == weapon.name; }) ) 
                                 return;
 
                             // If the weapon is already equipped, show the current slot index on the weapon case

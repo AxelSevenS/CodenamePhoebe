@@ -22,6 +22,8 @@ namespace SeleneGame.Core {
         public virtual Vector3 evadeDirection => entity.absoluteForward;
         public virtual bool canEvade => true;
 
+        public virtual bool canParry => true;
+
 
         public virtual Vector3 cameraPosition => Global.cameraDefaultPosition;
 
@@ -35,6 +37,8 @@ namespace SeleneGame.Core {
         
         public virtual void StateAnimation(){;}
         public abstract void HandleInput(EntityController controller);
+
+
         public virtual void StateUpdate(){;}
         public virtual void StateFixedUpdate(){;}
     }

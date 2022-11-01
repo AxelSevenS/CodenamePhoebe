@@ -23,22 +23,25 @@ namespace SeleneGame.Core {
         
         public override void OnInspectorGUI(){
 
-            EditorGUI.BeginChangeCheck();
-
-            EditorGUILayout.PropertyField( soSelectedCharacter );
-
-            if ( EditorGUI.EndChangeCheck() )
-                targetEntity.LoadCharacter();
-
 
             EditorGUI.BeginChangeCheck();
 
-            EditorGUILayout.PropertyField( soSelectedCharacterCostume );
+            Character selectedCharacter = null;
+            selectedCharacter = EditorGUILayout.ObjectField("Set Character", selectedCharacter, typeof(Character), false) as Character;
 
             if ( EditorGUI.EndChangeCheck() )
-                targetEntity.LoadCharacterCostume();
+                targetEntity.SetCharacter( Character.GetInstanceOf(selectedCharacter) );
 
-                
+
+            EditorGUI.BeginChangeCheck();
+            
+            CharacterCostume selectedCharacterCostume = null;
+            selectedCharacterCostume = EditorGUILayout.ObjectField("Set Character Costume", selectedCharacterCostume, typeof(CharacterCostume), false) as CharacterCostume;
+
+            if ( EditorGUI.EndChangeCheck() )
+                targetEntity.SetCostume( selectedCharacterCostume );
+
+            EditorGUILayout.Space(15f);
 
             DrawDefaultInspector();
         }

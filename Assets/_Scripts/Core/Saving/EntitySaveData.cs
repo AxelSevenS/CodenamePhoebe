@@ -51,10 +51,10 @@ namespace SeleneGame.Core {
                 
             Entity entity = Entity.CreatePlayerEntity(
                 entityType,
-                Character.Get(characterName),
+                Character.GetInstance(characterName),
                 new Vector3(position[0], position[1], position[2]), 
                 new Quaternion(rotation[0], rotation[1], rotation[2], rotation[3]), 
-                CharacterCostume.Get(characterName, characterCostumeName)
+                CharacterCostume.GetAsset(characterCostumeName)
             );
             entity.gravityDown = new Vector3(gravity[0], gravity[1], gravity[2]);
 
@@ -69,8 +69,8 @@ namespace SeleneGame.Core {
                     int currIndex = i;
                     WeaponSaveData currWeaponData = weaponData[currIndex];
                     
-                    Weapon.GetAsync(currWeaponData.name, (weapon) => {
-                        WeaponCostume.GetAsync(currWeaponData.name, currWeaponData.costumeName, costume => {
+                    Weapon.GetInstanceAsync(currWeaponData.name, (weapon) => {
+                        WeaponCostume.GetAssetAsync(currWeaponData.costumeName, costume => {
                             Debug.Log(costume);
                             armed.weapons.Set( currIndex, weapon, costume );
                         });

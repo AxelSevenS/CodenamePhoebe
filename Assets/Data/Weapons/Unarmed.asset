@@ -12,10 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b14c85f9a9748274eab8dbd6f623bec0, type: 3}
   m_Name: Unarmed
   m_EditorClassIdentifier: 
-  baseCostume: {fileID: 11400000, guid: 4fcb14e16ae7e7b4287ef3e8b382de17, type: 2}
-  weaponType: 5
-  _displayName: 
+  _baseCostume: {fileID: 11400000, guid: 4fcb14e16ae7e7b4287ef3e8b382de17, type: 2}
+  _weaponType: 16
+  _displayName: None
   _description: 
   weightModifier: 1
-  entity: {fileID: 0}
-  costume: {fileID: 0}
+  _costume: {fileID: 0}

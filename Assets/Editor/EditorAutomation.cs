@@ -45,163 +45,88 @@ namespace SeleneGame {
 
             // UpdateAddressables();
 
-            CreateProceduralConstructor(typeof(State), typeof(WalkingState), "SeleneGame.States", @"Assets\_Scripts\Content\EntityState\");
+            CreateProceduralConstructor(typeof(State), typeof(HumanoidGroundedState), "SeleneGame.States", @"Assets\_Scripts\Content\State\");
 
         }
 
         [MenuItem("Utility/UpdateAddressables")]
-        public static void UpdateAddressables() {
+        public static void UpdateAddressables()
+        {
 
             AddressableAssetSettings addressablesSettings = AddressableAssetSettingsDefaultObject.GetSettings(false);
 
-            string[] weaponCostumeGUIDs = AssetDatabase.FindAssets("t:WeaponCostume", new string[] {"Assets/Data/Weapons/Costumes"});
-            foreach (string weaponCostumeGUID in weaponCostumeGUIDs) {
-                string weaponCostumeAssetPath = AssetDatabase.GUIDToAssetPath(weaponCostumeGUID);
-                WeaponCostume weaponCostume = AssetDatabase.LoadAssetAtPath<WeaponCostume>(weaponCostumeAssetPath);
+            UpdateAddressableAddress<WeaponCostume>(addressablesSettings, "Assets/Data/Weapons/Costumes");
+
+            UpdateAddressableAddressAndCreateBaseCostume<Weapon, WeaponCostume>(addressablesSettings, "Assets/Data/Weapons", "Assets/Data/Weapons/Costumes", (weapon, weaponCostume) => {
                 
-                AddressableAssetEntry weaponCostumeEntry = addressablesSettings.CreateOrMoveEntry(weaponCostumeGUID, addressablesSettings.DefaultGroup);
-                weaponCostumeEntry.labels.Add("WeaponCostume");
-                UpdateWeaponCostumeAddress(weaponCostumeEntry, addressablesSettings);
-            }
+                    weapon.baseCostume = weaponCostume;
+                    Debug.Log($"Created missing base costume for {weapon.name}, {weaponCostume}");
+                }
+            );
 
-            string[] weaponGUIDs = AssetDatabase.FindAssets("t:Weapon", new string[] {"Assets/Data/Weapons"});
-            foreach (string weaponGUID in weaponGUIDs) {
-                string weaponAssetPath = AssetDatabase.GUIDToAssetPath(weaponGUID);
-                Weapon weapon = AssetDatabase.LoadAssetAtPath<Weapon>(weaponAssetPath);
+            
+            UpdateAddressableAddress<CharacterCostume>(addressablesSettings, "Assets/Data/Characters/Costumes");
+            
+            UpdateAddressableAddressAndCreateBaseCostume<Character, CharacterCostume>(addressablesSettings, "Assets/Data/Characters", "Assets/Data/Characters/Costumes", (character, characterCostume) => {
                 
-                AddressableAssetEntry weaponEntry = addressablesSettings.CreateOrMoveEntry(weaponGUID, addressablesSettings.DefaultGroup);
-                weaponEntry.labels.Add("Weapon");
-                UpdateWeaponAddress(weaponEntry, addressablesSettings);
+                    character.baseCostume = characterCostume;
+                    Debug.Log($"Created missing base costume for {character.name}, {characterCostume}");
+                }
+            );
 
-                CreateMissingWeaponBaseCostume(weaponEntry, addressablesSettings);
-            }
-
-            string[] characterCostumeGUIDs = AssetDatabase.FindAssets("t:CharacterCostume", new string[] {"Assets/Data/Characters/Costumes"});
-            foreach (string characterCostumeGUID in characterCostumeGUIDs) {
-                string characterCostumeAssetPath = AssetDatabase.GUIDToAssetPath(characterCostumeGUID);
-                CharacterCostume characterCostume = AssetDatabase.LoadAssetAtPath<CharacterCostume>(characterCostumeAssetPath);
-                
-                AddressableAssetEntry characterCostumeEntry = addressablesSettings.CreateOrMoveEntry(characterCostumeGUID, addressablesSettings.DefaultGroup);
-                characterCostumeEntry.labels.Add("CharacterCostume");
-                UpdateCharacterCostumeAddress(characterCostumeEntry, addressablesSettings);
-            }
-
-            string[] characterGUIDs = AssetDatabase.FindAssets("t:Character", new string[] {"Assets/Data/Characters"});
-            foreach (string characterGUID in characterGUIDs) {
-                string characterAssetPath = AssetDatabase.GUIDToAssetPath(characterGUID);
-                Character character = AssetDatabase.LoadAssetAtPath<Character>(characterAssetPath);
-                
-                AddressableAssetEntry characterEntry = addressablesSettings.CreateOrMoveEntry(characterGUID, addressablesSettings.DefaultGroup);
-                characterEntry.labels.Add("Character");
-                UpdateCharacterAddress(characterEntry, addressablesSettings);
-
-                CreateMissingCharacterBaseCostume(characterEntry, addressablesSettings);
-            }
         }
-        
-        // public static void SetAddressableAddresses( AddressableAssetSettings addressablesSettings, List<AddressableAssetEntry> entries ) {
 
-        //     foreach (AddressableAssetEntry entry in entries) {
-        //         if ( entry.labels.Contains("WeaponCostume") ) {
-        //             UpdateWeaponCostumeAddress(entry, addressablesSettings);
-        //             continue;
-        //         }
-        //         if ( entry.labels.Contains("Weapon") ) {
-        //             UpdateWeaponAddress(entry, addressablesSettings);
-        //             // CreateMissingWeaponBaseCostume(addressablesSettings, entry);
-        //             continue;
-        //         }
-        //         if ( entry.labels.Contains("CharacterCostume") ) {
-        //             UpdateCharacterCostumeAddress(entry, addressablesSettings);
-        //             continue;
-        //         }
-        //         if ( entry.labels.Contains("Character") ) {
-        //             UpdateCharacterAddress(entry, addressablesSettings);
-        //             continue;
-        //         }
-        //     }
 
-        // }
 
-        public static void UpdateWeaponCostumeAddress(AddressableAssetEntry entry, AddressableAssetSettings addressablesSettings) {
+        private static void UpdateAssetEntryAddress<TAsset>(AddressableAssetEntry assetEntry) where TAsset : AddressableAsset<TAsset> {
             try {
-                WeaponCostume asset = AssetDatabase.LoadAssetAtPath(entry.AssetPath, typeof(WeaponCostume)) as WeaponCostume;
+                TAsset asset = AssetDatabase.LoadAssetAtPath(assetEntry.AssetPath, typeof(TAsset)) as TAsset;
 
-                entry.address = $"Weapons/Costumes/{asset.name}";
-            } catch (Exception) {
-                return;
+                assetEntry.address = AddressableAsset<TAsset>.GetPath(asset.name);
+            }
+            catch (Exception) {
             }
         }
 
-        public static void UpdateWeaponAddress(AddressableAssetEntry entry, AddressableAssetSettings addressablesSettings) {
-            try {
-                Weapon asset = AssetDatabase.LoadAssetAtPath(entry.AssetPath, typeof(Weapon)) as Weapon;
+        private static void UpdateAddressableAddress<TAsset>(AddressableAssetSettings addressablesSettings, string filePath, Action<AddressableAssetEntry> callback = null) where TAsset : AddressableAsset<TAsset> {
+            string typeName = typeof(TAsset).Name;
+            string[] assetGUIDs = AssetDatabase.FindAssets($"t:{typeName}", new string[] { filePath });
+            foreach (string assetGUID in assetGUIDs)
+            {
 
-                entry.address = $"Weapons/{asset.name}";
-            } catch (Exception) {
-                return;
-            }
-        }
-        public static void UpdateCharacterCostumeAddress(AddressableAssetEntry entry, AddressableAssetSettings addressablesSettings) {
-            try {
-                CharacterCostume asset = AssetDatabase.LoadAssetAtPath(entry.AssetPath, typeof(CharacterCostume)) as CharacterCostume;
+                AddressableAssetEntry assetEntry = addressablesSettings.CreateOrMoveEntry(assetGUID, addressablesSettings.DefaultGroup);
+                assetEntry.labels.Add(typeName);
+                UpdateAssetEntryAddress<TAsset>(assetEntry);
 
-                entry.address = $"Characters/Costumes/{asset.name}";
-            } catch (Exception) {
-                return;
+                callback?.Invoke(assetEntry);
             }
         }
 
-        public static void UpdateCharacterAddress(AddressableAssetEntry entry, AddressableAssetSettings addressablesSettings) {
-            try {
-                Character asset = AssetDatabase.LoadAssetAtPath(entry.AssetPath, typeof(Character)) as Character;
+        private static void UpdateAddressableAddressAndCreateBaseCostume<TAsset, TCostume>(AddressableAssetSettings addressablesSettings, string filePath, string costumeFilePath, Action<TAsset, TCostume> callback = null) where TAsset : AddressableAsset<TAsset> where TCostume : AddressableAsset<TCostume> {
 
-                entry.address = $"Characters/{asset.name}";
-            } catch (Exception) {
-                return;
-            }
-        }
+            UpdateAddressableAddress<TAsset>(addressablesSettings, filePath, (assetEntry) => {
+                    string entryName = Path.GetFileNameWithoutExtension(assetEntry.AssetPath);
+                    string costumeAssetPath = Path.Combine(costumeFilePath, $"{entryName}_Base.asset");
+                    TCostume costumeAsset = AssetDatabase.LoadAssetAtPath<TCostume>(costumeAssetPath);
 
-        private static void CreateMissingWeaponBaseCostume(AddressableAssetEntry entry, AddressableAssetSettings addressablesSettings) {
-            string entryName = Path.GetFileNameWithoutExtension(entry.AssetPath);
-            string costumeAssetPath = $"Assets/Data/Weapons/Costumes/{entryName}_Base.asset";
-            WeaponCostume costumeAsset = AssetDatabase.LoadAssetAtPath<WeaponCostume>(costumeAssetPath);
-            if (costumeAsset == null) {
-                costumeAsset = ScriptableObject.CreateInstance<WeaponCostume>();
-                AssetDatabase.CreateAsset(costumeAsset, costumeAssetPath);
-                AssetDatabase.SaveAssets();
+                    if (costumeAsset == null) {
+                        costumeAsset = ScriptableObject.CreateInstance<TCostume>();
+                        AssetDatabase.CreateAsset(costumeAsset, costumeAssetPath);
+                        AssetDatabase.SaveAssets();
 
-                string assetGUID = AssetDatabase.AssetPathToGUID(costumeAssetPath);
-                AddressableAssetEntry costumeEntry = addressablesSettings.CreateOrMoveEntry(assetGUID, addressablesSettings.DefaultGroup);
-                costumeEntry.labels.Add("WeaponCostume");
-                UpdateWeaponCostumeAddress(costumeEntry, addressablesSettings);
+                        string assetGUID = AssetDatabase.AssetPathToGUID(costumeAssetPath);
+                        AddressableAssetEntry costumeEntry = addressablesSettings.CreateOrMoveEntry(assetGUID, addressablesSettings.DefaultGroup);
+                        costumeEntry.labels.Add(typeof(TCostume).Name);
 
-                Weapon weaponAsset = AssetDatabase.LoadAssetAtPath<Weapon>(entry.AssetPath);
-                weaponAsset.baseCostume = costumeAsset;
+                        UpdateAssetEntryAddress<TCostume>(costumeEntry);
 
-                Debug.Log($"Created missing base costume for {entryName} at path : {costumeAssetPath}");
-            }
-        }
+                        TAsset characterAsset = AssetDatabase.LoadAssetAtPath<TAsset>(assetEntry.AssetPath);
+                        
+                        callback?.Invoke(characterAsset, costumeAsset);
+                    }
+                }
+            );
 
-        private static void CreateMissingCharacterBaseCostume(AddressableAssetEntry entry, AddressableAssetSettings addressablesSettings) {
-            string entryName = Path.GetFileNameWithoutExtension(entry.AssetPath);
-            string costumeAssetPath = $"Assets/Data/Characters/Costumes/{entryName}_Base.asset";
-            CharacterCostume costumeAsset = AssetDatabase.LoadAssetAtPath<CharacterCostume>(costumeAssetPath);
-            if (costumeAsset == null) {
-                costumeAsset = ScriptableObject.CreateInstance<CharacterCostume>();
-                AssetDatabase.CreateAsset(costumeAsset, costumeAssetPath);
-                AssetDatabase.SaveAssets();
-
-                string assetGUID = AssetDatabase.AssetPathToGUID(costumeAssetPath);
-                AddressableAssetEntry costumeEntry = addressablesSettings.CreateOrMoveEntry(assetGUID, addressablesSettings.DefaultGroup);
-                costumeEntry.labels.Add("CharacterCostume");
-                UpdateCharacterCostumeAddress(costumeEntry, addressablesSettings);
-
-                Character characterAsset = AssetDatabase.LoadAssetAtPath<Character>(entry.AssetPath);
-                characterAsset.baseCostume = costumeAsset;
-
-                Debug.Log($"Created missing base costume for {entryName} at path : {costumeAssetPath}");
-            }
         }
 
         // [MenuItem("Utility/Regenerate All Constructors")]

@@ -1,11 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
-
+using SeleneGame.Core;
 using UnityEngine;
 
-using SeleneGame.Core;
-
-namespace SeleneGame.Content {
+namespace SeleneGame.Content
+{
 
     [System.Serializable]
     public class GameSaveData : SaveData {
@@ -13,6 +10,7 @@ namespace SeleneGame.Content {
         public EntitySaveData playerData = new EntitySaveData();
 
         // Game Progress Save Data
+
 
 
         // General Save Data

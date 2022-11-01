@@ -84,21 +84,21 @@ namespace SeleneGame.UI {
                 GameUtility.SafeDestroy(costume.gameObject);
             }
             characterCostumes = new();
-            
-            CharacterCostume.GetBaseAsync( currentCharacter.name, (defaultCostume) => {
 
-                    // Get the Default Costume (corresponds to an empty slot, should be in the first space)
-                    CreateCharacterCostumeCase(defaultCostume);
-                    ResetGamePadSelection();
+            // Get the Default Costume (corresponds to an empty slot, should be in the first space)
+            CreateCharacterCostumeCase(currentCharacter.baseCostume);
+            ResetGamePadSelection();
 
-                    // and then get all the other costumes.
-                    CharacterCostume.GetCostumesFor(currentCharacter, (costume) => {
-                            if ( characterCostumes.Exists( (obj) => { return obj.characterCostume == costume; }) ) 
-                                return;
+            // and then get all the other costumes.
+            CharacterCostume.GetAssets( (costume) => {
 
-                            CreateCharacterCostumeCase(costume);
-                        }
-                    );
+                    if ( !costume.name.Contains(currentCharacter.name) && costume.name.Contains("_Base") )
+                        return;
+
+                    if ( characterCostumes.Exists( (obj) => { return obj.characterCostume == costume; }) ) 
+                        return;
+
+                    CreateCharacterCostumeCase(costume);
                 }
             );
 

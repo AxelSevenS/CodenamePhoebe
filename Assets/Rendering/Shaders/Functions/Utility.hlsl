@@ -96,14 +96,20 @@ float3 HSVtoRGB(float3 HSV) {
 
 
 float4 ColorSaturation(float4 color, float saturation) {
-    float3 hsl = RGBtoHSV(color);
-    hsl.y = hsl.y * saturation;
-    return float4( HSVtoRGB(hsl), color.a );
+    if (saturation == 0)
+        return color;
+        
+    float3 hsv = RGBtoHSV(color);
+    hsv.y += saturation;
+    return saturate(float4( HSVtoRGB(hsv), color.a ));
 }
 float3 ColorSaturation(float3 color, float saturation) {
-    float3 hsl = RGBtoHSV(color);
-    hsl.y = hsl.y * saturation;
-    return HSVtoRGB(hsl);
+    if (saturation == 0)
+        return color;
+
+    float3 hsv = RGBtoHSV(color);
+    hsv.y += saturation;
+    return saturate(HSVtoRGB(hsv));
 }
     // float4 saturatedColor = mix(
     //     float3( dot(color, float3(0.299, 0.587, 0.114)) ),

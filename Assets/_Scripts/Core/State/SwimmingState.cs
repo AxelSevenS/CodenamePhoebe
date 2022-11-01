@@ -6,14 +6,19 @@ using SevenGame.Utility;
 
 namespace SeleneGame.Core {
     
-    public class SwimmingState : NoGravityState {
+    public sealed class SwimmingState : HumanoidState {
 
         public const float entityWeightSinkTreshold = 16.25f;
 
 
 
+        public sealed override float gravityMultiplier => 0f; 
+
         private Vector3 moveDirection;
         private float moveSpeed;
+
+        public override Vector3 jumpDirection => Vector3.zero;
+        public override bool canJump => false;
 
 
         public override Vector3 cameraPosition => Global.cameraDefaultPosition;
@@ -31,6 +36,8 @@ namespace SeleneGame.Core {
         }
 
         public override void HandleInput(EntityController controller){
+
+            base.HandleInput(controller);
             
             controller.RawInputToCameraRelativeMovement(out Quaternion cameraRotation, out Vector3 cameraRelativeMovement);
             float verticalInput = (controller.jumpInput ? 1f: 0f) - (controller.crouchInput ? 1f: 0f);
@@ -43,6 +50,8 @@ namespace SeleneGame.Core {
         }
 
         public override void StateUpdate(){
+
+            base.StateUpdate();
 
             if ( !entity.inWater || entity.weight > entityWeightSinkTreshold ){
                 entity.SetState(entity.defaultState);
@@ -61,13 +70,13 @@ namespace SeleneGame.Core {
 
         public override void StateFixedUpdate(){
 
-            entity.SetRotation(-entity.gravityDown);
+            base.StateFixedUpdate();
+
+            entity.SetUp(-entity.gravityDown);
             
             entity.Move( moveDirection * moveSpeed );
 
             entity.rigidbody.velocity = Vector3.Dot(entity.rigidbody.velocity.normalized, entity.gravityDown) > 0f ? entity.rigidbody.velocity / 1.1f : entity.rigidbody.velocity;
-
-
 
         }
     }

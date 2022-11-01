@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91b6288a508554446862b8829efa3df2, type: 3}
   m_Name: Eris
   m_EditorClassIdentifier: 
-  baseCostume: {fileID: 11400000, guid: 88d05d19418b5cb4eb2b9561a0f90b20, type: 2}
-  weaponType: 2
-  _displayName: 
+  isOriginal: 1
+  _baseCostume: {fileID: 11400000, guid: 88d05d19418b5cb4eb2b9561a0f90b20, type: 2}
+  _weaponType: 2
+  _displayName: Eris
   _description: 
-  weightModifier: 1.4
-  entity: {fileID: 0}
-  costume: {fileID: 0}
+  weightModifier: 1.5
+  _costume: {fileID: 0}

@@ -262,6 +262,7 @@ Material:
     - _OpaqueCullMode: 2
     - _Parallax: 0.02
     - _Power: 2.76
+    - _QueueControl: 0
     - _QueueOffset: 0
     - _RayTracing: 0
     - _ReceiveShadows: 1

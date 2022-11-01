@@ -177,7 +177,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: a95a9039ff313ee499ae32e6ae6f51f4, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -242,7 +242,7 @@ Material:
     - Vector1_f99686aaeca44c4687bb480feabfa5fb: 0
     - Vector1_f99686aaeca44c4687bb480feabfa5fb_1: 0
     - _AccentBrightness: 0.707
-    - _AccentIntensity: 2.39
+    - _AccentIntensity: 5
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1
@@ -253,23 +253,23 @@ Material:
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
-    - _EmissionIntensity: 1.04
+    - _EmissionIntensity: 1.9
     - _EnvironmentReflections: 1
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _Metallic: 0
-    - _NormalIntensity: 0
+    - _NormalIntensity: 0.221
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _ProximityDither: 1
     - _QueueControl: -1
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _Smoothness: 0.01
+    - _Smoothness: 0.025
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
-    - _SpecularIntensity: 0.42
+    - _SpecularIntensity: 0.71
     - _SrcBlend: 1
     - _StencilComp: 0
     - _StencilID: 0

@@ -6,8 +6,6 @@ namespace SeleneGame.Core {
     
     public interface IDamageable {
 
-        void Kill();
-
         void Damage(float amount, Vector3 knockback = default);
         void Heal(float amount);
     }

@@ -12,24 +12,22 @@ Material:
     type: 3}
   m_ValidKeywords:
   - CEL_SPECULAR_ON
-  - _SURFACE_TYPE_TRANSPARENT
   m_InvalidKeywords:
   - SPECULARGRADIENT_ON
   - _ADD_PRECOMPUTED_VELOCITY
   - _DOUBLESIDED_ON
   - _ENABLE_FOG_ON_TRANSPARENT
+  - _SURFACE_TYPE_TRANSPARENT
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 1
   m_CustomRenderQueue: 3000
   stringTagMap:
     MotionVector: User
-    RenderType: Transparent
   disabledShaderPasses:
   - RayTracingPrepass
   - TransparentDepthPostpass
   - TransparentBackface
-  - DepthOnly
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -143,14 +141,14 @@ Material:
     - SPECULARGRADIENT: 1
     - Vector1_0e212c6562134ef7add6f6766d6419b4: 0
     - Vector1_1f93deba5516424f927cee1eb2c93ba3: 0
-    - Vector1_28676355978446f285fbfe6f1a574316: 0.019
+    - Vector1_28676355978446f285fbfe6f1a574316: -0.01
     - Vector1_2c2cfb5643de44f4b13441b1a1e0ea33: 1
     - Vector1_3578eca6d8ac4314939bfb16bfdbde27: 1.7
     - Vector1_40661633426347afb1a705a362429b36: 0
     - Vector1_45a27133fb8b4113a0746c0d1954c57b: 0.02
-    - Vector1_4da6e98cbfa5408fb6352b485aa76d05: 0.03
+    - Vector1_4da6e98cbfa5408fb6352b485aa76d05: 0.08
     - Vector1_57cb41fdb69545e8b53a796761acb08d: 1.85
-    - Vector1_5be3734798f64a63b2827794b79391c3: 0.317
+    - Vector1_5be3734798f64a63b2827794b79391c3: 0.791
     - Vector1_612f9485f34849e0b56ae94c53f2bb8b: 1
     - Vector1_74ca7ed5c14b4ed087580befb16c5b2a: 0.47
     - Vector1_76a8f3bdc13d493dbc42eca7e6de6c4e: 0
@@ -158,7 +156,7 @@ Material:
     - Vector1_a84d805dfee645e6a5a7628f18eb9030: 0.06
     - Vector1_b266d7e71de2489ea084cb27060cacca: 0.5
     - Vector1_ba885a3188cc490b9d04d880f79cd1b0: 0.54
-    - Vector1_bf79c34252fe4364976a552df388436c: 0.4
+    - Vector1_bf79c34252fe4364976a552df388436c: 0.14
     - Vector1_cc6e37850778480781084b62719d58c3: 0.4
     - Vector1_d09cc377b0524610970658ffdacd497f: 0.3
     - Vector1_f133b62c64f14525895d4b7d5afdd79f: 1.34

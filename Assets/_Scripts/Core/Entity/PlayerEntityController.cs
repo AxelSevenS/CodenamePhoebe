@@ -89,8 +89,8 @@ namespace SeleneGame.Core {
 
             if ( talking ) return null;
 
-            const float interactionDistance = 5f;
-            const float interactionAngle = 0.85f;
+            const float interactionDistance = 7.5f;
+            const float interactionAngle = 0.5f;
 
             Physics.OverlapSphereNonAlloc(entity.transform.position, interactionDistance, buffer, Global.EntityObjectMask);
 
@@ -136,14 +136,15 @@ namespace SeleneGame.Core {
                 debugInput.SetVal( ControlsManager.debugMap.IsBindPressed("Debug1") );
             #endif
 
+            if (interactInput.started && canInteract)
+                interactionCandidate.Interact(entity);
+
+            entity.state.HandleInput(this);
+
             Entity targetEntity = entity;
             if (targetEntity.state is SittingState sittingState && sittingState.seat.seatEntity != null) {
-                sittingState.HandleInput(this);
                 targetEntity = sittingState.seat.seatEntity;
             }
-
-            if (interactInput.started && canInteract)
-                interactionCandidate.Interact(targetEntity);
 
             if (switchStyle1Input.started)
                 targetEntity.SetStyle(0);
@@ -152,24 +153,6 @@ namespace SeleneGame.Core {
             if (switchStyle3Input.started)
                 targetEntity.SetStyle(2);
 
-
-            targetEntity.state.HandleInput(this);
-
-
-            if ( targetEntity.state.canJump && jumpInput ) {
-
-                targetEntity.Jump(targetEntity.state.jumpDirection);
-            }
-
-            if ( targetEntity is ArmedEntity armed) {
-
-                if ( armed.evadeCount > 0 && armed.state.canEvade && evadeInput.started )
-                    armed.Evade( armed.state.evadeDirection );
-
-                if ( KeyInputData.SimultaneousTap( lightAttackInput, heavyAttackInput ) )
-                    armed.Parry();
-
-            }
         }
         
         private Quaternion UpdateCameraRotation(Quaternion currentRotation){

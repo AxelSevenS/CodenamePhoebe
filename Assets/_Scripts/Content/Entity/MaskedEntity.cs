@@ -11,12 +11,15 @@ namespace SeleneGame.Entities {
 
     public class MaskedEntity : ArmedEntity {
 
+        [Header("Mask")]
         
+        public MaskMovement mask;
+
         public bool focusing;
         public float shiftCooldown;
 
         public List<ValueTuple<Vector3, Grabbable>> grabbedObjects = new List<ValueTuple<Vector3, Grabbable>>();
-        private Vector3[] grabbedObjectPositions = new Vector3[4]{
+        private readonly Vector3[] grabbedObjectPositions = new Vector3[4]{
             new Vector3(3.5f, 1.5f, 3f), 
             new Vector3(-3.5f, 1.5f, 3f), 
             new Vector3(2.5f, 2.5f, 3f), 
@@ -26,20 +29,20 @@ namespace SeleneGame.Entities {
         private SpeedlinesEffect speedlines;
         public float shiftEnergy = 0f;
 
-        public MaskMovement mask;
 
         
         public override float weight => character.weight * weapons.current.weightModifier;
         public override float jumpMultiplier => 2 - (weight / 15f);
 
-        public override State defaultState => new WalkingState();
+        public override State defaultState => new HumanoidGroundedState();
 
+        
 
         public bool isMasked() {
             if (state is MaskedState || state is SwimmingState)
                 return true;
 
-            else if (state is WalkingState walkingState) {
+            else if (state is HumanoidGroundedState HumanoidGroundedState) {
                 return Vector3.Dot ( gravityDown, Vector3.down ) < 0.95f /* || weapons.current.shifting */;
             }
 
@@ -101,7 +104,7 @@ namespace SeleneGame.Entities {
 
             if (state is MaskedState) 
                 StopShifting(Vector3.down);
-            else if (state is WalkingState) {
+            else if (state is HumanoidGroundedState) {
                 Shift();
             }
         }
@@ -128,7 +131,7 @@ namespace SeleneGame.Entities {
 
             shiftCooldown = Mathf.MoveTowards( shiftCooldown, 0f, GameUtility.timeDelta );
             
-            if (controller.shiftInput.tapped){
+            if (entityController.shiftInput.tapped){
                 
                 ToggleShift();
             }

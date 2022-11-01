@@ -2,12 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using SevenGame.Utility;
+
 namespace SeleneGame.Core {
 
     [System.Serializable]
     public class ListWeaponInventory : WeaponInventory {
 
-        [SerializeReference] private Weapon[] items;
+        [SerializeReference] [ReadOnly] private Weapon[] items;
         
         private const int defaultIndex = 0;
         [SerializeField] private int currentIndex;

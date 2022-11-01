@@ -18,67 +18,65 @@ MonoBehaviour:
   m_GUID: 6773cbc2bd9e3ce4999ce45fc46b0d51
   m_SerializeEntries:
   - m_GUID: 0b2df3d82e45edd49a0ece4168800e92
-    m_Address: Weapons/Eris
+    m_Address: Weapon/Eris
     m_ReadOnly: 0
     m_SerializedLabels:
-    - Weapons
     - Weapon
   - m_GUID: e2717c876d7c2b7469ee4676b6906627
-    m_Address: Weapons/Hypnos
+    m_Address: Weapon/Hypnos
     m_ReadOnly: 0
     m_SerializedLabels:
     - Weapon
   - m_GUID: eee5c1563f4cf5d47aa740143287b07e
-    m_Address: Weapons/Unarmed
+    m_Address: Weapon/Unarmed
     m_ReadOnly: 0
     m_SerializedLabels:
     - Weapon
     - default
   - m_GUID: 88d05d19418b5cb4eb2b9561a0f90b20
-    m_Address: Weapons/Costumes/Eris_Base
+    m_Address: WeaponCostume/Eris_Base
     m_ReadOnly: 0
     m_SerializedLabels:
     - WeaponCostume
   - m_GUID: 01507fe7b51003a4ebc926fba9781970
-    m_Address: Weapons/Costumes/Hypnos_Base
+    m_Address: WeaponCostume/Hypnos_Base
     m_ReadOnly: 0
     m_SerializedLabels:
     - WeaponCostume
   - m_GUID: f1c6cebfdf4f4554288c95a4539c3610
-    m_Address: Weapons/Costumes/Hypnos_Test
+    m_Address: WeaponCostume/Hypnos_Test
     m_ReadOnly: 0
     m_SerializedLabels:
     - WeaponCostume
   - m_GUID: 4fcb14e16ae7e7b4287ef3e8b382de17
-    m_Address: Weapons/Costumes/Unarmed_Base
+    m_Address: WeaponCostume/Unarmed_Base
     m_ReadOnly: 0
     m_SerializedLabels:
     - WeaponCostume
-    - default
   - m_GUID: dc629ef132d887b4696c909c7ba4033c
-    m_Address: Characters/Costumes/Selene_Base
+    m_Address: CharacterCostume/Selene_Base
     m_ReadOnly: 0
     m_SerializedLabels:
     - default
     - CharacterCostume
   - m_GUID: 32c5215d78678094a90500600c9a8ab2
-    m_Address: Characters/Costumes/GravityBike_Base
+    m_Address: CharacterCostume/GravityBike_Base
     m_ReadOnly: 0
     m_SerializedLabels:
     - CharacterCostume
   - m_GUID: 6dd75d19b1d6e1746ab1800ccd996758
-    m_Address: Characters/GravityBike
+    m_Address: Character/GravityBike
     m_ReadOnly: 0
     m_SerializedLabels:
     - Character
   - m_GUID: 3f380c6f20532d7429c2be42b8a5880f
-    m_Address: Characters/Selene
+    m_Address: Character/Selene
     m_ReadOnly: 0
     m_SerializedLabels:
     - Character
     - default
   - m_GUID: 25dcad45bff2b8640ae4c50dfd408e46
-    m_Address: Characters/Costumes/Selene_Test
+    m_Address: CharacterCostume/Selene_Test
     m_ReadOnly: 0
     m_SerializedLabels:
     - CharacterCostume

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using UnityEngine;
@@ -9,104 +10,95 @@ using SevenGame.Utility;
 
 namespace SeleneGame.Core {
 
-    public abstract class Character : ScriptableObject {
+    public abstract class Character : InstantiableAsset<Character> {
 
-
-        const string defaultPath = "Characters/Selene";
-
-
-
-        public string displayName = "Default Entity Name";
-        public CharacterCostume baseCostume;
+        [SerializeField] protected Entity entity;
         
-        public float maxHealth;
-        public Vector3 size;
-        public float stepHeight;
-        public float acceleration;
-        public float weight;
-        public float jumpHeight;
+
+        [Header("Character Info")]
+
+        [SerializeField] private CharacterCostume _baseCostume;
+
+        [SerializeField] private string _displayName = "Default Entity Name";
+        
+        [SerializeField] private float _maxHealth;
+        [SerializeField] private Vector3 _size;
+        [SerializeField] private float _stepHeight;
+        [SerializeField] private float _weight;
+        [SerializeField] private float _jumpHeight;
 
         [Header("Movement Speed")]
-        public float baseSpeed;
-        public float sprintMultiplier;
-        public float slowMultiplier;
-        public float swimMultiplier;
+        [SerializeField] private float _baseSpeed;
+        [SerializeField] private float _acceleration;
+        [SerializeField] private float _sprintMultiplier;
+        [SerializeField] private float _slowMultiplier;
+        [SerializeField] private float _swimMultiplier;
 
         [Header("Evade")]
-        public float evadeSpeed;
-        public float evadeDuration;
-        public float evadeCooldown;
+        [SerializeField] private float _evadeSpeed;
+        [SerializeField] private float _evadeDuration;
+        [SerializeField] private float _evadeCooldown;
 
 
-        protected Entity entity;
-        public CharacterCostume costume;
-        public GameObject model;
-        public CostumeData costumeData;
+        [Header("Character Data")]
+
+        [SerializeField] [ReadOnly] private CharacterCostume _costume;
+        [SerializeField] [ReadOnly] private GameObject _model;
+        [SerializeField] [ReadOnly] private CostumeData _costumeData;
 
 
+
+        public CharacterCostume baseCostume {
+            get {
+                return _baseCostume;
+            }
+            set {
+                _baseCostume = value;
+            }
+        }
+
+        public string displayName {
+            get {
+                return _displayName;
+            }
+            set {
+                _displayName = value;
+            }
+        }
+
+        public float maxHealth => _maxHealth;
+        public Vector3 size => _size;
+        public float stepHeight => _stepHeight;
+        public float weight => _weight;
+        public float jumpHeight => _jumpHeight;
+
+        public float baseSpeed => _baseSpeed;
+        public float acceleration => _acceleration;
+        public float sprintMultiplier => _sprintMultiplier;
+        public float slowMultiplier => _slowMultiplier;
+        public float swimMultiplier => _swimMultiplier;
+
+        public float evadeSpeed => _evadeSpeed;
+        public float evadeDuration => _evadeDuration;
+        public float evadeCooldown => _evadeCooldown;
 
         public float totalEvadeDuration => evadeDuration + evadeCooldown;
 
 
-
-        private static string CharacterNameToPath(string characterName){
-            return $"Characters/{characterName}";
-        }
-
-        public static Character Get(string characterName) {
-            // Get Requested Character
-            AsyncOperationHandle<Character> opHandle = Addressables.LoadAssetAsync<Character>( CharacterNameToPath(characterName) );
-
-            Character characterInstance = opHandle.WaitForCompletion();
-
-            // If not found, get Default Character : Unarmed
-            if (characterInstance == null) {
-                Debug.LogWarning($"Error getting character {characterName}");
-                return GetDefault();
-            }
-
-            characterInstance = ScriptableObject.Instantiate( characterInstance );
-            characterInstance.name = characterInstance.name.Replace("(Clone)", "");
-
-            return characterInstance;
-        }
-        public static Character GetDefault() {
-            AsyncOperationHandle<Character> opHandle = Addressables.LoadAssetAsync<Character>( defaultPath );
-
-            Character characterInstance = ScriptableObject.Instantiate( opHandle.WaitForCompletion() );
-            characterInstance.name = characterInstance.name.Replace("(Clone)", "");
-
-            return characterInstance;
-        }
-
-        public static void GetAsync(string characterName, Action<Character> callback) {
-            // Get Requested Character
-            AsyncOperationHandle<Character> opHandle = Addressables.LoadAssetAsync<Character>( CharacterNameToPath(characterName) );
-            opHandle.Completed += operation => {
-
-                // If not found, get Default Character : Selene
-                if (operation.Status == AsyncOperationStatus.Failed) {
-                    Debug.LogWarning($"Error getting Character {characterName}");
-                    GetDefaultAsync(callback);
-                    return;
+        public CharacterCostume costume {
+            get {
+                if (_costume == null) {
+                    SetCostume(_baseCostume);
                 }
-
-                Character characterInstance = ScriptableObject.Instantiate( operation.Result );
-                characterInstance.name = characterInstance.name.Replace("(Clone)", "");
-
-                callback?.Invoke(characterInstance);
-            };
+                return _costume;
+            }
+            set {
+                SetCostume(value);
+            }
         }
-        public static void GetDefaultAsync(Action<Character> callback) {
-            AsyncOperationHandle<Character> opHandle = Addressables.LoadAssetAsync<Character>( defaultPath );
-            opHandle.Completed += operation => {
 
-                Character characterInstance = ScriptableObject.Instantiate( operation.Result );
-                characterInstance.name = characterInstance.name.Replace("(Clone)", "");
-
-                callback?.Invoke(characterInstance);
-            };
-        }
+        public CostumeData costumeData => _costumeData;
+        public GameObject model => _model;
 
 
 
@@ -116,11 +108,11 @@ namespace SeleneGame.Core {
         }
 
         public void SetCostume(string costumeName) {
-            SetCostume(CharacterCostume.Get(name, costumeName));
+            SetCostume(CharacterCostume.GetAsset(costumeName));
         }
 
         public void SetCostume(CharacterCostume costume){
-            this.costume = costume;
+            _costume = costume;
             
             LoadModel();
         }
@@ -132,10 +124,10 @@ namespace SeleneGame.Core {
 
             if (costume.model != null) {
                 Transform entityTransform = entity.transform;
-                model = GameObject.Instantiate(costume.model, entityTransform.position, entityTransform.rotation, entityTransform);
-                model.name = $"{name}CharacterModel";
+                _model = GameObject.Instantiate(costume.model, entityTransform.position, entityTransform.rotation, entityTransform);
+                _model.name = $"{name}CharacterModel";
 
-                costumeData = model.GetComponent<CostumeData>();
+                _costumeData = model.GetComponent<CostumeData>();
             }
 
             entity.animator.runtimeAnimatorController = costumeData.animatorController;
@@ -144,8 +136,8 @@ namespace SeleneGame.Core {
 
         }
         public void UnloadModel(){
-            model = GameUtility.SafeDestroy(model);
-            costumeData = null;
+            _model = GameUtility.SafeDestroy(model);
+            _costumeData = null;
         }
 
         public virtual void CharacterUpdate( Entity entity ){;}

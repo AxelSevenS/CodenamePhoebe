@@ -12,18 +12,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a109dd2cedd80e645a305042806b286f, type: 3}
   m_Name: Selene
   m_EditorClassIdentifier: 
-  displayName: Selene
-  baseCostume: {fileID: 11400000, guid: dc629ef132d887b4696c909c7ba4033c, type: 2}
-  maxHealth: 0
-  size: {x: 0.25, y: 3.34, z: 0.25}
-  stepHeight: 0
-  acceleration: 90
-  weight: 12.5
-  jumpHeight: 17
-  baseSpeed: 14
-  sprintMultiplier: 1.35
-  slowMultiplier: 0.7
-  swimMultiplier: 0.85
-  evadeSpeed: 23.5
-  evadeDuration: 0.6
-  evadeCooldown: 0.06
+  entity: {fileID: 0}
+  _baseCostume: {fileID: 11400000, guid: dc629ef132d887b4696c909c7ba4033c, type: 2}
+  _displayName: Selene
+  _maxHealth: 0
+  _size: {x: 0.5, y: 3.2, z: 0.5}
+  _stepHeight: 0
+  _weight: 12
+  _jumpHeight: 19
+  _baseSpeed: 15
+  _acceleration: 100
+  _sprintMultiplier: 1.2
+  _slowMultiplier: 0.75
+  _swimMultiplier: 0.85
+  _evadeSpeed: 27
+  _evadeDuration: 0.6
+  _evadeCooldown: 0.01
+  _costume: {fileID: 0}
+  _model: {fileID: 0}
+  _costumeData: {fileID: 0}

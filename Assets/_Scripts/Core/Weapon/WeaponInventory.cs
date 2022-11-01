@@ -21,13 +21,13 @@ namespace SeleneGame.Core {
 
         public abstract void Set(int index, Weapon weapon, WeaponCostume costume = null);
         public void Set(int index, string weaponName, WeaponCostume costume = null) {
-            Weapon.GetAsync(weaponName, (weapon) => {
+            Weapon.GetInstanceAsync(weaponName, (weapon) => {
                 Set(index, weapon, costume);
             });
         }
         public void SetToDefault(int index){
             try {
-                Weapon.GetDefaultAsync((weapon) => {
+                Weapon.GetDefaultInstanceAsync((weapon) => {
                     Set(index, weapon);
                 });
             } catch (System.Exception e) {
@@ -36,17 +36,20 @@ namespace SeleneGame.Core {
         }
 
         public void Replace(Weapon oldWeapon, Weapon newWeapon, WeaponCostume costume = null){
-            int index = IndexOf(oldWeapon);
-            if (index == -1) return;
-
-            Set(index, newWeapon, costume);
+            try {
+                int index = IndexOf(oldWeapon);
+                Set(index, newWeapon, costume);
+            } catch (System.ArgumentOutOfRangeException ) {
+                
+            }
         }
 
         public int IndexOf(Weapon weapon){
             for (int i = 0; i < Count; i++) {
                 if (this[i] == weapon) return i;
             }
-            return -1;
+            
+            throw new System.ArgumentOutOfRangeException();
         }
 
         public abstract void Remove(int index);

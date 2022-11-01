@@ -10,7 +10,7 @@ namespace SeleneGame.Entities {
         public override float weight => base.weight;
         public override float jumpMultiplier => base.jumpMultiplier;
 
-        public override State defaultState => new WalkingState();
+        public override State defaultState => new HumanoidGroundedState();
         
 
         public override void LoadModel(){

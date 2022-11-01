@@ -1,14 +1,4 @@
-using System.Threading.Tasks;
-using System.Collections;
-using System.Collections.Generic;
-
-using UnityEngine;
-using UnityEngine.InputSystem;
-
-using SevenGame.Utility;
-
 namespace SeleneGame.Core {
-
 
     [System.Serializable]
     public abstract class SaveData {

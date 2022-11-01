@@ -15,6 +15,5 @@ MonoBehaviour:
   portrait: {fileID: 21300000, guid: 5db2718264e244d49a421606a2c82c99, type: 3}
   displayName: Test Costume
   description: Default Costume Description
-  rightHandModel: {fileID: 0}
-  leftHandModel: {fileID: 0}
+  model: {fileID: 0}
   equippableOn: 4

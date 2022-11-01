@@ -11,13 +11,10 @@ Material:
   m_Shader: {fileID: 4800000, guid: 5ec9723f1de93114abc5e30ef50c50b2, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords:
-  - ACCENTGRADIENT_ON
-  - CEL_ACCENT_ON
-  - PROXIMITYDITHER_ON
   - _PROXIMITYDITHER_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 1
+  m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
@@ -252,7 +249,7 @@ Material:
     - Vector1_f99686aaeca44c4687bb480feabfa5fb: 0
     - Vector1_f99686aaeca44c4687bb480feabfa5fb_1: 0
     - _AccentBrightness: 1
-    - _AccentIntensity: 3.18
+    - _AccentIntensity: 5
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1
@@ -268,6 +265,7 @@ Material:
     - _EnvironmentReflections: 1
     - _GlossMapScale: 0
     - _Glossiness: 0
+    - _GlossinessSource: 0
     - _GlossyReflections: 0
     - _HuskDistance: 0.05
     - _Metallic: 0
@@ -279,10 +277,13 @@ Material:
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _Scale: 3
-    - _Smoothness: 0.095
+    - _Shininess: 0
+    - _Smoothness: 0.03
+    - _SmoothnessSource: 0
     - _SmoothnessTextureChannel: 0
+    - _SpecSource: 0
     - _SpecularHighlights: 1
-    - _SpecularIntensity: 0.06
+    - _SpecularIntensity: 0.16
     - _SrcBlend: 1
     - _StencilComp: 0
     - _StencilID: 0

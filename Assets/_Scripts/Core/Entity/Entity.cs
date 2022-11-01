@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 
 using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -17,337 +15,298 @@ namespace SeleneGame.Core {
     [SelectionBase]
     public class Entity : MonoBehaviour, IDamageable {
 
-
-        #region Constants
         
-            private const int MOVE_COLLISION_STEP_COUNT = 1;
+        private const int MOVE_COLLISION_STEP_COUNT = 1;
+        
         
 
-        #endregion
+    
+        [Tooltip("The entity's current Character, defines their game Model, portraits, display name and base Stats.")]
+        [SerializeReference][ReadOnly] private Character _character;
+    
+        [Tooltip("The entity's current Animator.")]
+        [SerializeReference][ReadOnly] private Animator _animator;
 
-        #region Editor Fields
-
-            #if UNITY_EDITOR
-                [HideInInspector] public AssetReferenceT<Character> m_selectedCharacter;
-                [HideInInspector] public AssetReferenceT<CharacterCostume> m_selectedCharacterCostume;
-
-                [ContextMenu("Load Character")]
-                public void LoadCharacter() {
-                    UnloadModel();
-                    if (m_selectedCharacter.Asset != null)
-                        m_selectedCharacter.ReleaseAsset();
-
-                    Character selectedCharacter;
-                    // Runtime key is a string for some reason, even though in the documentation it says it's a Hash128.
-                    if ( string.IsNullOrEmpty( (string)m_selectedCharacter.RuntimeKey )  ) {
-                        selectedCharacter = Character.GetDefault();
-                    } else {
-                        AsyncOperationHandle<Character> opHandle = m_selectedCharacter.LoadAssetAsync();
-                        selectedCharacter = opHandle.WaitForCompletion();
-                    }
-                    
-                    _character = ScriptableObject.Instantiate(selectedCharacter);
-                    _character.Initialize(this);
-                }
-
-                [ContextMenu("Load Character Costume")]
-                public void LoadCharacterCostume() {
-                    UnloadModel();
-                    if (m_selectedCharacterCostume.Asset != null)
-                        m_selectedCharacterCostume.ReleaseAsset();
-
-
-                    CharacterCostume selectedCharacterCostume;
-                    // Runtime key is a string for some reason, even though in the documentation it says it's a Hash128.
-                    if ( string.IsNullOrEmpty( (string)m_selectedCharacterCostume.RuntimeKey )  ) {
-                        if ( _character == null )
-                            return;
-                        selectedCharacterCostume = CharacterCostume.GetBase(_character.name);
-                    } else {
-                        AsyncOperationHandle<CharacterCostume> opHandle = m_selectedCharacterCostume.LoadAssetAsync();
-                        selectedCharacterCostume = opHandle.WaitForCompletion();
-                    }
-                    
-                    _character.SetCostume(selectedCharacterCostume);
-                }
-            #endif
+        [Tooltip("The entity's current Rigidbody.")]
+        [SerializeReference][ReadOnly] private Rigidbody _rigidbody;
         
-            [Tooltip("The entity's current Character, defines their game Model, portraits, display name and base Stats.")]
-            [SerializeReference]
-            private Character _character;
+        [Tooltip("The entity's current Physics Script.")]
+        [SerializeReference][ReadOnly] private CustomPhysicsComponent _physicsComponent;
         
-            [Tooltip("The entity's current Animator.")]
-            [SerializeReference]
-            private Animator _animator;
+        [Tooltip("The entity's current Entity Controller.")]
+        [SerializeReference][ReadOnly] private EntityController _entityController;
+
+        [Header("Entity Data")]
+
+        [Tooltip("The current state of the Entity, can be changed using the SetState method.")]
+        [SerializeReference][ReadOnly] private State _state;
+
+        [Tooltip("The current rotation of the Entity.")]
+        [SerializeField] private QuaternionData _rotation;
+
+        [Tooltip("The current health of the Entity.")]
+        [SerializeField] private float _health;
+
+        [Tooltip("If the Entity is currently on the ground.")]
+        [SerializeField] private BoolData _onGround;
 
 
+        [Header("Movement")]
 
-            [Space(10)]
-            [Header("Entity Data")]
-
-            [Tooltip("The current state of the Entity, can be changed using the SetState method.")]
-            [SerializeReference] 
-            private State _state;
-
-
-            [Tooltip("The current health of the Entity.")]
-            [SerializeField] 
-            private float _health;
-
-            [Tooltip("If the Entity is currently on the ground.")]
-            [SerializeField] 
-            private BoolData _onGround;
-
-            [Tooltip("The current rotation of the Entity.")]
-            [SerializeField] 
-            private QuaternionData _rotation;
-
-
-
-            [Space(10)]
-            [Header("Movement")]
-
-            [Tooltip("The forward direction in absolute space of the Entity.")]
-            [SerializeField] 
-            private Vector3 _absoluteForward;
-            
-
-            [Tooltip("The forward direction in relative space of the Entity.")]
-            [SerializeField] 
-            private Vector3 _relativeForward;
-
-
-            [Tooltip("The direction in which the Entity is currently moving.")]
-            [SerializeField] 
-            private Vector3Data _moveDirection;
-
+        [Tooltip("The forward direction in absolute space of the Entity.")]
+        [SerializeField] private Vector3 _absoluteForward;
         
-            [Tooltip("The direction in which the Entity is attracted by Gravity.")]
-            [SerializeField] 
-            private Vector3 _gravityDown = Vector3.down;
+        [Tooltip("The forward direction in relative space of the Entity.")]
+        [SerializeField] private Vector3 _relativeForward;
+
+        [Tooltip("The direction in which the Entity is currently moving.")]
+        [SerializeField] private Vector3Data _moveDirection;
+    
+        [Tooltip("The direction in which the Entity is attracted by Gravity.")]
+        [SerializeField] private Vector3 _gravityDown = Vector3.down;
+
+
+        [Header("Jumping")]
+
+        [Tooltip("The amount of time needed to wait for the Entity to be able to jump again.")]
+        [SerializeField] private TimeUntil _jumpCooldownTimer;
+
+
+        [Header("Misc")]
+
+        private Vector3 _totalMovement = Vector3.zero; 
+
+        public RaycastHit groundHit;
+
+        [HideInInspector] public float subState;
 
 
 
-            [Space(10)]
-            [Header("Jumping")]
-
-            // [Tooltip("The current allowed number of Jumps the Entity can make before having to \"Refresh\".")]
-            // [SerializeField] 
-            // private int _jumpCount = 1;
-
-            [Tooltip("The amount of time needed to wait for the Entity to be able to jump again.")]
-            [SerializeField] 
-            private TimeUntil _jumpCooldownTimer;
+        public event Action<Vector3> onJump;
+        public event Action<float> onHeal;
+        public event Action<float> onDamage;
+        public event Action onDeath;
 
 
 
-            [Space(10)]
-            [Header("Misc")]
+        /// <summary>
+        /// The entity's current Character, defines their game Model, portraits, display name and base Stats.
+        /// </summary>
+        public Character character {
+            get => _character;
+            private set => _character = value;
+        }
 
-            [Tooltip("The last object the Entity interacted with.")]
-            [SerializeReference] 
-            private IInteractable lastInteracted;
-
-        #endregion
-
-        #region Fields
-
-            private Vector3 _totalMovement = Vector3.zero; 
-
-            private Rigidbody _rigidbody;
-            private CustomPhysicsComponent _physicsComponent;
-            private EntityController _controller;
-
-            public RaycastHit groundHit;
-
-            [HideInInspector] public float subState;
-
-
-        #endregion
-
-        #region Events
-
-            public event Action<Vector3> onJump;
-            public event Action<float> onHeal;
-            public event Action<float> onDamage;
-            public event Action onDeath;
-            
-        #endregion
-
-
-        #region Properties
-
-
-            public Character character {
-                get => _character;
-                private set => _character = value;
+        /// <summary>
+        /// The entity's current Animator.
+        /// </summary>
+        public Animator animator {
+            get {
+                if ( _animator == null )
+                    _animator = GetComponent<Animator>();
+                return _animator;
             }
-            public Animator animator {
-                get {
-                    if ( _animator == null )
-                        _animator = GetComponent<Animator>();
-                    return _animator;
+            private set => _animator = value;
+        }
+
+        /// <summary>
+        /// The entity's current Rigidbody.
+        /// </summary>
+        public new Rigidbody rigidbody {
+            get
+            {
+                if (_rigidbody == null)
+                    _rigidbody = GetComponent<Rigidbody>();
+                return _rigidbody;
+            }
+        }
+
+        /// <summary>
+        /// The entity's current Physics Script.
+        /// </summary>
+        public CustomPhysicsComponent physicsComponent {
+            get {
+                if (_physicsComponent == null)
+                    _physicsComponent = GetComponent<CustomPhysicsComponent>();
+                return _physicsComponent;
+            }
+        }
+
+        /// <summary>
+        /// The entity's current Entity Controller.
+        /// </summary>
+        protected virtual EntityController entityController
+        {
+            get {
+                if (_entityController == null) {
+                    if (!TryGetComponent<EntityController>(out _entityController))
+                        _entityController = gameObject.AddComponent<EntityController>();
                 }
-                private set => _animator = value;
+                return _entityController;
+
             }
+            set => _entityController = value;
+        }
 
-            public State state {
-                get {
-                    if ( _state == null )
-                        SetState( defaultState );
-                    return _state;
-                }
-                private set => _state = value;
+        /// <summary>
+        /// The current state of the Entity, can be changed using the SetState method.
+        /// </summary>
+        public State state {
+            get {
+                if ( _state == null )
+                    SetState( defaultState );
+                return _state;
             }
+            private set => _state = value;
+        }
 
+        /// <summary>
+        /// The default state of the entity.
+        /// </summary>
+        public virtual State defaultState => new HumanoidGroundedState(); 
 
-            /// <summary>
-            /// The default state of the entity.
-            /// </summary>
-            public virtual State defaultState => new WalkingState(); 
-
-
-            public float health {
-                get {
-                    return _health;
-                }
-                set {
-                    if ( value <= _health )
-                        Damage( _health - value );
-                    else if ( value > _health )
-                        Heal( value - _health );
-                }
+        /// <summary>
+        /// The current health of the Entity.
+        /// </summary>
+        public float health {
+            get {
+                return _health;
             }
-
-            public ref BoolData onGround {
-                get => ref _onGround;
+            set {
+                if ( value <= _health )
+                    Damage( _health - value );
+                else if ( value > _health )
+                    Heal( value - _health );
             }
+        }
 
-            public ref QuaternionData rotation {
-                get => ref _rotation;
+        /// <summary>
+        /// If the Entity is currently on the ground.
+        /// </summary>
+        public ref BoolData onGround {
+            get => ref _onGround;
+        }
+
+        /// <summary>
+        /// The current rotation of the Entity.
+        /// </summary>
+        public ref QuaternionData rotation {
+            get => ref _rotation;
+        }
+
+        /// <summary>
+        /// The forward direction in absolute space of the Entity.
+        /// </summary>
+        public Vector3 absoluteForward { 
+            get => _absoluteForward; 
+            set { 
+                _absoluteForward = value; 
+                _relativeForward = Quaternion.Inverse(rotation) * value; 
+            } 
+        }
+        
+        /// <summary>
+        /// The forward direction in relative space of the Entity.
+        /// </summary>
+        public Vector3 relativeForward { 
+            get => _relativeForward; 
+            set { 
+                _relativeForward = value;
+                _absoluteForward = rotation * value;
             }
+        }
+
+        /// <summary>
+        /// The direction in which the Entity is attracted by Gravity.
+        /// </summary>
+        public Vector3 gravityDown { 
+            get => _gravityDown; 
+            set => _gravityDown = value.normalized;
+        }
+
+        /// <summary>
+        /// The force of gravity applied to the Entity.
+        /// </summary>
+        public float gravityMultiplier => state.gravityMultiplier;
+
+        /// <summary>
+        /// The amount of time needed to wait for the Entity to be able to jump again.
+        /// </summary>
+        public ref TimeUntil jumpCooldownTimer { 
+            get => ref _jumpCooldownTimer;
+        }
+
+        public bool isIdle => _moveDirection.sqrMagnitude == 0;
+
+        public float fallVelocity => Vector3.Dot(rigidbody.velocity, -gravityDown);
+        public bool inWater => physicsComponent.inWater;
+        public bool isOnWaterSurface => inWater && transform.position.y > (physicsComponent.waterHeight - character.size.y);
 
 
-            public Vector3 absoluteForward { 
-                get => _absoluteForward; 
-                set { 
-                    _absoluteForward = value; 
-                    _relativeForward = Quaternion.Inverse(rotation) * value; 
+        public GameObject this[string key]{
+            get { 
+                try { 
+                    return character.costumeData.bones[key]; 
+                } catch { 
+                    return character.model; 
                 } 
             }
+        }
+
+        public virtual float weight => character.weight;
+        public virtual float jumpMultiplier => 1f;
+
+
+
+
+        /// <summary>
+        /// Create an Entity using the given Parameters
+        /// </summary>
+        /// <param name="entityType">The type of entity to create</param>
+        /// <param name="character">The character of the entity to create</param>
+        /// <param name="position">The position of the entity</param>
+        /// <param name="rotation">The rotation of the entity</param>
+        /// <param name="costume">The costume of the entity, leave empty to use character's default costume</param>
+        public static Entity CreateEntity(System.Type entityType, Character character, Vector3 position, Quaternion rotation, CharacterCostume costume = null){
+            GameObject entityGO = new GameObject("Entity");
+            Entity entity = (Entity)entityGO.AddComponent(entityType);
+
+            entity.SetCharacter(character, costume);
+
+            entity.transform.position = position;
+            entity.transform.rotation = rotation;
+            return entity;
+        }
+
+
+        /// <summary>
+        /// Create an Entity with a PlayerEntityController.
+        /// </summary>
+        /// <param name="entityType">The type of entity to create</param>
+        /// <param name="character">The character of the entity to create</param>
+        /// <param name="position">The position of the entity</param>
+        /// <param name="rotation">The rotation of the entity</param>
+        /// <param name="costume">The costume of the entity, leave empty to use character's default costume</param>
+        public static Entity CreatePlayerEntity(System.Type entityType, Character character, Vector3 position, Quaternion rotation, CharacterCostume costume = null){
+            GameObject entityGO = new GameObject("Entity");
+            entityGO.AddComponent<PlayerEntityController>();
+            Entity entity = (Entity)entityGO.AddComponent(entityType);
             
+            entity.character = character;
+            entity.character.Initialize(entity, costume);
 
-            public Vector3 relativeForward { 
-                get => _relativeForward; 
-                set { 
-                    _relativeForward = value;
-                    _absoluteForward = rotation * value;
-                }
-            }
-
-
-            // public Vector3Data moveDirection { 
-            //     get => _moveDirection;
-            //     protected set => _moveDirection = value;
-            // }
-
-
-            public Vector3 gravityDown { 
-                get => _gravityDown; 
-                set => _gravityDown = value.normalized;
-            }
-
-            public float gravityMultiplier => state.gravityMultiplier;
-
-            // public int jumpCount { 
-            //     get => _jumpCount; 
-            //     set => _jumpCount = Math.Max(value, 0);
-            // }
-
-            public ref TimeUntil jumpCooldownTimer { 
-                get => ref _jumpCooldownTimer;
-            }
-
-
-            // public Quaternion groundOrientation => Quaternion.FromToRotation(-gravityDown, groundHit.normal);
-
-            public bool isIdle => _moveDirection.sqrMagnitude == 0;
-
-            public float fallVelocity => Vector3.Dot(rigidbody.velocity, -gravityDown);
-            public bool inWater => physicsComponent.inWater;
-            public bool isOnWaterSurface => inWater && transform.position.y > (physicsComponent.waterHeight - character.size.y);
-
-
-            public Rigidbody rigidbody {
-                get {
-                    if ( _rigidbody == null )
-                        _rigidbody = GetComponent<Rigidbody>();
-                    return _rigidbody;
-                }
-            }
-
-
-            public CustomPhysicsComponent physicsComponent {
-                get {
-                    if ( _physicsComponent == null )
-                        _physicsComponent = GetComponent<CustomPhysicsComponent>();
-                    return _physicsComponent;
-                }
-            }
-
-
-            protected virtual EntityController controller { 
-                get {
-                    if ( _controller == null ) {
-                        if ( !TryGetComponent<EntityController>(out _controller) )
-                            _controller = gameObject.AddComponent<EntityController>();
-                    }
-                    return _controller;
-                
-                } 
-                set => _controller = value; 
-            }
-
-
-            public GameObject this[string key]{
-                get { 
-                    try { 
-                        return character.costumeData.bones[key]; 
-                    } catch { 
-                        return character.model; 
-                    } 
-                }
-            }
-
-            public virtual float weight => character.weight;
-            public virtual float jumpMultiplier => 1f;
-
-
-        #endregion
-
-
-        
-
-
-
-        protected virtual void EntityAnimation() {
-            animator.SetBool("OnGround", onGround);
-            // animator.SetBool("Falling", fallVelocity <= -20f);
-            animator.SetBool("Idle", isIdle );
-            // animator.SetInteger("State", state.id);
-            // animator.SetFloat("SubState", subState);
-            // animator.SetFloat("WalkSpeed", (float)walkSpeed);
-            // animator.SetFloat("DotOfForward", Vector3.Dot(absoluteForward, transform.forward));
-            // animator.SetFloat("ForwardRight", Vector3.Dot(absoluteForward, Vector3.Cross(-transform.up, transform.forward)));
+            entity.transform.position = position;
+            entity.transform.rotation = rotation;
+            return entity;
         }
 
 
         [ContextMenu("Set As Player Entity")]
         public void SetAsPlayer() {
-            if ( PlayerEntityController.current == controller ) return;
+            if ( PlayerEntityController.current == entityController ) return;
 
-            GameUtility.SafeDestroy( controller );
-            controller = gameObject.AddComponent<PlayerEntityController>(); 
+            GameUtility.SafeDestroy( entityController );
+            entityController = gameObject.AddComponent<PlayerEntityController>(); 
         }
 
         /// <summary>
@@ -368,56 +327,59 @@ namespace SeleneGame.Core {
         }
 
         /// <summary>
+        /// Set the Entity's current Character.
+        /// </summary>
+        /// <param name="character">The new Character</param>
+        public void SetCharacter(Character character, CharacterCostume costume = null) {
+            _character?.UnloadModel();
+            _character = character;
+            _character.Initialize(this, costume);
+        }
+
+        /// <summary>
+        /// Set the Entity's current Character Costume.
+        /// </summary>
+        /// <param name="costumeName">The name of the new Character Costume</param>
+        public void SetCostume(string costumeName) {
+            _character?.SetCostume(costumeName);
+        }
+
+        /// <summary>
+        /// Set the Entity's current Character Costume.
+        /// </summary>
+        /// <param name="costumeName">The new Character Costume</param>
+        public void SetCostume(CharacterCostume costume) {
+            _character?.SetCostume(costume);
+        }
+
+        /// <summary>
         /// Set the current "Fighting Style" of the Entity
         /// (e. g. the different equipped weapons, the current stance, etc.)
         /// </summary>
         /// <param name="newStyle">The style to set the Entity to</param>
         public virtual void SetStyle(int newStyle){;}
 
+        /// <summary>
+        /// Load the Character Model.
+        /// </summary>
+        public virtual void LoadModel() {
+            character?.LoadModel();
+        }
 
         /// <summary>
-        /// Pickup a grabbable item.
+        /// Unload the Character Model.
         /// </summary>
-        /// <param name="grabbable">The item to pick up</param>
-        public virtual void Grab(Grabbable grabbable){;}
-
+        public virtual void UnloadModel() {
+            character?.UnloadModel();
+        }
 
         /// <summary>
-        /// Throw a grabbable item.
+        /// Set the Entity's Up direction.
         /// </summary>
-        /// <param name="grabbable">The item to throw</param>
-        public virtual void Throw(Grabbable grabbable){;}
-
-
-        public virtual void Kill(){
-            // GameUtility.SafeDestroy(gameObject);
-            // animator?.SetTrigger("Death");
-
-            onDeath?.Invoke();
-        }
-        public void Damage(float amount, Vector3 knockback = default) {
-
-            health = Mathf.Max(health - amount, 0f);
-
-            if (health == 0f)
-                Kill();
-
-            rigidbody.AddForce(knockback, ForceMode.Impulse);
-
-            onDamage?.Invoke(amount);
-        }
-
-        public void Heal(float amount) {
-
-            health = Mathf.Max(health + amount, Mathf.Infinity);
-
-            onHeal?.Invoke(amount);
-        }
-
-        public void SetRotation(Vector3 newUp) {
+        /// <param name="newUp">The new Up direction of the Entity</param>
+        public void SetUp(Vector3 newUp) {
             rotation.SetVal( Quaternion.FromToRotation(rotation * Vector3.up, newUp) * rotation );
         }
-
 
         /// <summary>
         /// Rotate the Entity towards a given rotation in relative space.
@@ -428,7 +390,6 @@ namespace SeleneGame.Core {
             RotateTowardsRelative(newRotation * Vector3.forward, newRotation * Vector3.up);
 
         }
-
 
         /// <summary>
         /// Rotate the Entity towards a given rotation in absolute space.
@@ -452,7 +413,6 @@ namespace SeleneGame.Core {
             transform.rotation = Quaternion.Slerp(transform.rotation, apparentRotation * turnDirection, 12f * GameUtility.timeDelta);
         }
 
-
         /// <summary>
         /// Rotate the Entity towards a given direction in absolute space.
         /// </summary>
@@ -465,19 +425,66 @@ namespace SeleneGame.Core {
 
         }
 
-        public virtual void LoadModel() {
-            character?.LoadModel();
+        protected virtual void EntityAnimation() {
+            animator.SetBool("OnGround", onGround);
+            // animator.SetBool("Falling", fallVelocity <= -20f);
+            animator.SetBool("Idle", isIdle );
+            // animator.SetInteger("State", state.id);
+            // animator.SetFloat("SubState", subState);
+            // animator.SetFloat("WalkSpeed", (float)walkSpeed);
+            // animator.SetFloat("DotOfForward", Vector3.Dot(absoluteForward, transform.forward));
+            // animator.SetFloat("ForwardRight", Vector3.Dot(absoluteForward, Vector3.Cross(-transform.up, transform.forward)));
+        }
+        
+
+
+
+        /// <summary>
+        /// Pickup a grabbable item.
+        /// </summary>
+        /// <param name="grabbable">The item to pick up</param>
+        public virtual void Grab(Grabbable grabbable){;}
+
+
+        /// <summary>
+        /// Throw a grabbable item.
+        /// </summary>
+        /// <param name="grabbable">The item to throw</param>
+        public virtual void Throw(Grabbable grabbable){;}
+
+        /// <summary>
+        /// Initiate the Entity's death sequence.
+        /// </summary>
+        public virtual void Death(){
+            onDeath?.Invoke();
         }
 
-        public virtual void UnloadModel() {
-            character?.UnloadModel();
+        /// <summary>
+        /// Deal damage to the Entity.
+        /// </summary>
+        /// <param name="amount">The amount of damage done to the Entity</param>
+        /// <param name="knockback">The direction of Knockback applied through the damage</param>
+        public void Damage(float amount, Vector3 knockback = default) {
+
+            health = Mathf.Max(health - amount, 0f);
+
+            if (health == 0f)
+                Death();
+
+            rigidbody.AddForce(knockback, ForceMode.Impulse);
+
+            onDamage?.Invoke(amount);
         }
 
-        public void SetCostume(string costumeName) {
-            character.SetCostume(costumeName);
-        }
-        public void SetCostume(CharacterCostume costume) {
-            character.SetCostume(costume);
+        /// <summary>
+        /// Heal the Entity.
+        /// </summary>
+        /// <param name="amount">The amount of health the Entity is healed</param>
+        public void Heal(float amount) {
+
+            health = Mathf.Max(health + amount, Mathf.Infinity);
+
+            onHeal?.Invoke(amount);
         }
 
 
@@ -548,6 +555,7 @@ namespace SeleneGame.Core {
 
         /// <summary>
         /// Apply all instructed movement to the Entity.
+        /// This is where the collision is calculated.
         /// </summary>
         private void ExecuteMovement() {
 
@@ -563,18 +571,16 @@ namespace SeleneGame.Core {
                 if (walkCollision) {
                     rigidbody.MovePosition(rigidbody.position + (step.normalized * Mathf.Min(Mathf.Clamp01(walkHit.distance - 0.1f), step.magnitude)));
 
-                    // // Compute Penetration seems to be overkill.
-
-                    // foreach ( ValuePair<string, Collider> pair in costumeData.hurtColliders ) {
-                    //     Collider col1 = pair.Value;
-                    //     Collider[] cols2 = col1.ColliderOverlap(Vector3.zero, 0f, Global.GroundMask);
-                    //     for (int j = 0; j < cols2.Length; j++) {
-                    //         if ( Physics.ComputePenetration(col1, col1.transform.position, col1.transform.rotation, cols2[j], cols2[j].transform.position, cols2[j].transform.rotation, out Vector3 direction, out float distance) ) {
-                    //             rigidbody.MovePosition(rigidbody.position + (direction * distance));
-                    //             Debug.Log("Penetration: " + direction + " " + distance);
-                    //         }
-                    //     }
-                    // }
+                    // Check for penetration and adjust accordingly
+                    foreach ( Collider entityCollider in character.costumeData.hurtColliders.Values ) {
+                        Collider[] worldColliders = entityCollider.ColliderOverlap(Vector3.zero, 0f, Global.GroundMask);
+                        foreach (Collider worldCollider in worldColliders) {
+                            if ( Physics.ComputePenetration(entityCollider, entityCollider.transform.position, entityCollider.transform.rotation, worldCollider, worldCollider.transform.position, worldCollider.transform.rotation, out Vector3 direction, out float distance) ) {
+                                rigidbody.MovePosition(rigidbody.position + (direction * distance));
+                                // Debug.Log("Penetration: " + direction + " " + distance);
+                            }
+                        }
+                    }
 
                     break;
                 } else {
@@ -583,6 +589,7 @@ namespace SeleneGame.Core {
             }
             _totalMovement = Vector3.zero;
         }
+
 
 
         /// <summary>
@@ -609,7 +616,6 @@ namespace SeleneGame.Core {
             return false;
         }
 
-
         /// <summary>
         /// Check if there are any colliders overlap with the entity's colliders.
         /// </summary>
@@ -625,122 +631,65 @@ namespace SeleneGame.Core {
         }
 
 
-        // public bool WallCheck( out RaycastHit wallHitOut, LayerMask layerMask ) {
-        //     for (int i = 0; i < 11; i++){
-        //         float angle = (i%2 == 0 && i != 0) ? (i-1 * -30f) : i * 30f;
-        //         Quaternion angleTurn = Quaternion.AngleAxis( angle, rotation * Vector3.down);
-        //         bool hasHitWall = ColliderCast( Vector3.zero, angleTurn * absoluteForward * 0.3f, out RaycastHit tempHit, 0.05f, layerMask );
-        //         if (hasHitWall){
-        //             wallHitOut = tempHit;
-        //             return true;
-        //         }
-        //     }
-        //     wallHitOut = new RaycastHit();
-        //     return false;
-        // }
 
 
-        /// <summary>
-        /// Create an Entity using the given Parameters
-        /// </summary>
-        /// <param name="entityType">The type of entity to create</param>
-        /// <param name="character">The character of the entity to create</param>
-        /// <param name="position">The position of the entity</param>
-        /// <param name="rotation">The rotation of the entity</param>
-        /// <param name="costume">The costume of the entity, leave empty to use character's default costume</param>
-        public static Entity CreateEntity(System.Type entityType, Character character, Vector3 position, Quaternion rotation, CharacterCostume costume = null){
-            GameObject entityGO = new GameObject("Entity");
-            Entity entity = (Entity)entityGO.AddComponent(entityType);
+        // [ContextMenu("Initialize")]
+        protected virtual void Awake(){
 
-            entity.character = character;
-            entity.character.Initialize(entity, costume);
-
-            entity.transform.position = position;
-            entity.transform.rotation = rotation;
-            return entity;
-        }
-
-
-        /// <summary>
-        /// Create an Entity with a PlayerEntityController.
-        /// </summary>
-        /// <param name="entityType">The type of entity to create</param>
-        /// <param name="character">The character of the entity to create</param>
-        /// <param name="position">The position of the entity</param>
-        /// <param name="rotation">The rotation of the entity</param>
-        /// <param name="costume">The costume of the entity, leave empty to use character's default costume</param>
-        public static Entity CreatePlayerEntity(System.Type entityType, Character character, Vector3 position, Quaternion rotation, CharacterCostume costume = null){
-            GameObject entityGO = new GameObject("Entity");
-            entityGO.AddComponent<PlayerEntityController>();
-            Entity entity = (Entity)entityGO.AddComponent(entityType);
+            // Ensure only One Entity is on a single GameObject
+            // Entity[] entities = GetComponents<Entity>();
+            // for (int i = 0; i < entities.Length; i++) {
+            //     if (entities[i] != this) {
+            //         GameUtility.SafeDestroy(entities[i]);
+            //     }
+            // }
             
-            entity.character = character;
-            entity.character.Initialize(entity, costume);
-
-            entity.transform.position = position;
-            entity.transform.rotation = rotation;
-            return entity;
         }
 
-        #region MonoBehaviour
-
-
-            // [ContextMenu("Initialize")]
-            protected virtual void Awake(){
-
-                // Ensure only One Entity is on a single GameObject
-                // Entity[] entities = GetComponents<Entity>();
-                // for (int i = 0; i < entities.Length; i++) {
-                //     if (entities[i] != this) {
-                //         GameUtility.SafeDestroy(entities[i]);
-                //     }
-                // }
-                
+        protected virtual void Start(){
+            rotation.SetVal(transform.rotation);
+            relativeForward = Vector3.forward;
+            rigidbody.useGravity = false;
+            rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
+        }
+    
+        protected virtual void Reset(){
+            foreach (Transform child in transform) {
+                if ( child.gameObject.name.Contains("Model") )
+                    GameUtility.SafeDestroy(child.gameObject);
             }
+            _animator = GetComponent<Animator>();
+            _rigidbody = GetComponent<Rigidbody>();
+            _physicsComponent = GetComponent<CustomPhysicsComponent>();
+            _entityController = GetComponent<EntityController>();
+        }
 
-            protected virtual void Start(){
-                rotation.SetVal(transform.rotation);
-                relativeForward = Vector3.forward;
-                rigidbody.useGravity = false;
-                rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
-            }
+        protected virtual void OnEnable(){
+            EntityManager.current.entityList.Add( this );
+        }
+        protected virtual void OnDisable(){
+            EntityManager.current.entityList.Remove( this );
+        }
         
-            protected virtual void Reset(){
-                foreach (Transform child in transform) {
-                    if ( child.gameObject.name.Contains("Model") )
-                        GameUtility.SafeDestroy(child.gameObject);
-                }
-                _animator = GetComponent<Animator>();
-            }
+        protected virtual void OnDestroy(){;}
 
-            protected virtual void OnEnable(){
-                EntityManager.current.entityList.Add( this );
+        protected virtual void Update(){
+            onGround.SetVal( ColliderCast(Vector3.zero, gravityDown.normalized * 0.2f, out groundHit, 0.15f, Global.GroundMask) );
+
+            state?.StateUpdate();
+
+            if (animator.runtimeAnimatorController != null) {
+                EntityAnimation();
             }
-            protected virtual void OnDisable(){
-                EntityManager.current.entityList.Remove( this );
-            }
+        }
+
+        protected virtual void FixedUpdate(){
             
-            protected virtual void OnDestroy(){;}
+            state?.StateFixedUpdate();
 
-            protected virtual void Update(){
-                onGround.SetVal( ColliderCast(Vector3.zero, gravityDown.normalized * 0.2f, out groundHit, 0.15f, Global.GroundMask) );
-
-                state?.StateUpdate();
-
-                if (animator.runtimeAnimatorController != null) {
-                    EntityAnimation();
-                }
-            }
-
-            protected virtual void FixedUpdate(){
-                
-                state?.StateFixedUpdate();
-
-                Gravity();
-                ExecuteMovement();
-            }
-
-        #endregion
+            Gravity();
+            ExecuteMovement();
+        }
 
     }
 }

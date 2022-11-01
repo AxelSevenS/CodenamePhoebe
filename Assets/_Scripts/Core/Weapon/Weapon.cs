@@ -10,121 +10,62 @@ using SevenGame.Utility;
 
 namespace SeleneGame.Core {
     
-    public abstract class Weapon : ScriptableObject {
+    public abstract class Weapon : InstantiableAsset<Weapon> {
+
+        protected ArmedEntity entity;
+
+
+        [Header("Weapon Info")]
+
+        [SerializeField] private WeaponCostume _baseCostume;
+
+        [SerializeField] [NotFlagEnum] private WeaponType _weaponType;
+
+        [SerializeField] private string _displayName = "Default Weapon Name";
         
-
-        const string defaultPath = "Weapons/Unarmed";
-
-
-
-
-        public WeaponCostume baseCostume;
-
-        public WeaponType weaponType;
-
-        [SerializeField] private string _displayName;
-        
-        [SerializeField] [TextArea] private string _description;
-
+        [SerializeField] [TextArea] private string _description = "Default Weapon Description";
 
         public float weightModifier = 1f;
 
 
-        public ArmedEntity entity;
-        public WeaponCostume costume;
+        [Header("Weapon Data")]
+
+        [SerializeField] /* [ReadOnly]  */private WeaponCostume _costume;
 
 
 
+        public WeaponCostume baseCostume {
+            get {
+                return _baseCostume;
+            }
+            set {
+                _baseCostume = value;
+            }
+        }
+
+        public WeaponType weaponType => _weaponType;
 
         public string displayName => _displayName;
         public string description => _description;
 
-
-
-
-        private static string WeaponNameToPath(string weaponName){
-            return $"Weapons/{weaponName}";
-        }
-
-        public static void GetWeapons(Action<Weapon> callback) {
-
-            AsyncOperationHandle<IList<Weapon>> opHandle = Addressables.LoadAssetsAsync<Weapon>(
-                "Weapon",
-                (weapon) => {
-
-                    if ( weapon == null )
-                        return;
-
-                    Weapon weaponInstance = ScriptableObject.Instantiate(weapon);
-                    weaponInstance.name = weaponInstance.name.Replace("(Clone)", "");
-
-                    callback?.Invoke( weaponInstance );
-
+        public WeaponCostume costume {
+            get {
+                if (_costume == null) {
+                    SetCostume(_baseCostume);
                 }
-            );
-        }
-
-        public static Weapon Get(string weaponName) {
-            // Get Requested Weapon
-            AsyncOperationHandle<Weapon> opHandle = Addressables.LoadAssetAsync<Weapon>( WeaponNameToPath(weaponName) ); 
-
-            Weapon weaponInstance = opHandle.WaitForCompletion();
-
-            // If not found, get Default Weapon : Unarmed
-            if (weaponInstance == null) {
-                Debug.LogWarning($"Error getting weapon {weaponName}");
-                return GetDefault();
+                return _costume;
             }
-
-            weaponInstance = ScriptableObject.Instantiate( weaponInstance );
-            weaponInstance.name = weaponInstance.name.Replace("(Clone)", "");
-
-            return weaponInstance;
-        }
-        public static Weapon GetDefault() {
-            AsyncOperationHandle<Weapon> opHandle = Addressables.LoadAssetAsync<Weapon>( defaultPath );
-
-            Weapon weaponInstance = ScriptableObject.Instantiate( opHandle.WaitForCompletion() );
-            weaponInstance.name = weaponInstance.name.Replace("(Clone)", "");
-
-            return weaponInstance;
+            set {
+                SetCostume(value);
+            }
         }
 
-        public static void GetAsync(string weaponName, Action<Weapon> callback) {
-            // Get Requested Weapon
-            AsyncOperationHandle<Weapon> opHandle = Addressables.LoadAssetAsync<Weapon>( WeaponNameToPath(weaponName) );
-            opHandle.Completed += operation => {
-
-                // If not found, get Default Weapon : Unarmed
-                if (operation.Status == AsyncOperationStatus.Failed) {
-                    Debug.LogWarning($"Error getting Weapon {weaponName}");
-                    GetDefaultAsync(callback);
-                    return;
-                }
-
-                Weapon weaponInstance = ScriptableObject.Instantiate( operation.Result );
-                weaponInstance.name = weaponInstance.name.Replace("(Clone)", "");
-
-                callback?.Invoke(weaponInstance);
-            };
-        }
-        public static void GetDefaultAsync(Action<Weapon> callback) {
-            AsyncOperationHandle<Weapon> opHandle = Addressables.LoadAssetAsync<Weapon>( defaultPath );
-            opHandle.Completed += operation => {
-
-                Weapon weaponInstance = ScriptableObject.Instantiate( operation.Result );
-                weaponInstance.name = weaponInstance.name.Replace("(Clone)", "");
-
-                callback?.Invoke(weaponInstance);
-            };
-        }
 
 
         public void SetCostume(WeaponCostume costume){
-            this.costume = costume;
+            _costume = costume;
             
             LoadModel();
-
         }
 
         public virtual void OnEquip(){
@@ -151,13 +92,13 @@ namespace SeleneGame.Core {
         
 
 
-
-        public enum WeaponType {
-            OneHanded = 1,
-            TwoHanded,
-            Staff,
-            DoubleOneHanded,
-            Sparring
+        [Flags]
+        public enum WeaponType : byte {
+            OneHanded = 1 << 0,
+            TwoHanded = 1 << 1,
+            Staff = 1 << 2,
+            DoubleOneHanded = 1 << 3,
+            Sparring = 1 << 4
         };
 
     }

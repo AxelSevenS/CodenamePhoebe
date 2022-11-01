@@ -12,18 +12,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 236b69ba591e94042982426d8c7e2061, type: 3}
   m_Name: GravityBike
   m_EditorClassIdentifier: 
-  displayName: Gravity Bicycle
-  baseCostume: {fileID: 11400000, guid: 32c5215d78678094a90500600c9a8ab2, type: 2}
-  maxHealth: 0
-  size: {x: 0, y: 0, z: 0}
-  stepHeight: 0
-  acceleration: 20
-  weight: 20
-  jumpHeight: 20
-  baseSpeed: 32
-  sprintMultiplier: 1
-  slowMultiplier: 1
-  swimMultiplier: 0
-  evadeSpeed: 0
-  evadeDuration: 0
-  evadeCooldown: 0
+  _baseCostume: {fileID: 11400000, guid: 32c5215d78678094a90500600c9a8ab2, type: 2}
+  _displayName: Gravity Bicycle
+  _maxHealth: 0
+  _size: {x: 0.82, y: 0.82, z: 4.7}
+  _stepHeight: 0
+  _weight: 0
+  _jumpHeight: 0
+  _baseSpeed: 17
+  _acceleration: 3
+  _sprintMultiplier: 0
+  _slowMultiplier: 0
+  _swimMultiplier: 0
+  _evadeSpeed: 0
+  _evadeDuration: 0
+  _evadeCooldown: 0
+  _costume: {fileID: 0}
+  _model: {fileID: 0}
+  _costumeData: {fileID: 0}

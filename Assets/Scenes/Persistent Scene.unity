@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 1082643071}
-  m_IndirectSpecularColor: {r: 0.18355092, g: 0.22767362, b: 0.29735753, a: 1}
+  m_IndirectSpecularColor: {r: 0.18355148, g: 0.22767434, b: 0.29735872, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -10982,8 +10982,10 @@ MonoBehaviour:
   lightLevel: 1
   sunRotation: {x: 0, y: 0, z: 0, w: 0}
   moonRotation: {x: 0, y: 0, z: 0, w: 0}
-  _ambientLight: {r: 0.6707013, g: 0.7613873, b: 0.9056604, a: 1}
-  ambientLight: {r: 0.6707013, g: 0.7613873, b: 0.9056604, a: 1}
+  _ambientLight: {r: 0.49019608, g: 0.5592482, b: 0.7176471, a: 1}
+  ambientLight: {r: 0.49019608, g: 0.5592482, b: 0.7176471, a: 1}
+  _ambientStrength: 0.14
+  ambientStrength: 0.14
   _windDirection: {x: 1, y: 0, z: 1}
   windDirection: {x: 1, y: 0, z: 1}
   snowAmount: 0
@@ -16613,7 +16615,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &852649672
 Transform:
   m_ObjectHideFlags: 0
@@ -16621,14 +16623,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 852649671}
-  m_LocalRotation: {x: 0.55914944, y: 0.2299883, z: -0.779245, w: 0.16502883}
+  m_LocalRotation: {x: -0.87729454, y: -0.114393935, z: 0.38758716, w: -0.2589295}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 520375517}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 147.113, y: 108.677, z: 0}
+  m_LocalEulerAnglesHint: {x: 147.113, y: 407.672, z: 0}
 --- !u!108 &852649674
 Light:
   m_ObjectHideFlags: 0
@@ -16641,7 +16643,7 @@ Light:
   m_Type: 1
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 0.14
+  m_Intensity: 0.01
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -22752,7 +22754,7 @@ Light:
   m_Type: 1
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 0.5
+  m_Intensity: 0.4
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -29304,29 +29306,47 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 136
+      inSlope: 0.43106425
+      outSlope: 0.43106425
+      tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
-      outWeight: 0.33333334
+      outWeight: 0.29762033
     - serializedVersion: 3
-      time: 0.19787118
+      time: 0.09583181
+      value: 0.8183885
+      inSlope: 2.6125596
+      outSlope: 2.6125596
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.3513578
+    - serializedVersion: 3
+      time: 0.25
       value: 1
-      inSlope: 0.023822755
-      outSlope: 0.023822755
-      tangentMode: 136
+      inSlope: -0.0014041321
+      outSlope: -0.0014041321
+      tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
-      outWeight: 0.33333334
+      outWeight: 0.4301042
     - serializedVersion: 3
-      time: 0.39583743
-      value: 1.0023575
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 136
+      time: 0.65
+      value: 1
+      inSlope: 0.0076474375
+      outSlope: 0.0076474375
+      tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
+      inWeight: 0.55489856
+      outWeight: 0.64447266
+    - serializedVersion: 3
+      time: 0.9
+      value: 0.1
+      inSlope: -3.1464844
+      outSlope: -3.1464844
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.07664612
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 1
