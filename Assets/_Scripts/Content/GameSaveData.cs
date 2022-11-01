@@ -16,16 +16,6 @@ namespace SeleneGame.Content
         // General Save Data
 
         public ControlSaveData controls = new ControlSaveData();
-        public uint timeOfLastSave = 0;
-        public uint totalTimePlayed = 0;
-
-
-        public System.DateTime GetTimeOfLastSave(){
-            return SaveData.epochStart.AddSeconds(timeOfLastSave);
-        }
-        public System.TimeSpan GetTotalPlaytime(){
-            return System.TimeSpan.FromSeconds(totalTimePlayed);
-        }
         
         public override void Save() {
 

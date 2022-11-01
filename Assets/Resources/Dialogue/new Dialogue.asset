@@ -20,11 +20,9 @@ MonoBehaviour:
     dialogueEvents:
     - eventType: 1
       entity: {fileID: 0}
-      characterCostume:
-        m_AssetGUID: 32c5215d78678094a90500600c9a8ab2
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_EditorAssetChanged: 0
+      characterCostume: {fileID: 11400000, guid: 32c5215d78678094a90500600c9a8ab2,
+        type: 2}
+      dialogue: {fileID: 0}
   - emotion: 1
     usePlayerEntity: 1
     _entity: {fileID: 0}
@@ -32,20 +30,15 @@ MonoBehaviour:
     dialogueEvents:
     - eventType: 1
       entity: {fileID: 0}
-      characterCostume:
-        m_AssetGUID: dc629ef132d887b4696c909c7ba4033c
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_EditorAssetChanged: 0
+      characterCostume: {fileID: 11400000, guid: dc629ef132d887b4696c909c7ba4033c,
+        type: 2}
+      dialogue: {fileID: 0}
   - emotion: 2
     usePlayerEntity: 1
     _entity: {fileID: 0}
     text: ...
     dialogueEvents:
-    - eventType: 2
+    - eventType: 3
       entity: {fileID: 0}
-      characterCostume:
-        m_AssetGUID: 
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_EditorAssetChanged: 0
+      characterCostume: {fileID: 0}
+      dialogue: {fileID: 0}

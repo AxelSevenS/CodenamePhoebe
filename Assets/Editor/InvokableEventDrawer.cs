@@ -18,15 +18,15 @@ namespace SeleneGame.Core {
             EditorGUI.PropertyField( rectType, propEventType, GUIContent.none );
 
             switch (propEventType.enumValueIndex) {
-                    // DisplayDialogueInfo(position, property);
-                    // break;
                 case 0:
                     DisplayEntityCostumeInfo(position, property);
                     break;
                 case 1:
                     DisplayPlayerCostumeInfo(position, property);
                     break;
-                // case 2:
+                case 2:
+                    DisplayDialogueInfo(position, property);
+                    break;
             }
 
             EditorGUI.EndProperty();
@@ -36,12 +36,12 @@ namespace SeleneGame.Core {
             int eventType = property.FindPropertyRelative( "eventType" ).enumValueIndex;
 
             switch (eventType) {
-                    // return GetDialogueInfoHeight(property);
                 case 0:
                     return GetEntityCostumeInfoHeight(property);
                 case 1:
                     return GetPlayerCostumeInfoHeight(property);
-                // case 2:
+                case 2:
+                    return GetDialogueInfoHeight(property);
                 default:
                     return GetDropdownHeight(property);
             }
@@ -53,16 +53,16 @@ namespace SeleneGame.Core {
         }
 
 
-        // private void DisplayDialogueInfo(Rect position, SerializedProperty property) {
-        //     SerializedProperty propDialogue = property.FindPropertyRelative( "dialogue" );
-        //     Rect rectDialogue = new Rect(position.x, position.y + lineSpace, position.width, EditorGUI.GetPropertyHeight( propDialogue ));
-        //     EditorGUI.PropertyField( rectDialogue, propDialogue, GUIContent.none );
-        // }
-        // private float GetDialogueInfoHeight(SerializedProperty property) {
-        //     float propEventTypeHeight = GetDropdownHeight(property);
-        //     float propDialogueHeight = EditorGUI.GetPropertyHeight( property.FindPropertyRelative( "dialogue" ) );
-        //     return propEventTypeHeight + propDialogueHeight + EditorGUIUtility.standardVerticalSpacing;
-        // }
+        private void DisplayDialogueInfo(Rect position, SerializedProperty property) {
+            SerializedProperty propDialogue = property.FindPropertyRelative( "dialogue" );
+            Rect rectDialogue = new Rect(position.x, position.y + lineSpace, position.width, EditorGUI.GetPropertyHeight( propDialogue ));
+            EditorGUI.PropertyField( rectDialogue, propDialogue, GUIContent.none );
+        }
+        private float GetDialogueInfoHeight(SerializedProperty property) {
+            float propEventTypeHeight = GetDropdownHeight(property);
+            float propDialogueHeight = EditorGUI.GetPropertyHeight( property.FindPropertyRelative( "dialogue" ) );
+            return propEventTypeHeight + propDialogueHeight + EditorGUIUtility.standardVerticalSpacing;
+        }
 
 
         private void DisplayEntityCostumeInfo(Rect position, SerializedProperty property) {

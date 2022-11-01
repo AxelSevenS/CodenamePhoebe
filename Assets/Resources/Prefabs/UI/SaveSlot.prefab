@@ -459,16 +459,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 1080874531905611226}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 25c84ba5ad13d654db6126c866e9a9fe, type: 3}
+  m_Script: {fileID: 11500000, guid: a14c0f381d4c047479cd8b2e8e90c446, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  elementUp: {fileID: 0}
+  elementDown: {fileID: 0}
+  elementLeft: {fileID: 0}
+  elementRight: {fileID: 0}
   background: {fileID: 1080874531905611204}
-  bgUnselected: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  bgUnselected: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
   bgSelected: {fileID: 10911, guid: 0000000000000000f000000000000000, type: 0}
-  bgClicked: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  bgEmptyUnselected: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  bgEmptySelected: {fileID: 10911, guid: 0000000000000000f000000000000000, type: 0}
-  bgEmptyClicked: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  bgClicked: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  bgEmptyUnselected: {fileID: 10917, guid: 0000000000000000f000000000000000, type: 0}
+  bgEmptySelected: {fileID: 10917, guid: 0000000000000000f000000000000000, type: 0}
+  bgEmptyClicked: {fileID: 10917, guid: 0000000000000000f000000000000000, type: 0}
   slotNumber: 1
   saveInfo: {fileID: 1080874530665410874}
   slotNumberText: {fileID: 1937663121190942950}

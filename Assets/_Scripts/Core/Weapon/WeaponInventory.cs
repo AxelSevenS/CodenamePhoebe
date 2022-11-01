@@ -8,7 +8,7 @@ namespace SeleneGame.Core {
     [System.Serializable]
     public abstract class WeaponInventory : IEnumerable {
 
-        protected ArmedEntity entity;
+        [SerializeField] protected ArmedEntity entity;
         
 
         public abstract int Count { get; }

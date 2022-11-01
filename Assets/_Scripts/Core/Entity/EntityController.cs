@@ -7,7 +7,7 @@ namespace SeleneGame.Core {
     [DisallowMultipleComponent]
     public class EntityController : MonoBehaviour {
 
-        private Entity _entity;
+        [SerializeField] private Entity _entity;
 
         [Header("Input")]
 

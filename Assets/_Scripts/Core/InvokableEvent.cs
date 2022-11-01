@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.AddressableAssets;
 
+using SeleneGame.Core.UI;
 
 namespace SeleneGame.Core {
     
@@ -12,6 +13,7 @@ namespace SeleneGame.Core {
         public EventType eventType;
         public Entity entity;
         public CharacterCostume characterCostume;
+        public Dialogue dialogue;
 
 
         public void Invoke(GameObject gameObject){
@@ -21,9 +23,12 @@ namespace SeleneGame.Core {
                     entity.SetCostume(characterCostume);
                     break;
                 case EventType.SetPlayerCostume:
-                    if (entity == null || characterCostume == null) break;
-                    entity.SetCostume(characterCostume);
+                    if (characterCostume == null) break;
                     PlayerEntityController.current.entity.SetCostume(characterCostume);
+                    break;
+                case EventType.StartDialogue:
+                    if (dialogue == null) break;
+                    DialogueController.current.StartDialogue(dialogue, gameObject);
                     break;
                 case EventType.Destroy:
                     Object.Destroy(gameObject);
@@ -32,6 +37,6 @@ namespace SeleneGame.Core {
         }
 
 
-        public enum EventType { SetEntityCostume, SetPlayerCostume, Destroy };
+        public enum EventType { SetEntityCostume, SetPlayerCostume, StartDialogue, Destroy };
     }
 }
