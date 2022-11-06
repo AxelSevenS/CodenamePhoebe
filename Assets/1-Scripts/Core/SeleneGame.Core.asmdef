@@ -1,0 +1,21 @@
+{
+    "name": "SeleneGame.Core",
+    "rootNamespace": "SeleneGame",
+    "references": [
+        "Unity.InputSystem",
+        "Unity.RenderPipelines.Universal.Runtime",
+        "Unity.ResourceManager",
+        "Unity.TextMeshPro",
+        "Seven.Utility",
+        "Unity.Addressables"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

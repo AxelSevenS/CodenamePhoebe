@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: b14c85f9a9748274eab8dbd6f623bec0
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - costume: {fileID: 11400000, guid: 4fcb14e16ae7e7b4287ef3e8b382de17, type: 2}
+  - controller: {instanceID: 0}
+  - rightModel: {instanceID: 0}
+  - leftModel: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

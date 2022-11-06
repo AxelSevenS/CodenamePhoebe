@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 3445b2d4e17c4ff4b9bef7ea09714c47
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - noiseMap: {fileID: 2800000, guid: a0cf8f65c398c8849bac5ac33a3f1a5f, type: 3}
+  - rb: {instanceID: 0}
+  - particles: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
