@@ -17,20 +17,30 @@ namespace SeleneGame.Core.UI {
 
 
 
-        public WeaponCostume weaponCostume {
-            get => _weaponCostume;
-            set {
-                _weaponCostume = value;
-                weaponCostumePortrait.sprite = _weaponCostume.portrait;
-                weaponCostumeName.text = _weaponCostume.displayName;
-            }
+        [SerializeField] private Sprite nullPortrait;
+
+        public Sprite portraitSprite {
+            get => weaponCostumePortrait.sprite;
+            set => weaponCostumePortrait.sprite = value;
+        }
+
+        public string nameText {
+            get => weaponCostumeName.text;
+            set => weaponCostumeName.text = value;
+        }
+
+
+        public void SetDisplayWeaponCostume(WeaponCostume weaponCostume) {
+            _weaponCostume = weaponCostume;
+            portraitSprite = weaponCostume?.portrait ?? nullPortrait;
+            nameText = weaponCostume?.displayName ?? "None";
         }
 
 
 
         public override void OnPointerClick(PointerEventData eventData) {
             base.OnPointerClick(eventData);
-            Debug.Log($"Weapon case {_weaponCostume.name} clicked");
+            Debug.Log($"Weapon case {nameText} clicked");
             WeaponCostumeSelectionMenuController.current.OnSelectWeaponCostume(_weaponCostume);
         }
     }

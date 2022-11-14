@@ -55,10 +55,14 @@ namespace SeleneGame.Core.UI {
         }
         
 
-        public void ReplaceWeaponCostume(Weapon weapon) {
+        public void ReplaceWeaponCostume(int weaponIndex, ArmedEntity armedEntity) {
+
+            Weapon weapon = armedEntity.weapons[weaponIndex];
+
+            if (weapon == null) return;
 
             onWeaponCostumeSelected = (selectedCostume) => {
-                weapon.SetCostume(selectedCostume);
+                weapon.SetCostume((selectedCostume));
                 OnCancel();
             };
 
@@ -70,7 +74,7 @@ namespace SeleneGame.Core.UI {
 
         public void OnSelectWeaponCostume(WeaponCostume weaponCostume) {
             if ( !Enabled ) return;
-            onWeaponCostumeSelected?.Invoke(weaponCostume);
+            onWeaponCostumeSelected?.Invoke( WeaponCostume.GetInstanceOf(weaponCostume) );
         }
 
         private void GetEquippableCostumes(Weapon weapon) {
@@ -90,7 +94,7 @@ namespace SeleneGame.Core.UI {
                     if ( !costume.name.Contains(weapon.name) && costume.name.Contains("_Base") && !costume.equippableOn.HasFlag(weapon.weaponType) )
                         return;
 
-                    if ( weaponCostumes.Exists( (existingCase) => { return existingCase.weaponCostume == costume; }) ) 
+                    if ( weaponCostumes.Exists( (existingCase) => { return existingCase.nameText == costume.name; }) ) 
                         return;
 
                     CreateWeaponCostumeCase(costume);
@@ -103,7 +107,8 @@ namespace SeleneGame.Core.UI {
         private void CreateWeaponCostumeCase(WeaponCostume costume){
             var caseObject = Instantiate(weaponCostumeCaseTemplate, weaponCostumeSelectionContainer.transform);
             var costumeCase = caseObject.GetComponentInChildren<WeaponCostumeCase>();
-            costumeCase.weaponCostume = costume;
+
+            costumeCase.SetDisplayWeaponCostume(costume);
             
             weaponCostumes.Add( costumeCase );
             if (weaponCostumes.Count > 1) {

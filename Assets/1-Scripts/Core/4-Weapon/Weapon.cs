@@ -25,6 +25,8 @@ namespace SeleneGame.Core {
         public WeaponType weaponType => _weaponType;
         public float WeightModifier => weightModifier;
 
+        // public GameObject model => costume.modelInstance;
+
 
 
         public void Initialize( ArmedEntity entity, WeaponCostume costume = null) {
@@ -32,7 +34,17 @@ namespace SeleneGame.Core {
                 throw new InvalidOperationException("Weapon already initialized");
 
             this.entity = entity;
-            SetCostume( costume ?? baseCostume );
+            SetCostume( WeaponCostume.GetInstanceOf(costume ?? baseCostume) );
+        }
+
+        public override void SetCostume(WeaponCostume costume) {
+            if (costume == null) return;
+
+            _costume?.UnloadModel();
+
+            _costume = costume;
+            _costume.Initialize(entity);
+            _costume.LoadModel();
         }
         
 
@@ -44,8 +56,17 @@ namespace SeleneGame.Core {
         }
 
 
-        public abstract void Display();
-        public abstract void Hide();
+        public virtual void Display() {
+            if (costume.modelInstance == null) return;
+
+            costume.modelInstance.SetActive(true);
+        }
+
+        public virtual void Hide() {
+            if (costume.modelInstance == null) return;
+
+            costume.modelInstance.SetActive(false);
+        }
 
 
         protected internal virtual void Update( ){;}

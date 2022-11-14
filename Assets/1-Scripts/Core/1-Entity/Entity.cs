@@ -42,13 +42,13 @@ namespace SeleneGame.Core {
         [SerializeReference][ReadOnly] private State _state;
 
         [Tooltip("The current rotation of the Entity.")]
-        [SerializeField] private QuaternionData _rotation;
-
-        [Tooltip("The current health of the Entity.")]
-        [SerializeField] private float _health;
+        public QuaternionData rotation;
 
         [Tooltip("If the Entity is currently on the ground.")]
-        [SerializeField] private BoolData _onGround;
+        public BoolData onGround;
+
+        [Tooltip("The current health of the Entity.")]
+        private float _health;
 
 
         [Header("Movement")]
@@ -60,10 +60,10 @@ namespace SeleneGame.Core {
         [SerializeField] private Vector3 _relativeForward;
 
         [Tooltip("The direction in which the Entity is currently moving.")]
-        [SerializeField] private Vector3Data _moveDirection;
+        public Vector3Data moveDirection;
     
         [Tooltip("The direction in which the Entity is attracted by Gravity.")]
-        [SerializeField] private Vector3 _gravityDown = Vector3.down;
+        public Vector3 gravityDown = Vector3.down;
 
 
 
@@ -178,20 +178,6 @@ namespace SeleneGame.Core {
         }
 
         /// <summary>
-        /// If the Entity is currently on the ground.
-        /// </summary>
-        public ref BoolData onGround {
-            get => ref _onGround;
-        }
-
-        /// <summary>
-        /// The current rotation of the Entity.
-        /// </summary>
-        public ref QuaternionData rotation {
-            get => ref _rotation;
-        }
-
-        /// <summary>
         /// The forward direction in absolute space of the Entity.
         /// </summary>
         public Vector3 absoluteForward { 
@@ -213,24 +199,12 @@ namespace SeleneGame.Core {
             }
         }
 
-        public Vector3Data moveDirection {
-            get => _moveDirection;
-        }
-
-        /// <summary>
-        /// The direction in which the Entity is attracted by Gravity.
-        /// </summary>
-        public Vector3 gravityDown { 
-            get => _gravityDown; 
-            set => _gravityDown = value.normalized;
-        }
-
         /// <summary>
         /// The force of gravity applied to the Entity.
         /// </summary>
         public float gravityMultiplier => state.gravityMultiplier;
 
-        public bool isIdle => _moveDirection.sqrMagnitude == 0;
+        public bool isIdle => moveDirection.sqrMagnitude == 0;
 
         public float fallVelocity => Vector3.Dot(rigidbody.velocity, -gravityDown);
         public bool inWater => physicsComponent.inWater;
@@ -546,7 +520,7 @@ namespace SeleneGame.Core {
         /// </summary>
         private void ExecuteMovement() {
 
-            _moveDirection.SetVal( _totalMovement.normalized ) ;
+            moveDirection.SetVal( _totalMovement.normalized ) ;
 
             if (_totalMovement.sqrMagnitude == 0f) return;
 
@@ -642,6 +616,8 @@ namespace SeleneGame.Core {
                 enabled = false;
             }
         }
+
+        private void Reset() => ResetEntity();
     
         [ContextMenu("Reset")]
         private void ResetEntity() => EntityReset();

@@ -63,8 +63,8 @@ namespace SeleneGame.Core.UI {
 
             // if (PlayerEntityController.current.entity is ArmedEntity armed){
 
-            foreach (Weapon weapon in selectedEntity.weapons){
-                CreateWeaponSlot(weapon);
+            for (int i = 0; i < selectedEntity.weapons.Count; i++) {
+                CreateWeaponSlot(i, selectedEntity);
             }
 
             // } else {
@@ -78,15 +78,16 @@ namespace SeleneGame.Core.UI {
 
         }
 
-        private void CreateWeaponSlot(Weapon weapon){
+        private void CreateWeaponSlot(int index, ArmedEntity selectedEntity) {
             var slotObject = Instantiate(weaponSlotTemplate, weaponInventoryContainer.transform);
             var weaponSlot = slotObject.GetComponentInChildren<WeaponSlot>();
-            weaponSlot.weapon = weapon;
-            weaponSlot.primaryAction = (weapon) => {
-                WeaponSelectionMenuController.current.ReplaceWeapon(weapon, selectedEntity);
+
+            weaponSlot.SetDisplayWeapon(selectedEntity.weapons[index]);
+            weaponSlot.primaryAction = () => {
+                WeaponSelectionMenuController.current.ReplaceWeapon(index, selectedEntity);
             };
-            weaponSlot.secondaryAction = (weapon) => {
-                WeaponCostumeSelectionMenuController.current.ReplaceWeaponCostume(weapon);
+            weaponSlot.secondaryAction = () => {
+                WeaponCostumeSelectionMenuController.current.ReplaceWeaponCostume(index, selectedEntity);
             };
             
             weapons.Add( weaponSlot );

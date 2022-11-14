@@ -73,7 +73,7 @@ namespace SeleneGame.Core.UI {
 
         public void OnSelectCharacterCostume(CharacterCostume characterCostume) {
             if ( !Enabled ) return;
-            onCharacterCostumeSelected?.Invoke(characterCostume);
+            onCharacterCostumeSelected?.Invoke( CharacterCostume.GetInstanceOf(characterCostume) );
         }
 
         private void GetEquippableCostumes() {
@@ -84,7 +84,7 @@ namespace SeleneGame.Core.UI {
             characterCostumes = new();
 
             // Get the Default Costume (corresponds to an empty slot, should be in the first space)
-            CreateCharacterCostumeCase(currentCharacter.baseCostume);
+            CreateCharacterCostumeCase( currentCharacter.baseCostume );
             ResetGamePadSelection();
 
             // and then get all the other costumes.

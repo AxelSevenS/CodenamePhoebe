@@ -15,22 +15,32 @@ namespace SeleneGame.Core.UI {
         [SerializeField] private Image weaponPortrait;
         [SerializeField] private TextMeshProUGUI weaponName;
 
+        [SerializeField] private Sprite nullPortrait;
 
 
-        public Weapon weapon {
-            get => _weapon;
-            set {
-                _weapon = value;
-                weaponPortrait.sprite = _weapon.baseCostume.portrait;
-                weaponName.text = _weapon.name;
-            }
+
+        public Sprite portraitSprite {
+            get => weaponPortrait.sprite;
+            set => weaponPortrait.sprite = value;
+        }
+
+        public string nameText {
+            get => weaponName.text;
+            set => weaponName.text = value;
+        }
+
+
+        public void SetDisplayWeapon(Weapon weapon) {
+            _weapon = weapon;
+            portraitSprite = weapon?.baseCostume?.portrait ?? nullPortrait;
+            nameText = weapon?.displayName ?? "None";
         }
 
 
 
         public override void OnPointerClick(PointerEventData eventData) {
             base.OnPointerClick(eventData);
-            Debug.Log($"Weapon case {_weapon.name} clicked");
+            Debug.Log($"Weapon case {weaponName.text} clicked");
             WeaponSelectionMenuController.current.OnSelectWeapon(_weapon);
         }
     }

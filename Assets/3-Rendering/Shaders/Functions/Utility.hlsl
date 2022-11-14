@@ -197,13 +197,14 @@ half FractalNoise(half2 uv) {
 
 half MovingFractalNoise(half2 uv, float Time, half Scale) {
 
-    half noise1 = Perlin( half2(Time,-Time) + uv * Scale );
-    half noise2 = Perlin( half2(-Time,Time) + uv * Scale * 2 ) * 0.5;
-    half noise3 = Perlin( half2(Time,Time) + uv * Scale * 4 ) * 0.25;
-    half noise4 = Perlin( half2(-Time,-Time) + uv * Scale * 8 ) * 0.125;
-    half noise5 = Perlin( half2(Time,-Time) + uv * Scale * 16 ) * 0.0625;
 
-    return saturate(noise1 + noise2 + noise3 + noise4 + noise5);
+    half noise1 = Perlin( half2(Time,Time) + uv * Scale );
+    half noise2 = Perlin( half2(Time,-Time) + uv * Scale * 2 ) * 0.5;
+    half noise3 = Perlin( half2(-Time,Time) + uv * Scale * 4 ) * 0.25;
+    half noise4 = Perlin( half2(-Time,-Time) + uv * Scale * 8 ) * 0.125;
+    // half noise5 = Perlin( half2(Time,-Time) + uv * Scale * 16 ) * 0.0625;
+
+    return saturate(noise1 + noise2 + noise3 + noise4/*  + noise5 */);
 }
 
 half4 FlowMap(Texture2D Texture, Texture2D Flowmap, float2 uv, float time, float strength, bool isNormalMap = false){
@@ -275,5 +276,22 @@ float3 ComputeNormals(float3 normalWS, float3 tangentWS, float3 bitangentWS, flo
     };
     return normalize( mul(mtxTangentToWorld, normalTS) );
 }
+
+float3 ComputeTangentToWorldNormal(float3 normalOS, float3 tangentOS, float3 bitangentOS, float3 normalTS){
+    float3 normalWS = ComputeNormals(
+        TransformObjectToWorldNormal(normalOS),
+        TransformObjectToWorldNormal(tangentOS),
+        TransformObjectToWorldNormal(bitangentOS),
+        normalTS
+    );
+
+    return normalWS;
+}
+
+float3 ComputeTangentToWorldNormal(float3 normalOS, float3 tangentOS, float3 bitangentOS, float2 texPos, sampler2D normalMap){
+    float3 normalTS = UnpackNormal( tex2D(normalMap, texPos) );
+    return ComputeTangentToWorldNormal(normalOS, tangentOS, bitangentOS, normalTS);
+}
+
 
 #endif

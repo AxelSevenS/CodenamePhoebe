@@ -10,36 +10,38 @@ using TMPro;
 namespace SeleneGame.Core.UI {
 
     public class WeaponSlot : CustomButton {
-        
-        private Weapon _weapon;
 
-        public Action<Weapon> primaryAction;
-        public Action<Weapon> secondaryAction;
+        public Action primaryAction;
+        public Action secondaryAction;
 
         [SerializeField] private Image weaponPortrait;
         [SerializeField] private TextMeshProUGUI weaponName;
 
+        [SerializeField] private Sprite nullPortrait;
 
+        public Sprite portraitSprite {
+            get => weaponPortrait.sprite;
+            set => weaponPortrait.sprite = value;
+        }
 
-        public Weapon weapon {
-            get => _weapon;
-            set {
-                _weapon = value;
-                if ( _weapon?.costume?.portrait != null )
-                    weaponPortrait.sprite = _weapon.costume.portrait;
-                weaponName.text = _weapon.name;
-            }
+        public string nameText {
+            get => weaponName.text;
+            set => weaponName.text = value;
         }
 
 
+        public void SetDisplayWeapon(Weapon weapon) {
+            portraitSprite = weapon?.costume?.portrait ?? nullPortrait;
+            nameText = weapon?.displayName ?? "None";
+        }
 
         public override void OnPointerClick(PointerEventData eventData) {
             base.OnPointerClick(eventData);
-            Debug.Log($"Weapon slot {weapon.name} clicked");
+            Debug.Log($"Weapon slot {nameText} clicked");
             if (eventData.button == PointerEventData.InputButton.Left) {
-                primaryAction?.Invoke(weapon);
+                primaryAction?.Invoke();
             } else if (eventData.button == PointerEventData.InputButton.Right) {
-                secondaryAction?.Invoke(weapon);
+                secondaryAction?.Invoke();
             }
         }
     }

@@ -56,10 +56,10 @@ namespace SeleneGame.Core.UI {
         }
         
 
-        public void ReplaceWeapon(Weapon weapon, ArmedEntity armedEntity) {
+        public void ReplaceWeapon(int index, ArmedEntity armedEntity) {
 
             onWeaponSelected = (selectedWeapon) => {
-                armedEntity.weapons.Replace(weapon, selectedWeapon);
+                armedEntity.weapons.Set(index, selectedWeapon);
                 OnCancel();
             };
 
@@ -72,7 +72,7 @@ namespace SeleneGame.Core.UI {
 
         public void OnSelectWeapon(Weapon weapon) {
             if ( !Enabled ) return;
-            onWeaponSelected?.Invoke(weapon);
+            onWeaponSelected?.Invoke( Weapon.GetInstanceOf(weapon) );
         }
 
         private void GetEntityWeapons(ArmedEntity armedEntity) {
@@ -90,22 +90,23 @@ namespace SeleneGame.Core.UI {
             }
             weapons = new();
             
-            Weapon.GetDefaultInstanceAsync( (defaultWeapon) => {
+            Weapon.GetDefaultAssetAsync( (defaultWeapon) => {
 
                     // Get the Default Weapon (corresponds to an empty slot, should be in the first space)
-                    CreateWeaponCase(defaultWeapon);
+                    CreateWeaponCase(null);
                     ResetGamePadSelection();
 
                     // and then get all the other weapons.
-                    Weapon.GetInstances( (weapon) => {
+                    Weapon.GetAssets( (weapon) => {
                             // Don't include this weapon if it is already included.
-                            if ( weapons.Exists( (existingCase) => { return existingCase.weapon.name == weapon.name; }) ) 
+                            if ( weapons.Exists( (existingCase) => { return existingCase.nameText == weapon.name; }) ) 
                                 return;
 
                             // If the weapon is already equipped, show the current slot index on the weapon case
                             int index = -1;
                             for (int i = 0; i < equippedWeapons.Count; i++) {
-                                if ( equippedWeapons[i] == weapon ) {
+                                Weapon equippedWeapon = equippedWeapons[i];
+                                if ( equippedWeapon != null && equippedWeapon.name == weapon.name ) {
                                     index = i;
                                     break;
                                 }
@@ -123,7 +124,8 @@ namespace SeleneGame.Core.UI {
         private void CreateWeaponCase(Weapon weapon, int equippedIndex = -1){
             var caseObject = Instantiate(weaponCaseTemplate, weaponSelectionContainer.transform);
             var weaponCase = caseObject.GetComponentInChildren<WeaponCase>();
-            weaponCase.weapon = weapon;
+
+            weaponCase.SetDisplayWeapon(weapon);
             
             weapons.Add( weaponCase );
             if (weapons.Count > 1) {

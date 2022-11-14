@@ -23,3 +23,7 @@ MonoBehaviour:
   sadPortrait: {fileID: 0}
   happyPortrait: {fileID: 0}
   model: {fileID: 5074332062407804862, guid: 2ae8fe6e6b55ebf4bae00e625493cf50, type: 3}
+  attachedEntity: {fileID: 0}
+  modelInstance: {fileID: 0}
+  costumeData: {fileID: 0}
+  animator: {fileID: 0}

@@ -39,21 +39,21 @@ namespace SeleneGame.Core {
 
 
 
-        public void SetCostume(TCostume costume) {
-            if (costume == null)
-                throw new ArgumentNullException("costume");
+        public void SetCostume(string costumeName) {
+            SetCostume(Costume<TCostume>.GetInstance(costumeName));
+        }
+
+        public virtual void SetCostume(TCostume costume) {
+            if (costume == null) return;
 
             _costume = costume;
             LoadModel();
         }
 
-        public virtual void LoadModel() {
-            UnloadModel();
-            if(_costume == null) return;
-        }
 
-        public virtual void UnloadModel() {
-        }
+        public void LoadModel() => _costume?.LoadModel();
+
+        public void UnloadModel() => _costume?.UnloadModel();
 
         
 

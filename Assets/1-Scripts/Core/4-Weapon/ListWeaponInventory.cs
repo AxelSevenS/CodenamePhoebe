@@ -11,33 +11,20 @@ namespace SeleneGame.Core {
 
         [SerializeReference] [ReadOnly] private Weapon[] items;
         
-        private const int defaultIndex = 0;
         [SerializeField] private int currentIndex;
 
 
 
         public override int Count => items.Length;
 
-        public override Weapon current { get {
-            try {
-                return items[currentIndex];
-            } catch {
-                currentIndex = defaultIndex;
-                return items[currentIndex];
-            }
-        } }
+        public override Weapon current => Get(currentIndex) ?? defaultWeapon;
 
 
 
-        public ListWeaponInventory(ArmedEntity entity, int size){
-            currentIndex = defaultIndex;
-            
-            this.entity = entity;
+        public ListWeaponInventory(ArmedEntity entity, int size) : base(entity) {
+            currentIndex = 0;
 
             items = new Weapon[size];
-            for (int i = 0; i < items.Length; i++) {
-                SetToDefault( i );
-            }
         }
 
 
@@ -53,10 +40,8 @@ namespace SeleneGame.Core {
         }
 
         public override void Remove(int index) {
-            if (index == defaultIndex) return;
-
             try {
-                SetToDefault( index );
+                items[index] = null;
             } catch (System.Exception e) {
                 Debug.LogError($"Error removing weapon at index {index} in WeaponInventory : {e.Message}.");
             }
@@ -72,7 +57,6 @@ namespace SeleneGame.Core {
                 currentIndex = index;
             } else {
                 Debug.LogError($"Error switching to weapon at index {index} in WeaponInventory; Switching to Default Weapon");
-                currentIndex = defaultIndex;
             }
 
             current.Display();

@@ -15,10 +15,6 @@ namespace SeleneGame.Content {
 
         [Header("Mask Data")]
         [SerializeField] [ReadOnly] private MaskedEntity entity;
-        [SerializeField] [ReadOnly] private Animator _animator;
-
-        [SerializeField] [ReadOnly] private GameObject _model;
-        [SerializeField] [ReadOnly] private CostumeData _costumeData;
         
 
         private float maskPosT = 1f;
@@ -32,35 +28,30 @@ namespace SeleneGame.Content {
         private Vector3 rightPosition => entity.transform.rotation * new Vector3(1.2f, 1.3f, -0.8f);
         private Vector3 leftPosition => entity.transform.rotation * new Vector3(-1.2f, 1.3f, -0.8f);
 
+        public GameObject model => costume.modelInstance;
+
 
 
         public void Initialize(MaskedEntity entity, EidolonMaskCostume costume = null) {
             if (this.entity != null) {
-                throw new InvalidOperationException("Mask already has an entity");
+                throw new InvalidOperationException("Mask already initialized");
             }
 
             this.entity = entity;
-            SetCostume(costume ?? baseCostume);
+            SetCostume( EidolonMaskCostume.GetInstanceOf(costume ?? baseCostume) );
 
             relativePos = rightPosition;
             hoveringPosition = entity.transform.position + relativePos;
         }
 
-        public override void LoadModel() {
-            base.LoadModel();
+        public override void SetCostume(EidolonMaskCostume costume) {
+            if (costume == null) return;
 
-            _model = Instantiate(_costume.model);
-            _model.transform.name = $"{name}Model";
-            _model.transform.SetParent(entity.transform.parent);
-            _costumeData = _model.GetComponent<CostumeData>();
-            if ( _model.TryGetComponent(out Animator animator) ) {
-                _animator = animator;
-            } else {
-                _animator = _model.AddComponent<Animator>();
-            }
-        }
-        public override void UnloadModel() {
-            _model = GameUtility.SafeDestroy(_model);
+            _costume?.UnloadModel();
+
+            _costume = costume;
+            _costume.Initialize(entity);
+            _costume.LoadModel();
         }
 
         public void SetState(bool onFace) {
@@ -85,8 +76,8 @@ namespace SeleneGame.Content {
             hoveringPosition = Vector3.Lerp(hoveringPosition, entity.transform.position + relativePos, 15f * GameUtility.timeDelta);
             maskPosT = Mathf.MoveTowards(maskPosT, System.Convert.ToSingle(onFace), 4f * GameUtility.timeDelta);
 
-            _animator.SetBool("OnFace", onFace);
-            _animator.SetFloat("OnRight", onRight ? 1f : 0f);
+            costume.animator.SetBool("OnFace", onFace);
+            costume.animator.SetFloat("OnRight", onRight ? 1f : 0f);
 
             bool positionBlocked(Vector3 position) {
                 return Physics.SphereCast(entity.transform.position, 0.35f, position, out _, position.magnitude, Global.GroundMask);
@@ -100,8 +91,8 @@ namespace SeleneGame.Content {
                 headTransform.position + headTransform.forward
             );
 
-            _model.transform.position = currentCurve.GetPoint(maskPosT).position;
-            _model.transform.rotation = Quaternion.Slerp(entity.transform.rotation, headTransform.rotation, maskPosT);
+            costume.modelInstance.transform.position = currentCurve.GetPoint(maskPosT).position;
+            costume.modelInstance.transform.rotation = Quaternion.Slerp(entity.transform.rotation, headTransform.rotation, maskPosT);
         }
     }
 

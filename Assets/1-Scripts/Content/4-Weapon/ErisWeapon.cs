@@ -11,27 +11,14 @@ namespace SeleneGame.Weapons {
     [CreateAssetMenu(fileName = "Eris", menuName = "Weapon/Eris")]
     public sealed class ErisWeapon : Weapon {
 
-        private GameObject model;
 
-        // [SerializeField] private BoolData gravitySlide = new BoolData();
+        // public override void Display() {
+        //     costume.modelInstance?.SetActive(true);
+        // }
 
-        public override void LoadModel() {
-            if (costume.model != null) {
-                model = Instantiate(costume.model, entity.transform);
-            }
-        }
-        public override void UnloadModel() {
-            model = GameUtility.SafeDestroy(model);
-        }
-
-
-        public override void Display() {
-            model?.SetActive(true);
-        }
-
-        public override void Hide() {
-            model?.SetActive(false);
-        }
+        // public override void Hide() {
+        //     costume.modelInstance?.SetActive(false);
+        // }
 
 
         

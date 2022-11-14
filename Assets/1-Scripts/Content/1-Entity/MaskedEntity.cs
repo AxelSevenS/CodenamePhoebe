@@ -141,11 +141,11 @@ namespace SeleneGame.Content {
             base.Awake();
             
             
-            if (speedlines == null) {
-                GameObject speedlinesObject = GameObject.Instantiate(Resources.Load("Prefabs/Effects/Speedlines"), EffectManager.current.transform) as GameObject;
-                speedlines = speedlinesObject.GetComponent<SpeedlinesEffect>();
-                speedlines.SetFollowedObject(gameObject);
-            }
+            // if (speedlines == null) {
+            //     GameObject speedlinesObject = GameObject.Instantiate(Resources.Load("Prefabs/Effects/Speedlines"), EffectManager.current.transform) as GameObject;
+            //     speedlines = speedlinesObject.GetComponent<SpeedlinesEffect>();
+            //     speedlines.SetFollowedObject(gameObject);
+            // }
         }
 
         protected override void EntityReset(){

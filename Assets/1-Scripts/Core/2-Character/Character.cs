@@ -37,9 +37,6 @@ namespace SeleneGame.Core {
         [Header("Character Data")]
         [SerializeField] [ReadOnly] protected Entity entity;
 
-        [SerializeField] [ReadOnly] private GameObject _model;
-        [SerializeField] [ReadOnly] private CostumeData _costumeData;
-
 
 
         public float maxHealth => _maxHealth;
@@ -60,24 +57,28 @@ namespace SeleneGame.Core {
 
         public float totalEvadeDuration => evadeDuration + evadeCooldown;
 
+        public GameObject model => costume.modelInstance;
+        public CostumeData costumeData => _costume.costumeData;
 
-
-        public CostumeData costumeData => _costumeData;
-        public GameObject model => _model;
 
 
 
         public virtual void Initialize( Entity entity, CharacterCostume costume = null) {
             if (this.entity != null)
-                throw new InvalidOperationException("Character already has an entity");
+                throw new InvalidOperationException("Character already initialized");
 
             this.entity = entity;
-            SetCostume( costume ?? baseCostume );
+            SetCostume( CharacterCostume.GetInstanceOf(costume ?? baseCostume) );
         }
-        
 
-        public void SetCostume(string costumeName) {
-            SetCostume(CharacterCostume.GetAsset(costumeName));
+        public override void SetCostume(CharacterCostume costume) {
+            if (costume == null) return;
+
+            _costume?.UnloadModel();
+
+            _costume = costume;
+            _costume.Initialize(entity);
+            _costume.LoadModel();
         }
         
         

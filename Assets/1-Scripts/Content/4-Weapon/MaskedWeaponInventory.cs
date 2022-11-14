@@ -11,7 +11,6 @@ namespace SeleneGame.Content {
     [System.Serializable]
     public class MaskedWeaponInventory : WeaponInventory {
 
-        private enum WeaponIndex { primary = 0, secondary = 1, tertiary = 2 }
         private WeaponIndex _currentIndex;
 
         [SerializeReference] [ReadOnly] public Weapon primaryWeapon;
@@ -34,23 +33,9 @@ namespace SeleneGame.Content {
         }
 
 
-        public override Weapon current {
-            get {
-                try {
-                    return this[(int)_currentIndex];
-                } catch {
-                    _currentIndex = WeaponIndex.primary;
-                    return this[(int)_currentIndex];
-                }
-            }
-        }
+        public override Weapon current => Get((int)_currentIndex) ?? defaultWeapon;
 
-        public MaskedWeaponInventory(ArmedEntity entity){
-            this.entity = entity;
-            Weapon defaultWeapon = Weapon.GetDefaultAsset();
-            Set(0, Weapon.GetInstanceOf(defaultWeapon));
-            Set(1, Weapon.GetInstanceOf(defaultWeapon));
-            Set(2, Weapon.GetInstanceOf(defaultWeapon));
+        public MaskedWeaponInventory(ArmedEntity entity) : base(entity) {
             Switch((int)WeaponIndex.primary);
         }
 
@@ -59,54 +44,35 @@ namespace SeleneGame.Content {
             switch (index) {
                 case 0:
                     primaryWeapon = weapon;
-                    primaryWeapon.Initialize(entity, costume);
+                    primaryWeapon?.Initialize(entity, costume);
                     break;
                 case 1:
                     secondaryWeapon = weapon;
-                    secondaryWeapon.Initialize(entity, costume);
+                    secondaryWeapon?.Initialize(entity, costume);
                     break;
                 case 2:
                     tertiaryWeapon = weapon;
-                    tertiaryWeapon.Initialize(entity, costume);
+                    tertiaryWeapon?.Initialize(entity, costume);
                     break;
                 default:
-                    Debug.LogError($"Error setting weapon at index {index} in WeaponInventory : Index out of bounds.");
-                    break;
+                    throw new System.IndexOutOfRangeException($"Index {index} is out of range for MaskedWeaponInventory");
             }
 
         }
 
         public override void Remove(int index) {
-            if (index > 2 || index < 0) {
-                Debug.LogError($"Error removing weapon at index {index} in WeaponInventory : Index out of bounds.");
-                return;
+            try {
+                Set(index, weapon: null);
+            } catch (System.Exception e) {
+                Debug.LogError($"Error removing weapon at index {index} in WeaponInventory : {e.Message}.");
             }
-            SetToDefault( index );
         }
 
         public override void Switch(int index){
             if (index == (int)_currentIndex) return;
 
-            switch (index) {
-                case 0:
-                    _currentIndex = WeaponIndex.primary;
-                    secondaryWeapon.Hide();
-                    tertiaryWeapon.Hide();
-                    break;
-                case 1:
-                    primaryWeapon.Hide();
-                    _currentIndex = WeaponIndex.secondary;
-                    tertiaryWeapon.Hide();
-                    break;
-                case 2:
-                    primaryWeapon.Hide();
-                    secondaryWeapon.Hide();
-                    _currentIndex = WeaponIndex.tertiary;
-                    break;
-                default:
-                    Debug.LogError($"Error switching weapon at index {index} in WeaponInventory : Index out of bounds.");
-                    break;
-            }
+            current.Hide();
+            _currentIndex = (WeaponIndex)index;
             current.Display();
         }
 
@@ -131,5 +97,8 @@ namespace SeleneGame.Content {
                 index = -1;
             }
         }
+
+
+        private enum WeaponIndex { primary = 0, secondary = 1, tertiary = 2 }
     }
 }

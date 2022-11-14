@@ -10,17 +10,30 @@ namespace SeleneGame.Core {
     public abstract class WeaponInventory : IEnumerable, IDisposable {
 
         [SerializeField] protected ArmedEntity entity;
+
+        [SerializeField] private Weapon _defaultWeapon;
+        
         
 
         public abstract int Count { get; }
         public Weapon this[int index] => Get(index);
         public abstract Weapon current { get; }
 
+        public Weapon defaultWeapon => _defaultWeapon;
+
+
+
+        public WeaponInventory(ArmedEntity entity) {
+            this.entity = entity;
+            _defaultWeapon = Weapon.GetDefaultInstance();
+            _defaultWeapon.Initialize(entity);
+        }
+
 
 
         public virtual void Dispose() {
             foreach (Weapon weapon in this) {
-                weapon.Dispose();
+                weapon?.Dispose();
             }
         }
 
@@ -31,15 +44,6 @@ namespace SeleneGame.Core {
             Weapon.GetInstanceAsync(weaponName, (weapon) => {
                 Set(index, weapon, costume);
             });
-        }
-        public void SetToDefault(int index){
-            try {
-                Weapon.GetDefaultInstanceAsync((weapon) => {
-                    Set(index, weapon);
-                });
-            } catch (System.Exception e) {
-                Debug.LogError($"Error setting weapon at index {index} in WeaponInventory : {e.Message}.");
-            }
         }
 
         public void Replace(Weapon oldWeapon, Weapon newWeapon, WeaponCostume costume = null){

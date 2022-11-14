@@ -17,3 +17,5 @@ MonoBehaviour:
   description: Default Costume Description
   model: {fileID: 0}
   equippableOn: 0
+  attachedEntity: {fileID: 0}
+  modelInstance: {fileID: 0}

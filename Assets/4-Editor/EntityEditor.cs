@@ -39,8 +39,9 @@ namespace SeleneGame.Core {
             CharacterCostume selectedCharacterCostume = null;
             selectedCharacterCostume = EditorGUILayout.ObjectField(new GUIContent("Set Character Costume", "Use this to Switch the Character Costume of the Entity"), selectedCharacterCostume, typeof(CharacterCostume), false) as CharacterCostume;
 
-            if ( EditorGUI.EndChangeCheck() )
-                targetEntity.SetCostume( selectedCharacterCostume );
+            if ( EditorGUI.EndChangeCheck() ) {
+                targetEntity.SetCostume( CharacterCostume.GetInstanceOf(selectedCharacterCostume) );
+            }
 
                 
 
