@@ -9,6 +9,12 @@ using UnityEngine.AddressableAssets;
 namespace SeleneGame.Core {
 
     public abstract class AddressableAsset<T> : ScriptableObject where T : AddressableAsset<T> {
+
+        [SerializeField] private bool _accessibleInGame = true;
+
+
+
+        public bool accessibleInGame => _accessibleInGame;
         
         
 
@@ -24,7 +30,7 @@ namespace SeleneGame.Core {
             T result = opHandle.WaitForCompletion();
 
             // If not found, get Default Asset
-            if (result == null) {
+            if (result == null || !result._accessibleInGame) {
                 Debug.LogWarning($"Error getting Asset {assetName}");
                 return GetDefaultAsset();
             }

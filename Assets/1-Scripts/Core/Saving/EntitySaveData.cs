@@ -25,7 +25,7 @@ namespace SeleneGame.Core {
             characterName = entity.character.name ?? "Selene";
             characterCostumeName = entity.character?.costume?.name ?? "Base";
             position = new float[3]{entity.transform.position.x, entity.transform.position.y, entity.transform.position.z};
-            rotation = new float[4]{entity.rotation.x, entity.rotation.y, entity.rotation.z, entity.rotation.w};
+            rotation = new float[4]{entity.transform.rotation.x, entity.transform.rotation.y, entity.transform.rotation.z, entity.transform.rotation.w};
             gravity = new float[3]{entity.gravityDown.x, entity.gravityDown.y, entity.gravityDown.z};
 
 

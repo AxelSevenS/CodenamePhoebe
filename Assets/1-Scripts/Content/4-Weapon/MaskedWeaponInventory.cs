@@ -40,28 +40,32 @@ namespace SeleneGame.Content {
         }
 
         public override void Set(int index, Weapon weapon, WeaponCostume costume = null){
-            Debug.Log(weapon);
-            switch (index) {
-                case 0:
-                    primaryWeapon = weapon;
-                    primaryWeapon?.Initialize(entity, costume);
-                    break;
-                case 1:
-                    secondaryWeapon = weapon;
-                    secondaryWeapon?.Initialize(entity, costume);
-                    break;
-                case 2:
-                    tertiaryWeapon = weapon;
-                    tertiaryWeapon?.Initialize(entity, costume);
-                    break;
-                default:
-                    throw new System.IndexOutOfRangeException($"Index {index} is out of range for MaskedWeaponInventory");
+            weapon.Initialize(entity, costume);
+            try {
+                switch (index) {
+                    case (int)WeaponIndex.primary:
+                        primaryWeapon?.Dispose();
+                        primaryWeapon = weapon;
+                        break;
+                    case (int)WeaponIndex.secondary:
+                        secondaryWeapon?.Dispose();
+                        secondaryWeapon = weapon;
+                        break;
+                    case (int)WeaponIndex.tertiary:
+                        tertiaryWeapon?.Dispose();
+                        tertiaryWeapon = weapon;
+                        break;
+                    default:
+                        throw new System.IndexOutOfRangeException($"Index {index} is out of range for MaskedWeaponInventory");
+                }
+            } catch (System.Exception e) {
+                Debug.LogError($"Error setting weapon at index {index} in WeaponInventory : {e.Message}.");
             }
-
         }
 
         public override void Remove(int index) {
             try {
+                Get(index)?.Dispose();
                 Set(index, weapon: null);
             } catch (System.Exception e) {
                 Debug.LogError($"Error removing weapon at index {index} in WeaponInventory : {e.Message}.");

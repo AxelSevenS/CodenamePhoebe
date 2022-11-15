@@ -32,8 +32,9 @@ namespace SeleneGame.Core {
 
         public override void Set(int index, Weapon weapon, WeaponCostume costume = null){
             try {
+                weapon.Initialize(entity, costume);
+                items[index]?.Dispose();
                 items[index] = weapon;
-                items[index].Initialize(entity, costume);
             } catch (System.Exception e) {
                 Debug.LogError($"Error setting weapon at index {index} in WeaponInventory : {e.Message}.");
             }
@@ -41,6 +42,7 @@ namespace SeleneGame.Core {
 
         public override void Remove(int index) {
             try {
+                items[index]?.Dispose();
                 items[index] = null;
             } catch (System.Exception e) {
                 Debug.LogError($"Error removing weapon at index {index} in WeaponInventory : {e.Message}.");

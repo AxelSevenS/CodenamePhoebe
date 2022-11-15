@@ -52,12 +52,16 @@ namespace SeleneGame.Content {
 
 
         public void SetMask(EidolonMask mask, EidolonMaskCostume costume = null) {
+            if (mask == null) return;
+
             try {
                 mask.Initialize(this, costume);
             } catch (Exception e) {
+                // Debug.Log(mask);
                 Debug.LogError($"Error while Setting Mask {mask.name} : {e.Message}");
             }
 
+            this.mask?.Dispose();
             this.mask = mask;
         }
 
@@ -97,7 +101,7 @@ namespace SeleneGame.Content {
 
             grabbable.rb.AddForce(targetDirection * 30f, ForceMode.Impulse);
 
-            var impulseParticle = Instantiate(Global.LoadParticle("ShiftImpulseParticles"), transform.position + targetDirection*2f, Quaternion.LookRotation(targetDirection, rotation * Vector3.up));
+            var impulseParticle = Instantiate(Global.LoadParticle("ShiftImpulseParticles"), transform.position + targetDirection*2f, Quaternion.LookRotation(targetDirection, transform.rotation * Vector3.up));
             Destroy(impulseParticle, 1.2f);
         }
 
@@ -131,7 +135,7 @@ namespace SeleneGame.Content {
 
         protected void ResetMask() {
             mask?.UnloadModel();
-            SetMask(EidolonMask.GetInstance("Erebus"));
+            SetMask( EidolonMask.GetInstance("Erebus") );
         }
 
 
@@ -164,11 +168,6 @@ namespace SeleneGame.Content {
             }
 
             mask.SetState( isMasked );
-        }
-
-        protected override void LateUpdate() {
-            base.LateUpdate();
-            
             mask.MaskUpdate();
         }
 
@@ -180,7 +179,7 @@ namespace SeleneGame.Content {
 
                 grabbed.grabbable.rb.AddTorque(grabbed.randomSpin.x, grabbed.randomSpin.y, grabbed.randomSpin.z, ForceMode.VelocityChange);
 
-                grabbed.grabbable.transform.position = Vector3.Lerp(grabbed.grabbable.transform.position, transform.position + rotation * grabbedObjectPositions[i], 10f* GameUtility.timeDelta);
+                grabbed.grabbable.transform.position = Vector3.Lerp(grabbed.grabbable.transform.position, transform.position + transform.rotation * grabbedObjectPositions[i], 10f* GameUtility.timeDelta);
 
                 i++;
             }

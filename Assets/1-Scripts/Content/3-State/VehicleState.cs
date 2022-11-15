@@ -120,7 +120,7 @@ namespace SeleneGame.States {
             Vector3 rightDir = Vector3.Cross(entity.absoluteForward, groundUp);
             Vector3 finalUp = (groundUp*4f + (Vector3.Dot( inputDirection, rightDir ) * rightDir)).normalized;
 
-            entity.RotateTowardsAbsolute(entity.absoluteForward, finalUp);
+            entity.RotateModelTowards(entity.absoluteForward, finalUp);
 
             inputDirection = Vector3.zero;
 

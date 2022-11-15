@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using SevenGame.Utility;
 using UnityEngine;
 
 namespace SeleneGame.Core {
@@ -15,6 +17,19 @@ namespace SeleneGame.Core {
         [Tooltip("The description of the Costume, only appears when it is not the Base Costume.")]
         [TextArea] 
         public string description = "Default Costume Description";
+
+        [SerializeField] [ReadOnly] protected Entity _entity;
+
+        
+
+        public virtual void Initialize( Entity entity) {
+            if ( !isInstance )
+                throw new InvalidOperationException($"Asset {this.name} is not an instance");
+            if ( _entity != null )
+                throw new InvalidOperationException($"Asset {this.name} already initialized");
+
+            _entity = entity;
+        }
 
         public abstract void LoadModel();
 

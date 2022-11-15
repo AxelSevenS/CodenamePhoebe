@@ -37,7 +37,7 @@ namespace SeleneGame.Core {
 
 
         public virtual void RawInputToGroundedMovement(out Quaternion camRotation, out Vector3 groundedMovement){
-            Vector3 camUp = entity.rotation * Vector3.up;
+            Vector3 camUp = entity.transform.rotation * Vector3.up;
             Vector3 camForward = Vector3.Cross(Vector3.right, camUp).normalized;
             camRotation = Quaternion.LookRotation(camForward, camUp);
             groundedMovement = camRotation * new Vector3(moveInput.x, 0, moveInput.y);

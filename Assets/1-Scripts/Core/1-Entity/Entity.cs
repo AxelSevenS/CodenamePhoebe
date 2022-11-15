@@ -25,24 +25,24 @@ namespace SeleneGame.Core {
         [SerializeReference][ReadOnly] private Character _character;
     
         [Tooltip("The entity's current Animator.")]
-        [SerializeReference][ReadOnly] private Animator _animator;
+        [SerializeReference][HideInInspector][ReadOnly] private Animator _animator;
 
         [Tooltip("The entity's current Rigidbody.")]
-        [SerializeReference][ReadOnly] private Rigidbody _rigidbody;
+        [SerializeReference][HideInInspector][ReadOnly] private Rigidbody _rigidbody;
         
         [Tooltip("The entity's current Physics Script.")]
-        [SerializeReference][ReadOnly] private CustomPhysicsComponent _physicsComponent;
+        [SerializeReference][HideInInspector][ReadOnly] private CustomPhysicsComponent _physicsComponent;
         
         [Tooltip("The entity's current Entity Controller.")]
-        [SerializeReference][ReadOnly] private EntityController _entityController;
+        [SerializeReference][HideInInspector][ReadOnly] private EntityController _entityController;
 
         [Header("Entity Data")]
 
         [Tooltip("The current state of the Entity, can be changed using the SetState method.")]
         [SerializeReference][ReadOnly] private State _state;
 
-        [Tooltip("The current rotation of the Entity.")]
-        public QuaternionData rotation;
+        // [Tooltip("The current rotation of the Entity.")]
+        // public QuaternionData rotation;
 
         [Tooltip("If the Entity is currently on the ground.")]
         public BoolData onGround;
@@ -84,6 +84,9 @@ namespace SeleneGame.Core {
         public event Action<Vector3> onJump;
         public event Action<Vector3> onEvade;
         public event Action onParry;
+
+
+        public Transform modelTransform => character?.model?.transform;
 
 
         /// <summary>
@@ -184,7 +187,7 @@ namespace SeleneGame.Core {
             get => _absoluteForward; 
             set { 
                 _absoluteForward = value; 
-                _relativeForward = Quaternion.Inverse(rotation) * value; 
+                _relativeForward = Quaternion.Inverse(transform.rotation) * value; 
             } 
         }
         
@@ -195,7 +198,7 @@ namespace SeleneGame.Core {
             get => _relativeForward; 
             set { 
                 _relativeForward = value;
-                _absoluteForward = rotation * value;
+                _absoluteForward = transform.rotation * value;
             }
         }
 
@@ -354,57 +357,74 @@ namespace SeleneGame.Core {
             character?.UnloadModel();
         }
 
-        /// <summary>
-        /// Set the Entity's Up direction.
-        /// </summary>
-        /// <param name="newUp">The new Up direction of the Entity</param>
-        public void SetUp(Vector3 newUp) {
-            rotation.SetVal( Quaternion.FromToRotation(rotation * Vector3.up, newUp) * rotation );
+        // /// <summary>
+        // /// Set the Entity's Up direction.
+        // /// </summary>
+        // /// <param name="newUp">The new Up direction of the Entity</param>
+        // public void SetUp(Vector3 newUp) {
+        //     transform.rotation = Quaternion.FromToRotation(transform.rotation * Vector3.up, newUp) * transform.rotation;
+        // }
+
+        public void RotateModelTowards(Quaternion nowRotation) {
+            
+            if (modelTransform == null) return;
+
+            Quaternion inverseTransformRotation = Quaternion.Inverse(transform.rotation);
+
+            modelTransform.rotation = Quaternion.Slerp(modelTransform.rotation, nowRotation, 12f * GameUtility.timeDelta);
         }
 
-        /// <summary>
-        /// Rotate the Entity towards a given rotation in relative space.
-        /// </summary>
-        /// <param name="newRotation">The rotation to rotate towards</param>
-        public void RotateTowardsRelative(Quaternion newRotation) {
+        public void RotateModelTowards(Vector3 newForward, Vector3 newUp) => RotateModelTowards( Quaternion.LookRotation(newForward, newUp) );
 
-            RotateTowardsRelative(newRotation * Vector3.forward, newRotation * Vector3.up);
+        // /// <summary>
+        // /// Rotate the Entity towards a given rotation in relative space.
+        // /// </summary>
+        // /// <param name="newRotation">The rotation to rotate towards</param>
+        // public void RotateTowardsRelative(Quaternion newRotation) {
 
-        }
+        //     RotateTowardsRelative(newRotation * Vector3.forward, newRotation * Vector3.up);
 
-        /// <summary>
-        /// Rotate the Entity towards a given rotation in absolute space.
-        /// </summary>
-        /// <param name="newRotation">The rotation to rotate towards</param>
-        public void RotateTowardsAbsolute(Quaternion newRotation) {
+        // }
 
-            Quaternion inverse = Quaternion.Inverse(rotation) * newRotation;
-            RotateTowardsRelative(inverse);
-        }
+        // /// <summary>
+        // /// Rotate the Entity towards a given rotation in absolute space.
+        // /// </summary>
+        // /// <param name="newRotation">The rotation to rotate towards</param>
+        // public void RotateTowardsAbsolute(Quaternion newRotation) {
 
-        /// <summary>
-        /// Rotate the Entity towards a given direction in relative space.
-        /// </summary>
-        /// <param name="newDirection">The direction to rotate towards</param>
-        /// <param name="newUp">The direction that is used as the Entity's up direction</param>
-        public void RotateTowardsRelative(Vector3 newDirection, Vector3 newUp) {
+        //     Quaternion inverse = Quaternion.Inverse(rotation) * newRotation;
+        //     RotateTowardsRelative(inverse);
+        // }
 
-            Quaternion apparentRotation = Quaternion.FromToRotation(rotation * Vector3.up, newUp) * rotation;
-            Quaternion turnDirection = Quaternion.AngleAxis(Mathf.Atan2(newDirection.x, newDirection.z) * Mathf.Rad2Deg, Vector3.up) ;
-            transform.rotation = Quaternion.Slerp(transform.rotation, apparentRotation * turnDirection, 12f * GameUtility.timeDelta);
-        }
+        // /// <summary>
+        // /// Rotate the Entity towards a given direction in relative space.
+        // /// </summary>
+        // /// <param name="newDirection">The direction to rotate towards</param>
+        // /// <param name="newUp">The direction that is used as the Entity's up direction</param>
+        // public void RotateTowardsRelative(Vector3 newDirection, Vector3 newUp) {
 
-        /// <summary>
-        /// Rotate the Entity towards a given direction in absolute space.
-        /// </summary>
-        /// <param name="newDirection">The direction to rotate towards</param>
-        /// <param name="newUp">The direction that is used as the Entity's up direction</param>
-        public void RotateTowardsAbsolute(Vector3 newDirection, Vector3 newUp) {
+        //     Transform modelTransform = character.costume.modelInstance.transform;
+        //     if (modelTransform == null) return;
 
-            Vector3 inverse = Quaternion.Inverse(rotation) * newDirection;
-            RotateTowardsRelative(inverse, newUp);
+        //     // Quaternion apparentRotation = Quaternion.FromToRotation(rotation * Vector3.up, newUp) * rotation;
+        //     // Quaternion turnDirection = Quaternion.AngleAxis(Mathf.Atan2(newDirection.x, newDirection.z) * Mathf.Rad2Deg, Vector3.up);
+        //     Quaternion inverseTransformRotation = Quaternion.Inverse(rotation);
+        //     Quaternion absoluteModelRotation = Quaternion.LookRotation(newDirection, newUp);
 
-        }
+        //     modelTransform.rotation = Quaternion.Slerp(modelTransform.rotation, inverseTransformRotation * absoluteModelRotation, 12f * GameUtility.timeDelta);
+        // }
+
+        // /// <summary>
+        // /// Rotate the Entity towards a given direction in absolute space.
+        // /// </summary>
+        // /// <param name="newDirection">The direction to rotate towards</param>
+        // /// <param name="newUp">The direction that is used as the Entity's up direction</param>
+        // public void RotateTowardsAbsolute(Vector3 newDirection, Vector3 newUp) {
+
+        //     Vector3 inverse = Quaternion.Inverse(rotation) * newDirection;
+        //     RotateTowardsRelative(inverse, newUp);
+
+        // }
 
         protected virtual void EntityAnimation() {
             animator.SetBool("OnGround", onGround);
@@ -524,6 +544,8 @@ namespace SeleneGame.Core {
 
             if (_totalMovement.sqrMagnitude == 0f) return;
 
+            // rigidbody.MovePosition(rigidbody.position + _totalMovement);
+
             Vector3 step = _totalMovement / MOVE_COLLISION_STEP_COUNT;
             for (int i = 0; i < MOVE_COLLISION_STEP_COUNT; i++) {
 
@@ -606,7 +628,7 @@ namespace SeleneGame.Core {
         }
 
         protected virtual void Start(){
-            rotation.SetVal(transform.rotation);
+            transform.rotation = Quaternion.identity;
             absoluteForward = transform.forward;
             rigidbody.useGravity = false;
             rigidbody.constraints = RigidbodyConstraints.FreezeRotation;

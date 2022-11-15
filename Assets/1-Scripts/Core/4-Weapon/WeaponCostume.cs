@@ -13,23 +13,13 @@ namespace SeleneGame.Core {
 
         public Weapon.WeaponType equippableOn;
 
-
-        [SerializeField] [ReadOnly] private Entity attachedEntity;
-
         [ReadOnly] public GameObject modelInstance;
 
 
 
-        public void Initialize(ArmedEntity attachedEntity) {
-            if (this.attachedEntity != null)
-                throw new InvalidOperationException("Weapon Costume already initialized");
-
-            this.attachedEntity = attachedEntity;
-        }
-
         public override void LoadModel() {
             if (model != null) {
-                modelInstance = Instantiate(model, attachedEntity["handRight"].transform);
+                modelInstance = Instantiate(model, _entity["handRight"].transform);
             }
         }
 

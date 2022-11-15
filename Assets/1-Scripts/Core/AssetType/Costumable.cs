@@ -18,6 +18,8 @@ namespace SeleneGame.Core {
 
 
         [Header("Instance Data")]
+        
+        [SerializeField] [ReadOnly] protected Entity _entity;
 
         [SerializeField] [ReadOnly] protected TCostume _costume;
 
@@ -39,6 +41,17 @@ namespace SeleneGame.Core {
 
 
 
+        public virtual void Initialize( Entity entity, TCostume costume = null) {
+            if ( !isInstance )
+                throw new InvalidOperationException($"Asset {this.name} is not an instance");
+            if (_entity != null)
+                throw new InvalidOperationException($"Asset {this.name} already initialized");
+
+            _entity = entity;
+            SetCostume( Costume<TCostume>.GetInstanceOf(costume ?? baseCostume) );
+        }
+
+
         public void SetCostume(string costumeName) {
             SetCostume(Costume<TCostume>.GetInstance(costumeName));
         }
@@ -57,14 +70,18 @@ namespace SeleneGame.Core {
 
         
 
-        protected virtual void Dispose(bool disposing) {
+        protected void Dispose(bool disposing) {
 
             if (!disposedValue) {
                 if (disposing)
-                    UnloadModel();
+                    DisposeBehavior();
 
                 disposedValue = true;
             }
+        }
+
+        protected virtual void DisposeBehavior() {
+            UnloadModel();
         }
 
         public void Dispose() {

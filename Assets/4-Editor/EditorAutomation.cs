@@ -110,7 +110,15 @@ namespace SeleneGame {
         }
 
         private static void UpdateAddressableAddress<TAsset>(AddressableAssetSettings addressablesSettings, string filePath, Action<AddressableAssetEntry> callback = null) where TAsset : AddressableAsset<TAsset> {
+
             string typeName = typeof(TAsset).Name;
+
+            // if it doesn't exist, create the label
+            if ( !addressablesSettings.GetLabels().Contains(typeName) ) {
+                addressablesSettings.AddLabel(typeName);
+            }
+
+
             string assetPath = Path.Combine(DataFilePath, filePath);
             string[] assetGUIDs = AssetDatabase.FindAssets($"t:{typeName}", new string[] { assetPath });
             foreach (string assetGUID in assetGUIDs) {

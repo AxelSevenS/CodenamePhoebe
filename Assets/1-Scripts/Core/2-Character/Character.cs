@@ -34,10 +34,6 @@ namespace SeleneGame.Core {
         [SerializeField] private float _evadeCooldown;
 
 
-        [Header("Character Data")]
-        [SerializeField] [ReadOnly] protected Entity entity;
-
-
 
         public float maxHealth => _maxHealth;
         public Vector3 size => _size;
@@ -62,22 +58,13 @@ namespace SeleneGame.Core {
 
 
 
-
-        public virtual void Initialize( Entity entity, CharacterCostume costume = null) {
-            if (this.entity != null)
-                throw new InvalidOperationException("Character already initialized");
-
-            this.entity = entity;
-            SetCostume( CharacterCostume.GetInstanceOf(costume ?? baseCostume) );
-        }
-
         public override void SetCostume(CharacterCostume costume) {
             if (costume == null) return;
 
             _costume?.UnloadModel();
 
             _costume = costume;
-            _costume.Initialize(entity);
+            _costume.Initialize(_entity);
             _costume.LoadModel();
         }
         

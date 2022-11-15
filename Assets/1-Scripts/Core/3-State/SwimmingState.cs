@@ -106,7 +106,7 @@ namespace SeleneGame.Core {
                 entity.absoluteForward = Vector3.Slerp( entity.absoluteForward, moveDirection, 100f * GameUtility.timeDelta);
                 Vector3 newUp = Vector3.Cross(entity.absoluteForward, Vector3.Cross(entity.absoluteForward, entity.gravityDown));
 
-                entity.RotateTowardsAbsolute(entity.absoluteForward, newUp);
+                entity.RotateModelTowards(entity.absoluteForward, newUp);
             }
 
             float newSpeed = moveDirection.sqrMagnitude == 0f ? 0f : entity.character.baseSpeed;
@@ -118,7 +118,8 @@ namespace SeleneGame.Core {
         protected internal override void StateFixedUpdate(){
             base.StateFixedUpdate();
 
-            entity.SetUp(-entity.gravityDown);
+            // entity.SetUp(-entity.gravityDown);
+            entity.transform.rotation = Quaternion.FromToRotation(entity.transform.up, -entity.gravityDown) * entity.transform.rotation;
             
             entity.Displace( moveDirection * moveSpeed );
 

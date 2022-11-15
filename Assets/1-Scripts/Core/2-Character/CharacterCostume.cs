@@ -15,25 +15,17 @@ namespace SeleneGame.Core {
         
         [SerializeField] private GameObject model;
 
-        
-        [SerializeField] [ReadOnly] private Entity attachedEntity;
 
-        [ReadOnly] public GameObject modelInstance;
-        [ReadOnly] public CostumeData costumeData;
+        /* [ReadOnly] */ public GameObject modelInstance;
+        /* [ReadOnly] */ public CostumeData costumeData;
 
 
-
-        public void Initialize(Entity attachedEntity) {
-            if (this.attachedEntity != null)
-                throw new InvalidOperationException("Character Costume already initialized");
-
-            this.attachedEntity = attachedEntity;
-        }
 
         public override void LoadModel() {
             if (model != null) {
-                modelInstance = Instantiate(model, attachedEntity.transform);
+                modelInstance = Instantiate(model, _entity.transform);
                 costumeData = modelInstance.GetComponent<CostumeData>();
+                _entity.animator.Rebind();
             }
         }
 

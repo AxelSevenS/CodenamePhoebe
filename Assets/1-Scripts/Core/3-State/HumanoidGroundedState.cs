@@ -144,7 +144,8 @@ namespace SeleneGame.Core {
         protected internal override void StateUpdate(){
             base.StateUpdate();
 
-            entity.SetUp(-entity.gravityDown);
+            // entity.SetUp(-entity.gravityDown);
+            entity.transform.rotation = Quaternion.FromToRotation(entity.transform.up, -entity.gravityDown) * entity.transform.rotation;
 
 
             if ( entity.onGround )
@@ -183,7 +184,7 @@ namespace SeleneGame.Core {
             if ( !evading )
                 rotationForward = entity.absoluteForward;
             
-            entity.RotateTowardsAbsolute(rotationForward, -entity.gravityDown);
+            entity.RotateModelTowards(rotationForward, -entity.gravityDown);
             
         }
 

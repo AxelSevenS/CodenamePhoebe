@@ -14,9 +14,7 @@ namespace SeleneGame.Content {
 
 
         [Header("Mask Data")]
-        [SerializeField] [ReadOnly] private MaskedEntity entity;
         
-
         private float maskPosT = 1f;
         private bool faceState = false;
         private bool onRight = true;
@@ -25,23 +23,18 @@ namespace SeleneGame.Content {
 
 
 
-        private Vector3 rightPosition => entity.transform.rotation * new Vector3(1.2f, 1.3f, -0.8f);
-        private Vector3 leftPosition => entity.transform.rotation * new Vector3(-1.2f, 1.3f, -0.8f);
+        private Vector3 rightPosition => _entity.modelTransform.rotation * new Vector3(1.2f, 1.3f, -0.8f);
+        private Vector3 leftPosition => _entity.modelTransform.rotation * new Vector3(-1.2f, 1.3f, -0.8f);
 
         public GameObject model => costume.modelInstance;
 
 
 
-        public void Initialize(MaskedEntity entity, EidolonMaskCostume costume = null) {
-            if (this.entity != null) {
-                throw new InvalidOperationException("Mask already initialized");
-            }
+        public override void Initialize(Entity entity, EidolonMaskCostume costume = null) {
+            base.Initialize(entity, costume);
 
-            this.entity = entity;
-            SetCostume( EidolonMaskCostume.GetInstanceOf(costume ?? baseCostume) );
-
-            relativePos = rightPosition;
-            hoveringPosition = entity.transform.position + relativePos;
+            // relativePos = rightPosition;
+            // hoveringPosition = _entity.transform.position + relativePos;
         }
 
         public override void SetCostume(EidolonMaskCostume costume) {
@@ -50,7 +43,7 @@ namespace SeleneGame.Content {
             _costume?.UnloadModel();
 
             _costume = costume;
-            _costume.Initialize(entity);
+            _costume.Initialize(_entity);
             _costume.LoadModel();
         }
 
@@ -61,8 +54,16 @@ namespace SeleneGame.Content {
 
 
         protected internal virtual void MaskUpdate() {
+            Transform headTransform = _entity["head"].transform;
+            
+            BezierQuadratic currentCurve = new BezierQuadratic(
+                hoveringPosition,
+                headTransform.position,
+                headTransform.position + headTransform.forward
+            );
 
-
+            costume.modelInstance.transform.position = currentCurve.GetPoint(maskPosT).position;
+            costume.modelInstance.transform.rotation = Quaternion.Slerp(_entity.modelTransform.rotation, headTransform.rotation, maskPosT);
         }
 
         protected internal virtual void MaskFixedUpdate(){
@@ -73,26 +74,15 @@ namespace SeleneGame.Content {
             if (!onFace && (positionBlocked(relativePos)))
                 onRight = !onRight;
 
-            hoveringPosition = Vector3.Lerp(hoveringPosition, entity.transform.position + relativePos, 15f * GameUtility.timeDelta);
+            hoveringPosition = Vector3.Lerp(hoveringPosition, _entity.modelTransform.position + relativePos, 15f * GameUtility.timeDelta);
             maskPosT = Mathf.MoveTowards(maskPosT, System.Convert.ToSingle(onFace), 4f * GameUtility.timeDelta);
 
             costume.animator.SetBool("OnFace", onFace);
             costume.animator.SetFloat("OnRight", onRight ? 1f : 0f);
 
             bool positionBlocked(Vector3 position) {
-                return Physics.SphereCast(entity.transform.position, 0.35f, position, out _, position.magnitude, Global.GroundMask);
+                return Physics.SphereCast(_entity.modelTransform.position, 0.35f, position, out _, position.magnitude, Global.GroundMask);
             }
-            
-            Transform headTransform = entity["head"].transform;
-            
-            BezierQuadratic currentCurve = new BezierQuadratic(
-                hoveringPosition,
-                headTransform.position,
-                headTransform.position + headTransform.forward
-            );
-
-            costume.modelInstance.transform.position = currentCurve.GetPoint(maskPosT).position;
-            costume.modelInstance.transform.rotation = Quaternion.Slerp(entity.transform.rotation, headTransform.rotation, maskPosT);
         }
     }
 

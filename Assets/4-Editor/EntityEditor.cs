@@ -8,15 +8,24 @@ namespace SeleneGame.Core {
     [CustomEditor(typeof(Entity), true)]
     public class EntityEditor : Editor{
 
-        Entity targetEntity;
-        SerializedProperty soSelectedCharacter;
-        SerializedProperty soSelectedCharacterCostume;
+        private Entity targetEntity;
+        private SerializedProperty soSelectedCharacter;
+        private SerializedProperty soSelectedCharacterCostume;
+        private SerializedProperty soAnimator;
+        private SerializedProperty soRigidbody;
+        private SerializedProperty soPhysicsComponent;
+        private SerializedProperty soEntityController;
+        private bool foldout = true;
 
 
         private void OnEnable(){
 
             soSelectedCharacter = serializedObject.FindProperty( "m_selectedCharacter" );
             soSelectedCharacterCostume = serializedObject.FindProperty( "m_selectedCharacterCostume" );
+            soAnimator = serializedObject.FindProperty( "_animator" );
+            soRigidbody = serializedObject.FindProperty( "_rigidbody" );
+            soPhysicsComponent = serializedObject.FindProperty( "_physicsComponent" );
+            soEntityController = serializedObject.FindProperty( "_entityController" );
 
             targetEntity = (Entity)target;
         }
@@ -43,9 +52,17 @@ namespace SeleneGame.Core {
                 targetEntity.SetCostume( CharacterCostume.GetInstanceOf(selectedCharacterCostume) );
             }
 
-                
-
             EditorGUILayout.Space(15f);
+
+            foldout = EditorGUILayout.BeginFoldoutHeaderGroup(foldout, "Components");
+            if (foldout) {
+                EditorGUILayout.PropertyField(soAnimator);
+                EditorGUILayout.PropertyField(soRigidbody);
+                EditorGUILayout.PropertyField(soPhysicsComponent);
+                EditorGUILayout.PropertyField(soEntityController);
+            }
+            EditorGUILayout.EndFoldoutHeaderGroup();
+            
 
             DrawDefaultInspector();
         }

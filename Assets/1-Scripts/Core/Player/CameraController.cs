@@ -55,7 +55,7 @@ namespace SeleneGame.Core {
         }
 
         private void UpdateCameraPosition(){
-            entityRotation = Quaternion.Slerp( entityRotation, PlayerEntityController.current.entity.rotation, 4f * GameUtility.timeDelta );
+            entityRotation = Quaternion.Slerp( entityRotation, PlayerEntityController.current.entity.transform.rotation, 4f * GameUtility.timeDelta );
             
             transform.rotation = PlayerEntityController.current.worldCameraRotation;
 

@@ -100,7 +100,7 @@ namespace SeleneGame.States {
 
                 controller.RawInputToGroundedMovement(out _, out Vector3 groundedMovement);
                 float verticalInput = (controller.jumpInput ? 1f: 0f) - (controller.crouchInput ? 1f: 0f);
-                movementDirection = groundedMovement + (maskedEntity.rotation * Vector3.up) * verticalInput;
+                movementDirection = groundedMovement + (maskedEntity.transform.rotation * Vector3.up) * verticalInput;
 
             }
 
@@ -112,7 +112,7 @@ namespace SeleneGame.States {
         public override void Move(Vector3 direction) {
             if (shiftFalling) {
 
-                maskedEntity.rotation.SetVal( Quaternion.FromToRotation(fallDirection, direction) * maskedEntity.rotation );
+                maskedEntity.transform.rotation = Quaternion.FromToRotation(fallDirection, direction) * maskedEntity.transform.rotation;
                 maskedEntity.absoluteForward = direction;
 
                 fallDirection = direction;
@@ -199,25 +199,23 @@ namespace SeleneGame.States {
 
 
 
-            Vector3 finalRotation;
-            Vector3 finalUp;
+            Vector3 forwardDirection;
             if (shiftFalling){
 
-                finalRotation = new Vector3(randomRotation.x, 0f, randomRotation.y);
-                finalUp = -fallDirection;
+                maskedEntity.gravityDown = fallDirection;
+                forwardDirection = maskedEntity.transform.forward;
+                // forwardDirection = maskedEntity.transform.rotation * new Vector3(randomRotation.x, 0f, randomRotation.y);
 
             }else{
 
-                finalRotation = maskedEntity.relativeForward;
-                finalUp = maskedEntity.rotation * Vector3.up;
+                maskedEntity.gravityDown = maskedEntity.transform.rotation * Vector3.down;
+                forwardDirection = maskedEntity.absoluteForward;
             }
-
-            maskedEntity.gravityDown = -finalUp;
 
             // UpdateLandCursorPos();
 
 
-            maskedEntity.RotateTowardsRelative(finalRotation, finalUp);
+            maskedEntity.RotateModelTowards(forwardDirection, -maskedEntity.gravityDown);
 
         }
         protected override void StateFixedUpdate(){

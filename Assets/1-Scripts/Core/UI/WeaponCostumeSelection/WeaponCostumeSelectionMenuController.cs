@@ -91,10 +91,12 @@ namespace SeleneGame.Core.UI {
             // and then get all the other costumes.
             WeaponCostume.GetAssets((costume) => {
 
+                    if ( !costume.accessibleInGame ) return;
+
                     if ( !costume.name.Contains(weapon.name) && costume.name.Contains("_Base") && !costume.equippableOn.HasFlag(weapon.weaponType) )
                         return;
 
-                    if ( weaponCostumes.Exists( (existingCase) => { return existingCase.nameText == costume.name; }) ) 
+                    if ( weaponCostumes.Exists( (existingCase) => { return existingCase.nameText == costume.displayName; }) ) 
                         return;
 
                     CreateWeaponCostumeCase(costume);

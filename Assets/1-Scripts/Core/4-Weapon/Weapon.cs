@@ -16,11 +16,6 @@ namespace SeleneGame.Core {
         public float weightModifier = 1f;
 
 
-        [Header("Weapon Data")]
-
-        [SerializeField] [ReadOnly] protected ArmedEntity entity;
-
-
 
         public WeaponType weaponType => _weaponType;
         public float WeightModifier => weightModifier;
@@ -29,21 +24,13 @@ namespace SeleneGame.Core {
 
 
 
-        public void Initialize( ArmedEntity entity, WeaponCostume costume = null) {
-            if (this.entity != null)
-                throw new InvalidOperationException("Weapon already initialized");
-
-            this.entity = entity;
-            SetCostume( WeaponCostume.GetInstanceOf(costume ?? baseCostume) );
-        }
-
         public override void SetCostume(WeaponCostume costume) {
             if (costume == null) return;
 
             _costume?.UnloadModel();
 
             _costume = costume;
-            _costume.Initialize(entity);
+            _costume.Initialize(_entity);
             _costume.LoadModel();
         }
         

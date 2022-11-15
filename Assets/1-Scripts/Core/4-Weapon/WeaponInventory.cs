@@ -47,6 +47,8 @@ namespace SeleneGame.Core {
         }
 
         public void Replace(Weapon oldWeapon, Weapon newWeapon, WeaponCostume costume = null){
+            if (oldWeapon == null) return;
+            
             try {
                 int index = IndexOf(oldWeapon);
                 Set(index, newWeapon, costume);

@@ -156,7 +156,7 @@ namespace SeleneGame.Core {
         }
         
         private Quaternion UpdateCameraRotation(Quaternion currentRotation){
-            softEntityRotation = Quaternion.Slerp(softEntityRotation, entity.rotation, GameUtility.timeDelta * 6f);
+            softEntityRotation = Quaternion.Slerp(softEntityRotation, entity.transform.rotation, GameUtility.timeDelta * 6f);
 
             if (!canLook) return currentRotation;
 
@@ -192,12 +192,12 @@ namespace SeleneGame.Core {
         }
 
         public void LookAt( Vector3 direction) {
-            localCameraRotation.SetVal( Quaternion.LookRotation( Quaternion.Inverse(entity.rotation) * direction, entity.rotation * Vector3.up ) );
+            localCameraRotation.SetVal( Quaternion.LookRotation( Quaternion.Inverse(entity.transform.rotation) * direction, entity.transform.rotation * Vector3.up ) );
         }
 
         public override void RawInputToGroundedMovement(out Quaternion camRotation, out Vector3 groundedMovement){
             Vector3 camRight = worldCameraRotation * Vector3.right;
-            Vector3 camUp = entity.rotation * Vector3.up;
+            Vector3 camUp = entity.transform.rotation * Vector3.up;
             Vector3 camForward = Vector3.Cross(camRight, camUp).normalized;
             camRotation = Quaternion.LookRotation(camForward, camUp);
             groundedMovement = camRotation * new Vector3(moveInput.x, 0, moveInput.y);

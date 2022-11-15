@@ -10,9 +10,22 @@ namespace SeleneGame.Core {
 
     public abstract class InstantiableAsset<T> : AddressableAsset<T> where T : InstantiableAsset<T> {
 
+
+        public bool isInstance { get; private set; } = false;
+
+
+
         public static T GetInstanceOf(T asset){
+            if (asset == null) {
+                // Debug.LogWarning($"InstantiableAsset.GetInstanceOf: asset is null; ignore this if you did this on purpose.");
+                return null;
+            }
+            if (asset.isInstance)
+                return asset;
+
             T assetInstance = ScriptableObject.Instantiate( asset );
             assetInstance.name = assetInstance.name.Substring(0, assetInstance.name.Length - 7);
+            assetInstance.isInstance = true;
             return assetInstance;
         }
     

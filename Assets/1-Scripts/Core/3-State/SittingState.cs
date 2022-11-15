@@ -49,8 +49,8 @@ namespace SeleneGame.Core {
 
         protected internal override void StateFixedUpdate(){
             // Sitting
-            entity.transform.position = seat.sitPosition;
-            entity.RotateTowardsAbsolute(seat.sitRotation);
+            entity.transform.SetPositionAndRotation(seat.sitPosition, seat.sitRotation);
+            entity.RotateModelTowards(seat.sitRotation);
             entity.absoluteForward = entity.transform.forward;
         }
     }

@@ -90,6 +90,8 @@ namespace SeleneGame.Core.UI {
             // and then get all the other costumes.
             CharacterCostume.GetAssets( (costume) => {
 
+                    if ( !costume.accessibleInGame ) return;
+
                     if ( !costume.name.Contains(currentCharacter.name) && costume.name.Contains("_Base") )
                         return;
 
@@ -107,8 +109,8 @@ namespace SeleneGame.Core.UI {
             var caseObject = Instantiate(characterCostumeCaseTemplate, characterCostumeSelectionContainer.transform);
             var costumeCase = caseObject.GetComponentInChildren<CharacterCostumeCase>();
             costumeCase.characterCostume = costume;
-            
             characterCostumes.Add( costumeCase );
+
             if (characterCostumes.Count > 1) {
                 CharacterCostumeCase previousCase = characterCostumes[characterCostumes.Count - 2];
                 previousCase.elementRight = costumeCase;

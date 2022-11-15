@@ -98,6 +98,9 @@ namespace SeleneGame.Core.UI {
 
                     // and then get all the other weapons.
                     Weapon.GetAssets( (weapon) => {
+
+                            if ( !weapon.accessibleInGame ) return;
+
                             // Don't include this weapon if it is already included.
                             if ( weapons.Exists( (existingCase) => { return existingCase.nameText == weapon.name; }) ) 
                                 return;
