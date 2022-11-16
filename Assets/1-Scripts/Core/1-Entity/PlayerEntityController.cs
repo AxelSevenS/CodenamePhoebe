@@ -139,7 +139,7 @@ namespace SeleneGame.Core {
             if (interactInput.started && canInteract)
                 interactionCandidate.Interact(entity);
 
-            entity.state.HandleInput(this);
+            entity.HandleInput(this);
 
             Entity targetEntity = entity;
             if (targetEntity.state is SittingState sittingState && sittingState.seat.seatEntity != null) {

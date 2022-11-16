@@ -43,7 +43,7 @@ namespace SeleneGame.Core {
 
 
 
-        public override void HandleInput(EntityController controller){
+        protected internal override void HandleInput(EntityController controller){
             base.HandleInput(controller);
             
             controller.RawInputToCameraRelativeMovement(out Quaternion cameraRotation, out Vector3 cameraRelativeMovement);
@@ -53,25 +53,25 @@ namespace SeleneGame.Core {
         }
 
 
-        public override void Move(Vector3 direction) {
+        protected internal override void Move(Vector3 direction) {
             moveDirection = direction;
         }
-        public override void Jump() {
+        protected internal override void Jump() {
             base.Jump();
         }
-        public override void Evade(Vector3 direction) {
+        protected internal override void Evade(Vector3 direction) {
             base.Evade(direction);
         }
-        public override void Parry() {
+        protected internal override void Parry() {
             base.Parry();
         }
-        public override void LightAttack() {
+        protected internal override void LightAttack() {
             base.LightAttack();
         }
-        public override void HeavyAttack() {
+        protected internal override void HeavyAttack() {
             base.HeavyAttack();
         }
-        public override void SetSpeed(MovementSpeed speed) {
+        protected internal override void SetSpeed(Entity.MovementSpeed speed) {
             
         }
 

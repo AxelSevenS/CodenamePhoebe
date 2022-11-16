@@ -4,9 +4,8 @@ using UnityEngine;
 
 using SevenGame.Utility;
 using SeleneGame.Core;
-using SeleneGame.Entities;
 
-namespace SeleneGame.Weapons {
+namespace SeleneGame.Content {
     
     [CreateAssetMenu(fileName = "Eris", menuName = "Weapon/Eris")]
     public sealed class ErisWeapon : Weapon {

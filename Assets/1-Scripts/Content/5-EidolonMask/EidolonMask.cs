@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using SeleneGame.Core;
-using SeleneGame.Entities;
 
 using SevenGame.Utility;
 using System;
@@ -49,6 +48,23 @@ namespace SeleneGame.Content {
 
         public void SetState(bool onFace) {
             faceState = onFace;
+        }
+
+        protected internal void HandleInput(EntityController controller) {
+            if ( !(_entity is MaskedEntity masked) ) return;
+
+            if (controller.shiftInput.tapped) {
+
+                if (masked.state is MaskedState) {
+                    masked.gravityDown = Vector3.down;
+                    masked.SetState( masked.defaultState );
+                } else {
+                    masked.shiftCooldown = 0.3f;
+                    if (masked.onGround) masked.rigidbody.velocity += -masked.gravityDown*3f;
+                    
+                    masked.SetState( new MaskedState() );
+                }
+            }
         }
 
 

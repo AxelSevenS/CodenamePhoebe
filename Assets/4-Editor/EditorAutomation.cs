@@ -11,9 +11,6 @@ using UnityEditor.AddressableAssets.Settings;
 
 using SeleneGame.Core;
 using SeleneGame.Content;
-using SeleneGame.Entities;
-using SeleneGame.States;
-using SeleneGame.Weapons;
 
 using SevenGame.Utility;
 
@@ -48,7 +45,7 @@ namespace SeleneGame {
 
             // UpdateAddressables();
 
-            CreateProceduralConstructor(typeof(State), typeof(HumanoidGroundedState), "SeleneGame.States", @"Assets\1-Scripts\Content\3-State\");
+            CreateProceduralConstructor(typeof(State), typeof(HumanoidGroundedState), "SeleneGame.Content", @"Assets\1-Scripts\Content\3-State\");
 
         }
 

@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using SeleneGame.Core;
-using SeleneGame.Weapons;
-using SeleneGame.States;
 
-namespace SeleneGame.Entities {
+namespace SeleneGame.Content {
 
     [RequireComponent(typeof(BikeSeat))]
     public sealed class GravityBikeEntity : Entity {

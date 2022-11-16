@@ -4,10 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using SeleneGame.Core;
-using SeleneGame.Entities;
-using SeleneGame.Weapons;
 
-namespace SeleneGame.Characters {
+namespace SeleneGame.Content {
+
     [CreateAssetMenu(fileName = "Selene", menuName = "Characters/Selene")]
     public sealed class SeleneCharacter : Character {
 
@@ -25,6 +24,9 @@ namespace SeleneGame.Characters {
                 //     maskMovement.SetEntity(masked);
                 //     masked.mask = maskMovement;
                 // }
+                if ( armed is MaskedEntity masked ) {
+                    masked.SetMask( EidolonMask.GetInstance("Erebus") );
+                }
             }
 
         }

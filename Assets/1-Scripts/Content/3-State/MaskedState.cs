@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using SeleneGame.Core;
-using SeleneGame.Content;
 
 using SevenGame.Utility;
 
-namespace SeleneGame.States {
+namespace SeleneGame.Content {
     
     public class MaskedState : HumanoidState {
 
@@ -68,10 +67,10 @@ namespace SeleneGame.States {
         }
 
 
-        public override void HandleInput(EntityController controller){
+        protected override void HandleInput(EntityController controller){
             base.HandleInput(controller);
 
-            SetSpeed( controller.jumpInput ? MovementSpeed.Normal : MovementSpeed.Slow );
+            SetSpeed( controller.jumpInput ? Entity.MovementSpeed.Normal : Entity.MovementSpeed.Slow );
 
             if (shiftFalling.started){
                 controller.RawInputToCameraRelativeMovement(out Quaternion cameraRotation, out _);
@@ -109,7 +108,7 @@ namespace SeleneGame.States {
         }
 
 
-        public override void Move(Vector3 direction) {
+        protected override void Move(Vector3 direction) {
             if (shiftFalling) {
 
                 maskedEntity.transform.rotation = Quaternion.FromToRotation(fallDirection, direction) * maskedEntity.transform.rotation;
@@ -127,23 +126,23 @@ namespace SeleneGame.States {
                 }
             }
         }
-        public override void Evade(Vector3 direction) {
+        protected override void Evade(Vector3 direction) {
             base.Evade(direction);
         }
-        public override void Jump() {
+        protected override void Jump() {
             
         }
-        public override void Parry() {
+        protected override void Parry() {
             base.Parry();
         }
-        public override void LightAttack() {
+        protected override void LightAttack() {
             base.LightAttack();
         }
-        public override void HeavyAttack() {
+        protected override void HeavyAttack() {
             base.HeavyAttack();
         }
-        public override void SetSpeed(MovementSpeed speed) {
-            shiftFalling.SetVal(speed != MovementSpeed.Slow);
+        protected override void SetSpeed(Entity.MovementSpeed speed) {
+            shiftFalling.SetVal(speed != Entity.MovementSpeed.Slow);
         }
 
 
@@ -190,11 +189,13 @@ namespace SeleneGame.States {
 
             // Gravity Shifting Movement
             if ( maskedEntity.inWater ){
-                maskedEntity.StopShifting(Vector3.down);
+                maskedEntity.gravityDown = Vector3.down;
+                maskedEntity.SetState();
             }
 
             if ( maskedEntity.onGround && shiftFalling ) {
-                maskedEntity.StopShifting(fallDirection);
+                maskedEntity.gravityDown = fallDirection;
+                maskedEntity.SetState();
             }
 
 

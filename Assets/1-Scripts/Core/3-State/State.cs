@@ -39,31 +39,31 @@ namespace SeleneGame.Core {
         
 
 
-        public abstract void HandleInput(EntityController controller);
+        protected internal abstract void HandleInput(EntityController controller);
 
 
-        public abstract void Move(Vector3 direction);
-        public virtual void Jump() {
+        protected internal abstract void Move(Vector3 direction);
+        protected internal virtual void Jump() {
             if (canJump)
                 JumpAction(jumpDirection);
         }
-        public virtual void Evade(Vector3 direction) {
+        protected internal virtual void Evade(Vector3 direction) {
             if (canEvade)
                 EvadeAction(evadeDirection);
         }
-        public virtual void Parry() {
+        protected internal virtual void Parry() {
             if (canParry)
                 ParryAction();
         }
-        public virtual void LightAttack() {
+        protected internal virtual void LightAttack() {
             if (true)
                 LightAttackAction();
         }
-        public virtual void HeavyAttack() {
+        protected internal virtual void HeavyAttack() {
             if (true)
                 HeavyAttackAction();
         }
-        public abstract void SetSpeed(MovementSpeed speed);
+        protected internal abstract void SetSpeed(Entity.MovementSpeed speed);
 
 
         protected virtual void JumpAction(Vector3 jumpDirection) {
@@ -90,11 +90,5 @@ namespace SeleneGame.Core {
         protected internal virtual void StateFixedUpdate(){;}
         protected internal virtual void StateAnimation(){;}
 
-
-        public enum MovementSpeed {
-            Slow,
-            Normal,
-            Fast
-        }
     }
 }

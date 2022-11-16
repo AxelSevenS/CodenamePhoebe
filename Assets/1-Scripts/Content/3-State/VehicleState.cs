@@ -5,7 +5,7 @@ using UnityEngine;
 using SeleneGame.Core;
 using SevenGame.Utility;
 
-namespace SeleneGame.States {
+namespace SeleneGame.Content {
     
     public class VehicleState : State {
 
@@ -41,7 +41,7 @@ namespace SeleneGame.States {
         }
 
 
-        public override void HandleInput(EntityController controller){
+        protected override void HandleInput(EntityController controller){
 
             controller.RawInputToGroundedMovement(out _, out Vector3 groundedMovement);
 
@@ -55,7 +55,7 @@ namespace SeleneGame.States {
         }
 
 
-        public override void Move(Vector3 direction) {
+        protected override void Move(Vector3 direction) {
                 
             float newLinger = direction.magnitude;
             accelerationLinger = Mathf.Lerp(accelerationLinger, newLinger, (newLinger > accelerationLinger ? 3f : 2f) * GameUtility.timeDelta );
@@ -64,22 +64,22 @@ namespace SeleneGame.States {
                 inputDirection = direction / newLinger;
 
         }
-        public override void Jump() {
+        protected override void Jump() {
             base.Jump();
         }
-        public override void Evade(Vector3 direction) {
+        protected override void Evade(Vector3 direction) {
             base.Evade(direction);
         }
-        public override void Parry() {
+        protected override void Parry() {
             base.Parry();
         }
-        public override void LightAttack() {
+        protected override void LightAttack() {
             base.LightAttack();
         }
-        public override void HeavyAttack() {
+        protected override void HeavyAttack() {
             base.HeavyAttack();
         }
-        public override void SetSpeed(MovementSpeed speed) {
+        protected override void SetSpeed(Entity.MovementSpeed speed) {
             
         }
 

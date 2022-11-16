@@ -2,7 +2,7 @@ using System;
 
 using SevenGame.Utility;
 
-namespace SeleneGame.States {
+namespace SeleneGame.Content {
 
     public static class StateConstructor {
 
@@ -16,8 +16,8 @@ namespace SeleneGame.States {
                 default: return new SeleneGame.Core.HumanoidGroundedState();
                 case "SittingState": return new SeleneGame.Core.SittingState();
                 case "SwimmingState": return new SeleneGame.Core.SwimmingState();
-                case "MaskedState": return new SeleneGame.States.MaskedState();
-                case "VehicleState": return new SeleneGame.States.VehicleState();
+                case "MaskedState": return new SeleneGame.Content.MaskedState();
+                case "VehicleState": return new SeleneGame.Content.VehicleState();
             }
         }
     }

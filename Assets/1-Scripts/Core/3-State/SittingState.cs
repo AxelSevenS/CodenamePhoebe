@@ -25,7 +25,7 @@ namespace SeleneGame.Core {
 
 
 
-        public override void HandleInput(EntityController controller) {
+        protected internal override void HandleInput(EntityController controller) {
             if ( controller.crouchInput.started )
                 seat.StopSitting();
 
@@ -34,13 +34,13 @@ namespace SeleneGame.Core {
         }
 
 
-        public override void Move(Vector3 direction) {;}
-        public override void Jump() {;}
-        public override void Evade(Vector3 direction) {;}
-        public override void Parry() {;}
-        public override void LightAttack() {;}
-        public override void HeavyAttack() {;}
-        public override void SetSpeed(MovementSpeed speed) {;}
+        protected internal override void Move(Vector3 direction) {;}
+        protected internal override void Jump() {;}
+        protected internal override void Evade(Vector3 direction) {;}
+        protected internal override void Parry() {;}
+        protected internal override void LightAttack() {;}
+        protected internal override void HeavyAttack() {;}
+        protected internal override void SetSpeed(Entity.MovementSpeed speed) {;}
 
 
 

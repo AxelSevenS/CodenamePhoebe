@@ -2,12 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-using SevenGame.Utility;
 using SeleneGame.Core;
-using SeleneGame.Entities;
-using SeleneGame.States;
 
-namespace SeleneGame.Weapons {
+using SevenGame.Utility;
+
+namespace SeleneGame.Content {
     
     [CreateAssetMenu(fileName = "Hypnos", menuName = "Weapon/Hypnos")]
     public sealed class HypnosWeapon : Weapon {

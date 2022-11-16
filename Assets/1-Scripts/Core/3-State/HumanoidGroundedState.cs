@@ -14,7 +14,7 @@ namespace SeleneGame.Core {
 
         private float _gravityMultiplier = 1f;
 
-        public MovementSpeed movementSpeed = MovementSpeed.Normal;
+        public Entity.MovementSpeed movementSpeed = Entity.MovementSpeed.Normal;
 
         private Vector3 rotationForward;
         private Vector3Data moveDirection;
@@ -61,18 +61,18 @@ namespace SeleneGame.Core {
         //     }
         // }
         
-        public override void HandleInput(EntityController controller){
+        protected internal override void HandleInput(EntityController controller){
 
             base.HandleInput(controller);
 
             controller.RawInputToGroundedMovement(out Quaternion cameraRotation, out Vector3 groundedMovement);
 
             if ( (groundedMovement.sqrMagnitude <= 0.25 || controller.walkInput) && entity.onGround ) 
-                SetSpeed(MovementSpeed.Slow);
+                SetSpeed(Entity.MovementSpeed.Slow);
             else if ( controller.evadeInput )
-                SetSpeed(MovementSpeed.Fast);
-            else if ( movementSpeed != MovementSpeed.Fast )
-                SetSpeed(MovementSpeed.Normal);
+                SetSpeed(Entity.MovementSpeed.Fast);
+            else if ( movementSpeed != Entity.MovementSpeed.Fast )
+                SetSpeed(Entity.MovementSpeed.Normal);
 
             Move(groundedMovement);
 
@@ -91,28 +91,28 @@ namespace SeleneGame.Core {
         }
 
 
-        public override void Move(Vector3 direction) {
+        protected internal override void Move(Vector3 direction) {
             moveDirection.SetVal( (direction.normalized).NullifyInDirection(entity.gravityDown) );
             if (direction.sqrMagnitude == 0f)
-                SetSpeed(MovementSpeed.Normal);
+                SetSpeed(Entity.MovementSpeed.Normal);
 
         }
-        public override void Jump() {
+        protected internal override void Jump() {
             base.Jump();
         }
-        public override void Evade(Vector3 direction) {
+        protected internal override void Evade(Vector3 direction) {
             base.Evade(direction);
         }
-        public override void Parry() {
+        protected internal override void Parry() {
             base.Parry();
         }
-        public override void LightAttack() {
+        protected internal override void LightAttack() {
             base.LightAttack();
         }
-        public override void HeavyAttack() {
+        protected internal override void HeavyAttack() {
             base.HeavyAttack();
         }
-        public override void SetSpeed(MovementSpeed speed) {
+        protected internal override void SetSpeed(Entity.MovementSpeed speed) {
             movementSpeed = speed;
         }
 
@@ -194,8 +194,8 @@ namespace SeleneGame.Core {
 
 
             float newSpeed = moveDirection.sqrMagnitude == 0f ? 0f : entity.character.baseSpeed;
-            if (movementSpeed != MovementSpeed.Normal) 
-                newSpeed *= movementSpeed == MovementSpeed.Fast ? entity.character.sprintMultiplier : entity.character.slowMultiplier;
+            if (movementSpeed != Entity.MovementSpeed.Normal) 
+                newSpeed *= movementSpeed == Entity.MovementSpeed.Fast ? entity.character.sprintMultiplier : entity.character.slowMultiplier;
 
             // Acceleration is quicker than Deceleration 
             float speedDelta = newSpeed > moveSpeed ? 1f : 0.65f;

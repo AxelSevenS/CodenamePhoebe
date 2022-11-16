@@ -13,7 +13,7 @@ namespace SeleneGame.Core {
     [RequireComponent(typeof(Animator))]
     [DisallowMultipleComponent]
     [SelectionBase]
-    public class Entity : MonoBehaviour, IDamageable {
+    public partial class Entity : MonoBehaviour, IDamageable {
 
         
         private const int MOVE_COLLISION_STEP_COUNT = 1;
@@ -32,9 +32,7 @@ namespace SeleneGame.Core {
         
         [Tooltip("The entity's current Physics Script.")]
         [SerializeReference][HideInInspector][ReadOnly] private CustomPhysicsComponent _physicsComponent;
-        
-        [Tooltip("The entity's current Entity Controller.")]
-        [SerializeReference][HideInInspector][ReadOnly] private EntityController _entityController;
+    
 
         [Header("Entity Data")]
 
@@ -127,22 +125,6 @@ namespace SeleneGame.Core {
                 _physicsComponent ??= GetComponent<CustomPhysicsComponent>();
                 return _physicsComponent;
             }
-        }
-
-        /// <summary>
-        /// The entity's current Entity Controller.
-        /// </summary>
-        protected virtual EntityController entityController
-        {
-            get {
-                if (_entityController == null) {
-                    if (!TryGetComponent<EntityController>(out _entityController))
-                        _entityController = gameObject.AddComponent<EntityController>();
-                }
-                return _entityController;
-
-            }
-            set => _entityController = value;
         }
 
         /// <summary>
@@ -274,10 +256,7 @@ namespace SeleneGame.Core {
 
         [ContextMenu("Set As Player Entity")]
         public void SetAsPlayer() {
-            if ( PlayerEntityController.current == entityController ) return;
-
-            GameUtility.SafeDestroy( entityController );
-            entityController = gameObject.AddComponent<PlayerEntityController>(); 
+            gameObject.AddComponent<PlayerEntityController>(); 
         }
 
         /// <summary>
@@ -303,6 +282,8 @@ namespace SeleneGame.Core {
             Debug.Log($"{name} switched state to {_state.name}");
         }
 
+        public void SetState() => SetState( defaultState );
+
         /// <summary>
         /// Set the Entity's current Character.
         /// </summary>
@@ -310,7 +291,7 @@ namespace SeleneGame.Core {
         public void SetCharacter(Character character, CharacterCostume costume = null) {
             
             try {
-                character.Initialize(this, costume);
+                character?.Initialize(this, costume);
             } catch (Exception e) {
                 Debug.LogError($"Error while Setting Character {character.name} : {e.Message}");
                 return;
@@ -376,55 +357,6 @@ namespace SeleneGame.Core {
 
         public void RotateModelTowards(Vector3 newForward, Vector3 newUp) => RotateModelTowards( Quaternion.LookRotation(newForward, newUp) );
 
-        // /// <summary>
-        // /// Rotate the Entity towards a given rotation in relative space.
-        // /// </summary>
-        // /// <param name="newRotation">The rotation to rotate towards</param>
-        // public void RotateTowardsRelative(Quaternion newRotation) {
-
-        //     RotateTowardsRelative(newRotation * Vector3.forward, newRotation * Vector3.up);
-
-        // }
-
-        // /// <summary>
-        // /// Rotate the Entity towards a given rotation in absolute space.
-        // /// </summary>
-        // /// <param name="newRotation">The rotation to rotate towards</param>
-        // public void RotateTowardsAbsolute(Quaternion newRotation) {
-
-        //     Quaternion inverse = Quaternion.Inverse(rotation) * newRotation;
-        //     RotateTowardsRelative(inverse);
-        // }
-
-        // /// <summary>
-        // /// Rotate the Entity towards a given direction in relative space.
-        // /// </summary>
-        // /// <param name="newDirection">The direction to rotate towards</param>
-        // /// <param name="newUp">The direction that is used as the Entity's up direction</param>
-        // public void RotateTowardsRelative(Vector3 newDirection, Vector3 newUp) {
-
-        //     Transform modelTransform = character.costume.modelInstance.transform;
-        //     if (modelTransform == null) return;
-
-        //     // Quaternion apparentRotation = Quaternion.FromToRotation(rotation * Vector3.up, newUp) * rotation;
-        //     // Quaternion turnDirection = Quaternion.AngleAxis(Mathf.Atan2(newDirection.x, newDirection.z) * Mathf.Rad2Deg, Vector3.up);
-        //     Quaternion inverseTransformRotation = Quaternion.Inverse(rotation);
-        //     Quaternion absoluteModelRotation = Quaternion.LookRotation(newDirection, newUp);
-
-        //     modelTransform.rotation = Quaternion.Slerp(modelTransform.rotation, inverseTransformRotation * absoluteModelRotation, 12f * GameUtility.timeDelta);
-        // }
-
-        // /// <summary>
-        // /// Rotate the Entity towards a given direction in absolute space.
-        // /// </summary>
-        // /// <param name="newDirection">The direction to rotate towards</param>
-        // /// <param name="newUp">The direction that is used as the Entity's up direction</param>
-        // public void RotateTowardsAbsolute(Vector3 newDirection, Vector3 newUp) {
-
-        //     Vector3 inverse = Quaternion.Inverse(rotation) * newDirection;
-        //     RotateTowardsRelative(inverse, newUp);
-
-        // }
 
         protected virtual void EntityAnimation() {
             animator.SetBool("OnGround", onGround);
@@ -438,8 +370,6 @@ namespace SeleneGame.Core {
         }
         
 
-
-
         /// <summary>
         /// Pickup a grabbable item.
         /// </summary>
@@ -452,6 +382,7 @@ namespace SeleneGame.Core {
         /// </summary>
         /// <param name="grabbable">The item to throw</param>
         public virtual void Throw(Grabbable grabbable){;}
+
 
         /// <summary>
         /// Initiate the Entity's death sequence.
@@ -647,8 +578,7 @@ namespace SeleneGame.Core {
             _animator = GetComponent<Animator>();
             _rigidbody = GetComponent<Rigidbody>();
             _physicsComponent = GetComponent<CustomPhysicsComponent>();
-            _entityController = GetComponent<EntityController>();
-            character?.Dispose();
+            SetCharacter(null);
         }
 
         protected virtual void OnEnable(){

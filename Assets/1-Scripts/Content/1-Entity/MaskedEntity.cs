@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using SeleneGame.Core;
-using SeleneGame.States;
 
 using SevenGame.Utility;
 
@@ -52,10 +51,9 @@ namespace SeleneGame.Content {
 
 
         public void SetMask(EidolonMask mask, EidolonMaskCostume costume = null) {
-            if (mask == null) return;
 
             try {
-                mask.Initialize(this, costume);
+                mask?.Initialize(this, costume);
             } catch (Exception e) {
                 // Debug.Log(mask);
                 Debug.LogError($"Error while Setting Mask {mask.name} : {e.Message}");
@@ -106,36 +104,15 @@ namespace SeleneGame.Content {
         }
 
 
-        public void Shift(){
-            shiftCooldown = 0.3f;
-            if (onGround) rigidbody.velocity += -gravityDown*3f;
-            
-            SetState( new MaskedState() );
-        }
-
-        public void StopShifting(Vector3 newDown){
-            gravityDown = newDown;
-            SetState( defaultState );
-        }
-        
-        protected void ToggleShift(){
-            if (shiftCooldown > 0f) return;
-
-            if (state is MaskedState) 
-                StopShifting(Vector3.down);
-            else if (state is HumanoidGroundedState) {
-                Shift();
-            }
-        }
-
         protected sealed override void ResetWeapons() {
             _weapons?.Dispose();
             _weapons = new MaskedWeaponInventory(this);
         }
 
-        protected void ResetMask() {
-            mask?.UnloadModel();
-            SetMask( EidolonMask.GetInstance("Erebus") );
+
+        public override void HandleInput(EntityController controller) {
+            base.HandleInput(controller);
+            mask.HandleInput(controller);
         }
 
 
@@ -154,18 +131,13 @@ namespace SeleneGame.Content {
 
         protected override void EntityReset(){
             base.EntityReset();
-            ResetMask();
+            SetMask( null );
         }
 
         protected override void Update(){
             base.Update();
 
             shiftCooldown = Mathf.MoveTowards( shiftCooldown, 0f, GameUtility.timeDelta );
-            
-            if (entityController.shiftInput.tapped){
-                
-                ToggleShift();
-            }
 
             mask.SetState( isMasked );
             mask.MaskUpdate();
