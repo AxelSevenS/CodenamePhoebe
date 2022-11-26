@@ -14,7 +14,6 @@ namespace SeleneGame.Core {
         private SerializedProperty soAnimator;
         private SerializedProperty soRigidbody;
         private SerializedProperty soPhysicsComponent;
-        private SerializedProperty soEntityController;
         private bool foldout = true;
 
 
@@ -25,7 +24,6 @@ namespace SeleneGame.Core {
             soAnimator = serializedObject.FindProperty( "_animator" );
             soRigidbody = serializedObject.FindProperty( "_rigidbody" );
             soPhysicsComponent = serializedObject.FindProperty( "_physicsComponent" );
-            soEntityController = serializedObject.FindProperty( "_entityController" );
 
             targetEntity = (Entity)target;
         }
@@ -59,7 +57,6 @@ namespace SeleneGame.Core {
                 EditorGUILayout.PropertyField(soAnimator);
                 EditorGUILayout.PropertyField(soRigidbody);
                 EditorGUILayout.PropertyField(soPhysicsComponent);
-                EditorGUILayout.PropertyField(soEntityController);
             }
             EditorGUILayout.EndFoldoutHeaderGroup();
             

@@ -91,7 +91,7 @@ namespace SeleneGame.Core.UI {
                 i.color = new Color(i.color.r, i.color.g, i.color.b, currOpacity);
         }
 
-        IEnumerator AdvanceText(){
+        private IEnumerator AdvanceText(){
             displayText = "";
             dialogueIndicator.enabled = false;
 

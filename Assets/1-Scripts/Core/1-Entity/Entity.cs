@@ -1,10 +1,12 @@
 using System;
 
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.AddressableAssets;
 
 using SevenGame.Utility;
+using System.Collections.Generic;
 
 namespace SeleneGame.Core {
 
@@ -42,7 +44,7 @@ namespace SeleneGame.Core {
         // [Tooltip("The current rotation of the Entity.")]
         // public QuaternionData rotation;
 
-        [Tooltip("If the Entity is currently on the ground.")]
+        [Tooltip("If the Entity is currently on the ground.")] 
         public BoolData onGround;
 
         [Tooltip("The current health of the Entity.")]
@@ -338,14 +340,6 @@ namespace SeleneGame.Core {
             character?.UnloadModel();
         }
 
-        // /// <summary>
-        // /// Set the Entity's Up direction.
-        // /// </summary>
-        // /// <param name="newUp">The new Up direction of the Entity</param>
-        // public void SetUp(Vector3 newUp) {
-        //     transform.rotation = Quaternion.FromToRotation(transform.rotation * Vector3.up, newUp) * transform.rotation;
-        // }
-
         public void RotateModelTowards(Quaternion nowRotation) {
             
             if (modelTransform == null) return;
@@ -491,7 +485,7 @@ namespace SeleneGame.Core {
             }
 
             // Check for penetration and adjust accordingly
-            foreach ( Collider entityCollider in character.costumeData.hurtColliders.Values ) {
+            foreach ( Collider entityCollider in character.costumeData.hurtColliders ) {
                 foreach ( Collider worldCollider in entityCollider.ColliderOverlap(Vector3.zero, 0f, Global.GroundMask) ) {
                     if ( Physics.ComputePenetration(entityCollider, entityCollider.transform.position, entityCollider.transform.rotation, worldCollider, worldCollider.transform.position, worldCollider.transform.rotation, out Vector3 direction, out float distance) ) {
                         rigidbody.MovePosition(rigidbody.position + (direction * distance));
@@ -515,8 +509,7 @@ namespace SeleneGame.Core {
         public bool ColliderCast( Vector3 position, Vector3 direction, out RaycastHit castHit, float skinThickness, LayerMask layerMask ) {
             // Debug.Log(costumeData.hurtColliders["main"]);
 
-            foreach (ValuePair<string, Collider> pair in character?.costumeData.hurtColliders){
-                Collider collider = pair.Value;
+            foreach (Collider collider in character?.costumeData.hurtColliders){
                 bool hasHitWall = collider.ColliderCast( collider.transform.position + position, direction, out RaycastHit tempHit, skinThickness, layerMask );
                 if ( !hasHitWall ) continue;
 
@@ -534,8 +527,7 @@ namespace SeleneGame.Core {
         /// <param name="skinThickness">The thickness of the skin of the overlap, set to a low number to keep the overlap accurate but not zero as to not overlap with the terrain</param>
         /// <param name="layerMask">The layer mask to use for the overlap.</param>
         public Collider[] ColliderOverlap( float skinThickness, LayerMask layerMask ) {
-            foreach (ValuePair<string, Collider> pair in character?.costumeData.hurtColliders){
-                Collider collider = pair.Value;
+            foreach (Collider collider in character?.costumeData.hurtColliders){
                 Collider[] hits = collider.ColliderOverlap( collider.transform.position, skinThickness, layerMask );
                 if ( hits.Length > 0 ) return hits;
             }

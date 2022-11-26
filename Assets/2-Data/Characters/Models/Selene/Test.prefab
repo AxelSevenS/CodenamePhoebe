@@ -3238,13 +3238,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bones:
-    pairs: []
+    _pairs: []
   hurtColliders:
-    pairs:
-    - Key: main
-      Value: {fileID: 8170616732104126944}
-  hitColliders:
-    pairs: []
+  - {fileID: 0}
+  hitColliders: []
   animatorController: {fileID: 9100000, guid: 080e304828b097b4cac678d0babd1671, type: 2}
   animatorAvatar: {fileID: 9000000, guid: 69356094dedc4ed4ebdc20aaa76b488f, type: 3}
 --- !u!136 &8170616732104126944

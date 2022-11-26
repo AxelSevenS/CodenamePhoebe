@@ -10,7 +10,7 @@ using SevenGame.Utility;
 
 namespace SeleneGame.Core.UI {
 
-    public abstract class UI<T> : Singleton<T>, IUI where T : MonoBehaviour, IUI {
+    public abstract class UI<T> : Singleton<T>, IUI where T : UI<T> {
 
         private bool _enabled = false;
 

@@ -3387,8 +3387,28 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc,
         type: 3}
+      propertyPath: bones._pairs.Array.size
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc,
+        type: 3}
+      propertyPath: hitColliders.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc,
+        type: 3}
       propertyPath: bonesTest.pairs.Array.size
       value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc,
+        type: 3}
+      propertyPath: hurtColliders.Array.data[0]
+      value: 
+      objectReference: {fileID: 1349480310}
+    - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc,
+        type: 3}
+      propertyPath: bonesAgain._pairs.Array.size
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc,
         type: 3}
@@ -3424,6 +3444,46 @@ PrefabInstance:
         type: 3}
       propertyPath: bones.pairs.Array.data[6].Key
       value: weaponLeft
+      objectReference: {fileID: 0}
+    - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc,
+        type: 3}
+      propertyPath: bones._pairs.Array.data[0].Key
+      value: head
+      objectReference: {fileID: 0}
+    - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc,
+        type: 3}
+      propertyPath: bones._pairs.Array.data[1].Key
+      value: handRight
+      objectReference: {fileID: 0}
+    - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc,
+        type: 3}
+      propertyPath: bones._pairs.Array.data[2].Key
+      value: handLeft
+      objectReference: {fileID: 0}
+    - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc,
+        type: 3}
+      propertyPath: bones._pairs.Array.data[3].Key
+      value: footRight
+      objectReference: {fileID: 0}
+    - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc,
+        type: 3}
+      propertyPath: bones._pairs.Array.data[4].Key
+      value: footLeft
+      objectReference: {fileID: 0}
+    - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc,
+        type: 3}
+      propertyPath: bones._pairs.Array.data[5].Key
+      value: weaponRight
+      objectReference: {fileID: 0}
+    - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc,
+        type: 3}
+      propertyPath: bones._pairs.Array.data[6].Key
+      value: weaponLeft
+      objectReference: {fileID: 0}
+    - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc,
+        type: 3}
+      propertyPath: bones._pairs.Array.data[7].Key
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc,
         type: 3}
@@ -3465,6 +3525,46 @@ PrefabInstance:
       propertyPath: bones.pairs.Array.data[6].Value
       value: 
       objectReference: {fileID: 1748239625}
+    - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc,
+        type: 3}
+      propertyPath: bones._pairs.Array.data[0].Value
+      value: 
+      objectReference: {fileID: 796869371}
+    - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc,
+        type: 3}
+      propertyPath: bones._pairs.Array.data[1].Value
+      value: 
+      objectReference: {fileID: 627373077}
+    - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc,
+        type: 3}
+      propertyPath: bones._pairs.Array.data[2].Value
+      value: 
+      objectReference: {fileID: 1748239625}
+    - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc,
+        type: 3}
+      propertyPath: bones._pairs.Array.data[3].Value
+      value: 
+      objectReference: {fileID: 736079199}
+    - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc,
+        type: 3}
+      propertyPath: bones._pairs.Array.data[4].Value
+      value: 
+      objectReference: {fileID: 621250939}
+    - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc,
+        type: 3}
+      propertyPath: bones._pairs.Array.data[5].Value
+      value: 
+      objectReference: {fileID: 627373077}
+    - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc,
+        type: 3}
+      propertyPath: bones._pairs.Array.data[6].Value
+      value: 
+      objectReference: {fileID: 1748239625}
+    - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc,
+        type: 3}
+      propertyPath: bones._pairs.Array.data[7].Value
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc,
         type: 3}
       propertyPath: bonesTest.pairs.Array.data[0].Key
@@ -3572,6 +3672,46 @@ PrefabInstance:
       objectReference: {fileID: 1748239625}
     - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc,
         type: 3}
+      propertyPath: bonesAgain._pairs.Array.data[0].Key
+      value: head
+      objectReference: {fileID: 0}
+    - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc,
+        type: 3}
+      propertyPath: bonesAgain._pairs.Array.data[1].Key
+      value: handRight
+      objectReference: {fileID: 0}
+    - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc,
+        type: 3}
+      propertyPath: bonesAgain._pairs.Array.data[2].Key
+      value: handLeft
+      objectReference: {fileID: 0}
+    - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc,
+        type: 3}
+      propertyPath: bonesAgain._pairs.Array.data[3].Key
+      value: footRight
+      objectReference: {fileID: 0}
+    - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc,
+        type: 3}
+      propertyPath: bonesAgain._pairs.Array.data[4].Key
+      value: footLeft
+      objectReference: {fileID: 0}
+    - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc,
+        type: 3}
+      propertyPath: bonesAgain._pairs.Array.data[5].Key
+      value: weaponRight
+      objectReference: {fileID: 0}
+    - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc,
+        type: 3}
+      propertyPath: bonesAgain._pairs.Array.data[6].Key
+      value: weaponLeft
+      objectReference: {fileID: 0}
+    - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc,
+        type: 3}
+      propertyPath: bonesAgain._pairs.Array.data[7].Key
+      value: neck
+      objectReference: {fileID: 0}
+    - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc,
+        type: 3}
       propertyPath: bonesTest.pairs.Array.data[0].Value
       value: 
       objectReference: {fileID: 796869371}
@@ -3605,6 +3745,46 @@ PrefabInstance:
       propertyPath: bonesTest.pairs.Array.data[6].Value
       value: 
       objectReference: {fileID: 1748239625}
+    - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc,
+        type: 3}
+      propertyPath: bonesAgain._pairs.Array.data[0].Value
+      value: 
+      objectReference: {fileID: 796869371}
+    - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc,
+        type: 3}
+      propertyPath: bonesAgain._pairs.Array.data[1].Value
+      value: 
+      objectReference: {fileID: 627373077}
+    - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc,
+        type: 3}
+      propertyPath: bonesAgain._pairs.Array.data[2].Value
+      value: 
+      objectReference: {fileID: 1748239625}
+    - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc,
+        type: 3}
+      propertyPath: bonesAgain._pairs.Array.data[3].Value
+      value: 
+      objectReference: {fileID: 736079199}
+    - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc,
+        type: 3}
+      propertyPath: bonesAgain._pairs.Array.data[4].Value
+      value: 
+      objectReference: {fileID: 621250939}
+    - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc,
+        type: 3}
+      propertyPath: bonesAgain._pairs.Array.data[5].Value
+      value: 
+      objectReference: {fileID: 627373077}
+    - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc,
+        type: 3}
+      propertyPath: bonesAgain._pairs.Array.data[6].Value
+      value: 
+      objectReference: {fileID: 1748239625}
+    - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc,
+        type: 3}
+      propertyPath: bonesAgain._pairs.Array.data[7].Value
+      value: 
+      objectReference: {fileID: 814419977}
     - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc,
         type: 3}
       propertyPath: hurtColliders.pairs.Array.data[0].Key
@@ -3683,7 +3863,7 @@ PrefabInstance:
     - target: {fileID: 3397043582691127004, guid: de3ac70c02b680a4f84c03d58611b7cc,
         type: 3}
       propertyPath: m_Name
-      value: Model
+      value: Base
       objectReference: {fileID: 0}
     - target: {fileID: 3397043582691127005, guid: de3ac70c02b680a4f84c03d58611b7cc,
         type: 3}

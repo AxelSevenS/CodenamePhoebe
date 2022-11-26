@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 using SevenGame.Utility;
 
@@ -8,18 +9,20 @@ namespace SeleneGame.Core{
 
     // [RequireComponent(typeof(Animator))]
     public class CostumeData : MonoBehaviour {
-        public Map<string, GameObject> bones;
-        public Map<string, Collider> hurtColliders;
-        public Map<string, Collider> hitColliders;
+        
+        public SerializableDictionary<string, GameObject> bones;
+        public List<Collider> hurtColliders;
+        public List<Collider> hitColliders;
 
         public RuntimeAnimatorController animatorController;
         public Avatar animatorAvatar;
 
+
+
         public Bounds bounds {
             get {
                 Bounds newBounds = new Bounds(transform.position, Vector3.zero);
-                foreach( ValuePair<string, Collider> pair in hurtColliders ){
-                    Collider collider = pair.Value;
+                foreach( Collider collider in hurtColliders ){
                     newBounds.Encapsulate(collider.bounds);
                 }
                 return newBounds;
@@ -29,8 +32,7 @@ namespace SeleneGame.Core{
         public Bounds localSpaceBounds {
             get {
                 Bounds newBounds = new Bounds(Vector3.zero, Vector3.zero);
-                foreach( ValuePair<string, Collider> pair in hurtColliders ){
-                    Collider collider = pair.Value;
+                foreach( Collider collider in hurtColliders ){
                     Bounds colliderBounds = new Bounds(
                         transform.InverseTransformVector(collider.transform.position - transform.position) + collider.GetCenter(),
                         collider.GetSize()

@@ -10,7 +10,7 @@ using SevenGame.Utility;
 
 namespace SeleneGame.Core.UI {
     
-    public abstract class UIMenu<T> : UI<T>, IUIMenu where T : MonoBehaviour, IUIMenu {
+    public abstract class UIMenu<T> : UI<T>, IUIMenu where T : UIMenu<T> {
 
         
         public virtual void Toggle() {
