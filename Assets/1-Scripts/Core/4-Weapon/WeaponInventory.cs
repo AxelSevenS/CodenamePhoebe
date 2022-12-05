@@ -52,7 +52,7 @@ namespace SeleneGame.Core {
             try {
                 int index = IndexOf(oldWeapon);
                 Set(index, newWeapon, costume);
-            } catch (System.ArgumentOutOfRangeException ) {
+            } catch (System.ArgumentOutOfRangeException) {
                 
             }
         }

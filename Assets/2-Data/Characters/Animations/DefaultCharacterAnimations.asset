@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f876b2e2ff644ff48ac42e7d790b77db, type: 3}
+  m_Name: DefaultCharacterAnimations
+  m_EditorClassIdentifier: 
+  _accessibleInGame: 1
+  idleAnimation: {fileID: 7400000, guid: df2b8d40d251e574d8197ecd180fc025, type: 2}
+  moveStartSlowAnimation: {fileID: 7400000, guid: 7be59d2ed3f91134689a0373b4bf095d,
+    type: 2}
+  moveStartAnimation: {fileID: 7400000, guid: 38e94fd053ed91b4b9fc14c140ad37d5, type: 2}
+  moveStartFastAnimation: {fileID: 7400000, guid: 9aeeaf386d122b04dbd9cbca73dd5504,
+    type: 2}
+  moveCycleSlowAnimation: {fileID: 7400000, guid: f62ae6a7c9f3e2b43bee07de6af94c5c,
+    type: 2}
+  moveCycleAnimation: {fileID: 7400000, guid: 899297eae2289ba4c99c00fa4db7c0a8, type: 2}
+  moveCycleFastAnimation: {fileID: 7400000, guid: 5bc60c30f79ae9b42b657a87ca900b24,
+    type: 2}
+  moveStopSlowAnimation: {fileID: 7400000, guid: 18be4fda3d27ed44cb674cd68431c87a,
+    type: 2}
+  moveStopAnimation: {fileID: 7400000, guid: 083563380751712408e43ab686cc88c8, type: 2}
+  moveStopFastAnimation: {fileID: 7400000, guid: 1e777bfd61c6d50439a457227d20ca52,
+    type: 2}
+  jumpAnimation: {fileID: 7400000, guid: cb0f4c4498fd109489e3551ac13e2eed, type: 2}
+  fallAnimation: {fileID: 7400000, guid: eb7ffb7e0504949409194d0777dd9057, type: 2}
+  landAnimation: {fileID: 7400000, guid: 27bc7cbf7da835145b259be83c88cf51, type: 2}
+  evadeForwardAnimation: {fileID: 7400000, guid: 9d212d7716cb1d54998b6e6dbecfc26e,
+    type: 2}
+  evadeRightAnimation: {fileID: 7400000, guid: f2c4fe228c9dc7f41afc4725a52d69c9, type: 2}
+  evadeLeftAnimation: {fileID: 7400000, guid: 6a467569bb35a504bbbd036a5d9b98a9, type: 2}
+  evadeBackwardAnimation: {fileID: 7400000, guid: 90a75108e7f02254995325352304f9ca,
+    type: 2}
+  evadeAirForwardAnimation: {fileID: 7400000, guid: 332d96930200bcf46ae530f563282828,
+    type: 2}
+  evadeAirRightAnimation: {fileID: 7400000, guid: d15a071adc3f3104b90b004bcc29f33d,
+    type: 2}
+  evadeAirLeftAnimation: {fileID: 7400000, guid: 21ad36120dbd3b24bb132c4a717136bb,
+    type: 2}
+  evadeAirBackwardAnimation: {fileID: 7400000, guid: 8331850c283370c498758995ec26a12e,
+    type: 2}

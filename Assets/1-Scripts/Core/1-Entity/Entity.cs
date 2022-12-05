@@ -1,24 +1,20 @@
 using System;
 
 using UnityEngine;
-using UnityEngine.Rendering;
-using UnityEngine.ResourceManagement.AsyncOperations;
-using UnityEngine.AddressableAssets;
+
+using Animancer;
 
 using SevenGame.Utility;
-using System.Collections.Generic;
 
 namespace SeleneGame.Core {
 
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(CustomPhysicsComponent))]
     [RequireComponent(typeof(Animator))]
+    [RequireComponent(typeof(AnimancerComponent))]
     [DisallowMultipleComponent]
     [SelectionBase]
     public partial class Entity : MonoBehaviour, IDamageable {
-
-        
-        private const int MOVE_COLLISION_STEP_COUNT = 1;
         
         
 
@@ -28,6 +24,8 @@ namespace SeleneGame.Core {
     
         [Tooltip("The entity's current Animator.")]
         [SerializeReference][HideInInspector][ReadOnly] private Animator _animator;
+        [Tooltip("The entity's current Animator.")]
+        [SerializeReference][HideInInspector][ReadOnly] private AnimancerComponent _animancer;
 
         [Tooltip("The entity's current Rigidbody.")]
         [SerializeReference][HideInInspector][ReadOnly] private Rigidbody _rigidbody;
@@ -73,8 +71,6 @@ namespace SeleneGame.Core {
 
         public RaycastHit groundHit;
 
-        [HideInInspector] public float subState;
-
 
 
         public event Action<float> onHeal;
@@ -109,6 +105,17 @@ namespace SeleneGame.Core {
         }
 
         /// <summary>
+        /// The entity's current Animator.
+        /// </summary>
+        public AnimancerComponent animancer {
+            get {
+                _animancer ??= GetComponent<AnimancerComponent>();
+                return _animancer;
+            }
+            private set => _animancer = value;
+        }
+
+        /// <summary>
         /// The entity's current Rigidbody.
         /// </summary>
         public new Rigidbody rigidbody {
@@ -139,15 +146,12 @@ namespace SeleneGame.Core {
 
                 return _state;
             }
-            set {
-                SetState( value );
-            }
         }
 
         /// <summary>
         /// The default state of the entity.
         /// </summary>
-        public virtual State defaultState => new HumanoidGroundedState(); 
+        public virtual State defaultState => new Grounded(); 
 
         /// <summary>
         /// The current health of the Entity.
@@ -190,6 +194,8 @@ namespace SeleneGame.Core {
         /// The force of gravity applied to the Entity.
         /// </summary>
         public float gravityMultiplier => state.gravityMultiplier;
+
+        public Vector3 gravityForce => weight * gravityMultiplier * gravityDown;
 
         public bool isIdle => moveDirection.sqrMagnitude == 0;
 
@@ -353,14 +359,7 @@ namespace SeleneGame.Core {
 
 
         protected virtual void EntityAnimation() {
-            animator.SetBool("OnGround", onGround);
-            // animator.SetBool("Falling", fallVelocity <= -20f);
-            animator.SetBool("Idle", isIdle );
-            // animator.SetInteger("State", state.id);
-            // animator.SetFloat("SubState", subState);
-            // animator.SetFloat("WalkSpeed", (float)walkSpeed);
-            // animator.SetFloat("DotOfForward", Vector3.Dot(absoluteForward, transform.forward));
-            // animator.SetFloat("ForwardRight", Vector3.Dot(absoluteForward, Vector3.Cross(-transform.up, transform.forward)));
+            state?.StateAnimation();
         }
         
 
@@ -443,19 +442,7 @@ namespace SeleneGame.Core {
 
             if (gravityMultiplier == 0f || weight == 0f || gravityDown == Vector3.zero) return;
 
-            Vector3 gravityForce = weight * gravityMultiplier * gravityDown * GameUtility.timeDelta;
-
-            rigidbody.velocity += gravityForce;
-
-            // if ( onGround ) return;
-
-            const float regularFallMultiplier = 3.25f;
-            const float fallingMultiplier = 2f;
-            
-            float floatingMultiplier = regularFallMultiplier * gravityMultiplier;
-            float multiplier = floatingMultiplier * (fallVelocity >= 0 ? 1f : fallingMultiplier);
-
-            rigidbody.velocity += multiplier * gravityForce;
+            rigidbody.velocity += gravityForce * GameUtility.timeDelta;
         
         }
 
@@ -469,20 +456,12 @@ namespace SeleneGame.Core {
 
             if (_totalMovement.sqrMagnitude == 0f) return;
 
-            // rigidbody.MovePosition(rigidbody.position + _totalMovement);
 
-            Vector3 step = _totalMovement / MOVE_COLLISION_STEP_COUNT;
-            for (int i = 0; i < MOVE_COLLISION_STEP_COUNT; i++) {
+            bool walkCollision = ColliderCast(Vector3.zero, _totalMovement, out RaycastHit walkHit, 0.15f, Global.GroundMask);
 
-                bool walkCollision = ColliderCast(Vector3.zero, step, out RaycastHit walkHit, 0.15f, Global.GroundMask);
+            Vector3 executedMovement = walkCollision ? _totalMovement.normalized * walkHit.distance : _totalMovement;
+            rigidbody.MovePosition(rigidbody.position + executedMovement);
 
-                if (!walkCollision)
-                    i = MOVE_COLLISION_STEP_COUNT;
-
-                Vector3 executedMovement = walkCollision ? step.normalized * walkHit.distance : step;
-                rigidbody.MovePosition(rigidbody.position + executedMovement);
-
-            }
 
             // Check for penetration and adjust accordingly
             foreach ( Collider entityCollider in character.costumeData.hurtColliders ) {
@@ -568,6 +547,7 @@ namespace SeleneGame.Core {
         private void ResetEntity() => EntityReset();
         protected virtual void EntityReset(){
             _animator = GetComponent<Animator>();
+            _animancer = GetComponent<AnimancerComponent>();
             _rigidbody = GetComponent<Rigidbody>();
             _physicsComponent = GetComponent<CustomPhysicsComponent>();
             SetCharacter(null);
@@ -587,9 +567,9 @@ namespace SeleneGame.Core {
 
             state?.StateUpdate();
 
-            if (animator.runtimeAnimatorController != null) {
+            // if (animator.runtimeAnimatorController != null) {
                 EntityAnimation();
-            }
+            // }
         }
 
         protected virtual void LateUpdate(){

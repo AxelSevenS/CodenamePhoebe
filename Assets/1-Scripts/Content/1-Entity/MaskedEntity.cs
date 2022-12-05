@@ -35,10 +35,10 @@ namespace SeleneGame.Content {
 
         protected virtual bool isMasked {
             get {
-                if (state is MaskedState || state is SwimmingState)
+                if (state is MaskedState || state is Swimming)
                     return true;
 
-                else if (state is HumanoidGroundedState HumanoidGroundedState)
+                else if (state is Grounded)
                     return Vector3.Dot ( gravityDown, Vector3.down ) < 0.95f /* || weapons.current.shifting */;
 
                 return false;
@@ -46,7 +46,7 @@ namespace SeleneGame.Content {
             }
         }
 
-        public override State defaultState => new HumanoidGroundedState();
+        public override State defaultState => new Grounded();
 
 
 
@@ -99,8 +99,8 @@ namespace SeleneGame.Content {
 
             grabbable.rb.AddForce(targetDirection * 30f, ForceMode.Impulse);
 
-            var impulseParticle = Instantiate(Global.LoadParticle("ShiftImpulseParticles"), transform.position + targetDirection*2f, Quaternion.LookRotation(targetDirection, transform.rotation * Vector3.up));
-            Destroy(impulseParticle, 1.2f);
+            // var impulseParticle = Instantiate(Global.LoadParticle("ShiftImpulseParticles"), transform.position + targetDirection*2f, Quaternion.LookRotation(targetDirection, transform.rotation * Vector3.up));
+            // Destroy(impulseParticle, 1.2f);
         }
 
 
@@ -110,7 +110,7 @@ namespace SeleneGame.Content {
         }
 
 
-        public override void HandleInput(EntityController controller) {
+        public override void HandleInput(PlayerEntityController controller) {
             base.HandleInput(controller);
             mask.HandleInput(controller);
         }

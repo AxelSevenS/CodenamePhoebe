@@ -7,7 +7,7 @@ namespace SeleneGame.Core {
     public partial class Entity {
 
 
-        public virtual void HandleInput(EntityController controller) {
+        public virtual void HandleInput(PlayerEntityController controller) {
             state?.HandleInput(controller);
         }
 
@@ -35,6 +35,7 @@ namespace SeleneGame.Core {
         }
 
         public enum MovementSpeed {
+            Idle,
             Slow,
             Normal,
             Fast

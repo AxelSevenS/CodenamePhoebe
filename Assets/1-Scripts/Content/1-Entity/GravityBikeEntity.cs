@@ -6,7 +6,7 @@ using SeleneGame.Core;
 
 namespace SeleneGame.Content {
 
-    [RequireComponent(typeof(BikeSeat))]
+    [RequireComponent(typeof(Seat))]
     public sealed class GravityBikeEntity : Entity {
 
 
@@ -18,9 +18,12 @@ namespace SeleneGame.Content {
         public Seat seat {
             get {
                 if (_seat == null) {
-                    _seat = GetComponent<BikeSeat>();
+                    _seat = GetComponent<Seat>();
 
                     seat.seatEntity = this;
+                    if (character is VehicleCharacter vehicle) {
+                        seat.SetSittingPoses(vehicle.sittingPoses);
+                    }
                 }
                 return _seat;
             }

@@ -45,7 +45,7 @@ namespace SeleneGame {
 
             // UpdateAddressables();
 
-            CreateProceduralConstructor(typeof(State), typeof(HumanoidGroundedState), "SeleneGame.Content", @"Assets\1-Scripts\Content\3-State\");
+            // CreateProceduralConstructor(typeof(State), typeof(Grounded), "SeleneGame.Content", @"Assets\1-Scripts\Content\3-State\");
 
         }
 
@@ -79,6 +79,8 @@ namespace SeleneGame {
                     Debug.Log($"Created missing base costume for {character.name}, {characterCostume}");
                 }
             );
+
+            UpdateAddressableAddress<CharacterAnimationSet>(addressablesSettings, "Characters/Animations");
 
 
             UpdateAddressableAddress<EidolonMaskCostume>(addressablesSettings, "Masks/Costumes");

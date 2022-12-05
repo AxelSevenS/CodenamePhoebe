@@ -20,11 +20,11 @@ namespace SeleneGame.Core {
             switch (eventType){
                 case EventType.SetEntityCostume:
                     if (entity == null || characterCostume == null) break;
-                    entity.SetCostume(characterCostume);
+                    entity.SetCostume(CharacterCostume.GetInstanceOf(characterCostume));
                     break;
                 case EventType.SetPlayerCostume:
                     if (characterCostume == null) break;
-                    PlayerEntityController.current.entity.SetCostume(characterCostume);
+                    PlayerEntityController.current.entity.SetCostume(CharacterCostume.GetInstanceOf(characterCostume));
                     break;
                 case EventType.StartDialogue:
                     if (dialogue == null) break;

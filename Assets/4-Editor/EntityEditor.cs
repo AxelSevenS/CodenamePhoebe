@@ -12,6 +12,7 @@ namespace SeleneGame.Core {
         private SerializedProperty soSelectedCharacter;
         private SerializedProperty soSelectedCharacterCostume;
         private SerializedProperty soAnimator;
+        private SerializedProperty soAnimancer;
         private SerializedProperty soRigidbody;
         private SerializedProperty soPhysicsComponent;
         private bool foldout = true;
@@ -22,6 +23,7 @@ namespace SeleneGame.Core {
             soSelectedCharacter = serializedObject.FindProperty( "m_selectedCharacter" );
             soSelectedCharacterCostume = serializedObject.FindProperty( "m_selectedCharacterCostume" );
             soAnimator = serializedObject.FindProperty( "_animator" );
+            soAnimancer = serializedObject.FindProperty( "_animancer" );
             soRigidbody = serializedObject.FindProperty( "_rigidbody" );
             soPhysicsComponent = serializedObject.FindProperty( "_physicsComponent" );
 
@@ -55,6 +57,7 @@ namespace SeleneGame.Core {
             foldout = EditorGUILayout.BeginFoldoutHeaderGroup(foldout, "Components");
             if (foldout) {
                 EditorGUILayout.PropertyField(soAnimator);
+                EditorGUILayout.PropertyField(soAnimancer);
                 EditorGUILayout.PropertyField(soRigidbody);
                 EditorGUILayout.PropertyField(soPhysicsComponent);
             }

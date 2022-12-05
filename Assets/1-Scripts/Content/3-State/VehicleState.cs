@@ -7,6 +7,7 @@ using SevenGame.Utility;
 
 namespace SeleneGame.Content {
     
+    [System.Serializable]
     public class VehicleState : State {
 
         private float _gravityMultiplier = 1f;
@@ -25,10 +26,9 @@ namespace SeleneGame.Content {
 
 
         protected override Vector3 jumpDirection => base.jumpDirection;
-        protected override bool canJump => base.canJump && jumpCount > 0 && jumpCooldownTimer.isDone;
+        // protected override bool canJump => base.canJump && jumpCount > 0 && jumpCooldownTimer.isDone;
 
         protected override Vector3 evadeDirection => base.evadeDirection;
-        protected override bool canEvade => base.canEvade;
 
         protected override bool canParry => base.canParry;
         
@@ -41,7 +41,9 @@ namespace SeleneGame.Content {
         }
 
 
-        protected override void HandleInput(EntityController controller){
+        protected override void HandleInput(PlayerEntityController controller){
+
+            base.HandleInput(controller);
 
             controller.RawInputToGroundedMovement(out _, out Vector3 groundedMovement);
 
@@ -84,14 +86,6 @@ namespace SeleneGame.Content {
         }
 
 
-        protected override void JumpAction(Vector3 direction) {
-            base.JumpAction(direction);
-            jumpCooldownTimer.SetDuration(0.25f);
-            jumpCount--;
-        }
-        protected override void EvadeAction(Vector3 direction) {
-            base.EvadeAction(direction);
-        }
         protected override void ParryAction() {
             base.ParryAction();
         }
@@ -105,6 +99,8 @@ namespace SeleneGame.Content {
 
 
         protected override void StateUpdate(){
+
+            base.StateUpdate();
 
             bool terrainFlatEnough = Vector3.Dot(entity.groundHit.normal, -entity.gravityDown) > 0.75f;
             
@@ -130,22 +126,13 @@ namespace SeleneGame.Content {
                 entity.rigidbody.velocity *= 0.995f;
             }
 
-
-            // if (entity.onGround.started)
-                // entity.StartWalkAnim();
-
         }
 
-        protected override void StateFixedUpdate(){
+        protected override void StateFixedUpdate() {
 
+            base.StateFixedUpdate();
 
             entity.Displace( moveSpeed * entity.absoluteForward );
-
-
-
-            // // When the Entity is sliding
-            // if (entity.sliding)
-            //     entity.rigidbody.velocity += entity.groundOrientation * entity.evadeDirection *entity.character.baseSpeed * entity.inertiaMultiplier * GameUtility.timeDelta;
 
 
         }

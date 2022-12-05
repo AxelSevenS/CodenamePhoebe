@@ -43,7 +43,9 @@ namespace SeleneGame.Core {
 
         public virtual void Initialize( Entity entity, TCostume costume = null) {
             if ( !isInstance )
-                throw new InvalidOperationException($"Asset {this.name} is not an instance");
+                // throw new InvalidOperationException($"Asset {this.name} is not an instance");
+                costume = Costume<TCostume>.GetInstanceOf(costume);
+
             if (_entity != null)
                 throw new InvalidOperationException($"Asset {this.name} already initialized");
 
@@ -57,10 +59,18 @@ namespace SeleneGame.Core {
         }
 
         public virtual void SetCostume(TCostume costume) {
-            if (costume == null) return;
+
+            try {
+                costume.Initialize(_entity);
+            } catch (Exception e) {
+                Debug.LogError(e);
+                return;
+            }
+
+            _costume?.UnloadModel();
 
             _costume = costume;
-            LoadModel();
+            _costume.LoadModel();
         }
 
 

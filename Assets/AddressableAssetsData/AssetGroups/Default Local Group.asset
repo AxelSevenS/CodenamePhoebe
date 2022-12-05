@@ -91,6 +91,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - EidolonMaskCostume
+  - m_GUID: 29b9dc4751934ec4886d5fc1d2737b96
+    m_Address: CharacterAnimationSet/DefaultCharacterAnimations
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - CharacterAnimationSet
+    - default
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 9fff86865a633c0488e9533aaa0b59b1, type: 2}
   m_SchemaSet:

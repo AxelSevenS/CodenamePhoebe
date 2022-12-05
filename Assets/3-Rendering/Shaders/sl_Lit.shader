@@ -1,7 +1,6 @@
 Shader "Selene/Lit" {
     
     Properties {
-        // Define the properties in a way Unity can understand
         [NoScaleOffset] _MainTex ("Main Texture", 2D) = "white" {}
 
         [NoScaleOffset] _NormalMap ("Normal Map", 2D) = "bump" {}
@@ -13,7 +12,6 @@ Shader "Selene/Lit" {
         _Smoothness ("Smoothness", Range(0,1)) = 0
         
         _AccentIntensity ("Accent Intensity", Range(0, 5)) = 0
-        // _AccentBrightness ("Accent Brightness", Range(0, 1)) = 1
 
         _EmissionIntensity ("Emission Intensity", Float) = 1
 
@@ -22,7 +20,7 @@ Shader "Selene/Lit" {
     }
     SubShader {
 
-        Tags { "RenderType"="Transparent" }
+        Tags { "RenderType"="Opaque" }
         LOD 100
 
         HLSLINCLUDE

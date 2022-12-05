@@ -90,6 +90,7 @@ MonoBehaviour:
     - CharacterCostume
     - EidolonMask
     - EidolonMaskCostume
+    - CharacterAnimationSet
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: 0547af9595d802d4299e74b85460436d, type: 2}

@@ -21,18 +21,6 @@ namespace SeleneGame.Core {
         public float WeightModifier => weightModifier;
 
         // public GameObject model => costume.modelInstance;
-
-
-
-        public override void SetCostume(WeaponCostume costume) {
-            if (costume == null) return;
-
-            _costume?.UnloadModel();
-
-            _costume = costume;
-            _costume.Initialize(_entity);
-            _costume.LoadModel();
-        }
         
 
         protected internal virtual void OnEquip(){

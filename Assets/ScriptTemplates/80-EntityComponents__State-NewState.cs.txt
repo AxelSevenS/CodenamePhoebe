@@ -31,7 +31,7 @@ namespace SeleneGame.States {
         
 
 
-        public override void HandleInput(EntityController controller) {
+        public override void HandleInput(PlayerEntityController controller) {
 
         }
 

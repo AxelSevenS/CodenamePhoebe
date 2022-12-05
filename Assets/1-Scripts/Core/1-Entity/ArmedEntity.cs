@@ -50,16 +50,6 @@ namespace SeleneGame.Core {
             }
         }
 
-        public virtual void Parry(){
-
-            if (parryTimer.isDone) {
-                Debug.Log("Parry");
-                parryTimer.SetDuration(0.1f);
-
-                // onParry?.Invoke();
-            }
-        }
-
 
         protected override void EntityAnimation() {
             base.EntityAnimation();

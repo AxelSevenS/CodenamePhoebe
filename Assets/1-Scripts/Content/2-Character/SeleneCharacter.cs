@@ -17,13 +17,6 @@ namespace SeleneGame.Content {
                 armed.weapons.Set(1, "Hypnos");
                 armed.weapons.Set(2, "Eris");
 
-                // if ( armed is MaskedEntity masked ) {
-                //     GameObject mask = Instantiate( Resources.Load<GameObject>("Prefabs/Characters/MaskEidolon/ErebusEidolon") );
-                    
-                //     MaskMovement maskMovement = mask.GetComponent<MaskMovement>();
-                //     maskMovement.SetEntity(masked);
-                //     masked.mask = maskMovement;
-                // }
                 if ( armed is MaskedEntity masked ) {
                     masked.SetMask( EidolonMask.GetInstance("Erebus") );
                 }

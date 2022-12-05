@@ -22,7 +22,7 @@ namespace SeleneGame.Core {
 
         
 
-        public virtual void Initialize( Entity entity) {
+        public virtual void Initialize( Entity entity ) {
             if ( !isInstance )
                 throw new InvalidOperationException($"Asset {this.name} is not an instance");
             if ( _entity != null )

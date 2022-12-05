@@ -36,21 +36,7 @@ namespace SeleneGame.Content {
             // hoveringPosition = _entity.transform.position + relativePos;
         }
 
-        public override void SetCostume(EidolonMaskCostume costume) {
-            if (costume == null) return;
-
-            _costume?.UnloadModel();
-
-            _costume = costume;
-            _costume.Initialize(_entity);
-            _costume.LoadModel();
-        }
-
-        public void SetState(bool onFace) {
-            faceState = onFace;
-        }
-
-        protected internal void HandleInput(EntityController controller) {
+        protected internal void HandleInput(PlayerEntityController controller) {
             if ( !(_entity is MaskedEntity masked) ) return;
 
             if (controller.shiftInput.tapped) {
@@ -67,6 +53,11 @@ namespace SeleneGame.Content {
             }
         }
 
+        
+
+        public void SetState(bool onFace) {
+            faceState = onFace;
+        }
 
 
         protected internal virtual void MaskUpdate() {

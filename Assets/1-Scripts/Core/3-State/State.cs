@@ -12,6 +12,9 @@ namespace SeleneGame.Core {
         [ReadOnly] public string name;
         public Entity entity { get; private set; }
 
+        [SerializeReference] [ReadOnly] protected EvadeBehaviour evadeBehaviour;
+        [SerializeReference] [ReadOnly] protected JumpBehaviour jumpBehaviour; 
+
 
 
         public virtual float gravityMultiplier => 1f;
@@ -19,10 +22,8 @@ namespace SeleneGame.Core {
 
 
         protected virtual Vector3 jumpDirection => -entity.gravityDown;
-        protected virtual bool canJump => entity.onGround.falseTimer < 0.2f;
 
         protected virtual Vector3 evadeDirection => entity.absoluteForward;
-        protected virtual bool canEvade => true;
 
         protected virtual bool canParry => true;
 
@@ -39,17 +40,24 @@ namespace SeleneGame.Core {
         
 
 
-        protected internal abstract void HandleInput(EntityController controller);
+        protected internal virtual void HandleInput(PlayerEntityController controller) {
+            jumpBehaviour?.HandleInput(controller);
+            evadeBehaviour?.HandleInput(controller);
+        }
 
 
         protected internal abstract void Move(Vector3 direction);
         protected internal virtual void Jump() {
-            if (canJump)
-                JumpAction(jumpDirection);
+            if (jumpBehaviour == null) return;
+
+            if ( jumpBehaviour.canJump )
+                jumpBehaviour.Jump(jumpDirection);
         }
         protected internal virtual void Evade(Vector3 direction) {
-            if (canEvade)
-                EvadeAction(evadeDirection);
+            if (evadeBehaviour == null) return;
+
+            if ( evadeBehaviour.canEvade )
+                evadeBehaviour.Evade(evadeDirection);
         }
         protected internal virtual void Parry() {
             if (canParry)
@@ -66,28 +74,20 @@ namespace SeleneGame.Core {
         protected internal abstract void SetSpeed(Entity.MovementSpeed speed);
 
 
-        protected virtual void JumpAction(Vector3 jumpDirection) {
-
-            Debug.Log(entity.character.jumpHeight * entity.jumpMultiplier);
-
-            Vector3 newVelocity = entity.rigidbody.velocity.NullifyInDirection( -jumpDirection );
-            newVelocity += entity.character.jumpHeight * entity.jumpMultiplier * jumpDirection;
-            entity.rigidbody.velocity = newVelocity;
-
-            entity.animator.SetTrigger("Jump");
-
-            // entity.jumpCooldownTimer.SetDuration( 0.4f );
-            // onJump?.Invoke(jumpDirection);
-        }
-        protected virtual void EvadeAction(Vector3 direction) {;}
         protected virtual void ParryAction() {;}
         protected virtual void LightAttackAction() {;}
         protected virtual void HeavyAttackAction() {;}
 
 
 
-        protected internal virtual void StateUpdate(){;}
-        protected internal virtual void StateFixedUpdate(){;}
+        protected internal virtual void StateUpdate(){
+            jumpBehaviour?.Update();
+            evadeBehaviour?.Update();
+        }
+        protected internal virtual void StateFixedUpdate(){
+            jumpBehaviour?.FixedUpdate();
+            evadeBehaviour?.FixedUpdate();
+        }
         protected internal virtual void StateAnimation(){;}
 
     }

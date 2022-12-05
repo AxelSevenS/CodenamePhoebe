@@ -8,7 +8,8 @@ using SevenGame.Utility;
 
 namespace SeleneGame.Content {
     
-    public class MaskedState : HumanoidState {
+    [System.Serializable]
+    public class MaskedState : State {
 
         private MaskedEntity maskedEntity;
 
@@ -38,10 +39,8 @@ namespace SeleneGame.Content {
 
 
         protected override Vector3 jumpDirection => Vector3.zero;
-        protected override bool canJump => false;
 
         protected override Vector3 evadeDirection => base.evadeDirection;
-        protected override bool canEvade => base.canEvade;
 
         protected override bool canParry => base.canParry;
 
@@ -50,7 +49,7 @@ namespace SeleneGame.Content {
         protected override void OnEnter(Entity entity){
             base.OnEnter(entity);
 
-            shiftFalling = new BoolData();
+            // shiftFalling = new BoolData();
 
             if ( !(entity is MaskedEntity masked) ) {
                 Debug.Log($"Entity {entity.name} cannot switch to Masked State because it is not Masked");
@@ -58,6 +57,8 @@ namespace SeleneGame.Content {
                 return;
             }
             maskedEntity = masked;
+
+            evadeBehaviour = new EvadeBehaviour(this);
 
             // landCursor = GameObject.Instantiate(Resources.Load("Prefabs/UI/LandCursor"), HUDController.current.transform) as GameObject;
         }
@@ -67,8 +68,15 @@ namespace SeleneGame.Content {
         }
 
 
-        protected override void HandleInput(EntityController controller){
+        protected override void HandleInput(PlayerEntityController controller){
+
             base.HandleInput(controller);
+            
+            if ( controller.evadeInput.started )
+                Evade(evadeDirection);
+
+            if ( KeyInputData.SimultaneousTap( controller.lightAttackInput, controller.heavyAttackInput ) )
+                Parry();
 
             SetSpeed( controller.jumpInput ? Entity.MovementSpeed.Normal : Entity.MovementSpeed.Slow );
 
@@ -146,12 +154,6 @@ namespace SeleneGame.Content {
         }
 
 
-        protected override void JumpAction(Vector3 direction) {
-
-        }
-        protected override void EvadeAction(Vector3 direction) {
-            base.EvadeAction(direction);
-        }
         protected override void ParryAction() {
             base.ParryAction();
         }
@@ -187,6 +189,8 @@ namespace SeleneGame.Content {
 
         protected override void StateUpdate(){
 
+            base.StateUpdate();
+
             // Gravity Shifting Movement
             if ( maskedEntity.inWater ){
                 maskedEntity.gravityDown = Vector3.down;
@@ -220,6 +224,8 @@ namespace SeleneGame.Content {
 
         }
         protected override void StateFixedUpdate(){
+
+            base.StateFixedUpdate();
 
             if (shiftFalling){
             
