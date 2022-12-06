@@ -5,7 +5,7 @@ using UnityEngine;
 namespace SeleneGame.Core {
 
     [System.Serializable]
-    [CreateAssetMenu(fileName = "new Character Animations", menuName = "Animation/Character", order = 0)]
+    [CreateAssetMenu(fileName = "new Character Animations", menuName = "Animation Set/Character", order = 0)]
     public class CharacterAnimationSet : AddressableAsset<CharacterAnimationSet>, IAnimationClipSource {
 
         

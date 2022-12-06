@@ -29,7 +29,7 @@ namespace SeleneGame.Core {
         }
 
         private void Reset() => Awake();
-        private void Awake(){
+        private void Awake() {
             camera = Camera.main;
             cameraData = camera.GetComponent<UniversalAdditionalCameraData>();
         }

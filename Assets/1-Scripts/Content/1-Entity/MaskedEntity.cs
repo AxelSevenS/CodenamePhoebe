@@ -12,7 +12,7 @@ namespace SeleneGame.Content {
 
         [Header("Mask")]
         
-        [SerializeField] [ReadOnly] protected EidolonMask mask;
+        [SerializeReference] [ReadOnly] protected EidolonMask mask;
 
         public bool focusing;
         public float shiftCooldown;

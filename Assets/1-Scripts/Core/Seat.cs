@@ -14,45 +14,28 @@ namespace SeleneGame.Core {
 
         [Space(15)]
 
-        public Entity seatEntity;
+        private Entity _seatEntity;
         public Entity seatOccupant;
         private Transform previousParent;
+
+        protected virtual string seatedInteractionText => "";
 
         [Space(15)]
         
         [SerializeField] private List<SittingPose> _sittingPoses = new List<SittingPose>();
-        private int sittingIndex = 0;
-
-
-
-        protected virtual string seatedInteractionText => "";
-
-        // protected List<SittingPose> sittingPoses {
-        //     get {
-        //         if (_sittingPoses == null || _sittingPoses.Count == 0)
-        //             _sittingPoses = defaultSittingPoses;
-
-        //         return _sittingPoses;
-        //     }
-        //     set {
-        //         _sittingPoses = value;
-        //     }
-        // }
-
-        // protected virtual List<SittingPose> defaultSittingPoses {
-        //     get {
-        //         return new List<SittingPose>() {
-        //             new SittingPose(
-        //                 new Vector3(0f, 0f, 1f),
-        //                 Quaternion.LookRotation(Vector3.back)
-        //             )
-        //         };
-        //     }
-        // }
-
-        protected List<SittingPose> sittingPoses;
         
-        public SittingPose currentSittingPose => sittingPoses[sittingIndex];
+        public SittingPose currentSittingPose { get; private set; }
+
+
+        public Entity seatEntity {
+            get {
+                if (_seatEntity == null) {
+                    _seatEntity = GetComponent<Entity>();
+                }
+                return _seatEntity;
+            }
+            set => _seatEntity = value;
+        }
 
         public Vector3 sitPosition { 
             get {
@@ -89,14 +72,22 @@ namespace SeleneGame.Core {
 
     
         private /* async */ void StartSitting(Entity entity){
-            previousParent = entity.transform.parent;
             
             StopSitting();
+
+            previousParent = entity.transform.parent;
 
             seatOccupant = entity;
             seatOccupant.SetState(seatOccupant.defaultState);
             
-            SelectSittingPosition();
+            // Find the closest sitting pose
+            foreach (SittingPose pose in _sittingPoses) {
+                float distanceToOldPosition = Vector3.Distance(transform.TransformPoint(currentSittingPose.position), seatOccupant.transform.position);
+                float distanceToCurrentPosition = Vector3.Distance(transform.TransformPoint(pose.position), seatOccupant.transform.position);
+                if (distanceToCurrentPosition < distanceToOldPosition){
+                    currentSittingPose = pose;
+                }
+            }
 
             // if (speed < 4){
             //     seatOccupant.walkingTo = true;
@@ -111,8 +102,6 @@ namespace SeleneGame.Core {
             GameUtility.SetLayerRecursively(entity.gameObject, 8);
 
             seatOccupant.transform.SetParent(this.transform);
-
-            // entity.SetAnimationState("Sitting", 0.2f);
         }
 
         public void StopSitting(){
@@ -128,31 +117,12 @@ namespace SeleneGame.Core {
         }
 
         public void SetSittingPoses( IEnumerable<SittingPose> newPoses ) {
-            sittingPoses = new List<SittingPose>(newPoses);
+            _sittingPoses = new List<SittingPose>(newPoses);
         }
-
-        private void SelectSittingPosition(){
-            sittingIndex = 0;
-
-            for (int i = 0; i < sittingPoses.Count; i++){
-                float distanceToOldPosition = Vector3.Distance(transform.TransformPoint(currentSittingPose.position), seatOccupant.transform.position);
-                float distanceToCurrentPosition = Vector3.Distance(transform.TransformPoint(sittingPoses[i].position), seatOccupant.transform.position);
-                if (distanceToCurrentPosition < distanceToOldPosition){
-                    sittingIndex = i;
-                }
-            }
-        }
-
 
 
         private void OnDisable(){
             StopSitting();
-        }
-
-        private void Reset() {
-            seatEntity = GetComponent<Entity>();
-            sittingPoses.Clear();
-            // sittingPoses = defaultSittingPoses;
         }
 
         private void Update(){
@@ -177,12 +147,12 @@ namespace SeleneGame.Core {
             public AnimationClip loopAnimation;
             public AnimationClip endAnimation;
 
-            public SittingPose(Vector3 position, Quaternion rotation){
+            public SittingPose(Vector3 position, Quaternion rotation, AnimationClip startAnimation, AnimationClip loopAnimation, AnimationClip endAnimation){
                 this.position = position;
                 this.rotation = rotation;
-                startAnimation = null;
-                loopAnimation = null;
-                endAnimation = null;
+                this.startAnimation = startAnimation;
+                this.loopAnimation = loopAnimation;
+                this.endAnimation = endAnimation;
             }
         }
 

@@ -12,6 +12,8 @@ namespace SeleneGame.Core {
 
         [SerializeField] private bool _accessibleInGame = true;
 
+        public static T defaultAsset { get; private set; }
+
 
 
         public bool accessibleInGame => _accessibleInGame;
@@ -38,16 +40,18 @@ namespace SeleneGame.Core {
             return result;
         }
         public static T GetDefaultAsset() {
+            if (defaultAsset != null) 
+                return defaultAsset;
+
             AsyncOperationHandle<T> opHandle = Addressables.LoadAssetAsync<T>( "default" );
+            defaultAsset = opHandle.WaitForCompletion();
 
-            T result = opHandle.WaitForCompletion();
-
-            if (result == null) {
-                Debug.LogWarning($"Error getting default Asset");
+            if (defaultAsset == null) {
+                Debug.LogError($"Error getting default Asset");
                 return null;
             }
 
-            return result;
+            return defaultAsset;
         }
         
         public static void GetAssetAsync(string assetName, Action<T> callback) {
@@ -66,6 +70,11 @@ namespace SeleneGame.Core {
             };
         }
         public static void GetDefaultAssetAsync(Action<T> callback) {
+            if (defaultAsset != null) {
+                callback?.Invoke( defaultAsset );
+                return;
+            }
+
             AsyncOperationHandle<T> opHandle = Addressables.LoadAssetAsync<T>( "default" );
             opHandle.Completed += operation => {
                 if (operation.Status == AsyncOperationStatus.Failed) {
@@ -73,6 +82,7 @@ namespace SeleneGame.Core {
                     return;
                 }
 
+                defaultAsset = operation.Result;
                 callback?.Invoke( operation.Result );
             };
         }
