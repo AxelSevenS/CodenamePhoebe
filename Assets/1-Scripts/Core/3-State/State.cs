@@ -6,11 +6,10 @@ using SevenGame.Utility;
 namespace SeleneGame.Core {
     
     [System.Serializable]
-    public abstract class State {
+    [RequireComponent(typeof(Entity))]
+    public abstract class State : MonoBehaviour {
 
-
-        [ReadOnly] public string name;
-        public Entity entity { get; private set; }
+        private Entity _entity;
 
         [SerializeReference] [ReadOnly] protected EvadeBehaviour evadeBehaviour;
         [SerializeReference] [ReadOnly] protected JumpBehaviour jumpBehaviour; 
@@ -20,23 +19,20 @@ namespace SeleneGame.Core {
         public virtual float gravityMultiplier => 1f;
         public virtual Vector3 cameraPosition => Global.cameraDefaultPosition;
 
+        public Entity entity {
+            get {
+                if (_entity == null)
+                    _entity = GetComponent<Entity>();
+                return _entity;
+            }
+            private set => _entity = value;
+        }
 
         protected virtual Vector3 jumpDirection => -entity.gravityDown;
 
         protected virtual Vector3 evadeDirection => entity.absoluteForward;
 
         protected virtual bool canParry => true;
-
-
-
-        protected internal virtual void OnEnter(Entity entity){
-            if (this.entity != null) {
-                throw new InvalidOperationException("State already has an entity");
-            }
-            name = GetType().Name.Replace("State","");
-            this.entity = entity;
-        }
-        protected internal virtual void OnExit(){;}
         
 
 
@@ -79,15 +75,13 @@ namespace SeleneGame.Core {
         protected virtual void HeavyAttackAction() {;}
 
 
+        protected internal virtual void Awake() {;}
 
-        protected internal virtual void StateUpdate(){
-            jumpBehaviour?.Update();
-            evadeBehaviour?.Update();
+        protected internal virtual void OnDestroy(){
+            GameObject.Destroy(evadeBehaviour);
+            GameObject.Destroy(jumpBehaviour);
         }
-        protected internal virtual void StateFixedUpdate(){
-            jumpBehaviour?.FixedUpdate();
-            evadeBehaviour?.FixedUpdate();
-        }
+
         protected internal virtual void StateAnimation(){;}
 
     }

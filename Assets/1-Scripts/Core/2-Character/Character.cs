@@ -39,22 +39,6 @@ namespace SeleneGame.Core {
 
 
 
-        // public float maxHealth => _maxHealth;
-        // public Vector3 size => _size;
-        // public float stepHeight => _stepHeight;
-        // public float weight => _weight;
-        // public float jumpHeight => _jumpHeight;
-
-        // public float baseSpeed => _baseSpeed;
-        // public float acceleration => _acceleration;
-        // public float sprintMultiplier => _sprintMultiplier;
-        // public float slowMultiplier => _slowMultiplier;
-        // public float swimMultiplier => _swimMultiplier;
-
-        // public float evadeSpeed => _evadeSpeed;
-        // public float evadeDuration => _evadeDuration;
-        // public float evadeCooldown => _evadeCooldown;
-
         public float totalEvadeDuration => evadeDuration + evadeCooldown;
 
         public GameObject model => costume.modelInstance;

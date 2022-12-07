@@ -46,7 +46,7 @@ namespace SeleneGame.Content {
             }
         }
 
-        public override State defaultState => new Grounded();
+        public override Type defaultState => typeof(Grounded);
 
 
 

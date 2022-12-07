@@ -43,12 +43,12 @@ namespace SeleneGame.Content {
 
                 if (masked.state is MaskedState) {
                     masked.gravityDown = Vector3.down;
-                    masked.SetState( masked.defaultState );
+                    masked.ResetState();
                 } else {
                     masked.shiftCooldown = 0.3f;
                     if (masked.onGround) masked.rigidbody.velocity += -masked.gravityDown*3f;
                     
-                    masked.SetState( new MaskedState() );
+                    masked.SetState<MaskedState>();
                 }
             }
         }

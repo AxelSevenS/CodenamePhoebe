@@ -34,13 +34,6 @@ namespace SeleneGame.Content {
         
 
 
-        protected override void OnEnter(Entity entity){
-            base.OnEnter(entity);
-        }
-        protected override void OnExit(){
-        }
-
-
         protected override void HandleInput(PlayerEntityController controller){
 
             base.HandleInput(controller);
@@ -97,10 +90,15 @@ namespace SeleneGame.Content {
         }
 
 
+        protected override void Awake(){
+            base.Awake();
+        }
 
-        protected override void StateUpdate(){
+        protected override void OnDestroy(){
+            base.OnDestroy();
+        }
 
-            base.StateUpdate();
+        private void Update(){
 
             bool terrainFlatEnough = Vector3.Dot(entity.groundHit.normal, -entity.gravityDown) > 0.75f;
             
@@ -128,9 +126,7 @@ namespace SeleneGame.Content {
 
         }
 
-        protected override void StateFixedUpdate() {
-
-            base.StateFixedUpdate();
+        private void FixedUpdate() {
 
             entity.Displace( moveSpeed * entity.absoluteForward );
 

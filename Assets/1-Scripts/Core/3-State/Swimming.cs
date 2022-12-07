@@ -31,19 +31,6 @@ namespace SeleneGame.Core {
 
 
 
-
-        protected internal override void OnEnter(Entity entity){
-            base.OnEnter(entity);
-            evadeBehaviour = new EvadeBehaviour(this);
-            entity.gravityDown = Vector3.down;
-        }
-
-        protected internal override void OnExit(){
-            base.OnExit();
-        }
-
-
-
         protected internal override void HandleInput(PlayerEntityController controller){
 
             base.HandleInput(controller);
@@ -93,14 +80,20 @@ namespace SeleneGame.Core {
         }
 
 
+        protected internal override void Awake(){
+            base.Awake();
+            evadeBehaviour = gameObject.AddComponent<EvadeBehaviour>();
+            entity.gravityDown = Vector3.down;
+        }
 
-        protected internal override void StateUpdate() {
+        protected internal override void OnDestroy(){
+            base.OnDestroy();
+        }
 
-            base.StateUpdate();
-
+        private void Update() {
 
             if ( !entity.inWater || entity.weight > entityWeightSinkTreshold ){
-                entity.SetState(entity.defaultState);
+                entity.ResetState();
             }
 
             if (moveDirection.sqrMagnitude != 0f){
@@ -117,10 +110,7 @@ namespace SeleneGame.Core {
 
         }
 
-        protected internal override void StateFixedUpdate() {
-
-            base.StateFixedUpdate();
-
+        private void FixedUpdate() {
 
             // entity.SetUp(-entity.gravityDown);
             entity.transform.rotation = Quaternion.FromToRotation(entity.transform.up, -entity.gravityDown) * entity.transform.rotation;

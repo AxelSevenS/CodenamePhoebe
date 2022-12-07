@@ -18,15 +18,7 @@ namespace SeleneGame.Core {
 
 
 
-        public JumpBehaviour(State entityState) : base(entityState) { }
-
-
-
         protected internal override void HandleInput(PlayerEntityController contoller) {;}
-
-        protected internal override void Update() {;}
-
-        protected internal override void FixedUpdate() {;}
 
         protected internal virtual void Jump(Vector3 direction) {
 

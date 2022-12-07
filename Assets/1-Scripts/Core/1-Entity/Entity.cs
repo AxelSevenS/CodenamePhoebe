@@ -37,7 +37,7 @@ namespace SeleneGame.Core {
         [Header("Entity Data")]
 
         [Tooltip("The current state of the Entity, can be changed using the SetState method.")]
-        [SerializeReference][ReadOnly] private State _state;
+        [SerializeReference] [ReadOnly] private State _state;
 
         // [Tooltip("The current rotation of the Entity.")]
         // public QuaternionData rotation;
@@ -142,7 +142,7 @@ namespace SeleneGame.Core {
         public State state {
             get {
                 if ( _state == null )
-                    SetState( defaultState );
+                    SetState(defaultState);
 
                 return _state;
             }
@@ -151,7 +151,7 @@ namespace SeleneGame.Core {
         /// <summary>
         /// The default state of the entity.
         /// </summary>
-        public virtual State defaultState => new Grounded(); 
+        public virtual System.Type defaultState => typeof(Grounded); 
 
         /// <summary>
         /// The current health of the Entity.
@@ -271,26 +271,22 @@ namespace SeleneGame.Core {
         /// Set the current state of the Entity
         /// </summary>
         /// <param name="newState">The state to set the Entity to</param>
-        public void SetState(State newState) {
+        public void SetState<TState>() where TState : State {
 
-            try {
-                newState.OnEnter(this);
-            } catch (Exception e) {
-                Debug.LogError($"Error while entering state {newState.GetType().Name} : {e.Message}");
-                return;
-            }
-
-            _state?.OnExit();
-            _state = newState;
-
-            //  TODO : add a way to set the corresponding animator for the current Entity State.
-            // animator.SetInteger( "State", (int)_state.stateType );
-            animator.SetTrigger( "SetState" );
+            GameUtility.SafeDestroy(_state);
+            _state = (State)gameObject.AddComponent<TState>();
 
             Debug.Log($"{name} switched state to {_state.name}");
         }
 
-        public void SetState() => SetState( defaultState );
+        public void SetState(Type stateType) {
+            GameUtility.SafeDestroy(_state);
+            _state = (State)gameObject.AddComponent(stateType);
+
+            Debug.Log($"{name} switched state to {_state.name}");
+        }
+
+        public void ResetState() => _state = GameUtility.SafeDestroy(_state); 
 
         /// <summary>
         /// Set the Entity's current Character.
@@ -557,15 +553,14 @@ namespace SeleneGame.Core {
             EntityManager.current.entityList.Add( this );
         }
         protected virtual void OnDisable(){
-            EntityManager.current.entityList.Remove( this );
+            EntityManager.current.entityList.Remove( this ); 
+            GameObject.Destroy(state);
         }
         
         protected virtual void OnDestroy(){;}
 
         protected virtual void Update(){
             onGround.SetVal( ColliderCast(Vector3.zero, gravityDown.normalized * 0.2f, out groundHit, 0.15f, Global.GroundMask) );
-
-            state?.StateUpdate();
 
             // if (animator.runtimeAnimatorController != null) {
                 EntityAnimation();
@@ -578,8 +573,6 @@ namespace SeleneGame.Core {
 
         protected virtual void FixedUpdate(){
             ExecuteMovement();
-            
-            state?.StateFixedUpdate();
 
             Gravity();
         }

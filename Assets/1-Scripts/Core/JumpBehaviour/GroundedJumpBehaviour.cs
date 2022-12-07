@@ -17,18 +17,19 @@ namespace SeleneGame.Core {
 
 
 
-        public GroundedJumpBehaviour(State entityState) : base(entityState) { }
-
-
-
         protected internal override void HandleInput(PlayerEntityController contoller) {
             fallGravityMultiplier = contoller.jumpInput ? 0.75f : 1f;
         } 
 
-        protected internal override void FixedUpdate() {
 
-            base.FixedUpdate();
+        protected internal override void Jump(Vector3 direction) {
 
+            base.Jump(direction);
+
+            // jumpCount--;
+        }
+
+        private void FixedUpdate() {
 
             // if (entityState.entity.onGround) {
             //     jumpCount = 1;
@@ -41,14 +42,6 @@ namespace SeleneGame.Core {
             float multiplier = floatingMultiplier * (entity.fallVelocity >= 0 ? 1f : fallingMultiplier);
 
             entity.rigidbody.velocity += multiplier * entity.gravityForce * GameUtility.timeDelta;
-        }
-
-
-        protected internal override void Jump(Vector3 direction) {
-
-            base.Jump(direction);
-
-            // jumpCount--;
         }
     }
 }

@@ -44,12 +44,9 @@ namespace SeleneGame.Core {
         }
 
 
-
-        public EvadeBehaviour(State entityState) : base(entityState) { }
-
         protected internal override void HandleInput(PlayerEntityController contoller) {;}
 
-        protected internal override void Update() { 
+        protected virtual void Update() { 
 
             // Debug.Log(entityState);
 
@@ -71,7 +68,7 @@ namespace SeleneGame.Core {
 
         }
 
-        protected internal override void FixedUpdate() {
+        protected virtual void FixedUpdate() {
             if (state)
                 entity.Displace( Speed * entity.character.evadeSpeed * currentDirection );
         }

@@ -39,10 +39,8 @@ namespace SeleneGame.Core {
         }
 
 
-        public GroundedEvadeBehaviour(State entityState) : base(entityState) { }
 
-
-        protected internal override void Update() {
+        protected override void Update() {
 
             base.Update();
 
@@ -60,7 +58,7 @@ namespace SeleneGame.Core {
 
             evadeCount--;
                 
-            if (entityState.gravityMultiplier > 0f) {
+            if (entity.state.gravityMultiplier > 0f) {
 
                 Vector3 newVelocity = entity.rigidbody.velocity.NullifyInDirection( entity.gravityDown );
                 if (!entity.onGround){

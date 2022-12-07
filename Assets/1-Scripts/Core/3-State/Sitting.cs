@@ -44,20 +44,18 @@ namespace SeleneGame.Core {
         protected internal override void HeavyAttack() {;}
         protected internal override void SetSpeed(Entity.MovementSpeed speed) {;}
 
-
-
-        protected internal override void StateUpdate(){
-
-            base.StateUpdate();
-
+        protected internal override void OnDestroy() {
+            base.OnDestroy();
+            seat.seatOccupant = null;
         }
 
-        protected internal override void StateFixedUpdate(){
 
-            base.StateFixedUpdate();
-
-            // Sitting
-            entity.transform.SetPositionAndRotation(seat.sitPosition, seat.sitRotation);
+        private void FixedUpdate(){
+            if (seat.affectCamera) {
+                entity.transform.SetPositionAndRotation(seat.sitPosition, seat.sitRotation);
+            } else {
+                entity.transform.position = seat.sitPosition;
+            }
             entity.RotateModelTowards(seat.sitRotation);
             entity.absoluteForward = entity.transform.forward;
         }

@@ -46,28 +46,6 @@ namespace SeleneGame.Content {
 
 
 
-        protected override void OnEnter(Entity entity){
-            base.OnEnter(entity);
-
-            // shiftFalling = new BoolData();
-
-            if ( !(entity is MaskedEntity masked) ) {
-                Debug.Log($"Entity {entity.name} cannot switch to Masked State because it is not Masked");
-                entity.SetState(entity.defaultState);
-                return;
-            }
-            maskedEntity = masked;
-
-            evadeBehaviour = new EvadeBehaviour(this);
-
-            // landCursor = GameObject.Instantiate(Resources.Load("Prefabs/UI/LandCursor"), HUDController.current.transform) as GameObject;
-        }
-        protected override void OnExit(){
-            base.OnExit();
-            landCursor = GameUtility.SafeDestroy(landCursor);
-        }
-
-
         protected override void HandleInput(PlayerEntityController controller){
 
             base.HandleInput(controller);
@@ -187,19 +165,39 @@ namespace SeleneGame.Content {
         }
 
 
-        protected override void StateUpdate(){
+        protected override void Awake(){
+            base.Awake();
 
-            base.StateUpdate();
+            // shiftFalling = new BoolData();
+
+            if ( !(entity is MaskedEntity masked) ) {
+                Debug.Log($"Entity {entity.name} cannot switch to Masked State because it is not Masked");
+                entity.ResetState();
+                return;
+            }
+            maskedEntity = masked;
+
+            evadeBehaviour = gameObject.AddComponent<EvadeBehaviour>();
+
+            // landCursor = GameObject.Instantiate(Resources.Load("Prefabs/UI/LandCursor"), HUDController.current.transform) as GameObject;
+        }
+
+        protected override void OnDestroy(){
+            base.OnDestroy();
+            landCursor = GameUtility.SafeDestroy(landCursor);
+        }
+
+        private void Update(){
 
             // Gravity Shifting Movement
             if ( maskedEntity.inWater ){
                 maskedEntity.gravityDown = Vector3.down;
-                maskedEntity.SetState();
+                maskedEntity.ResetState();
             }
 
             if ( maskedEntity.onGround && shiftFalling ) {
                 maskedEntity.gravityDown = fallDirection;
-                maskedEntity.SetState();
+                maskedEntity.ResetState();
             }
 
 
@@ -223,9 +221,8 @@ namespace SeleneGame.Content {
             maskedEntity.RotateModelTowards(forwardDirection, -maskedEntity.gravityDown);
 
         }
-        protected override void StateFixedUpdate(){
-
-            base.StateFixedUpdate();
+        
+        private void FixedUpdate(){
 
             if (shiftFalling){
             

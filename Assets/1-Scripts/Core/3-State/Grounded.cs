@@ -39,19 +39,6 @@ namespace SeleneGame.Core {
         protected override bool canParry => base.canParry;
 
 
-        protected internal override void OnEnter(Entity entity) {
-            base.OnEnter(entity);
-            evadeBehaviour = new GroundedEvadeBehaviour(this);
-            jumpBehaviour = new GroundedJumpBehaviour(this);
-            IdleAnimation();
-        }
-
-        protected internal override void OnExit(){
-            base.OnExit();
-            layer.DestroyStates();
-        }
-
-
         
         protected internal override void HandleInput(PlayerEntityController controller){
 
@@ -138,10 +125,19 @@ namespace SeleneGame.Core {
 
 
 
+        protected internal override void Awake() {
+            base.Awake();
+            evadeBehaviour = gameObject.AddComponent<GroundedEvadeBehaviour>();
+            jumpBehaviour = gameObject.AddComponent<GroundedJumpBehaviour>();
+            IdleAnimation();
+        }
 
-        protected internal override void StateUpdate(){
+        protected internal override void OnDestroy(){
+            base.OnDestroy();
+            layer.DestroyStates();
+        }
 
-            base.StateUpdate();
+        private void Update(){
 
 
             entity.transform.rotation = Quaternion.FromToRotation(entity.transform.up, -entity.gravityDown) * entity.transform.rotation;
@@ -159,7 +155,7 @@ namespace SeleneGame.Core {
                 entity.onGround.SetVal(true);
                 entity.rigidbody.velocity = entity.rigidbody.velocity.NullifyInDirection(entity.gravityDown);
             } else if ( entity.inWater && entity.weight < Swimming.entityWeightSinkTreshold ) {
-                entity.SetState( new Swimming() );
+                entity.SetState<Swimming>();
             }
 
 
@@ -184,9 +180,7 @@ namespace SeleneGame.Core {
             
         }
 
-        protected internal override void StateFixedUpdate(){
-
-            base.StateFixedUpdate();
+        private void FixedUpdate(){
 
 
             float newSpeed = moveDirection.sqrMagnitude == 0f ? 0f : entity.character.baseSpeed;

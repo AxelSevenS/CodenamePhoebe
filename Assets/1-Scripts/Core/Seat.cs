@@ -16,15 +16,16 @@ namespace SeleneGame.Core {
 
         private Entity _seatEntity;
         public Entity seatOccupant;
-        private Transform previousParent;
 
-        protected virtual string seatedInteractionText => "";
+        [SerializeField] protected bool _affectCamera = false;
 
         [Space(15)]
         
         [SerializeField] private List<SittingPose> _sittingPoses = new List<SittingPose>();
         
         public SittingPose currentSittingPose { get; private set; }
+
+
 
 
         public Entity seatEntity {
@@ -39,7 +40,7 @@ namespace SeleneGame.Core {
 
         public Vector3 sitPosition { 
             get {
-                Vector3 seatOccupantUp = seatOccupant?.transform.up ?? transform.up;
+                Vector3 seatOccupantUp = seatOccupant?.modelTransform.up ?? transform.up;
                 float seatOccupantSize = seatOccupant?.character.size.y/2f ?? 1.67f;
 
                 return transform.TransformPoint(currentSittingPose.position) + (seatOccupantUp * seatOccupantSize);
@@ -52,6 +53,10 @@ namespace SeleneGame.Core {
             }
         }
 
+        public bool affectCamera => _affectCamera;
+
+        protected virtual string seatedInteractionText => "";
+
         public bool isSeated => seatOccupant != null;
 
         public string InteractDescription => seatOccupant ? seatedInteractionText : SEAT_INTERACT_DESCRIPTION;
@@ -59,6 +64,11 @@ namespace SeleneGame.Core {
         public virtual bool IsInteractable => !isSeated;
 
 
+
+        public void SetSittingPoses( IEnumerable<SittingPose> newPoses ) {
+            _sittingPoses = new List<SittingPose>(newPoses);
+        }
+        
 
         public void Interact(Entity entity){
             if (entity == seatOccupant){
@@ -75,10 +85,7 @@ namespace SeleneGame.Core {
             
             StopSitting();
 
-            previousParent = entity.transform.parent;
-
             seatOccupant = entity;
-            seatOccupant.SetState(seatOccupant.defaultState);
             
             // Find the closest sitting pose
             foreach (SittingPose pose in _sittingPoses) {
@@ -89,41 +96,28 @@ namespace SeleneGame.Core {
                 }
             }
 
+            // Move the entity to the seat
             // if (speed < 4){
+            //     seatOccupant.ResetState();
             //     seatOccupant.walkingTo = true;
             //     await seatOccupant.WalkTo( sitPosition, (Entity.WalkSpeed)(speed+1) );
             //     await seatOccupant.TurnTo( transform.rotation * -sittingDir );
             //     seatOccupant.walkingTo = false;
             // }
             
-            Sitting sittingState = new Sitting();
-            sittingState.seat = this;
-            entity.SetState( sittingState );
-            GameUtility.SetLayerRecursively(entity.gameObject, 8);
-
-            seatOccupant.transform.SetParent(this.transform);
+            entity.SetState<Sitting>();
+            ((Sitting)entity.state).seat = this;
         }
 
         public void StopSitting(){
 
             if (!isSeated) return;
 
-            seatOccupant.SetState(seatOccupant.defaultState);
-            GameUtility.SetLayerRecursively(seatOccupant.gameObject, 6);
-
-            seatOccupant.transform.SetParent(previousParent);
-
-            seatOccupant = null;
-        }
-
-        public void SetSittingPoses( IEnumerable<SittingPose> newPoses ) {
-            _sittingPoses = new List<SittingPose>(newPoses);
+            seatOccupant.ResetState();
         }
 
 
-        private void OnDisable(){
-            StopSitting();
-        }
+
 
         private void Update(){
             FollowObject();

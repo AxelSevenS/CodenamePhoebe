@@ -14,7 +14,7 @@ namespace SeleneGame.Content {
 
 
 
-        public override State defaultState => new VehicleState();
+        public override Type defaultState => typeof(VehicleState);
         public Seat seat {
             get {
                 if (_seat == null) {
