@@ -18,9 +18,6 @@ namespace SeleneGame.Core {
         private Vector3Data moveDirection;
         public float moveSpeed;
 
-        private int jumpCount = 1;
-        [SerializeField] private TimeUntil jumpCooldownTimer;
-
 
 
 
