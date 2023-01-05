@@ -71,9 +71,9 @@ namespace SeleneGame.Core.UI {
 
         }
 
-        public void UpdateKeyBindings(){
+        public void UpdateKeybindings(){
             foreach (RebindButton rebind in rebinds) {
-                rebind.UpdateKeyBinding();
+                rebind.UpdateKeybind();
             }
         }
 
@@ -82,7 +82,7 @@ namespace SeleneGame.Core.UI {
             var button = buttonObject.GetComponentInChildren<RebindButton>();
             button.action = action;
             button.bindingIndex = bindingIndex;
-            button.UpdateKeyBinding();
+            button.UpdateKeybind();
             button.SetBindingText( $"{action.name}{buttonText}".Nicify() );
             
             rebinds.Add( button );

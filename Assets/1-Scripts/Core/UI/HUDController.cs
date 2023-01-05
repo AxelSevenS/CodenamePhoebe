@@ -21,9 +21,62 @@ namespace SeleneGame.Core.UI {
         [SerializeField] private TextMeshProUGUI interactDescription;
         [SerializeField] private TextMeshProUGUI interactBind;
 
-        
 
-        private void UpdateInteractionDisplay() {
+        private static InputAction interactAction;
+        // private static System.Guid interactBindID;
+
+
+
+        public static Vector3 ClampHUDToScreen(Vector3 position, float width, float height, float margin){
+            float horizontalMargin = margin + width/4f;
+            float verticalMargin = margin + height/4f;
+
+            float clampedX = Mathf.Clamp(position.x, horizontalMargin, Screen.width - horizontalMargin);
+            float clampedY = Mathf.Clamp(position.y, verticalMargin, Screen.height - verticalMargin);
+            return new Vector3( clampedX, clampedY, 0 );
+        }
+        public static Vector3 ClampHUDToScreen(RectTransform rect, float margin){
+            float horizontalMargin = margin + rect.rect.width/4f;
+            float verticalMargin = margin + rect.rect.height/4f;
+
+            float clampedX = Mathf.Clamp(rect.position.x, horizontalMargin, Screen.width - horizontalMargin);
+            float clampedY = Mathf.Clamp(rect.position.y, verticalMargin, Screen.height - verticalMargin);
+            return new Vector3( clampedX, clampedY, 0 );
+        }
+
+        private void UpdateKeybind(Guid keybindId){
+            if (keybindId == ControlsManager.GetInputBinding(interactAction).id){
+                UpdateInteractionBindDisplay();
+            }
+        }
+        private void UpdateControllerType( ControlsManager.ControllerType controllerType ){
+            UpdateInteractionBindDisplay();
+        }
+
+        private void UpdateInteractionBindDisplay() {
+            interactBind.text = ControlsManager.GetInputBinding(interactAction).ToDisplayString();
+        }
+
+
+
+
+        private void Awake(){
+            if (interactAction == null) interactAction = ControlsManager.playerMap.FindAction("Interact");
+            UpdateInteractionBindDisplay();
+        }
+        
+        protected void OnEnable(){
+            SetCurrent();
+            
+            ControlsManager.onUpdateKeybind += UpdateKeybind;
+            ControlsManager.onControllerTypeChange += UpdateControllerType;
+        }
+        private void OnDisable(){
+            ControlsManager.onUpdateKeybind -= UpdateKeybind;
+            ControlsManager.onControllerTypeChange -= UpdateControllerType;
+        }
+
+        private void Update() {
 
             if ( PlayerEntityController.current == null ) return;
             
@@ -47,61 +100,7 @@ namespace SeleneGame.Core.UI {
 
             Vector3 screenPos = CameraController.current.camera.WorldToScreenPoint(interactionCandidate.transform.position); 
             interactCursor.position = ClampHUDToScreen(screenPos, interactCursor.rect.width, interactCursor.rect.height, 0);
-        }
 
-
-
-
-        public static Vector3 ClampHUDToScreen(Vector3 position, float width, float height, float margin){
-            float horizontalMargin = margin + width/4f;
-            float verticalMargin = margin + height/4f;
-
-            float clampedX = Mathf.Clamp(position.x, horizontalMargin, Screen.width - horizontalMargin);
-            float clampedY = Mathf.Clamp(position.y, verticalMargin, Screen.height - verticalMargin);
-            return new Vector3( clampedX, clampedY, 0 );
-        }
-        public static Vector3 ClampHUDToScreen(RectTransform rect, float margin){
-            float horizontalMargin = margin + rect.rect.width/4f;
-            float verticalMargin = margin + rect.rect.height/4f;
-
-            float clampedX = Mathf.Clamp(rect.position.x, horizontalMargin, Screen.width - horizontalMargin);
-            float clampedY = Mathf.Clamp(rect.position.y, verticalMargin, Screen.height - verticalMargin);
-            return new Vector3( clampedX, clampedY, 0 );
-        }
-
-        private void UpdateKeybind(Guid keybindId){
-            if (keybindId == ControlsManager.GetMouseAndKeyboardInputBinding("Interact").id){
-                SetInteractionBindDisplay();
-            }
-        }
-        private void UpdateControllerType( ControlsManager.ControllerType controllerType ){
-            SetInteractionBindDisplay();
-        }
-
-        private void SetInteractionBindDisplay() {
-            interactBind.text = ControlsManager.GetInputBinding("Interact").ToDisplayString();
-        }
-
-
-
-
-        private void Awake(){
-            SetInteractionBindDisplay();
-        }
-        
-        protected void OnEnable(){
-            SetCurrent();
-            
-            ControlsManager.onUpdateKeybind += UpdateKeybind;
-            ControlsManager.onControllerTypeChange += UpdateControllerType;
-        }
-        private void OnDisable(){
-            ControlsManager.onUpdateKeybind -= UpdateKeybind;
-            ControlsManager.onControllerTypeChange -= UpdateControllerType;
-        }
-
-        private void Update() {
-            UpdateInteractionDisplay();
         }
 
     }

@@ -17,8 +17,8 @@ namespace SeleneGame.Core {
 
 
 
-        public float mouseSpeed = 1f;
-        public float stickSpeed = 5f;
+        public static float mouseSpeed = 1f;
+        public static float stickSpeed = 5f;
 
         public static float cameraSpeed = 0.1f;
 
@@ -57,77 +57,97 @@ namespace SeleneGame.Core {
         #endif
 
 
+        public static void UpdateKeybind(Guid keybindId){
+            Debug.Log("Update Keybind: " + keybindId);
+            onUpdateKeybind?.Invoke(keybindId);
+        }
+
+        public static InputBinding GetInputBinding(string actionName) {
+            return GetInputBinding(playerMap.FindAction(actionName));
+        }
+
+        public static InputBinding GetInputBinding(InputAction action){
+            switch (controllerType) {
+                default:
+                    return GetMouseAndKeyboardInputBinding(action);
+                case ControllerType.Gamepad:
+                    return GetGamepadInputBinding(action);
+                case ControllerType.Dualshock:
+                    return GetDualshockInputBinding(action);
+                case ControllerType.Xbox:
+                    return GetXboxInputBinding(action);
+                case ControllerType.Switch:
+                    return GetSwitchInputBinding(action);
+            }
+        }
+        public static InputBinding GetMouseAndKeyboardInputBinding(InputAction action){
+            return action.bindings[0];
+        }
+        public static InputBinding GetGamepadInputBinding(InputAction action){
+            return action.bindings[1];
+        }
+        public static InputBinding GetDualshockInputBinding(InputAction action){
+            return action.bindings[2];
+        }
+        public static InputBinding GetXboxInputBinding(InputAction action){
+            return action.bindings[3];
+        }
+        public static InputBinding GetSwitchInputBinding(InputAction action){
+            return action.bindings[4];
+        }
+
+
+        public static string GetKeybindDisplay(InputBinding binding) {
+            return binding.ToDisplayString();
+        }
+        public static string GetKeybindDisplay(InputAction action) {
+            return (GetKeybindDisplay(GetInputBinding(action.name)));
+        }
+
+        public static string GetMouseAndKeyboardKeybindDisplay(InputAction action) {
+            return GetKeybindDisplay(GetMouseAndKeyboardInputBinding(action));
+        }
+        public static string GetGamepadKeybindDisplay(InputAction action) {
+            return GetKeybindDisplay(GetGamepadInputBinding(action));
+        }
+        public static string GetDualshockKeybindDisplay(InputAction action) {
+            return GetKeybindDisplay(GetDualshockInputBinding(action));
+        }
+        public static string GetXboxKeybindDisplay(InputAction action) {
+            return GetKeybindDisplay(GetXboxInputBinding(action));
+        }
+        public static string GetSwitchKeybindDisplay(InputAction action) {
+            return GetKeybindDisplay(GetSwitchInputBinding(action));
+        }
+
 
         private void ControllerAction(InputAction.CallbackContext context){
 
+            ControllerType newControllerType = ControllerType.MouseKeyboard;
+
             if ( context.control.device is Keyboard || context.control.device is Mouse ){
-                if (controllerType == ControllerType.MouseKeyboard) return;
 
                 controllerType = ControllerType.MouseKeyboard;
-                Debug.Log("Switched to Keyboard and Mouse Controls.");
-
+                
             } else if ( context.control.device is Gamepad gamepad ){
 
                 if ( gamepad is DualShockGamepad ) {
-                    if (controllerType == ControllerType.Dualshock) return;
-
                     controllerType = ControllerType.Dualshock;
-                    Debug.Log("Switched to Dualshock Controls.");
                 } else if ( gamepad is XInputController ) {
-                    if (controllerType == ControllerType.Xbox) return;
-                    
                     controllerType = ControllerType.Xbox;
-                    Debug.Log("Switched to Xbox Controls.");
                 } else if ( gamepad is SwitchProControllerHID ) {
-                    if (controllerType == ControllerType.Switch) return;
-                    
                     controllerType = ControllerType.Switch;
-                    Debug.Log("Switched to Switch Controls.");
                 } else {
-                    if (controllerType == ControllerType.Gamepad) return;
-                    
                     controllerType = ControllerType.Gamepad;
-                    Debug.Log("Switched to Standard Gamepad Controls.");
                 }
 
             }
 
+            if (controllerType == newControllerType) return;
+
+            controllerType = newControllerType;
+            Debug.Log($"Switched to {newControllerType.ToString()} Controls");
             onControllerTypeChange?.Invoke(controllerType);
-        }
-
-        public static InputBinding GetInputBinding(string actionName){
-            switch (controllerType) {
-                default:
-                    return GetMouseAndKeyboardInputBinding(actionName);
-                case ControllerType.Gamepad:
-                    return GetGamepadInputBinding(actionName);
-                case ControllerType.Dualshock:
-                    return GetDualshockInputBinding(actionName);
-                case ControllerType.Xbox:
-                    return GetXboxInputBinding(actionName);
-                case ControllerType.Switch:
-                    return GetSwitchInputBinding(actionName);
-            }
-        }
-
-        public static InputBinding GetMouseAndKeyboardInputBinding(string actionName){
-            return playerMap.FindAction(actionName).bindings[0];
-        }
-
-        public static InputBinding GetGamepadInputBinding(string actionName){
-            return playerMap.FindAction(actionName).bindings[1];
-        }
-
-        public static InputBinding GetDualshockInputBinding(string actionName){
-            return playerMap.FindAction(actionName).bindings[2];
-        }
-
-        public static InputBinding GetXboxInputBinding(string actionName){
-            return playerMap.FindAction(actionName).bindings[3];
-        }
-
-        public static InputBinding GetSwitchInputBinding(string actionName){
-            return playerMap.FindAction(actionName).bindings[4];
         }
 
         public void EnableControls(){
@@ -143,10 +163,6 @@ namespace SeleneGame.Core {
             #if UNITY_EDITOR
                 debugMap.Disable();
             #endif
-        }
-
-        public static void UpdateKeybind(Guid keybindId){
-            onUpdateKeybind?.Invoke(keybindId);
         }
 
 

@@ -21,13 +21,6 @@ namespace SeleneGame.Core.UI {
 
 
 
-        private void UpdateKeybind(Guid keybindId){
-
-            if ( action.bindings[bindingIndex].id == keybindId ) {
-                UpdateKeyBinding();
-            }
-        }
-
         public override void OnSelect(BaseEventData eventData) {
             base.OnSelect(eventData);
         }
@@ -56,21 +49,29 @@ namespace SeleneGame.Core.UI {
             rebindOperation.Start();
 
             void CompleteRebind(InputActionRebindingExtensions.RebindingOperation operation){
-                UpdateKeyBinding();
+                ControlsManager.UpdateKeybind(action.bindings[bindingIndex].id);
+                UpdateKeybind();
                 operation.Dispose();
             }
         }
 
-
-        public void UpdateKeyBinding(){
-            bindText.text = action.GetBindingDisplayString(bindingIndex);
-        }
 
         public void SetBindingText(string text){
             bindLabel.text = text;
         }
 
 
+        public void UpdateKeybind(){
+            bindText.text = action.GetBindingDisplayString(bindingIndex);
+        }
+
+        private void UpdateKeybind(System.Guid guid) {
+            if (action.bindings[bindingIndex].id == guid){
+                UpdateKeybind();
+            }
+        }
+
+        
         
         private void Awake() {
             ControlsManager.onUpdateKeybind += UpdateKeybind;
@@ -78,6 +79,7 @@ namespace SeleneGame.Core.UI {
         private void OnDestroy() {
             ControlsManager.onUpdateKeybind -= UpdateKeybind;
         }
+
         
     }
 }
