@@ -162,7 +162,7 @@ namespace SeleneGame.Core {
 
             Vector2 mouseInput = lookInput * ControlsManager.cameraSpeed;
 
-            float additionalCameraSpeed = ControlsManager.controllerType == ControlsManager.ControllerType.MouseKeyboard ? ControlsManager.current.mouseSpeed : ControlsManager.current.stickSpeed;
+            float additionalCameraSpeed = ControlsManager.controllerType == ControlsManager.ControllerType.MouseKeyboard ? ControlsManager.mouseSpeed : ControlsManager.stickSpeed;
             mouseInput *= additionalCameraSpeed;
 
             mousePos = new Vector2( Mathf.Clamp(mousePos.x-mouseInput.y, -90, 90), mousePos.y+mouseInput.x );

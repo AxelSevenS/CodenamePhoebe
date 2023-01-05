@@ -139,10 +139,6 @@ namespace SeleneGame.Core {
 
             entity.transform.rotation = Quaternion.FromToRotation(entity.transform.up, -entity.gravityDown) * entity.transform.rotation;
 
-
-            if ( entity.onGround )
-                jumpCount = 1;
-
             
             // Hover over water as long as the entity is moving
             bool canWaterHover = entity.weight < WATER_HOVER_WEIGHT_THRESHOLD && moveDirection.zeroTimer < 0.6f;

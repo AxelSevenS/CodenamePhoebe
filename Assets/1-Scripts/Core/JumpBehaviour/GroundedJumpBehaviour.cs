@@ -31,7 +31,7 @@ namespace SeleneGame.Core {
 
             base.Jump(direction);
 
-            jumpCooldownTimer.SetTimer(0.2f);
+            jumpCooldownTimer.SetTime(0.2f);
             jumpCount--;
         }
 
@@ -39,7 +39,7 @@ namespace SeleneGame.Core {
 
         private void FixedUpdate() {
 
-            if (entityState.entity.onGround) {
+            if (entity.onGround) {
                 jumpCount = 1;
             }
 
