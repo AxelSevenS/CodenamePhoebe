@@ -13,7 +13,12 @@ namespace SeleneGame.Core {
 
         private float fallGravityMultiplier = 1f;
 
-        public override bool canJump => base.canJump && entity.onGround.falseTimer < 0.2f;
+        public int jumpCount = 1;
+        [SerializeField] private TimeUntil jumpCooldownTimer;
+
+
+
+        public override bool canJump => base.canJump && entity.onGround.falseTimer < 0.2f && jumpCount > 0 && jumpCooldownTimer.isDone;
 
 
 
@@ -26,14 +31,17 @@ namespace SeleneGame.Core {
 
             base.Jump(direction);
 
-            // jumpCount--;
+            jumpCooldownTimer.SetTimer(0.2f);
+            jumpCount--;
         }
+
+
 
         private void FixedUpdate() {
 
-            // if (entityState.entity.onGround) {
-            //     jumpCount = 1;
-            // }
+            if (entityState.entity.onGround) {
+                jumpCount = 1;
+            }
 
             const float regularFallMultiplier = 3.25f;
             const float fallingMultiplier = 2f;
