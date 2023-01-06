@@ -16,7 +16,7 @@ MonoBehaviour:
   - emotion: 0
     usePlayerEntity: 1
     _entity: {fileID: 0}
-    text: "Guillaume est une tr\xE8s belle Salope"
+    text: "Guillaume est une tr\xE8s belle <sprite name=\"Mouse Left\"> Salope"
     dialogueEvents:
     - eventType: 1
       entity: {fileID: 0}

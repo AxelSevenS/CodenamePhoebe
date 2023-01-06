@@ -276,14 +276,18 @@ namespace SeleneGame.Core {
             GameUtility.SafeDestroy(_state);
             _state = (State)gameObject.AddComponent<TState>();
 
-            Debug.Log($"{name} switched state to {_state.name}");
+            Debug.Log($"{name} switched state to {typeof(TState).Name}");
         }
 
+        /// <summary>
+        /// Set the current state of the Entity
+        /// </summary>
+        /// <param name="newState">The state to set the Entity to</param>
         public void SetState(Type stateType) {
             GameUtility.SafeDestroy(_state);
             _state = (State)gameObject.AddComponent(stateType);
 
-            Debug.Log($"{name} switched state to {_state.name}");
+            Debug.Log($"{name} switched state to {stateType.Name}");
         }
 
         public void ResetState() => _state = GameUtility.SafeDestroy(_state); 

@@ -95,15 +95,36 @@ namespace SeleneGame.Core.UI {
             displayText = "";
             dialogueIndicator.enabled = false;
 
+            float speed = 0.02f;
+            bool spriteCharacter = false;
+
             for(int i = 0; i < line.text.Length; i++){
                 if ( !isTyping ) {
                     dialogueIndicator.enabled = true;
                     yield break;
                 }
-                displayText += line.text[displayText.Length];
+
+                // Do not delay the next character if it is a sprite
+                do {
+                    char nextCharacter = line.text[displayText.Length];
+                    if (nextCharacter == '<') {
+                        spriteCharacter = true;
+                    }
+
+                    displayText += nextCharacter;
+
+                    if (nextCharacter == '>'){
+                        spriteCharacter = false;
+                    }
+                } 
+                while (spriteCharacter);
+
                 dialogueText.SetText(displayText);
-                yield return new WaitForSeconds(0.02f);
+                yield return new WaitForSeconds(speed);
             }
+        }
+
+        private void ReadNextCharacter() {
         }
 
         private void NextLine(){
