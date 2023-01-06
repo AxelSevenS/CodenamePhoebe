@@ -21,7 +21,7 @@ static const half3 defaultLightColor = half3(1,1,1);
 static const half3 defaultLightDir = half3(0.5,0.5,0.5);
 
 
-static const half shadeUpperLimit = 0.25;
+static const half shadeUpperLimit = 0.15;
 static const half lightLowerLimit = 0.55;
 
 
@@ -65,35 +65,25 @@ CelLightingInput GetCelLightingInput( half3 ObjectPosition, half3 ObjectNormal, 
 
 
 
-half GetAccent (half luminance) {
+half GetAccent(half luminance) {
+    // P-Curve
 
-    // accent is how near luminance is to 0.2, it transitions from 1 when the difference is 0 to 0 when the difference is 0.65, then it plateaus
-    // sqrt is to make the transition less linear
+    half h = 5.5 * (luminance);
+    // half h = exp(luminance * -9 + 3);
 
-    // || --------------- 1 ---------------                                                ||
-    // ||                                   ----------------                               ||
-    // ||                                                    --------------- 0 ----------- ||
-    // ||  0  |  0.1  |  0.2  |  0.3  | 0.4  |  0.5  |  0.6  |  0.7  |  0.8  |  0.9  |  1  ||
-    
-    // return ( 1 - sqrt( abs(0.2 - luminance) ) ) * 0.35;
-
-    static const half accentStrength = 0.35;
-    
-    return  luminance < shadeUpperLimit ? accentStrength : 
-            luminance < lightLowerLimit ? accentStrength - (luminance - shadeUpperLimit) * 0.375 : 
-            0.1;
+    return h * exp(1-h);
 }
 
-half GetSpecular (CelLightingInput input, half3 lightDirectionWS, half shade) {
+half GetSpecular(CelLightingInput input, half3 lightDirectionWS, half shade) {
     half phong = PhongReflection(input.worldNormal, input.worldViewDirection, lightDirectionWS, input.smoothness*100);
     return smoothstep(0.15, 1.0, phong * shade) * input.specularIntensity;
 }
 
-half GetLuminance (CelLightingInput input, half3 lightDirectionWS) {
+half GetLuminance(CelLightingInput input, half3 lightDirectionWS) {
     return saturate( dot(input.worldNormal, lightDirectionWS) );
 }
 
-half GetShade (half luminance, half attenuation) {
+half GetShade(half luminance, half attenuation) {
 
     // Color is dark until 15% luminance then it transitions to light until 55% luminance where it plateaus
     // the minimum value is 0.25 and the maximum is 1.0
@@ -122,13 +112,13 @@ half3 CelShade( CelLightingInput input, half3 lightColor, half3 lightDir, half l
     half3 litColor = (lightColor * _AmbientLight);
     
 
-    half3 finalColor = shade * litColor;
-
     if (input.accentIntensity > 0) {
 
         half accent = GetAccent(shade);
-        finalColor = lerp(finalColor, ColorSaturation(finalColor, input.accentIntensity), accent);
+        litColor = lerp(litColor, ColorSaturation(litColor, input.accentIntensity), accent);
     }
+
+    half3 finalColor = shade * litColor;
 
     if (input.specularIntensity > 0 && input.smoothness > 0) {
 

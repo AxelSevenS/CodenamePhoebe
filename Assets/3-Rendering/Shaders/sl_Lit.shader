@@ -11,7 +11,7 @@ Shader "Selene/Lit" {
         _SpecularIntensity ("Specular Intensity", Range(0,3)) = 0
         _Smoothness ("Smoothness", Range(0,1)) = 0
         
-        _AccentIntensity ("Accent Intensity", Range(0, 5)) = 0
+        _AccentIntensity ("Accent Intensity", Range(0, 1)) = 0
 
         _EmissionIntensity ("Emission Intensity", Float) = 1
 
