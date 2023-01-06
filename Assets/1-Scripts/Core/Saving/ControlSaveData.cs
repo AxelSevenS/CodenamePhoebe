@@ -17,7 +17,7 @@ namespace SeleneGame.Core {
             inputOverrides.Clear();
 
             // Save Input Overrides
-            InputActionMap map = ControlsManager.playerMap;
+            InputActionMap map = Keybinds.playerMap;
             foreach (var binding in map.bindings){
                 if (!string.IsNullOrEmpty(binding.overridePath))
                     inputOverrides[binding.id] = binding.overridePath;
@@ -26,23 +26,23 @@ namespace SeleneGame.Core {
 
         public void Load() {
 
-            ControlsManager.playerMap.Disable();
+            Keybinds.playerMap.Disable();
 
             // Load Input Overrides
-            ControlsManager.playerMap.RemoveAllBindingOverrides();
+            Keybinds.playerMap.RemoveAllBindingOverrides();
 
-            for (int i = 0; i < ControlsManager.playerMap.bindings.Count; ++i){
-                InputBinding binding = ControlsManager.playerMap.bindings[i];
+            for (int i = 0; i < Keybinds.playerMap.bindings.Count; ++i){
+                InputBinding binding = Keybinds.playerMap.bindings[i];
 
                 if ( string.IsNullOrEmpty(binding.groups) || !binding.groups.Contains("Keyboard&Mouse") ) continue;
 
                 if (inputOverrides.TryGetValue(binding.id, out string overridePath))
-                    ControlsManager.playerMap.ApplyBindingOverride(i, new InputBinding { overridePath = overridePath });
+                    Keybinds.playerMap.ApplyBindingOverride(i, new InputBinding { overridePath = overridePath });
                 
-                ControlsManager.UpdateKeybind( binding.id );
+                Keybinds.UpdateKeybind( binding.id );
             }
 
-            ControlsManager.playerMap.Enable();
+            Keybinds.playerMap.Enable();
         }
 
     }

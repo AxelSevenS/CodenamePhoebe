@@ -9,10 +9,8 @@ using UnityEngine.InputSystem.Switch;
 using SevenGame.Utility;
 
 namespace SeleneGame.Core {
-
-    public class ControlsManager : Singleton<ControlsManager> {
+    public static class Keybinds {
         
-
         public const float HOLD_TIME = 0.2f;
 
 
@@ -23,38 +21,27 @@ namespace SeleneGame.Core {
         public static float cameraSpeed = 0.1f;
 
 
-        private static InputControls _inputControls;
-
         public static ControllerType controllerType = ControllerType.MouseKeyboard;
 
-
-        private KeyInputData cancelInput;
-
-
-
-        public static event Action onCancel;
 
         public static event Action<ControllerType> onControllerTypeChange;
         public static event Action<Guid> onUpdateKeybind;
 
 
+        private static readonly InputControls inputControls = new InputControls();
 
-        public static InputControls inputControls {
-            get {
-                if (_inputControls == null)
-                    _inputControls = new InputControls();
-                return _inputControls;
-            }
-        }
-
-        public static InputActionMap playerMap => inputControls.Player.Get();
-        public static InputActionMap uiMap => inputControls.UI.Get();
-
+        public static readonly InputActionMap playerMap = inputControls.Player.Get();
+        public static readonly InputActionMap uiMap = inputControls.UI.Get();
         #if UNITY_EDITOR
-
-            public static InputActionMap debugMap => inputControls.Debug.Get();
-
+            public static readonly InputActionMap debugMap = inputControls.Debug.Get();
         #endif
+
+
+        static Keybinds() {
+            EnableControls();
+            playerMap.actionTriggered += ctx => ControllerAction(ctx);
+            uiMap.actionTriggered += ctx => ControllerAction(ctx);
+        }
 
 
         public static void UpdateKeybind(Guid keybindId){
@@ -121,7 +108,7 @@ namespace SeleneGame.Core {
         }
 
 
-        private void ControllerAction(InputAction.CallbackContext context){
+        private static void ControllerAction(InputAction.CallbackContext context){
 
             ControllerType newControllerType = ControllerType.MouseKeyboard;
 
@@ -150,14 +137,14 @@ namespace SeleneGame.Core {
             onControllerTypeChange?.Invoke(controllerType);
         }
 
-        public void EnableControls(){
+        public static void EnableControls(){
             playerMap.Enable();
             uiMap.Enable();
             #if UNITY_EDITOR
                 debugMap.Enable();
             #endif
         }
-        public void DisableControls(){
+        public static void DisableControls(){
             playerMap.Disable();
             uiMap.Disable();
             #if UNITY_EDITOR
@@ -167,29 +154,7 @@ namespace SeleneGame.Core {
 
 
 
-        private void Update() {
-            cancelInput.SetVal( uiMap.IsBindPressed("Cancel") ) ;
-
-            if (cancelInput.started)
-                onCancel?.Invoke();
-        }
-
-        private void OnEnable() {
-            SetCurrent();
-
-            EnableControls();
-            playerMap.actionTriggered += ctx => ControllerAction(ctx);
-            uiMap.actionTriggered += ctx => ControllerAction(ctx);
-
-        }
-        private void OnDisable() {
-            DisableControls();
-            playerMap.actionTriggered -= ctx => ControllerAction(ctx);
-            uiMap.actionTriggered -= ctx => ControllerAction(ctx);
-        }
-
-
-
         public enum ControllerType{ MouseKeyboard, Gamepad, Dualshock, Xbox, Switch };
+
     }
 }

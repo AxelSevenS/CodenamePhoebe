@@ -65,7 +65,7 @@ namespace SeleneGame.Core {
                 Jump();
 
 
-            if (controller.shiftInput.trueTimer > ControlsManager.HOLD_TIME){
+            if (controller.shiftInput.trueTimer > Keybinds.HOLD_TIME){
                 entity.gravityDown = Vector3.down;
             }
 
@@ -131,7 +131,7 @@ namespace SeleneGame.Core {
 
         protected internal override void OnDestroy(){
             base.OnDestroy();
-            layer.DestroyStates();
+            // layer.DestroyStates();
         }
 
         private void Update(){

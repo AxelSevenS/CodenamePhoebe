@@ -127,13 +127,13 @@ namespace SeleneGame.Core {
 
 
         private void PlayerInput() {
-            interactInput.SetVal(ControlsManager.playerMap.IsBindPressed("Interact"));
-            switchStyle1Input.SetVal(ControlsManager.playerMap.IsBindPressed("PrimaryWeapon"));
-            switchStyle2Input.SetVal(ControlsManager.playerMap.IsBindPressed("SecondaryWeapon"));
-            switchStyle3Input.SetVal(ControlsManager.playerMap.IsBindPressed("TertiaryWeapon"));
+            interactInput.SetVal(Keybinds.playerMap.IsBindPressed("Interact"));
+            switchStyle1Input.SetVal(Keybinds.playerMap.IsBindPressed("PrimaryWeapon"));
+            switchStyle2Input.SetVal(Keybinds.playerMap.IsBindPressed("SecondaryWeapon"));
+            switchStyle3Input.SetVal(Keybinds.playerMap.IsBindPressed("TertiaryWeapon"));
 
             #if UNITY_EDITOR
-                debugInput.SetVal( ControlsManager.debugMap.IsBindPressed("Debug1") );
+                debugInput.SetVal( Keybinds.debugMap.IsBindPressed("Debug1") );
             #endif
 
             if (interactInput.started && canInteract)
@@ -160,9 +160,9 @@ namespace SeleneGame.Core {
 
             if (!canLook) return currentRotation;
 
-            Vector2 mouseInput = lookInput * ControlsManager.cameraSpeed;
+            Vector2 mouseInput = lookInput * Keybinds.cameraSpeed;
 
-            float additionalCameraSpeed = ControlsManager.controllerType == ControlsManager.ControllerType.MouseKeyboard ? ControlsManager.mouseSpeed : ControlsManager.stickSpeed;
+            float additionalCameraSpeed = Keybinds.controllerType == Keybinds.ControllerType.MouseKeyboard ? Keybinds.mouseSpeed : Keybinds.stickSpeed;
             mouseInput *= additionalCameraSpeed;
 
             mousePos = new Vector2( Mathf.Clamp(mousePos.x-mouseInput.y, -90, 90), mousePos.y+mouseInput.x );
@@ -174,16 +174,16 @@ namespace SeleneGame.Core {
 
             if ( Time.timeScale == 0f ) return;
 
-            lightAttackInput.SetVal( ControlsManager.playerMap.IsBindPressed("LightAttack") );
-            heavyAttackInput.SetVal( ControlsManager.playerMap.IsBindPressed("HeavyAttack") );
-            jumpInput.SetVal( ControlsManager.playerMap.IsBindPressed("Jump") );
-            evadeInput.SetVal( ControlsManager.playerMap.IsBindPressed("Evade") );
-            walkInput.SetVal( ControlsManager.playerMap.IsBindPressed("Walk") );
-            crouchInput.SetVal( ControlsManager.playerMap.IsBindPressed("Crouch") );
-            focusInput.SetVal( ControlsManager.playerMap.IsBindPressed("Focus") );
-            shiftInput.SetVal( ControlsManager.playerMap.IsBindPressed("Shift") );
-            moveInput.SetVal( ControlsManager.playerMap.FindAction("Move").ReadValue<Vector2>() );
-            lookInput.SetVal( ControlsManager.playerMap.FindAction("Look").ReadValue<Vector2>() );
+            lightAttackInput.SetVal( Keybinds.playerMap.IsBindPressed("LightAttack") );
+            heavyAttackInput.SetVal( Keybinds.playerMap.IsBindPressed("HeavyAttack") );
+            jumpInput.SetVal( Keybinds.playerMap.IsBindPressed("Jump") );
+            evadeInput.SetVal( Keybinds.playerMap.IsBindPressed("Evade") );
+            walkInput.SetVal( Keybinds.playerMap.IsBindPressed("Walk") );
+            crouchInput.SetVal( Keybinds.playerMap.IsBindPressed("Crouch") );
+            focusInput.SetVal( Keybinds.playerMap.IsBindPressed("Focus") );
+            shiftInput.SetVal( Keybinds.playerMap.IsBindPressed("Shift") );
+            moveInput.SetVal( Keybinds.playerMap.FindAction("Move").ReadValue<Vector2>() );
+            lookInput.SetVal( Keybinds.playerMap.FindAction("Look").ReadValue<Vector2>() );
 
             localCameraRotation.SetVal( UpdateCameraRotation( localCameraRotation ) );
 

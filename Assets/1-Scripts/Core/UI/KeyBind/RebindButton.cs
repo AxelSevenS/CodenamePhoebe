@@ -32,7 +32,7 @@ namespace SeleneGame.Core.UI {
             StartAssignment();
         }
 
-        public void StartAssignment(){
+        public void StartAssignment() {
 
             var rebindOperation = action.PerformInteractiveRebinding()
                 .WithTargetBinding(bindingIndex)
@@ -42,6 +42,8 @@ namespace SeleneGame.Core.UI {
                 .OnComplete(operation => CompleteRebind(operation))
                 .OnCancel(operation => CompleteRebind(operation));
 
+            Debug.Log(action.bindings);
+
             if (action.bindings[bindingIndex].isPartOfComposite){
                 rebindOperation.WithExpectedControlType("Button");
             }
@@ -49,7 +51,7 @@ namespace SeleneGame.Core.UI {
             rebindOperation.Start();
 
             void CompleteRebind(InputActionRebindingExtensions.RebindingOperation operation){
-                ControlsManager.UpdateKeybind(action.bindings[bindingIndex].id);
+                Keybinds.UpdateKeybind(action.bindings[bindingIndex].id);
                 UpdateKeybind();
                 operation.Dispose();
             }
@@ -73,11 +75,11 @@ namespace SeleneGame.Core.UI {
 
         
         
-        private void Awake() {
-            ControlsManager.onUpdateKeybind += UpdateKeybind;
+        private void OnEnable() {
+            Keybinds.onUpdateKeybind += UpdateKeybind;
         }
-        private void OnDestroy() {
-            ControlsManager.onUpdateKeybind -= UpdateKeybind;
+        private void OnDisable() {
+            Keybinds.onUpdateKeybind -= UpdateKeybind;
         }
 
         

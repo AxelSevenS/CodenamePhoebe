@@ -22,7 +22,15 @@ namespace SeleneGame.Core.UI {
         [SerializeField] private TextMeshProUGUI interactBind;
 
 
-        private static InputAction interactAction;
+        private static InputAction _interactAction;
+        private static InputAction interactAction {
+            get {
+                if (_interactAction == null) {
+                    _interactAction = Keybinds.playerMap.FindAction("Interact");
+                }
+                return _interactAction;
+            }
+        }
         // private static System.Guid interactBindID;
 
 
@@ -45,35 +53,34 @@ namespace SeleneGame.Core.UI {
         }
 
         private void UpdateKeybind(Guid keybindId){
-            if (keybindId == ControlsManager.GetInputBinding(interactAction).id){
+            if (keybindId == Keybinds.GetInputBinding(interactAction).id){
                 UpdateInteractionBindDisplay();
             }
         }
-        private void UpdateControllerType( ControlsManager.ControllerType controllerType ){
+        private void UpdateControllerType( Keybinds.ControllerType controllerType ){
             UpdateInteractionBindDisplay();
         }
 
         private void UpdateInteractionBindDisplay() {
-            interactBind.text = ControlsManager.GetInputBinding(interactAction).ToDisplayString();
+            interactBind.text = Keybinds.GetInputBinding(interactAction).ToDisplayString();
         }
 
 
 
 
         private void Awake(){
-            if (interactAction == null) interactAction = ControlsManager.playerMap.FindAction("Interact");
             UpdateInteractionBindDisplay();
         }
         
         protected void OnEnable(){
             SetCurrent();
             
-            ControlsManager.onUpdateKeybind += UpdateKeybind;
-            ControlsManager.onControllerTypeChange += UpdateControllerType;
+            Keybinds.onUpdateKeybind += UpdateKeybind;
+            Keybinds.onControllerTypeChange += UpdateControllerType;
         }
         private void OnDisable(){
-            ControlsManager.onUpdateKeybind -= UpdateKeybind;
-            ControlsManager.onControllerTypeChange -= UpdateControllerType;
+            Keybinds.onUpdateKeybind -= UpdateKeybind;
+            Keybinds.onControllerTypeChange -= UpdateControllerType;
         }
 
         private void Update() {
@@ -93,7 +100,7 @@ namespace SeleneGame.Core.UI {
             if ( !playerCanInteract ) return;
 
             interactDescription.text = interactCandidate.InteractDescription;
-                
+
             MonoBehaviour interactionCandidate = interactCandidate as MonoBehaviour;
 
             if (interactionCandidate == null) return;

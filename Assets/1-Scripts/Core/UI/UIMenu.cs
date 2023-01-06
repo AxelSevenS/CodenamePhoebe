@@ -39,7 +39,7 @@ namespace SeleneGame.Core.UI {
             Disable();
         }
 
-        public virtual void OnControllerTypeChange(ControlsManager.ControllerType type) {
+        public virtual void OnControllerTypeChange(Keybinds.ControllerType type) {
             ResetGamePadSelection();
         }
 

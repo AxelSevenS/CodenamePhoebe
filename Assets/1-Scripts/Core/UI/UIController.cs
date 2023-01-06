@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,6 +18,8 @@ namespace SeleneGame.Core.UI {
         private BoolData saveMenuInput;
 
 
+        private static KeyInputData cancelInput;
+        public static event Action onCancel;
 
         public static bool IsMenuOpen => currentMenu != null;
 
@@ -29,11 +30,11 @@ namespace SeleneGame.Core.UI {
             bool menuUI = currentMenu != null;
 
             if (menuUI) {
-                ControlsManager.playerMap.Disable();
+                Keybinds.playerMap.Disable();
                 Cursor.visible = true;
                 Cursor.lockState = CursorLockMode.None;
             } else {
-                ControlsManager.playerMap.Enable();
+                Keybinds.playerMap.Enable();
                 Cursor.visible = false;
                 Cursor.lockState = CursorLockMode.Locked;
             }
@@ -48,12 +49,8 @@ namespace SeleneGame.Core.UI {
         }
 
 
-        private void OnCancel() {
-            currentMenu?.OnCancel();
-        }
-
-        private void OnControllerTypeChange(ControlsManager.ControllerType controllerType) {
-            if ( controllerType != ControlsManager.ControllerType.MouseKeyboard )
+        private void OnControllerTypeChange(Keybinds.ControllerType controllerType) {
+            if ( controllerType != Keybinds.ControllerType.MouseKeyboard )
                 currentMenu?.ResetGamePadSelection();
         }
 
@@ -62,22 +59,27 @@ namespace SeleneGame.Core.UI {
         private void OnEnable() {
             SetCurrent();
             UpdateMenuState();
-            ControlsManager.onCancel += OnCancel;
-            ControlsManager.onControllerTypeChange += OnControllerTypeChange;
+            Keybinds.onControllerTypeChange += OnControllerTypeChange;
         }
 
         private void OnDisable() {
-            ControlsManager.onCancel -= OnCancel;
-            ControlsManager.onControllerTypeChange += OnControllerTypeChange;
+            Keybinds.onControllerTypeChange += OnControllerTypeChange;
         }
 
         private void Update() {
+
+            cancelInput.SetVal( Keybinds.uiMap.IsBindPressed("Cancel") ) ;
+
+            if (cancelInput.started) {
+                currentMenu?.OnCancel();
+                onCancel?.Invoke();
+            }
             
-            keyBindMenuInput.SetVal( ControlsManager.debugMap.IsBindPressed("DebugKeyBindMenu") );
+            keyBindMenuInput.SetVal( Keybinds.debugMap.IsBindPressed("DebugKeyBindMenu") );
             if (keyBindMenuInput.started)
                 KeyBindingMenuController.current.Toggle();
 
-            saveMenuInput.SetVal( ControlsManager.debugMap.IsBindPressed("DebugSaveMenu") );
+            saveMenuInput.SetVal( Keybinds.debugMap.IsBindPressed("DebugSaveMenu") );
             if (saveMenuInput.started)
                 SaveMenuController.current.Toggle();
         }

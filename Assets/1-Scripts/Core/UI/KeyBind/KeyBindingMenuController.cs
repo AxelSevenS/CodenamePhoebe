@@ -28,7 +28,7 @@ namespace SeleneGame.Core.UI {
 
             keyBindingMenu.SetActive( true );
 
-            ResetGamePadSelection();
+            InitializeKeybindings();
 
             UIController.current.UpdateMenuState();
         }
@@ -41,12 +41,12 @@ namespace SeleneGame.Core.UI {
             UIController.current.UpdateMenuState();
         }
 
-        public override void ResetGamePadSelection(){
+        public override void ResetGamePadSelection() {
             EventSystem.current.SetSelectedGameObject(rebinds[0].gameObject);
         }
 
 
-        private void InitializeKeybindings(){
+        private void InitializeKeybindings() {
             rebinds = new List<RebindButton>();
             int childCount = keyBindingContainer.transform.childCount;
             for (int i = 0; i < childCount; i++) {
@@ -54,7 +54,7 @@ namespace SeleneGame.Core.UI {
                 GameUtility.SafeDestroy(child.gameObject);
             }
 
-            foreach (var action in ControlsManager.playerMap.actions){
+            foreach (var action in Keybinds.playerMap.actions){
                 if (action.name == "Move"){
                     CreateRebindButton(action, 1, "Forward");
                     CreateRebindButton(action, 2, "Left");
@@ -63,7 +63,9 @@ namespace SeleneGame.Core.UI {
                 }else if (action.name != "Look"){
                     CreateRebindButton(action, 0);
                 }
+
             }
+            ResetGamePadSelection();
 
             // RebindButton lastButton = rebinds[rebinds.Count - 1];
             // lastButton.elementDown = returnButton;
@@ -92,11 +94,6 @@ namespace SeleneGame.Core.UI {
                 button.elementUp = previousButton;
             }
 
-        }
-
-
-        private void Awake(){
-            InitializeKeybindings();
         }
     }
 }
