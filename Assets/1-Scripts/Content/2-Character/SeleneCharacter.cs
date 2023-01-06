@@ -10,10 +10,10 @@ namespace SeleneGame.Content {
     [CreateAssetMenu(fileName = "Selene", menuName = "Characters/Selene")]
     public sealed class SeleneCharacter : Character {
 
-        public override void Initialize(Entity entity, CharacterCostume costume = null) {
-            base.Initialize(entity, costume);
+        protected override void Setup() {
+            base.Setup();
 
-            if ( entity is ArmedEntity armed ){
+            if ( _entity is ArmedEntity armed ){
                 armed.weapons.Set(1, "Hypnos");
                 armed.weapons.Set(2, "Eris");
 

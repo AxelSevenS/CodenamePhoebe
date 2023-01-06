@@ -40,7 +40,7 @@ namespace SeleneGame.Content {
         }
 
         public override void Set(int index, Weapon weapon, WeaponCostume costume = null){
-            weapon?.Initialize(entity, costume);
+            weapon = Weapon.Initialize(weapon, entity, costume);
             try {
                 switch (index) {
                     case (int)WeaponIndex.primary:

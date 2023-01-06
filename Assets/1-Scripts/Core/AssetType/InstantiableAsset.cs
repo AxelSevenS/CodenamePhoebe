@@ -15,7 +15,7 @@ namespace SeleneGame.Core {
 
 
 
-        public static T GetInstanceOf(T asset){
+        public static T GetInstanceOf(T asset) {
             if (asset == null) {
                 // Debug.LogWarning($"InstantiableAsset.GetInstanceOf: asset is null; ignore this if you did this on purpose.");
                 return null;
@@ -24,8 +24,8 @@ namespace SeleneGame.Core {
                 return asset;
 
             T assetInstance = ScriptableObject.Instantiate( asset );
-            assetInstance.name = assetInstance.name.Substring(0, assetInstance.name.Length - 7);
             assetInstance.isInstance = true;
+            assetInstance.name = assetInstance.name.Substring(0, assetInstance.name.Length - 7);
             return assetInstance;
         }
     

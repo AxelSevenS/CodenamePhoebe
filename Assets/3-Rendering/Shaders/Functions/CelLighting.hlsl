@@ -68,7 +68,8 @@ CelLightingInput GetCelLightingInput( half3 ObjectPosition, half3 ObjectNormal, 
 half GetAccent(half luminance) {
     // P-Curve
 
-    half h = 5.5 * (luminance);
+    half h = 5.5 * luminance;
+    // half h = 1 - (8*luminance - 4);
     // half h = exp(luminance * -9 + 3);
 
     return h * exp(1-h);

@@ -29,13 +29,6 @@ namespace SeleneGame.Content {
 
 
 
-        public override void Initialize(Entity entity, EidolonMaskCostume costume = null) {
-            base.Initialize(entity, costume);
-
-            // relativePos = rightPosition;
-            // hoveringPosition = _entity.transform.position + relativePos;
-        }
-
         protected internal void HandleInput(PlayerEntityController controller) {
             if ( !(_entity is MaskedEntity masked) ) return;
 

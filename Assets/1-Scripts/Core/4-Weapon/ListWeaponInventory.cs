@@ -32,7 +32,7 @@ namespace SeleneGame.Core {
 
         public override void Set(int index, Weapon weapon, WeaponCostume costume = null){
             try {
-                weapon?.Initialize(entity, costume);
+                weapon = Weapon.Initialize(weapon, entity, costume);
                 items[index]?.Dispose();
                 items[index] = weapon;
             } catch (System.Exception e) {

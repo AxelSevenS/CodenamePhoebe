@@ -22,14 +22,23 @@ namespace SeleneGame.Core {
 
         
 
-        public virtual void Initialize( Entity entity ) {
-            if ( !isInstance )
-                throw new InvalidOperationException($"Asset {this.name} is not an instance");
-            if ( _entity != null )
-                throw new InvalidOperationException($"Asset {this.name} already initialized");
+        public static T Initialize( T costume, Entity entity ) {
+            if ( costume == null )
+                return null;
 
-            _entity = entity;
+            if ( !costume.isInstance )
+                return Initialize(GetInstanceOf(costume), entity);
+
+            if ( costume._entity != null )
+                throw new InvalidOperationException($"Asset {costume.name} already initialized");
+
+            costume._entity = entity;
+            costume.Setup();
+
+            return costume;
         }
+
+        protected virtual void Setup() {;}
 
         public abstract void LoadModel();
 

@@ -53,7 +53,7 @@ namespace SeleneGame.Content {
         public void SetMask(EidolonMask mask, EidolonMaskCostume costume = null) {
 
             try {
-                mask?.Initialize(this, costume);
+                mask = EidolonMask.Initialize(mask, this, costume);
             } catch (Exception e) {
                 // Debug.Log(mask);
                 Debug.LogError($"Error while Setting Mask {mask.name} : {e.Message}");

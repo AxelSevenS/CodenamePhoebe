@@ -253,8 +253,7 @@ namespace SeleneGame.Core {
             entityGO.AddComponent<PlayerEntityController>();
             Entity entity = (Entity)entityGO.AddComponent(entityType);
             
-            entity.character = character;
-            entity.character.Initialize(entity, costume);
+            entity.character = Character.Initialize(character, entity, costume);
 
             entity.transform.position = position;
             entity.transform.rotation = rotation;
@@ -299,7 +298,7 @@ namespace SeleneGame.Core {
         public void SetCharacter(Character character, CharacterCostume costume = null) {
             
             try {
-                character?.Initialize(this, costume);
+                character = Character.Initialize(character, this, costume);
             } catch (Exception e) {
                 Debug.LogError($"Error while Setting Character {character.name} : {e.Message}");
                 return;

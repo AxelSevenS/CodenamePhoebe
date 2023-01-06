@@ -74,7 +74,7 @@ namespace SeleneGame.Core.UI {
 
         public void OnSelectWeaponCostume(WeaponCostume weaponCostume) {
             if ( !Enabled ) return;
-            onWeaponCostumeSelected?.Invoke( WeaponCostume.GetInstanceOf(weaponCostume) );
+            onWeaponCostumeSelected?.Invoke( weaponCostume );
         }
 
         private void GetEquippableCostumes(Weapon weapon) {

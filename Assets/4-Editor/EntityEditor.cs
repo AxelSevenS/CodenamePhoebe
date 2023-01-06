@@ -39,7 +39,7 @@ namespace SeleneGame.Core {
             selectedCharacter = EditorGUILayout.ObjectField(new GUIContent("Set Character", "Use this to Switch the Character of the Entity"), selectedCharacter, typeof(Character), false) as Character;
 
             if ( EditorGUI.EndChangeCheck() )
-                targetEntity.SetCharacter( Character.GetInstanceOf(selectedCharacter) );
+                targetEntity.SetCharacter( selectedCharacter );
 
 
 
@@ -49,7 +49,7 @@ namespace SeleneGame.Core {
             selectedCharacterCostume = EditorGUILayout.ObjectField(new GUIContent("Set Character Costume", "Use this to Switch the Character Costume of the Entity"), selectedCharacterCostume, typeof(CharacterCostume), false) as CharacterCostume;
 
             if ( EditorGUI.EndChangeCheck() ) {
-                targetEntity.SetCostume( CharacterCostume.GetInstanceOf(selectedCharacterCostume) );
+                targetEntity.SetCostume( selectedCharacterCostume );
             }
 
             EditorGUILayout.Space(15f);

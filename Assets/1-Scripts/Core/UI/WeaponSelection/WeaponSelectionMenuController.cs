@@ -72,7 +72,7 @@ namespace SeleneGame.Core.UI {
 
         public void OnSelectWeapon(Weapon weapon) {
             if ( !Enabled ) return;
-            onWeaponSelected?.Invoke( Weapon.GetInstanceOf(weapon) );
+            onWeaponSelected?.Invoke( weapon );
         }
 
         private void GetEntityWeapons(ArmedEntity armedEntity) {

@@ -44,7 +44,6 @@ namespace SeleneGame.Core {
         public GameObject model => costume.modelInstance;
         public CostumeData costumeData => _costume.costumeData;
         
-        
 
         protected internal virtual void CharacterUpdate( Entity entity ){;}
         protected internal virtual void CharacterFixedUpdate( Entity entity ){;}

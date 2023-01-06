@@ -25,8 +25,7 @@ namespace SeleneGame.Core {
 
         public WeaponInventory(ArmedEntity entity) {
             this.entity = entity;
-            _defaultWeapon = Weapon.GetDefaultInstance();
-            _defaultWeapon.Initialize(entity);
+            _defaultWeapon = Weapon.Initialize(Weapon.GetDefaultInstance(), entity);
         }
 
 
