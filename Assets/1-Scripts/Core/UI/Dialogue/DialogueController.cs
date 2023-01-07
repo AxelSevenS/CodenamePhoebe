@@ -23,22 +23,23 @@ namespace SeleneGame.Core.UI {
         [SerializeField] private Image dialoguePortrait;
         [SerializeField] private Image dialogueIndicator;
 
+        // [SerializeField] private float alpha;
+        // private Image[] sprites;
+
+        // private Task dialogueOpacityTask;
+
         [Space(15)]
 
         private CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-        private Task dialogueTask;
+        private Task lineTextTask;
         private string displayedText;
 
         [SerializeField] private Dialogue dialogue;
         [SerializeField] private Dialogue.Line currentLine;
         [SerializeField] private GameObject dialogueObject;
 
-
-        [Space(15)]
         private int lineIndex;
 
-        [SerializeField] private float alpha;
-        private SpriteRenderer[] sprites;
 
 
         private bool isTyping => displayedText.Length < currentLine.text.Length;
@@ -51,14 +52,20 @@ namespace SeleneGame.Core.UI {
             Enabled = true;
             dialogueBox.SetActive( true );
 
+            // TODO : create a fade in animation 
+            // dialogueOpacityTask = FadeDialogue(1f);
+
             displayedText = "";
             lineIndex = 0;
         }
 
-        public override void Disable(){
+        public async override void Disable(){
 
             if (!Enabled) return;
             
+            // dialogueOpacityTask = FadeDialogue(0);
+            // await dialogueOpacityTask;
+
             Enabled = false;
             dialogueBox.SetActive( false );
         }
@@ -82,9 +89,23 @@ namespace SeleneGame.Core.UI {
             Disable();
         }
 
+        // private async Task FadeDialogue(float alpha){
+        //     while (this.alpha != alpha){
+        //         this.alpha = Mathf.MoveTowards(this.alpha, alpha, 0.16f);
+        //         Color newColor;
+        //         foreach(Image child in sprites) {
+        //             newColor = child.color;
+        //             newColor.a = this.alpha;
+        //             child.color = newColor;
+        //         }
+        //         await Task.Delay(10);
+        //     }
+        // }
+
         private void DisplayLineText(Dialogue.Line line){
 
-            dialogueTask?.Dispose();
+            if (lineTextTask != null && !lineTextTask.IsCompleted)
+                cancellationTokenSource.Cancel();
 
             dialogueName.SetText( line.entity.name );
             dialoguePortrait.sprite = line.entity.character.costume.GetPortrait(line.emotion);
@@ -95,7 +116,7 @@ namespace SeleneGame.Core.UI {
                 dialogueEvent.Invoke(dialogueObject);
             }
             
-            dialogueTask = Task.Run(() => ProcessDialogueText(line), cancellationTokenSource.Token);
+            lineTextTask = Task.Run(() => ProcessDialogueText(line), cancellationTokenSource.Token);
 
         }
 
@@ -104,35 +125,40 @@ namespace SeleneGame.Core.UI {
             int time = 20;
             bool writingTag = false;
 
-            while (displayedText.Length < line.text.Length) {
+            try {
+                while (displayedText.Length < line.text.Length) {
 
-                char nextCharacter = line.text[displayedTextLength];
+                    char nextCharacter = line.text[displayedTextLength];
 
-                switch (nextCharacter) {
-                    case '<':
-                        writingTag = true;
-                        break;
-                    case '>':
-                        writingTag = false;
-                        break;
+                    switch (nextCharacter) {
+                        case '<':
+                            writingTag = true;
+                            break;
+                        case '>':
+                            writingTag = false;
+                            break;
+                    }
+
+                    displayedTextLength++;
+
+                    if (writingTag) continue; // Don't Delay or change the displayed text when writing a tag
+                    
+                    // TODO : play character sound effect
+
+                    displayedText = line.text.Substring(0, displayedTextLength);
+                    await Task.Delay(time);
                 }
-
-                displayedTextLength++;
-
-                if (writingTag) continue; // Don't Delay or change the displayed text when writing a tag
-                
-                // TODO : play character sound effect
-
-                displayedText = line.text.Substring(0, displayedTextLength);
-                await Task.Delay(time);
+            }
+            catch(TaskCanceledException) {
+                // Task was cancelled, don't do anything
             }
         }
 
         private void NextLine(){
-            if (!dialogueBox.activeSelf) return;
+            if (!dialogueBox.activeSelf || !Enabled) return;
 
 
-            if (lineIndex < dialogue.lines.Length) {
+            if (lineIndex < dialogue?.lines.Length) {
 
                 currentLine = dialogue.lines[lineIndex];
                 DisplayLineText(currentLine);
@@ -160,7 +186,7 @@ namespace SeleneGame.Core.UI {
 
 
         private void Awake(){
-            sprites = dialogueBox.transform.GetComponentsInChildren<SpriteRenderer>();
+            // sprites = dialogueBox.transform.GetComponentsInChildren<Image>();
         }
 
         protected override void OnEnable(){
@@ -175,15 +201,6 @@ namespace SeleneGame.Core.UI {
         
         private void Update(){
             if (!Enabled) return;
-
-            alpha = Mathf.MoveTowards(alpha, (Enabled ? 1f : 0f), 7f * GameUtility.timeDelta);
-
-            Color newColor;
-            foreach(SpriteRenderer child in sprites) {
-                newColor = child.color;
-                newColor.a = alpha;
-                child.color = newColor;
-            }
 
             dialogueText.SetText( displayedText );
             dialogueIndicator.enabled = !isTyping;
