@@ -37,8 +37,4 @@ MonoBehaviour:
     usePlayerEntity: 1
     _entity: {fileID: 0}
     text: ...
-    dialogueEvents:
-    - eventType: 3
-      entity: {fileID: 0}
-      characterCostume: {fileID: 0}
-      dialogue: {fileID: 0}
+    dialogueEvents: []

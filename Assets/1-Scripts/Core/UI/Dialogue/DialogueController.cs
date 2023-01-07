@@ -1,11 +1,12 @@
 using System;
-using System.Collections;
+using System.Threading.Tasks;
 
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
 using SevenGame.Utility;
+using System.Threading;
 
 namespace SeleneGame.Core.UI {
 
@@ -24,6 +25,10 @@ namespace SeleneGame.Core.UI {
 
         [Space(15)]
 
+        private CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        private Task dialogueTask;
+        private string displayedText;
+
         [SerializeField] private Dialogue dialogue;
         [SerializeField] private Dialogue.Line currentLine;
         [SerializeField] private GameObject dialogueObject;
@@ -36,7 +41,7 @@ namespace SeleneGame.Core.UI {
         private SpriteRenderer[] sprites;
 
 
-        private bool isTyping => dialogueText.text.Length < currentLine.text.Length;
+        private bool isTyping => displayedText.Length < currentLine.text.Length;
 
 
         public override void Enable(){
@@ -46,7 +51,7 @@ namespace SeleneGame.Core.UI {
             Enabled = true;
             dialogueBox.SetActive( true );
 
-            dialogueText.text = "";
+            displayedText = "";
             lineIndex = 0;
         }
 
@@ -77,62 +82,69 @@ namespace SeleneGame.Core.UI {
             Disable();
         }
 
-        private IEnumerator AdvanceText(){
-            dialogueText.text = "";
-            dialogueIndicator.enabled = false;
+        private void DisplayLineText(Dialogue.Line line){
 
-            float time = 0.02f;
+            dialogueTask?.Dispose();
+
+            dialogueName.SetText( line.entity.name );
+            dialoguePortrait.sprite = line.entity.character.costume.GetPortrait(line.emotion);
+            displayedText = String.Empty;
+            dialogueText.SetText(displayedText);
+
+            foreach (InvokableEvent dialogueEvent in line.dialogueEvents){
+                dialogueEvent.Invoke(dialogueObject);
+            }
+            
+            dialogueTask = Task.Run(() => ProcessDialogueText(line), cancellationTokenSource.Token);
+
+        }
+
+        private async Task ProcessDialogueText(Dialogue.Line line) {
+            int displayedTextLength = 0;
+            int time = 20;
             bool writingTag = false;
 
-            while (isTyping){
+            while (displayedText.Length < line.text.Length) {
 
-                do {
-                    char nextCharacter = currentLine.text[dialogueText.text.Length];
-                    
-                    switch (nextCharacter) {
-                        case '<':
-                            writingTag = true;
-                            break;
-                        case '>':
-                            writingTag = false;
-                            break;
-                    }
+                char nextCharacter = line.text[displayedTextLength];
 
-                    dialogueText.text += nextCharacter;
-                } 
-                while (isTyping && writingTag); // write the whole rich text tag
+                switch (nextCharacter) {
+                    case '<':
+                        writingTag = true;
+                        break;
+                    case '>':
+                        writingTag = false;
+                        break;
+                }
 
-                yield return new WaitForSeconds(time);
+                displayedTextLength++;
+
+                if (writingTag) continue; // Don't Delay or change the displayed text when writing a tag
+                
+                // TODO : play character sound effect
+
+                displayedText = line.text.Substring(0, displayedTextLength);
+                await Task.Delay(time);
             }
-
-            EndLine();
         }
 
         private void NextLine(){
             if (!dialogueBox.activeSelf) return;
 
-            EndLine();
 
             if (lineIndex < dialogue.lines.Length) {
+
                 currentLine = dialogue.lines[lineIndex];
-
-                dialogueName.SetText( currentLine.entity.name );
-                dialoguePortrait.sprite = currentLine.entity.character.costume.GetPortrait(currentLine.emotion);
-
-                foreach (InvokableEvent dialogueEvent in currentLine.dialogueEvents){
-                    dialogueEvent.Invoke(dialogueObject);
-                }
-                StartCoroutine(AdvanceText());
+                DisplayLineText(currentLine);
                 lineIndex++;
+
             } else  {
                 EndDialogue();
             }
         }
 
         private void EndLine(){
-            dialogueText.text = currentLine.text;
-            dialogueIndicator.enabled = true;
-            StopCoroutine(AdvanceText());
+            displayedText = currentLine?.text ?? String.Empty;
         }
 
         private void SkipLine(){
@@ -173,10 +185,17 @@ namespace SeleneGame.Core.UI {
                 child.color = newColor;
             }
 
+            dialogueText.SetText( displayedText );
+            dialogueIndicator.enabled = !isTyping;
+
 
             if (PlayerEntityController.current == null) return;
 
-            if (PlayerEntityController.current.lightAttackInput.started || PlayerEntityController.current.heavyAttackInput.started || PlayerEntityController.current.jumpInput.started)
+            if (
+                PlayerEntityController.current.lightAttackInput.started || 
+                PlayerEntityController.current.heavyAttackInput.started || 
+                PlayerEntityController.current.jumpInput.started
+            )
                 SkipLine();
 
         }
