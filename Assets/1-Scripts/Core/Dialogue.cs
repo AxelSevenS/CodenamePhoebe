@@ -14,7 +14,7 @@ namespace SeleneGame.Core {
 
         
         [System.Serializable]
-        public class Line{
+        public class Line {
             
             public CharacterCostume.Emotion emotion;
 

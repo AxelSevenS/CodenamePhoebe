@@ -565,14 +565,9 @@ namespace SeleneGame.Core {
         protected virtual void Update(){
             onGround.SetVal( ColliderCast(Vector3.zero, gravityDown.normalized * 0.2f, out groundHit, 0.15f, Global.GroundMask) );
 
-            // if (animator.runtimeAnimatorController != null) {
-                EntityAnimation();
-            // }
+            EntityAnimation();
         }
-
-        protected virtual void LateUpdate(){
-            // state?.StateLateUpdate();
-        }
+        
 
         protected virtual void FixedUpdate(){
             ExecuteMovement();

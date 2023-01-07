@@ -1,10 +1,8 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 using TMPro;
 
 using SevenGame.Utility;
@@ -27,40 +25,35 @@ namespace SeleneGame.Core.UI {
         [Space(15)]
 
         [SerializeField] private Dialogue dialogue;
-        [SerializeField] private Dialogue.Line line;
+        [SerializeField] private Dialogue.Line currentLine;
         [SerializeField] private GameObject dialogueObject;
 
 
         [Space(15)]
-        [SerializeField] private string displayText;
         private int lineIndex;
 
-        [SerializeField] private float currOpacity;
-        private Image[] imageList;
-        private TextMeshProUGUI[] textList;
+        [SerializeField] private float alpha;
+        private SpriteRenderer[] sprites;
 
 
-        private bool isTyping => displayText.Length < line.text.Length;
+        private bool isTyping => dialogueText.text.Length < currentLine.text.Length;
 
 
         public override void Enable(){
             
             if (Enabled) return;
-            Enabled = true;
 
-            StopCoroutine(AdvanceText());
+            Enabled = true;
             dialogueBox.SetActive( true );
 
-            displayText = "";
+            dialogueText.text = "";
             lineIndex = 0;
         }
 
         public override void Disable(){
 
             if (!Enabled) return;
-            Enabled = false;
-
-            StopCoroutine(AdvanceText());
+            
             Enabled = false;
             dialogueBox.SetActive( false );
         }
@@ -76,99 +69,110 @@ namespace SeleneGame.Core.UI {
         }
 
         private void EndDialogue(){
+            EndLine();
+
+            dialogueObject = null;
+            dialogue = null;
+
             Disable();
         }
 
-
-        private void UpdateOpacity(){
-
-            currOpacity = Mathf.MoveTowards(currOpacity, (Enabled ? 1f : 0f), 7f * GameUtility.timeDelta);
-
-            foreach (Image i in imageList)
-                i.color = new Color(i.color.r, i.color.g, i.color.b, currOpacity);
-
-            foreach (TextMeshProUGUI i in textList)
-                i.color = new Color(i.color.r, i.color.g, i.color.b, currOpacity);
-        }
-
         private IEnumerator AdvanceText(){
-            displayText = "";
+            dialogueText.text = "";
             dialogueIndicator.enabled = false;
 
-            float speed = 0.02f;
-            bool spriteCharacter = false;
+            float time = 0.02f;
+            bool writingTag = false;
 
-            for(int i = 0; i < line.text.Length; i++){
-                if ( !isTyping ) {
-                    dialogueIndicator.enabled = true;
-                    yield break;
-                }
+            while (isTyping){
 
-                // Do not delay the next character if it is a sprite
                 do {
-                    char nextCharacter = line.text[displayText.Length];
-                    if (nextCharacter == '<') {
-                        spriteCharacter = true;
+                    char nextCharacter = currentLine.text[dialogueText.text.Length];
+                    
+                    switch (nextCharacter) {
+                        case '<':
+                            writingTag = true;
+                            break;
+                        case '>':
+                            writingTag = false;
+                            break;
                     }
 
-                    displayText += nextCharacter;
-
-                    if (nextCharacter == '>'){
-                        spriteCharacter = false;
-                    }
+                    dialogueText.text += nextCharacter;
                 } 
-                while (spriteCharacter);
+                while (isTyping && writingTag); // write the whole rich text tag
 
-                dialogueText.SetText(displayText);
-                yield return new WaitForSeconds(speed);
+                yield return new WaitForSeconds(time);
             }
-        }
 
-        private void ReadNextCharacter() {
+            EndLine();
         }
 
         private void NextLine(){
             if (!dialogueBox.activeSelf) return;
 
+            EndLine();
+
             if (lineIndex < dialogue.lines.Length) {
-                line = dialogue.lines[lineIndex];
-                lineIndex++;
+                currentLine = dialogue.lines[lineIndex];
 
-                dialogueName.SetText( line.entity.name );
-                dialoguePortrait.sprite = line.entity.character.costume.GetPortrait(line.emotion);
+                dialogueName.SetText( currentLine.entity.name );
+                dialoguePortrait.sprite = currentLine.entity.character.costume.GetPortrait(currentLine.emotion);
 
-                foreach (InvokableEvent dialogueEvent in line.dialogueEvents){
+                foreach (InvokableEvent dialogueEvent in currentLine.dialogueEvents){
                     dialogueEvent.Invoke(dialogueObject);
                 }
                 StartCoroutine(AdvanceText());
-            } else 
+                lineIndex++;
+            } else  {
                 EndDialogue();
+            }
         }
 
         private void EndLine(){
-            displayText = line.text;
-            dialogueText.SetText(displayText);
+            dialogueText.text = currentLine.text;
+            dialogueIndicator.enabled = true;
+            StopCoroutine(AdvanceText());
         }
 
         private void SkipLine(){
             if (!dialogueBox.activeSelf) return;
 
-            if ( isTyping )
+            if ( isTyping ) {
                 EndLine();
-            else
+            } else{
                 NextLine();
+            }
         }
 
 
 
         private void Awake(){
-            imageList = dialogueBox.transform.GetComponentsInChildren<Image>();
-            textList = dialogueBox.transform.GetComponentsInChildren<TextMeshProUGUI>();
+            sprites = dialogueBox.transform.GetComponentsInChildren<SpriteRenderer>();
+        }
+
+        protected override void OnEnable(){
+            base.OnEnable();
+            EndDialogue();
+        }
+
+        protected override void OnDisable(){
+            base.OnDisable();
+            EndDialogue();
         }
         
         private void Update(){
+            if (!Enabled) return;
 
-            UpdateOpacity();
+            alpha = Mathf.MoveTowards(alpha, (Enabled ? 1f : 0f), 7f * GameUtility.timeDelta);
+
+            Color newColor;
+            foreach(SpriteRenderer child in sprites) {
+                newColor = child.color;
+                newColor.a = alpha;
+                child.color = newColor;
+            }
+
 
             if (PlayerEntityController.current == null) return;
 
