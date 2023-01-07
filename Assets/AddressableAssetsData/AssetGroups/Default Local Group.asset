@@ -17,22 +17,6 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: 6773cbc2bd9e3ce4999ce45fc46b0d51
   m_SerializeEntries:
-  - m_GUID: 0b2df3d82e45edd49a0ece4168800e92
-    m_Address: Weapon/Eris
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - Weapon
-  - m_GUID: e2717c876d7c2b7469ee4676b6906627
-    m_Address: Weapon/Hypnos
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - Weapon
-  - m_GUID: eee5c1563f4cf5d47aa740143287b07e
-    m_Address: Weapon/Unarmed
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - Weapon
-    - default
   - m_GUID: 88d05d19418b5cb4eb2b9561a0f90b20
     m_Address: WeaponCostume/Eris_Base
     m_ReadOnly: 0
@@ -53,14 +37,33 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - WeaponCostume
+  - m_GUID: 0b2df3d82e45edd49a0ece4168800e92
+    m_Address: Weapon/Eris
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Weapon
+  - m_GUID: e2717c876d7c2b7469ee4676b6906627
+    m_Address: Weapon/Hypnos
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Weapon
+  - m_GUID: eee5c1563f4cf5d47aa740143287b07e
+    m_Address: Weapon/Unarmed
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Weapon
+  - m_GUID: 32c5215d78678094a90500600c9a8ab2
+    m_Address: CharacterCostume/GravityBike_Base
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - CharacterCostume
   - m_GUID: dc629ef132d887b4696c909c7ba4033c
     m_Address: CharacterCostume/Selene_Base
     m_ReadOnly: 0
     m_SerializedLabels:
-    - default
     - CharacterCostume
-  - m_GUID: 32c5215d78678094a90500600c9a8ab2
-    m_Address: CharacterCostume/GravityBike_Base
+  - m_GUID: 25dcad45bff2b8640ae4c50dfd408e46
+    m_Address: CharacterCostume/Selene_Test
     m_ReadOnly: 0
     m_SerializedLabels:
     - CharacterCostume
@@ -74,29 +77,21 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - Character
-    - default
-  - m_GUID: 25dcad45bff2b8640ae4c50dfd408e46
-    m_Address: CharacterCostume/Selene_Test
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - CharacterCostume
-  - m_GUID: 6abf083e76a6bd54a9289c5dbf0d6336
-    m_Address: EidolonMask/Erebus
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - EidolonMask
-    - default
-  - m_GUID: 49102a23ece36a94bbf8dc11a504e123
-    m_Address: EidolonMaskCostume/Erebus_Base
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - EidolonMaskCostume
   - m_GUID: 29b9dc4751934ec4886d5fc1d2737b96
     m_Address: CharacterAnimationSet/DefaultCharacterAnimations
     m_ReadOnly: 0
     m_SerializedLabels:
     - CharacterAnimationSet
-    - default
+  - m_GUID: 49102a23ece36a94bbf8dc11a504e123
+    m_Address: EidolonMaskCostume/Erebus_Base
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - EidolonMaskCostume
+  - m_GUID: 6abf083e76a6bd54a9289c5dbf0d6336
+    m_Address: EidolonMask/Erebus
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - EidolonMask
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 9fff86865a633c0488e9533aaa0b59b1, type: 2}
   m_SchemaSet:
