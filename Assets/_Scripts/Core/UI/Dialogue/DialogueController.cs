@@ -27,8 +27,8 @@ namespace SeleneGame.Core.UI {
             if (PlayerEntityController.current == null) return;
 
             // End the Dialogue if the player is too far away
-            if (Vector3.SqrMagnitude(PlayerEntityController.current.entity.transform.position - dialogueObject.transform.position) > 100f)
-                EndDialogue();
+            if (dialogueObject != null && Vector3.SqrMagnitude(PlayerEntityController.current.entity.transform.position - dialogueObject.transform.position) > 100f)
+                InterruptDialogue();
 
             if (
                 PlayerEntityController.current.lightAttackInput.started || 

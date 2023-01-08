@@ -7,6 +7,9 @@ using SevenGame.Utility;
 namespace SeleneGame.Core {
 
     public abstract class Costumable<T, TCostume> : InstantiableAsset<T>, IDisposable where T : Costumable<T, TCostume> where TCostume : Costume<TCostume> {
+
+
+        private static Dictionary<string, T> _identifiedCostumables = new Dictionary<string, T>();
         
         
         [Header("Info")]
@@ -40,6 +43,17 @@ namespace SeleneGame.Core {
         public TCostume costume => _costume;
 
     
+        public static T GetInstanceWithId(string id) {
+            if ( _identifiedCostumables.ContainsKey(id) )
+                return _identifiedCostumables[id];
+
+            return null;
+        }
+
+        public static void SetInstanceWithId(string id, T costumable) {
+            _identifiedCostumables[id] = costumable;
+        }
+
 
         public static T Initialize( T costumable, Entity entity, TCostume costume = null) {
             if ( costumable == null )

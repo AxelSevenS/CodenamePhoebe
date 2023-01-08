@@ -13,6 +13,7 @@ namespace SeleneGame.Core.UI {
     public class UIController : Singleton<UIController>{
 
         public static IUIMenu currentMenu;
+        public static IDialogueReader currentDialogueReader;
 
         private BoolData keyBindMenuInput;
         private BoolData saveMenuInput;

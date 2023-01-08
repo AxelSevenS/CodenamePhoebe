@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 namespace SeleneGame.Core.UI {
 
-    public abstract class DialogueReader<T> : UI<DialogueReader<T>> where T : DialogueReader<T> {
+    public abstract class DialogueReader<T> : UI<DialogueReader<T>>, IDialogueReader where T : DialogueReader<T> {
         
 
         [SerializeField] private GameObject dialogueBox;
@@ -31,12 +31,10 @@ namespace SeleneGame.Core.UI {
         private Task lineTextTask;
         private string displayedText;
 
-        [SerializeField] protected Dialogue dialogue;
-        [SerializeField] protected Dialogue.Line currentLine;
+        [SerializeField] protected DialogueLine currentLine;
         [SerializeField] protected GameObject dialogueObject;
 
-        protected int lineIndex;
-
+        private bool lineWasChanged = false;
 
 
         public bool isTyping => displayedText.Length < currentLine.text.Length;
@@ -44,32 +42,38 @@ namespace SeleneGame.Core.UI {
 
 
         public override void Enable(){
-            
-            if (Enabled) return;
-
             Reset();
+
+            if (Enabled) return;
+            
+            if (UIController.currentDialogueReader != null)
+                UIController.currentDialogueReader.EndDialogue();
+
             dialogueBox.SetActive( true );
             Enabled = true;
+            UIController.currentDialogueReader = this;
         }
 
         public override void Disable(){
+            Reset();
 
             if (!Enabled) return;
 
+            UIController.currentDialogueReader = null;
+
             dialogueBox.SetActive( false );
             Enabled = false;
-            Reset();
         }
 
 
-        public virtual void StartDialogue(Dialogue newDialogue, GameObject newDialogueObject = null){
+        public virtual void StartDialogue(DialogueLine dialogueLine, GameObject newDialogueObject = null){
             Enable();
             dialogueObject = newDialogueObject;
-            dialogue = newDialogue;
+            currentLine = dialogueLine;
 
             // TODO : create a fade in animation 
             // dialogueOpacityTask = FadeDialogue(1f);
-            NextLine();
+            DisplayLineText();
         }
 
         public virtual void EndDialogue(){
@@ -78,6 +82,11 @@ namespace SeleneGame.Core.UI {
             // dialogueOpacityTask = FadeDialogue(0);
             // await dialogueOpacityTask;
             Disable();
+        }
+
+        public virtual void SkipToLine(DialogueLine line) {
+            currentLine = line;
+            lineWasChanged = true;
         }
 
         // private async Task FadeDialogue(float alpha){
@@ -93,27 +102,39 @@ namespace SeleneGame.Core.UI {
         //     }
         // }
 
-        private void DisplayLineText(Dialogue.Line line){
+        public virtual void InterruptDialogue(){
+            foreach (DialogueEvent interruptionEvent in currentLine.interruptionEvents){
+                Debug.Log("Interrupting dialogue");
+                interruptionEvent.Invoke(dialogueObject);
+            }
+            EndDialogue();
+        }
 
-            // if (lineTextTask != null && !lineTextTask.IsCompleted) {
+        private void DisplayLineText(){
+
+            foreach (DialogueEvent dialogueEvent in currentLine.dialogueEvents){
+                dialogueEvent.Invoke(dialogueObject);
+
+                if (lineWasChanged) {
+                    lineWasChanged = false;
+                    DisplayLineText();
+                    return;
+                }
+            }
+
             cancellationTokenSource?.Cancel();
             cancellationTokenSource = new CancellationTokenSource();
-            // }
 
-            dialogueName.SetText( line.entity.name );
-            dialoguePortrait.sprite = line.entity.character.costume.GetPortrait(line.emotion);
+            dialogueName.SetText( currentLine.entity.name );
+            dialoguePortrait.sprite = currentLine.entity.character.costume.GetPortrait(currentLine.emotion);
             displayedText = String.Empty;
             dialogueText.SetText(displayedText);
-
-            foreach (InvokableEvent dialogueEvent in line.dialogueEvents){
-                dialogueEvent.Invoke(dialogueObject);
-            }
             
-            lineTextTask = Task.Run(() => ProcessDialogueText(line), cancellationTokenSource.Token);
+            lineTextTask = Task.Run(() => ProcessDialogueText(currentLine), cancellationTokenSource.Token);
 
         }
 
-        private async Task ProcessDialogueText(Dialogue.Line line) {
+        private async Task ProcessDialogueText(DialogueLine line) {
             int displayedTextLength = 0;
             int time = 20;
             bool writingTag = false;
@@ -154,11 +175,10 @@ namespace SeleneGame.Core.UI {
             if (!dialogueBox.activeSelf) return;
 
 
-            if (lineIndex < dialogue?.lines.Length) {
+            if (currentLine.nextLine != null) {
 
-                currentLine = dialogue.lines[lineIndex];
-                DisplayLineText(currentLine);
-                lineIndex++;
+                currentLine = currentLine.nextLine;
+                DisplayLineText();
 
             } else  {
                 EndDialogue();
@@ -185,9 +205,7 @@ namespace SeleneGame.Core.UI {
             dialogueText?.SetText(String.Empty);
             dialoguePortrait.sprite = null;
             displayedText = String.Empty;
-            dialogue = null;
             currentLine = null;
-            lineIndex = 0;
         }
 
 

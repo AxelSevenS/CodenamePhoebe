@@ -263,7 +263,8 @@ namespace SeleneGame.Core {
 
         [ContextMenu("Set As Player Entity")]
         public void SetAsPlayer() {
-            gameObject.AddComponent<PlayerEntityController>(); 
+            gameObject.AddComponent<PlayerEntityController>();
+            Character.SetInstanceWithId("Player", character);
         }
 
         /// <summary>
@@ -296,6 +297,8 @@ namespace SeleneGame.Core {
         /// </summary>
         /// <param name="character">The new Character</param>
         public void SetCharacter(Character character, CharacterCostume costume = null) {
+
+            bool isPlayer = Character.GetInstanceWithId("Player") == _character;
             
             try {
                 character = Character.Initialize(character, this, costume);
@@ -306,6 +309,9 @@ namespace SeleneGame.Core {
 
             _character?.Dispose();
             _character = character;
+
+            if (isPlayer)
+                Character.SetInstanceWithId("Player", _character);
         }
 
         /// <summary>

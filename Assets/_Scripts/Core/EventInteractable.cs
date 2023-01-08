@@ -6,7 +6,7 @@ namespace SeleneGame.Core {
 
     public class EventInteractable : MonoBehaviour, IInteractable{
         
-        public List<InvokableEvent> interactEvents;
+        public List<DialogueEvent> interactEvents;
         [SerializeField] private string interactionText;
 
 
@@ -27,7 +27,7 @@ namespace SeleneGame.Core {
         
 
         public void Interact(Entity entity){
-            foreach (InvokableEvent interactEvent in interactEvents){
+            foreach (DialogueEvent interactEvent in interactEvents){
                 interactEvent.Invoke(gameObject);
             }
         }

@@ -4,7 +4,7 @@ namespace SeleneGame.Core.UI {
     
     public class DialogueInteractable : MonoBehaviour, IInteractable{
 
-        [SerializeField] private Dialogue dialogue;
+        [SerializeField] private DialogueLine dialogue;
 
 
         public string InteractDescription {
