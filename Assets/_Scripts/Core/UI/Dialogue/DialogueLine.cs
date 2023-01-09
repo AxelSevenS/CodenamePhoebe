@@ -21,10 +21,6 @@ namespace SeleneGame.Core {
 
 
 
-        public DialogueEvent dialogueEvent;
-
-
-
         public Entity entity => /* usePlayerEntity ?  */PlayerEntityController.current.entity/*  : _entity */;
 
 
