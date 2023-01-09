@@ -1,25 +1,18 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-using SeleneGame.Core.UI;
 
 namespace SeleneGame.Core {
 
     [System.Serializable]
-    public sealed class DialogueEvent : ConditionalEvent {
-
-        public EventType eventType = EventType.StartDialogue;
+    public sealed class DialogueEvent : GameEvent {
         
-
-        public void Invoke(GameObject dialogueObject) {
-            Invoke((ConditionalEvent.EventType)eventType, dialogueObject);
+        public override bool DisplayEventType(System.Enum enumValue) {
+            switch ((EventType)enumValue) {
+                default:
+                    return false;
+                case EventType.StartDialogue:
+                case EventType.StartAlert:
+                    return true;
+            }
         }
 
-        public enum EventType {
-            StartDialogue = ConditionalEvent.EventType.StartDialogue,
-            StartAlert = ConditionalEvent.EventType.StartAlert,
-            EndDialogue = ConditionalEvent.EventType.EndDialogue
-        }
     }
 }

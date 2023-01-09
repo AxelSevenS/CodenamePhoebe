@@ -7,8 +7,6 @@ namespace SeleneGame.Core.UI {
     [CustomPropertyDrawer( typeof( EventSubCondition ), true )]
     public class EventSubConditionDrawer : PropertyDrawer {
 
-        private float lineSpace = EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
-
 
         public override void OnGUI( Rect position, SerializedProperty property, GUIContent label ) {
 
@@ -19,7 +17,7 @@ namespace SeleneGame.Core.UI {
             SerializedProperty propBinaryOperation = property.FindPropertyRelative( "binaryOperation" );
             EditorGUI.PropertyField( rectType, propBinaryOperation, GUIContent.none );
 
-            rectType.y += lineSpace;
+            rectType.y += PropertyDrawerUtility.lineSpace;
 
             SerializedProperty propCondition = property.FindPropertyRelative( "condition" );
             EditorGUI.PropertyField( rectType, propCondition, GUIContent.none );
@@ -30,7 +28,7 @@ namespace SeleneGame.Core.UI {
 
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label) {
-            return lineSpace + EditorGUI.GetPropertyHeight(property.FindPropertyRelative( "condition" ));
+            return PropertyDrawerUtility.lineSpace + EditorGUI.GetPropertyHeight(property.FindPropertyRelative( "condition" ));
         }
     }
 

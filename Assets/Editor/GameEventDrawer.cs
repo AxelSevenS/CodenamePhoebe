@@ -1,16 +1,15 @@
 using UnityEngine;
 using UnityEditor;
-using System;
 
 namespace SeleneGame.Core.UI {
 
-    [CustomPropertyDrawer( typeof( ConditionalEvent ), true )]
-    public class ConditionalEventDrawer : PropertyDrawer {
-
-        private float lineSpace = EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
-
+    [CustomPropertyDrawer( typeof( GameEvent ), true )]
+    public class GameEventDrawer : PropertyDrawer {
 
         public override void OnGUI( Rect position, SerializedProperty property, GUIContent label ) {
+
+            GameEvent gameEvent = PropertyDrawerUtility.GetTargetObject(property) as GameEvent;
+
 
             EditorGUI.BeginProperty( position, label, property );
 
@@ -32,38 +31,30 @@ namespace SeleneGame.Core.UI {
                 rectType.y += EditorGUI.GetPropertyHeight(propSubConditions);
             }
 
-
-            SerializedProperty propEventType = property.FindPropertyRelative( "eventType" );
-            EditorGUI.PropertyField( rectType, propEventType, GUIContent.none );
+            gameEvent.eventType = (GameEvent.EventType)EditorGUI.EnumPopup(rectType, GUIContent.none, gameEvent.eventType, gameEvent.DisplayEventType);
 
 
-            rectType.y += lineSpace;
+            rectType.y += PropertyDrawerUtility.lineSpace;
 
 
-            switch (propEventType.intValue) {
-                case 0:
+            switch (gameEvent.eventType) {
+                case GameEvent.EventType.SetFlag:
                     DisplaySetFlagInfo( rectType, property );
                     break;
-                case 1:
+                case GameEvent.EventType.RemoveFlag:
                     DisplayRemoveFlagInfo( rectType, property );
                     break;
-                case 2:
-                case 3:
-                case 4:
+                case GameEvent.EventType.StartDialogue:
+                case GameEvent.EventType.StartAlert:
+                case GameEvent.EventType.SkipToLine:
                     DisplayLineInfo( rectType, property );
                     break;
-                // case 5:
-                //     DisplayEndDialogueInfo( rectType, property );
-                //     break;
-                case 6:
+                case GameEvent.EventType.SetCharacterCostume:
                     DisplaySetCharacterCostumeInfo( rectType, property );
                     break;
-                case 7:
+                case GameEvent.EventType.SetWeaponCostume:
                     DisplaySetWeaponCostumeInfo( rectType, property );
                     break;
-                // case 8:
-                //     DisplayDestroyInfo( rectType, property );
-                //     break;
             }
 
             EditorGUI.EndProperty();
@@ -101,19 +92,11 @@ namespace SeleneGame.Core.UI {
             EditorGUI.PropertyField( rectType, propTargetLine, GUIContent.none );
         }
 
-        // private void DisplayEndDialogueInfo(Rect rectType, SerializedProperty property) {
-        //     // throw new NotImplementedException();
-        // }
-
-        // private void DisplayDestroyInfo(Rect rectType, SerializedProperty property) {
-        //     // throw new NotImplementedException();
-        // }
-
         private void DisplaySetCharacterCostumeInfo(Rect rectType, SerializedProperty property) {
             SerializedProperty propTargetCharacterId = property.FindPropertyRelative( "targetCharacterId" );
             EditorGUI.PropertyField( rectType, propTargetCharacterId, GUIContent.none );
 
-            rectType.y += lineSpace;
+            rectType.y += PropertyDrawerUtility.lineSpace;
 
             SerializedProperty propTargetCharacterCostume = property.FindPropertyRelative( "targetCharacterCostume" );
             EditorGUI.PropertyField( rectType, propTargetCharacterCostume, GUIContent.none );
@@ -123,7 +106,7 @@ namespace SeleneGame.Core.UI {
             SerializedProperty propTargetWeaponId = property.FindPropertyRelative( "targetWeaponId" );
             EditorGUI.PropertyField( rectType, propTargetWeaponId, GUIContent.none );
 
-            rectType.y += lineSpace;
+            rectType.y += PropertyDrawerUtility.lineSpace;
 
             SerializedProperty propTargetWeaponCostume = property.FindPropertyRelative( "targetWeaponCostume" );
             EditorGUI.PropertyField( rectType, propTargetWeaponCostume, GUIContent.none );
@@ -135,30 +118,34 @@ namespace SeleneGame.Core.UI {
             
             SerializedProperty propCondition = property.FindPropertyRelative( "condition" );
 
-            float height = EditorGUI.GetPropertyHeight(propCondition) + lineSpace;
+            float height = EditorGUI.GetPropertyHeight(propCondition) + PropertyDrawerUtility.lineSpace;
 
             if (propCondition.FindPropertyRelative("conditionType").intValue != 2) {
                 SerializedProperty propSubConditions = property.FindPropertyRelative( "subConditions" );
                 height += EditorGUI.GetPropertyHeight(propSubConditions);
             }
 
-            int eventType = property.FindPropertyRelative( "eventType" ).intValue;
+            GameEvent.EventType eventType = (GameEvent.EventType)property.FindPropertyRelative( "eventType" ).intValue;
             switch (eventType) {
-                case 0:
-                case 1:
-                case 2:
-                case 3:
-                case 4:
-                    height += lineSpace;
+                case GameEvent.EventType.SetFlag:
+                case GameEvent.EventType.RemoveFlag:
+                case GameEvent.EventType.StartDialogue:
+                case GameEvent.EventType.StartAlert:
+                case GameEvent.EventType.SkipToLine:
+                    height += PropertyDrawerUtility.lineSpace;
                     break;
-                case 6:
-                case 7:
-                    height += 2f * lineSpace;
+                case GameEvent.EventType.SetCharacterCostume:
+                case GameEvent.EventType.SetWeaponCostume:
+                    height += 2f * PropertyDrawerUtility.lineSpace;
+                    break;
+                case GameEvent.EventType.EndDialogue:
+                case GameEvent.EventType.Destroy:
                     break;
             }
 
             return height;
         }
+
     }
 
 }
