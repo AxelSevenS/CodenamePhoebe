@@ -19,7 +19,7 @@ namespace SeleneGame.Core.UI {
 
             SerializedProperty propConditionType = property.FindPropertyRelative( "conditionType" );
 
-            if (propConditionType.enumValueIndex == 2) {
+            if (propConditionType.intValue == 2) {
                 Rect flagRowRect = new Rect(rectType.x, rectType.y, rectType.width, rectType.height);
                 EditorGUI.PropertyField( flagRowRect, propConditionType, GUIContent.none );
             } else {
@@ -56,7 +56,7 @@ namespace SeleneGame.Core.UI {
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label) {
             float height = lineSpace;
 
-            if (property.FindPropertyRelative( "conditionType" ).enumValueIndex != 2) {
+            if (property.FindPropertyRelative( "conditionType" ).intValue != 2) {
                 height += lineSpace;
             }
 

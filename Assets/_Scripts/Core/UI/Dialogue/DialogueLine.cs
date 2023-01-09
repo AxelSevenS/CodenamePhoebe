@@ -20,6 +20,11 @@ namespace SeleneGame.Core {
         public DialogueLine nextLine;
 
 
+
+        public DialogueEvent dialogueEvent;
+
+
+
         public Entity entity => /* usePlayerEntity ?  */PlayerEntityController.current.entity/*  : _entity */;
 
 

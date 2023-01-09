@@ -103,8 +103,7 @@ namespace SeleneGame.Core.UI {
         // }
 
         public virtual void InterruptDialogue(){
-            foreach (GameEvent interruptionEvent in currentLine.interruptionEvents){
-                Debug.Log("Interrupting dialogue");
+            foreach (GameEvent interruptionEvent in currentLine.interruptionEvents) {
                 interruptionEvent.Invoke(dialogueObject);
             }
             EndDialogue();

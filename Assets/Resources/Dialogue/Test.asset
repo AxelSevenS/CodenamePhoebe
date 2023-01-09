@@ -25,7 +25,6 @@ MonoBehaviour:
       operatorType: 0
       flagValue: 2
     subConditions: []
-    eventType: 4
     editedFlagType: 0
     editedFlagName: 
     editedFlagValue: 0
@@ -34,5 +33,23 @@ MonoBehaviour:
     targetCharacterCostume: {fileID: 0}
     targetWeaponId: 
     targetWeaponCostume: {fileID: 0}
+    eventType: 4
   interruptionEvents: []
   nextLine: {fileID: 11400000, guid: 63f9cda49497fdb469d2660468534bf5, type: 2}
+  dialogueEvent:
+    condition:
+      conditionType: 0
+      flagType: 0
+      flagName: 
+      operatorType: 0
+      flagValue: 0
+    subConditions: []
+    editedFlagType: 0
+    editedFlagName: 
+    editedFlagValue: 0
+    targetLine: {fileID: 0}
+    targetCharacterId: 
+    targetCharacterCostume: {fileID: 0}
+    targetWeaponId: 
+    targetWeaponCostume: {fileID: 0}
+    eventType: 2

@@ -4,8 +4,8 @@ using System;
 
 namespace SeleneGame.Core.UI {
 
-    [CustomPropertyDrawer( typeof( GameEvent ), true )]
-    public class GameEventDrawer : PropertyDrawer {
+    [CustomPropertyDrawer( typeof( ConditionalEvent ), true )]
+    public class ConditionalEventDrawer : PropertyDrawer {
 
         private float lineSpace = EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
 
@@ -24,7 +24,7 @@ namespace SeleneGame.Core.UI {
             rectType.y += EditorGUI.GetPropertyHeight(propCondition);
 
 
-            if (propCondition.FindPropertyRelative("conditionType").enumValueIndex != 2) {
+            if (propCondition.FindPropertyRelative("conditionType").intValue != 2) {
                 SerializedProperty propSubConditions = property.FindPropertyRelative( "subConditions" );
                 EditorGUI.PropertyField( rectType, propSubConditions );
                     
@@ -40,7 +40,7 @@ namespace SeleneGame.Core.UI {
             rectType.y += lineSpace;
 
 
-            switch (propEventType.enumValueIndex) {
+            switch (propEventType.intValue) {
                 case 0:
                     DisplaySetFlagInfo( rectType, property );
                     break;
@@ -137,12 +137,12 @@ namespace SeleneGame.Core.UI {
 
             float height = EditorGUI.GetPropertyHeight(propCondition) + lineSpace;
 
-            if (propCondition.FindPropertyRelative("conditionType").enumValueIndex != 2) {
+            if (propCondition.FindPropertyRelative("conditionType").intValue != 2) {
                 SerializedProperty propSubConditions = property.FindPropertyRelative( "subConditions" );
                 height += EditorGUI.GetPropertyHeight(propSubConditions);
             }
 
-            int eventType = property.FindPropertyRelative( "eventType" ).enumValueIndex;
+            int eventType = property.FindPropertyRelative( "eventType" ).intValue;
             switch (eventType) {
                 case 0:
                 case 1:
