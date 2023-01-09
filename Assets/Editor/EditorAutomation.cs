@@ -49,9 +49,9 @@ namespace SeleneGame {
 
         }
 
+        [UnityEditor.Callbacks.DidReloadScripts]
         [MenuItem("Utility/UpdateAddressables")]
-        public static void UpdateAddressables()
-        {
+        public static void UpdateAddressables() {
 
             AddressableAssetSettings addressablesSettings = AddressableAssetSettingsDefaultObject.GetSettings(false);
 

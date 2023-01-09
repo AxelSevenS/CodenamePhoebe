@@ -15,48 +15,22 @@ MonoBehaviour:
   characterId: 
   emotion: 0
   text: Tu Pue
-  dialogueEvents:
-  - conditionType: 2
-    flagType: 0
-    flagName: 
-    operatorType: 0
-    flagValue: 0
-    eventType: 1
-    editedFlagType: 1
-    editedFlagName: interrupted
-    editedFlagValue: 0
-    targetLine: {fileID: 0}
-    targetCharacterId: 
-    targetCharacterCostume: {fileID: 0}
-    targetWeaponId: 
-    targetWeaponCostume: {fileID: 0}
-  - conditionType: 2
-    flagType: 0
-    flagName: 
-    operatorType: 0
-    flagValue: 0
+  GameEvents:
+  - condition:
+      conditionType: 2
+      flagType: 0
+      flagName: 
+      operatorType: 0
+      flagValue: 0
+    subConditions: []
     eventType: 0
-    editedFlagType: 1
-    editedFlagName: dialogueState
-    editedFlagValue: 1
-    targetLine: {fileID: 0}
-    targetCharacterId: 
-    targetCharacterCostume: {fileID: 0}
-    targetWeaponId: 
-    targetWeaponCostume: {fileID: 0}
-  interruptionEvents:
-  - conditionType: 2
-    flagType: 0
-    flagName: 
-    operatorType: 0
-    flagValue: 0
-    eventType: 0
-    editedFlagType: 1
-    editedFlagName: interrupted
+    editedFlagType: 0
+    editedFlagName: stage
     editedFlagValue: 2
     targetLine: {fileID: 0}
     targetCharacterId: 
     targetCharacterCostume: {fileID: 0}
     targetWeaponId: 
     targetWeaponCostume: {fileID: 0}
+  interruptionEvents: []
   nextLine: {fileID: 0}

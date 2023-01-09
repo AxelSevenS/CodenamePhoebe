@@ -14,11 +14,10 @@ namespace SeleneGame.Core {
 
         [TextArea] public string text;
 
-        public List<DialogueEvent> dialogueEvents;
-        public List<DialogueEvent> interruptionEvents;
+        public List<GameEvent> GameEvents;
+        public List<GameEvent> interruptionEvents;
 
         public DialogueLine nextLine;
-
 
 
         public Entity entity => /* usePlayerEntity ?  */PlayerEntityController.current.entity/*  : _entity */;

@@ -41,7 +41,7 @@ namespace SeleneGame.Core {
 
         public float totalEvadeDuration => evadeDuration + evadeCooldown;
 
-        public GameObject model => costume.modelInstance;
+        public GameObject model => costume?.modelInstance ?? null;
         public CostumeData costumeData => _costume.costumeData;
         
 
@@ -50,7 +50,7 @@ namespace SeleneGame.Core {
 
         public override void SetCostume(CharacterCostume costume) {
             
-            Quaternion modelRotation = model.transform.rotation;
+            Quaternion modelRotation = model?.transform.rotation ?? Quaternion.identity;
 
             base.SetCostume(costume);
 

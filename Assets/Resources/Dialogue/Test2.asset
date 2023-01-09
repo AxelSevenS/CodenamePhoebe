@@ -16,14 +16,15 @@ MonoBehaviour:
   emotion: 4
   text: T'es un PD
   dialogueEvents:
-  - conditionType: 2
-    flagType: 0
-    flagName: 
-    operatorType: 0
-    flagValue: 0
+  - condition:
+      conditionType: 2
+      flagType: 0
+      flagName: 
+      operatorType: 0
+      flagValue: 0
     eventType: 1
-    editedFlagType: 1
-    editedFlagName: interrupted
+    editedFlagType: 0
+    editedFlagName: interrupt
     editedFlagValue: 0
     targetLine: {fileID: 0}
     targetCharacterId: 
@@ -31,14 +32,15 @@ MonoBehaviour:
     targetWeaponId: 
     targetWeaponCostume: {fileID: 0}
   interruptionEvents:
-  - conditionType: 2
-    flagType: 0
-    flagName: 
-    operatorType: 0
-    flagValue: 0
+  - condition:
+      conditionType: 2
+      flagType: 0
+      flagName: 
+      operatorType: 0
+      flagValue: 0
     eventType: 0
-    editedFlagType: 1
-    editedFlagName: interrupted
+    editedFlagType: 0
+    editedFlagName: interrupt
     editedFlagValue: 1
     targetLine: {fileID: 0}
     targetCharacterId: 

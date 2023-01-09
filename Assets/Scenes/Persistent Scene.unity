@@ -22381,7 +22381,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1000445170}
   - component: {fileID: 1000445166}
-  - component: {fileID: 1000445165}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -22389,18 +22388,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1000445165
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1000445164}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7ccb2c2060159804fa2502b91bd8417d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1000445166
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27859,13 +27846,7 @@ MonoBehaviour:
   dialogueName: {fileID: 1664274933}
   dialogueText: {fileID: 1781770848}
   dialoguePortrait: {fileID: 1494798465}
-  dialogue: {fileID: 0}
-  currentLine:
-    emotion: 0
-    usePlayerEntity: 0
-    _entity: {fileID: 0}
-    text: 
-    dialogueEvents: []
+  currentLine: {fileID: 0}
   dialogueObject: {fileID: 0}
 --- !u!1 &1229887433
 GameObject:
@@ -28457,13 +28438,7 @@ MonoBehaviour:
   dialogueName: {fileID: 805871384}
   dialogueText: {fileID: 624843370}
   dialoguePortrait: {fileID: 123432290}
-  dialogue: {fileID: 0}
-  currentLine:
-    emotion: 0
-    usePlayerEntity: 0
-    _entity: {fileID: 0}
-    text: 
-    dialogueEvents: []
+  currentLine: {fileID: 0}
   dialogueObject: {fileID: 0}
   dialogueIndicator: {fileID: 2001101748}
 --- !u!1 &1452184163

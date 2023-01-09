@@ -17,45 +17,19 @@ MonoBehaviour:
   text: 'Guillaume est vraiment un belle <sprite name="Mouse Left"> salope!
 
 '
-  dialogueEvents:
-  - conditionType: 0
-    flagType: 1
-    flagName: dialogueState
-    operatorType: 0
-    flagValue: 1
+  GameEvents:
+  - condition:
+      conditionType: 0
+      flagType: 0
+      flagName: stage
+      operatorType: 0
+      flagValue: 2
+    subConditions: []
     eventType: 4
     editedFlagType: 0
     editedFlagName: 
     editedFlagValue: 0
     targetLine: {fileID: 11400000, guid: 820e2d01fdb01df41bb6275c6b1490b7, type: 2}
-    targetCharacterId: 
-    targetCharacterCostume: {fileID: 0}
-    targetWeaponId: 
-    targetWeaponCostume: {fileID: 0}
-  - conditionType: 0
-    flagType: 1
-    flagName: interrupted
-    operatorType: 0
-    flagValue: 1
-    eventType: 4
-    editedFlagType: 0
-    editedFlagName: 
-    editedFlagValue: 0
-    targetLine: {fileID: 11400000, guid: e3a2b30ab32ef5141b4008581e5f8228, type: 2}
-    targetCharacterId: 
-    targetCharacterCostume: {fileID: 0}
-    targetWeaponId: 
-    targetWeaponCostume: {fileID: 0}
-  - conditionType: 0
-    flagType: 1
-    flagName: interrupted
-    operatorType: 0
-    flagValue: 2
-    eventType: 4
-    editedFlagType: 0
-    editedFlagName: 
-    editedFlagValue: 0
-    targetLine: {fileID: 11400000, guid: bd703221ec02b40449172dc31613bb6d, type: 2}
     targetCharacterId: 
     targetCharacterCostume: {fileID: 0}
     targetWeaponId: 

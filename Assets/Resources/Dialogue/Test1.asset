@@ -15,5 +15,6 @@ MonoBehaviour:
   characterId: Player
   emotion: 1
   text: "Une Magnifique Salope, m\xEAme;\nMais revenons au sujet..."
-  dialogueEvents: []
+  GameEvents: []
+  interruptionEvents: []
   nextLine: {fileID: 11400000, guid: b69c4b9a1e3cdf0418c752525968e529, type: 2}
