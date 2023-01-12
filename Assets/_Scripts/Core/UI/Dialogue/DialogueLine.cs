@@ -5,7 +5,7 @@ using UnityEngine;
 namespace SeleneGame.Core {
 
     [CreateAssetMenu(fileName = "new Dialogue Line", menuName = "Dialogue/Line")]
-    public class DialogueLine : ScriptableObject {
+    public class DialogueLine : DialogueSource {
 
 
 
@@ -14,18 +14,20 @@ namespace SeleneGame.Core {
 
         [TextArea] public string text;
 
-        public List<GameEvent> GameEvents;
+        public List<GameEvent> gameEvents;
         public List<GameEvent> interruptionEvents;
 
-        public DialogueLine nextLine;
+        public DialogueSource nextLine;
 
 
 
         public Entity entity => /* usePlayerEntity ?  */PlayerEntityController.current.entity/*  : _entity */;
 
 
-
         
+        public override DialogueLine GetDialogue() {
+            return this;
+        }
     }
 
 

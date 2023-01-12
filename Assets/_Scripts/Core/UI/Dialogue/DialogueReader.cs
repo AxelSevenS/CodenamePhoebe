@@ -66,10 +66,10 @@ namespace SeleneGame.Core.UI {
         }
 
 
-        public virtual void StartDialogue(DialogueLine dialogueLine, GameObject newDialogueObject = null){
+        public virtual void StartDialogue(IDialogueSource source, GameObject newDialogueObject = null){
             Enable();
             dialogueObject = newDialogueObject;
-            currentLine = dialogueLine;
+            currentLine = source.GetDialogue();
 
             // TODO : create a fade in animation 
             // dialogueOpacityTask = FadeDialogue(1f);
@@ -84,8 +84,8 @@ namespace SeleneGame.Core.UI {
             Disable();
         }
 
-        public virtual void SkipToLine(DialogueLine line) {
-            currentLine = line;
+        public virtual void SkipToLine(IDialogueSource source) {
+            currentLine = source.GetDialogue();
             lineWasChanged = true;
         }
 
@@ -110,9 +110,10 @@ namespace SeleneGame.Core.UI {
         }
 
         private void DisplayLineText(){
-
-            foreach (GameEvent GameEvent in currentLine.GameEvents){
-                GameEvent.Invoke(dialogueObject);
+            lineWasChanged = false;
+            foreach (GameEvent gameEvent in currentLine.gameEvents){
+                if (gameEvent.Evaluate())
+                    gameEvent.Invoke(dialogueObject);
 
                 if (lineWasChanged) {
                     lineWasChanged = false;
@@ -176,7 +177,7 @@ namespace SeleneGame.Core.UI {
 
             if (currentLine.nextLine != null) {
 
-                currentLine = currentLine.nextLine;
+                currentLine = currentLine.nextLine.GetDialogue();
                 DisplayLineText();
 
             } else  {

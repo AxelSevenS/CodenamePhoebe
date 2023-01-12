@@ -18,7 +18,7 @@ namespace SeleneGame.Core {
 
         public EventType eventType;
         
-        public DialogueLine targetLine;
+        public DialogueSource dialogueSource;
 
         public string targetCharacterId;
         public CharacterCostume targetCharacterCostume;
@@ -40,19 +40,19 @@ namespace SeleneGame.Core {
         public virtual bool DisplayEventType(System.Enum enumValue) {
             return true;
         }
+
+        public bool Evaluate() {
+            if (condition.conditionType == EventCondition.ConditionType.Always) return true;
+
+            bool conditionsMet = condition.Evaluate();
+            foreach (EventSubCondition subCondition in subConditions) {
+                conditionsMet = subCondition.Evaluate(conditionsMet);
+            }
+            return conditionsMet;
+        }
         
 
         public void Invoke(GameObject dialogueObject) {
-
-            if (condition.conditionType != EventCondition.ConditionType.Always) {
-                bool conditionsMet = condition.Evaluate();
-                foreach (EventSubCondition subCondition in subConditions) {
-                    conditionsMet = subCondition.Evaluate(conditionsMet);
-                }
-
-                if (!conditionsMet) return;
-                
-            }
 
 
             switch (eventType) {
@@ -63,13 +63,13 @@ namespace SeleneGame.Core {
                     GameManager.RemoveFlag(editedFlagName, editedFlagType == GameManager.FlagType.TemporaryFlag);
                     break;
                 case EventType.StartDialogue:
-                    DialogueController.current.StartDialogue(targetLine, dialogueObject);
+                    DialogueController.current.StartDialogue(dialogueSource, dialogueObject);
                     break;
                 case EventType.StartAlert:
-                    AlertController.current.StartDialogue(targetLine, dialogueObject);
+                    AlertController.current.StartDialogue(dialogueSource, dialogueObject);
                     break;
                 case EventType.SkipToLine:
-                    UIController.currentDialogueReader.SkipToLine(targetLine);
+                    UIController.currentDialogueReader.SkipToLine(dialogueSource);
                     break;
                 case EventType.EndDialogue:
                     UIController.currentDialogueReader.EndDialogue();

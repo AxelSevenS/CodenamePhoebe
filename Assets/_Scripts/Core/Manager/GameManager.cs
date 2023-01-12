@@ -30,7 +30,7 @@ namespace SeleneGame.Core {
             if (selectedFlags.ContainsKey(flagName)) {
                 return selectedFlags[flagName];
             } else {
-                return -1;
+                return 0;
             }
         }
 
