@@ -13,13 +13,14 @@ MonoBehaviour:
   m_Name: new Dialogue Branch
   m_EditorClassIdentifier: 
   highPriorityDialogues:
-  - condition:
-      conditionType: 0
-      flagType: 0
-      flagName: end
-      operatorType: 0
-      flagValue: 1
-    subConditions: []
+  - conditions:
+      condition:
+        conditionType: 0
+        flagType: 0
+        flagName: end
+        operatorType: 0
+        flagValue: 1
+      subConditions: []
     dialogueSource: {fileID: 11400000, guid: 820e2d01fdb01df41bb6275c6b1490b7, type: 2}
   lowPriorityDialogues:
   - {fileID: 11400000, guid: 2a16f0e84f9a51642b2a811e23f3714f, type: 2}

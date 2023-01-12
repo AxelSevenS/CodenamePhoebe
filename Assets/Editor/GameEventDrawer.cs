@@ -9,60 +9,51 @@ namespace SeleneGame.Core.UI {
         public override void OnGUI( Rect position, SerializedProperty property, GUIContent label ) {
 
             GameEvent gameEvent = PropertyDrawerUtility.GetTargetObject(property) as GameEvent;
+            Rect rectType = new Rect(position.x, position.y, position.width, EditorGUIUtility.singleLineHeight);
 
 
             EditorGUI.BeginProperty( position, label, property );
 
-            Rect rectType = new Rect(position.x, position.y, position.width, EditorGUIUtility.singleLineHeight);
 
-
-            SerializedProperty propCondition = property.FindPropertyRelative( "condition" );
-            EditorGUI.PropertyField( rectType, propCondition, GUIContent.none );
+            SerializedProperty propConditions = property.FindPropertyRelative( "conditions" );
+            EditorGUI.PropertyField( rectType, propConditions, GUIContent.none );
                 
+            rectType.y += EditorGUI.GetPropertyHeight(propConditions) + EditorGUIUtility.standardVerticalSpacing;
 
-            rectType.y += EditorGUI.GetPropertyHeight(propCondition);
 
 
-            if (propCondition.FindPropertyRelative("conditionType").intValue != 2) {
-                SerializedProperty propSubConditions = property.FindPropertyRelative( "subConditions" );
-                EditorGUI.PropertyField( rectType, propSubConditions );
-                    
-
-                rectType.y += EditorGUI.GetPropertyHeight(propSubConditions);
-                rectType.y += EditorGUIUtility.standardVerticalSpacing;
-            }
-
+                
+            SerializedProperty propEventType = property.FindPropertyRelative( "eventType" );
             gameEvent.eventType = (GameEvent.EventType)EditorGUI.EnumPopup(rectType, GUIContent.none, gameEvent.eventType, gameEvent.DisplayEventType);
-
-
-            rectType.y += PropertyDrawerUtility.lineSpace;
-
+            
+            rectType.y += EditorGUI.GetPropertyHeight(propEventType) + EditorGUIUtility.standardVerticalSpacing;
 
             switch (gameEvent.eventType) {
                 case GameEvent.EventType.SetFlag:
-                    DisplaySetFlagInfo( rectType, property );
+                    DisplaySetFlagInfo( ref rectType, property );
                     break;
                 case GameEvent.EventType.RemoveFlag:
-                    DisplayRemoveFlagInfo( rectType, property );
+                    DisplayRemoveFlagInfo( ref rectType, property );
                     break;
                 case GameEvent.EventType.StartDialogue:
                 case GameEvent.EventType.StartAlert:
                 case GameEvent.EventType.SkipToLine:
-                    DisplayDialogueSourceInfo( rectType, property );
+                    DisplayDialogueSourceInfo( ref rectType, property );
                     break;
                 case GameEvent.EventType.SetCharacterCostume:
-                    DisplaySetCharacterCostumeInfo( rectType, property );
+                    DisplaySetCharacterCostumeInfo( ref rectType, property );
                     break;
                 case GameEvent.EventType.SetWeaponCostume:
-                    DisplaySetWeaponCostumeInfo( rectType, property );
+                    DisplaySetWeaponCostumeInfo( ref rectType, property );
                     break;
             }
+
 
             EditorGUI.EndProperty();
         }
 
 
-        private void DisplaySetFlagInfo(Rect rectType, SerializedProperty property) {
+        private void DisplaySetFlagInfo(ref Rect rectType, SerializedProperty property) {
             
             float thirdWidth = rectType.width / 3f;
             Rect setFlagRow = new Rect(rectType.x, rectType.y, thirdWidth, rectType.height);
@@ -77,11 +68,13 @@ namespace SeleneGame.Core.UI {
             setFlagRow.x += thirdWidth;
             SerializedProperty propEditedFlagValue = property.FindPropertyRelative( "editedFlagValue" );
             EditorGUI.PropertyField( setFlagRow, propEditedFlagValue, GUIContent.none );
+
+            rectType.y += Mathf.Max(EditorGUI.GetPropertyHeight(propEditedFlagType), EditorGUI.GetPropertyHeight(propEditedFlagName), EditorGUI.GetPropertyHeight(propEditedFlagValue));
         }
 
 
 
-        private void DisplayRemoveFlagInfo(Rect rectType, SerializedProperty property) {
+        private void DisplayRemoveFlagInfo(ref Rect rectType, SerializedProperty property) {
             float halfWidth = rectType.width / 2f;
             Rect removeFlagRow = new Rect(rectType.x, rectType.y, halfWidth, rectType.height);
             SerializedProperty propEditedFlagType = property.FindPropertyRelative( "editedFlagType" );
@@ -90,54 +83,60 @@ namespace SeleneGame.Core.UI {
             removeFlagRow.x += halfWidth;
             SerializedProperty propEditedFlagName = property.FindPropertyRelative( "editedFlagName" );
             EditorGUI.PropertyField( removeFlagRow, propEditedFlagName, GUIContent.none );
+
+            rectType.y += Mathf.Max(EditorGUI.GetPropertyHeight(propEditedFlagType), EditorGUI.GetPropertyHeight(propEditedFlagName));
         }
 
 
 
-        private void DisplayDialogueSourceInfo(Rect rectType, SerializedProperty property) {
+        private void DisplayDialogueSourceInfo(ref Rect rectType, SerializedProperty property) {
             SerializedProperty propTargetLine = property.FindPropertyRelative( "dialogueSource" );
             EditorGUI.PropertyField( rectType, propTargetLine, GUIContent.none );
+
+            rectType.y += EditorGUI.GetPropertyHeight(propTargetLine);
         }
 
 
 
-        private void DisplaySetCharacterCostumeInfo(Rect rectType, SerializedProperty property) {
+        private void DisplaySetCharacterCostumeInfo(ref Rect rectType, SerializedProperty property) {
             SerializedProperty propTargetCharacterId = property.FindPropertyRelative( "targetCharacterId" );
             EditorGUI.PropertyField( rectType, propTargetCharacterId, GUIContent.none );
 
-            rectType.y += PropertyDrawerUtility.lineSpace;
+            rectType.y += EditorGUI.GetPropertyHeight(propTargetCharacterId) + EditorGUIUtility.standardVerticalSpacing;
+
 
             SerializedProperty propTargetCharacterCostume = property.FindPropertyRelative( "targetCharacterCostume" );
             EditorGUI.PropertyField( rectType, propTargetCharacterCostume, GUIContent.none );
+
+            rectType.y += EditorGUI.GetPropertyHeight(propTargetCharacterCostume);
         }
 
 
 
-        private void DisplaySetWeaponCostumeInfo(Rect rectType, SerializedProperty property) {
+        private void DisplaySetWeaponCostumeInfo(ref Rect rectType, SerializedProperty property) {
             SerializedProperty propTargetWeaponId = property.FindPropertyRelative( "targetWeaponId" );
             EditorGUI.PropertyField( rectType, propTargetWeaponId, GUIContent.none );
 
-            rectType.y += PropertyDrawerUtility.lineSpace;
+            rectType.y += EditorGUI.GetPropertyHeight(propTargetWeaponId) + EditorGUIUtility.standardVerticalSpacing;
+
 
             SerializedProperty propTargetWeaponCostume = property.FindPropertyRelative( "targetWeaponCostume" );
             EditorGUI.PropertyField( rectType, propTargetWeaponCostume, GUIContent.none );
+
+            rectType.y += EditorGUI.GetPropertyHeight(propTargetWeaponCostume);
         }
 
 
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label) {
             
-            SerializedProperty propCondition = property.FindPropertyRelative( "condition" );
+            SerializedProperty propConditions = property.FindPropertyRelative( "conditions" );
+            SerializedProperty propEventType = property.FindPropertyRelative( "eventType" );
 
-            float height = EditorGUI.GetPropertyHeight(propCondition) + PropertyDrawerUtility.lineSpace;
+            float height = EditorGUI.GetPropertyHeight(propConditions) + EditorGUIUtility.standardVerticalSpacing + EditorGUI.GetPropertyHeight(propEventType) + EditorGUIUtility.standardVerticalSpacing;
 
-            if (propCondition.FindPropertyRelative("conditionType").intValue != 2) {
-                SerializedProperty propSubConditions = property.FindPropertyRelative( "subConditions" );
-                height += EditorGUI.GetPropertyHeight(propSubConditions);
-                height += EditorGUIUtility.standardVerticalSpacing;
-            }
 
-            GameEvent.EventType eventType = (GameEvent.EventType)property.FindPropertyRelative( "eventType" ).intValue;
+            GameEvent.EventType eventType = (GameEvent.EventType)propEventType.intValue;
             switch (eventType) {
                 case GameEvent.EventType.SetFlag:
                     height += GetSetFlagInfoHeight(property);
@@ -167,7 +166,7 @@ namespace SeleneGame.Core.UI {
             SerializedProperty propEditedFlagName = property.FindPropertyRelative( "editedFlagName" );
             SerializedProperty propEditedFlagValue = property.FindPropertyRelative( "editedFlagValue" );
 
-            return Mathf.Max( EditorGUI.GetPropertyHeight(propEditedFlagType), EditorGUI.GetPropertyHeight(propEditedFlagName), EditorGUI.GetPropertyHeight(propEditedFlagValue) ) + EditorGUIUtility.standardVerticalSpacing;
+            return Mathf.Max( EditorGUI.GetPropertyHeight(propEditedFlagType), EditorGUI.GetPropertyHeight(propEditedFlagName), EditorGUI.GetPropertyHeight(propEditedFlagValue) );
         }
 
 
@@ -175,14 +174,14 @@ namespace SeleneGame.Core.UI {
         private float GetRemoveFlagInfoHeight(SerializedProperty property) {
             SerializedProperty propEditedFlagType = property.FindPropertyRelative( "editedFlagType" );
             SerializedProperty propEditedFlagName = property.FindPropertyRelative( "editedFlagName" );
-            return Mathf.Max( EditorGUI.GetPropertyHeight(propEditedFlagType), EditorGUI.GetPropertyHeight(propEditedFlagName) ) + EditorGUIUtility.standardVerticalSpacing;
+            return Mathf.Max( EditorGUI.GetPropertyHeight(propEditedFlagType), EditorGUI.GetPropertyHeight(propEditedFlagName) );
         }
 
 
 
         private float GetDialogueSourceInfoHeight(SerializedProperty property) {
             SerializedProperty propTargetLine = property.FindPropertyRelative( "dialogueSource" );
-            return EditorGUI.GetPropertyHeight(propTargetLine) + EditorGUIUtility.standardVerticalSpacing;
+            return EditorGUI.GetPropertyHeight(propTargetLine);
         }
 
 
@@ -190,7 +189,7 @@ namespace SeleneGame.Core.UI {
         private float GetSetCharacterCostumeInfoHeight(SerializedProperty property) {
             SerializedProperty propTargetCharacterId = property.FindPropertyRelative( "targetCharacterId" );
             SerializedProperty propTargetCharacterCostume = property.FindPropertyRelative( "targetCharacterCostume" );
-            return EditorGUI.GetPropertyHeight(propTargetCharacterId) + EditorGUI.GetPropertyHeight(propTargetCharacterCostume) + 2*EditorGUIUtility.standardVerticalSpacing;
+            return EditorGUI.GetPropertyHeight(propTargetCharacterId) + EditorGUI.GetPropertyHeight(propTargetCharacterCostume);
         }
 
         
@@ -198,7 +197,7 @@ namespace SeleneGame.Core.UI {
         private float GetSetWeaponCostumeInfoHeight(SerializedProperty property) {
             SerializedProperty propTargetWeaponId = property.FindPropertyRelative( "targetWeaponId" );
             SerializedProperty propTargetWeaponCostume = property.FindPropertyRelative( "targetWeaponCostume" );
-            return EditorGUI.GetPropertyHeight(propTargetWeaponId) + EditorGUI.GetPropertyHeight(propTargetWeaponCostume) + 2*EditorGUIUtility.standardVerticalSpacing;
+            return EditorGUI.GetPropertyHeight(propTargetWeaponId) + EditorGUI.GetPropertyHeight(propTargetWeaponCostume);
         }
 
     }

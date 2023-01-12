@@ -9,8 +9,7 @@ namespace SeleneGame.Core {
     [System.Serializable]
     public class GameEvent {
 
-        public EventCondition condition;
-        public EventSubCondition[] subConditions;
+        public EventMultiCondition conditions;
         
         public GameManager.FlagType editedFlagType;
         public string editedFlagName;
@@ -41,15 +40,7 @@ namespace SeleneGame.Core {
             return true;
         }
 
-        public bool Evaluate() {
-            if (condition.conditionType == EventCondition.ConditionType.Always) return true;
-
-            bool conditionsMet = condition.Evaluate();
-            foreach (EventSubCondition subCondition in subConditions) {
-                conditionsMet = subCondition.Evaluate(conditionsMet);
-            }
-            return conditionsMet;
-        }
+        public bool Evaluate() => conditions.Evaluate();
         
 
         public void Invoke(GameObject dialogueObject) {

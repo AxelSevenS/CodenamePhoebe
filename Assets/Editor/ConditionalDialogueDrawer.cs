@@ -13,25 +13,16 @@ namespace SeleneGame.Core.UI {
             Rect rectType = new Rect(position.x, position.y, position.width, EditorGUIUtility.singleLineHeight);
 
 
-            SerializedProperty propCondition = property.FindPropertyRelative( "condition" );
-            EditorGUI.PropertyField( rectType, propCondition, GUIContent.none );
+            SerializedProperty propConditions = property.FindPropertyRelative( "conditions" );
+            EditorGUI.PropertyField( rectType, propConditions, GUIContent.none );
                 
-            rectType.y += EditorGUI.GetPropertyHeight(propCondition) + EditorGUIUtility.standardVerticalSpacing;
-
-
-
-            if (propCondition.FindPropertyRelative("conditionType").intValue != 2) {
-                SerializedProperty propSubConditions = property.FindPropertyRelative( "subConditions" );
-                EditorGUI.PropertyField( rectType, propSubConditions );
-                    
-                rectType.y += EditorGUI.GetPropertyHeight(propSubConditions) + EditorGUIUtility.standardVerticalSpacing;
-            }
+            rectType.y += EditorGUI.GetPropertyHeight(propConditions) + EditorGUIUtility.standardVerticalSpacing;
 
             
             SerializedProperty propDialogueSource = property.FindPropertyRelative( "dialogueSource" );
             EditorGUI.PropertyField( rectType, propDialogueSource, GUIContent.none );
                 
-            rectType.y += EditorGUI.GetPropertyHeight(propDialogueSource) + EditorGUIUtility.standardVerticalSpacing;
+            rectType.y += EditorGUI.GetPropertyHeight(propDialogueSource);
 
 
             EditorGUI.EndProperty();
@@ -40,16 +31,11 @@ namespace SeleneGame.Core.UI {
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label) {
             
-            SerializedProperty propCondition = property.FindPropertyRelative( "condition" );
-            float height = EditorGUI.GetPropertyHeight(propCondition) + EditorGUIUtility.standardVerticalSpacing;
-
-            if (propCondition.FindPropertyRelative("conditionType").intValue != 2) {
-                SerializedProperty propSubConditions = property.FindPropertyRelative( "subConditions" );
-                height += EditorGUI.GetPropertyHeight(propSubConditions) + EditorGUIUtility.standardVerticalSpacing;
-            }
+            SerializedProperty propConditions = property.FindPropertyRelative( "conditions" );
+            float height = EditorGUI.GetPropertyHeight(propConditions) + EditorGUIUtility.standardVerticalSpacing;
 
             SerializedProperty propDialogueSource = property.FindPropertyRelative( "dialogueSource" );
-            height += EditorGUI.GetPropertyHeight(propDialogueSource) + EditorGUIUtility.standardVerticalSpacing;
+            height += EditorGUI.GetPropertyHeight(propDialogueSource);
 
             return height;
         }
