@@ -8,7 +8,9 @@
         "Unity.TextMeshPro",
         "Seven.Utility",
         "Unity.Addressables",
-        "Animancer"
+        "Animancer",
+        "Seven.Scribe",
+        "Seven.EasySplines"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

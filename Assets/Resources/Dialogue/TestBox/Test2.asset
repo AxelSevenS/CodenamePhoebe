@@ -15,34 +15,21 @@ MonoBehaviour:
   characterId: Player
   emotion: 4
   text: T'es un PD
-  dialogueEvents:
-  - condition:
-      conditionType: 2
-      flagType: 0
-      flagName: 
-      operatorType: 0
-      flagValue: 0
-    eventType: 1
-    editedFlagType: 0
-    editedFlagName: interrupt
-    editedFlagValue: 0
-    targetLine: {fileID: 0}
-    targetCharacterId: 
-    targetCharacterCostume: {fileID: 0}
-    targetWeaponId: 
-    targetWeaponCostume: {fileID: 0}
+  gameEvents: []
   interruptionEvents:
-  - condition:
-      conditionType: 2
-      flagType: 0
-      flagName: 
-      operatorType: 0
-      flagValue: 0
+  - conditions:
+      condition:
+        conditionType: 2
+        flagType: 0
+        flagName: 
+        operatorType: 0
+        flagValue: 0
+      subConditions: []
     eventType: 0
     editedFlagType: 0
     editedFlagName: interrupt
     editedFlagValue: 1
-    targetLine: {fileID: 0}
+    dialogueSource: {fileID: 0}
     targetCharacterId: 
     targetCharacterCostume: {fileID: 0}
     targetWeaponId: 

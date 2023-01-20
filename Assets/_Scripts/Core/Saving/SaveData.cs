@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+using Scribe;
+
 namespace SeleneGame.Core {
 
     [System.Serializable]
@@ -39,7 +41,7 @@ namespace SeleneGame.Core {
             // Update the Time of loading this save file so "session playtime" gets reset and isn't added multiple times.
             loadedTime = System.DateTime.UtcNow;
 
-            flags = GameManager.flags;
+            flags = ScribeFlags.flags;
         }
 
         public virtual void Load() {
@@ -54,7 +56,7 @@ namespace SeleneGame.Core {
             // Time of loading this save file is stored temporarily to calculate play time of this session.
             loadedTime = System.DateTime.UtcNow;
             
-            GameManager.flags = flags;
+            ScribeFlags.flags = flags;
         }
 
 

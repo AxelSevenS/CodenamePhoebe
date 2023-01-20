@@ -1,6 +1,8 @@
 {
   "dependencies": {
     "com.cratesmith.assetui": "https://github.com/Cratesmith/Cratesmith.AssetUI.git",
+    "com.seven.easysplines": "https://github.com/AxelSevenS/EasySplines.git",
+    "com.seven.scribe": "https://github.com/AxelSevenS/Scribe.git",
     "com.seven.utility": "https://github.com/AxelSevenS/Utility-Package.git",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.addressables": "1.19.19",

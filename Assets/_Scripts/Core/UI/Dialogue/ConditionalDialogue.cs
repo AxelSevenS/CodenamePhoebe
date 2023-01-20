@@ -2,12 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using Scribe;
+
 namespace SeleneGame.Core {
 
     [System.Serializable]
     public class ConditionalDialogue {
 
-        public EventMultiCondition conditions;
+        public ScribeEventMultiCondition conditions;
         
         public DialogueSource dialogueSource;
 

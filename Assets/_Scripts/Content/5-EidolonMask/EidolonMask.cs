@@ -5,7 +5,7 @@ using UnityEngine;
 using SeleneGame.Core;
 
 using SevenGame.Utility;
-using System;
+using EasySplines;
 
 namespace SeleneGame.Content {
 

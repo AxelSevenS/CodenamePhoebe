@@ -16,17 +16,18 @@ MonoBehaviour:
   emotion: 0
   text: Tu Pue
   gameEvents:
-  - condition:
-      conditionType: 2
-      flagType: 0
-      flagName: 
-      operatorType: 0
-      flagValue: 0
-    subConditions: []
+  - conditions:
+      condition:
+        conditionType: 2
+        flagType: 0
+        flagName: 
+        operatorType: 0
+        flagValue: 0
+      subConditions: []
+    eventType: 0
     editedFlagType: 0
     editedFlagName: end
     editedFlagValue: 1
-    eventType: 0
     dialogueSource: {fileID: 0}
     targetCharacterId: 
     targetCharacterCostume: {fileID: 0}

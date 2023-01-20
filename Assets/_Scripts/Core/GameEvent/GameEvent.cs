@@ -2,70 +2,63 @@ using System.Collections.Generic;
 
 using UnityEngine;
 
+using Scribe;
+
 using SeleneGame.Core.UI;
 
 namespace SeleneGame.Core {
 
     [System.Serializable]
-    public class GameEvent {
-
-        public EventMultiCondition conditions;
+    public class GameEvent : ScribeEvent<GameEvent.EventType> {
         
-        public GameManager.FlagType editedFlagType;
+        [ScribeEventData((int)GameEvent.EventType.SetFlag)]
+        [ScribeEventData((int)GameEvent.EventType.RemoveFlag)]
+        public ScribeFlags.FlagType editedFlagType;
+        [ScribeEventData((int)GameEvent.EventType.SetFlag)]
+        [ScribeEventData((int)GameEvent.EventType.RemoveFlag)]
         public string editedFlagName;
+        [ScribeEventData((int)GameEvent.EventType.SetFlag)]
         public int editedFlagValue;
-
-        public EventType eventType;
         
+        [ScribeEventData((int)GameEvent.EventType.StartAlert)]
+        [ScribeEventData((int)GameEvent.EventType.StartDialogue)]
+        [ScribeEventData((int)GameEvent.EventType.SkipToLine)]
         public DialogueSource dialogueSource;
 
+        [ScribeEventData((int)GameEvent.EventType.SetCharacterCostume)]
         public string targetCharacterId;
+        [ScribeEventData((int)GameEvent.EventType.SetCharacterCostume)]
         public CharacterCostume targetCharacterCostume;
 
+        [ScribeEventData((int)GameEvent.EventType.SetWeaponCostume)]
         public string targetWeaponId;
+        [ScribeEventData((int)GameEvent.EventType.SetWeaponCostume)]
         public WeaponCostume targetWeaponCostume;
 
-
-        public GameEvent() {
-            foreach( EventType val in System.Enum.GetValues(typeof(EventType)) ) {
-                if ( DisplayEventType(val) ) {
-                    eventType = val;
-                    break;
-                }
-            }
-        }
-
-
-        public virtual bool DisplayEventType(System.Enum enumValue) {
-            return true;
-        }
-
-        public bool Evaluate() => conditions.Evaluate();
         
 
-        public void Invoke(GameObject dialogueObject) {
-
+        public override void Invoke(GameObject dialogueObject) {
 
             switch (eventType) {
-                case EventType.SetFlag:
-                    GameManager.SetFlag(editedFlagName, editedFlagValue, editedFlagType == GameManager.FlagType.TemporaryFlag);
+                case GameEvent.EventType.SetFlag:
+                    ScribeFlags.SetFlag(editedFlagName, editedFlagValue, editedFlagType == ScribeFlags.FlagType.TemporaryFlag);
                     break;
-                case EventType.RemoveFlag:
-                    GameManager.RemoveFlag(editedFlagName, editedFlagType == GameManager.FlagType.TemporaryFlag);
+                case GameEvent.EventType.RemoveFlag:
+                    ScribeFlags.RemoveFlag(editedFlagName, editedFlagType == ScribeFlags.FlagType.TemporaryFlag);
                     break;
-                case EventType.StartDialogue:
+                case GameEvent.EventType.StartDialogue:
                     DialogueController.current.StartDialogue(dialogueSource, dialogueObject);
                     break;
-                case EventType.StartAlert:
+                case GameEvent.EventType.StartAlert:
                     AlertController.current.StartDialogue(dialogueSource, dialogueObject);
                     break;
-                case EventType.SkipToLine:
+                case GameEvent.EventType.SkipToLine:
                     UIController.currentDialogueReader.SkipToLine(dialogueSource);
                     break;
-                case EventType.EndDialogue:
+                case GameEvent.EventType.EndDialogue:
                     UIController.currentDialogueReader.EndDialogue();
                     break;
-                case EventType.SetCharacterCostume:
+                case GameEvent.EventType.SetCharacterCostume:
                     Character character;
                     if (targetCharacterId == "Player") {
                         character = PlayerEntityController.current.entity.character;
@@ -74,12 +67,12 @@ namespace SeleneGame.Core {
                     }
                     character?.SetCostume(targetCharacterCostume);
                     break;
-                case EventType.SetWeaponCostume:
+                case GameEvent.EventType.SetWeaponCostume:
                     Weapon weapon;
                     weapon = Weapon.GetInstanceWithId(targetWeaponId);
                     weapon?.SetCostume(targetWeaponCostume);
                     break;
-                case EventType.Destroy:
+                case GameEvent.EventType.Destroy:
                     Object.Destroy(dialogueObject);
                     break;
             }

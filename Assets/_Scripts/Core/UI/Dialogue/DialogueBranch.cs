@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+using Scribe;
+
 namespace SeleneGame.Core {
 
     [CreateAssetMenu(fileName = "new Dialogue Branch", menuName = "Dialogue/Branch")]
@@ -14,7 +16,7 @@ namespace SeleneGame.Core {
         public DialogueSource GetHighPrioritySource() {
 
             int hashCode = GetHashCode(); 
-            int usedFlags = GameManager.GetFlag($"{hashCode}High");
+            int usedFlags = ScribeFlags.GetFlag($"{hashCode}High");
 
             foreach (ConditionalDialogue dialogue in highPriorityDialogues) {
                 int sourceFlag = 1 << highPriorityDialogues.IndexOf(dialogue);
@@ -24,7 +26,7 @@ namespace SeleneGame.Core {
                 if (!dialogue.Evaluate()) continue; // Skip if conditions are not met
 
                 // If DialogueSource is valid, mark it as used (raise flag)
-                GameManager.SetFlag($"{hashCode}High", usedFlags |= sourceFlag);
+                ScribeFlags.SetFlag($"{hashCode}High", usedFlags |= sourceFlag);
                 return dialogue.dialogueSource;
             }
 
@@ -34,7 +36,7 @@ namespace SeleneGame.Core {
         public DialogueSource GetLowPrioritySource() {
 
             int hashCode = GetHashCode(); 
-            int usedFlags = GameManager.GetFlag($"{hashCode}Low");
+            int usedFlags = ScribeFlags.GetFlag($"{hashCode}Low");
 
             System.Random r = new System.Random(); // Randomize the order of the DialogueSources, for replay variety
             foreach (DialogueSource source in lowPriorityDialogues.OrderBy(x => r.Next())) {
@@ -43,7 +45,7 @@ namespace SeleneGame.Core {
                 if ((usedFlags & sourceFlag) == 1) continue; // Check if DialogueSource has not been used yet (flag was not raised)
                 
                 // If DialogueSource is valid, mark it as used (raise flag)
-                GameManager.SetFlag($"{hashCode}Low", usedFlags |= sourceFlag);
+                ScribeFlags.SetFlag($"{hashCode}Low", usedFlags |= sourceFlag);
                 return source;
             }
 
@@ -55,11 +57,11 @@ namespace SeleneGame.Core {
             int hashCode = GetHashCode(); 
 
             // If all dialogues have been played, reset the dialogue Flags
-            if (GameManager.GetFlag($"{hashCode}High") >= (1 << highPriorityDialogues.Count) - 1)
-                GameManager.SetFlag($"{hashCode}High", 0);
+            if (ScribeFlags.GetFlag($"{hashCode}High") >= (1 << highPriorityDialogues.Count) - 1)
+                ScribeFlags.SetFlag($"{hashCode}High", 0);
                 
-            if (GameManager.GetFlag($"{hashCode}Low") >= (1 << lowPriorityDialogues.Count) - 1)
-                GameManager.SetFlag($"{hashCode}Low", 0);
+            if (ScribeFlags.GetFlag($"{hashCode}Low") >= (1 << lowPriorityDialogues.Count) - 1)
+                ScribeFlags.SetFlag($"{hashCode}Low", 0);
                 
 
             DialogueLine candidate = GetHighPrioritySource()?.GetDialogue() ?? null;
