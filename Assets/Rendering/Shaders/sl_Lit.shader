@@ -27,6 +27,7 @@ Shader "Selene/Lit" {
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+            #include "Packages/com.seven.utility/ShaderLibrary/MathUtility.hlsl"
             #include "Assets/Rendering/Shaders/Functions/CelLighting.hlsl"
 
             CBUFFER_START(UnityPerMaterial)
@@ -125,6 +126,7 @@ Shader "Selene/Lit" {
 
             ENDHLSL
         }
+        
 
         Pass {
 
@@ -139,65 +141,6 @@ Shader "Selene/Lit" {
         
             ENDHLSL
         }
-        
-        // Pass {
-
-        //     Stencil {
-        //         Ref [_StencilID]
-        //         Comp [_StencilComp]
-        //     }
-
-        //     Name "StandardSurface"
-        //     Tags { "LightMode"="UniversalGBuffer" }
-
-        //     HLSLPROGRAM
-        //         #pragma vertex vert
-        //         #pragma fragment frag
-
-        //         VertexOutput vert(VertexInput input) {
-        //             VertexOutput output;
-
-        //             output.position = input.position;
-        //             output.positionCS = TransformObjectToHClip(output.position.xyz);
-        //             output.normal = normalize(input.normal);
-        //             output.tangent = normalize(input.tangent.xyz);
-        //             output.bitangent = cross(output.tangent, output.normal);
-        //             output.uv = input.uv;
-        //             output.lightingInput = GetVertLightingInput(output.position.xyz, output.normal);
-
-
-        //             return output;
-        //         }
-
-
-
-        //         float4 frag(VertexOutput input) : SV_Target {
-        //             half4 baseColor = tex2D(_MainTex, input.uv);
-
-        //             CelLightingInput CelLightingInput = GetCelFragLightingInput(input.lightingInput, _SpecularIntensity, _Smoothness, _AccentIntensity);
-                    
-        //             if ( _ProximityDither == 1 )
-        //                 if ( ProximityDither(CelLightingInput.worldPosition, CelLightingInput.screenPosition) )
-        //                     return half4(0, 0, 0, 0);
-
-        //             if (_NormalIntensity > 0) {
-        //                 float3 normalWS = ComputeTangentToWorldNormal(input.normal, input.tangent, input.bitangent, input.uv, _NormalMap);
-        //                 CelLightingInput.worldNormal = lerp(CelLightingInput.worldNormal, normalWS, _NormalIntensity);
-        //             }
-
-        //             float4 finalColor = CelLighting(baseColor, CelLightingInput);
-
-
-        //             if (_EmissionIntensity != 1)
-        //                 finalColor *= _EmissionIntensity;
-
-
-        //             return finalColor;
-
-        //         }
-
-        //     ENDHLSL
-        // }
 
     }
 }

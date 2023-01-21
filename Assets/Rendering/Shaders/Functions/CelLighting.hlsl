@@ -10,9 +10,9 @@
 #pragma multi_compile LIGHTMAP_SHADOW_MIXING
 #pragma multi_compile SHADOWS_SHADOWMASK
 
-#include "LightingUtilities.hlsl"
-#include "Utility.hlsl"
-#include "ColorUtility.hlsl"
+#include "Packages/com.seven.utility/ShaderLibrary/LightingUtilities.hlsl"
+#include "Packages/com.seven.utility/ShaderLibrary/ShaderDataUtility.hlsl"
+#include "Packages/com.seven.utility/ShaderLibrary/ColorUtility.hlsl"
 
 uniform half3 _AmbientLight;
 uniform half _AmbientStrength;

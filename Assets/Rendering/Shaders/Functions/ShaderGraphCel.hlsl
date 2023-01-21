@@ -1,7 +1,8 @@
 #ifndef SHADERGRAPH_CEL_LIGHTING_INCLUDED
 #define SHADERGRAPH_CEL_LIGHTING_INCLUDED
 
-#include "Utility.hlsl"
+#include "Packages/com.seven.utility/ShaderLibrary/ShaderDataUtility.hlsl"
+#include "Packages/com.seven.utility/ShaderLibrary/MathUtility.hlsl"
 #include "CelLighting.hlsl"
 
 void CelLighting_half( half4 baseColor, float3 positionOS, half3 normalOS, half specularIntensity, half smoothness, half accentIntensity, out half4 finalColor ){

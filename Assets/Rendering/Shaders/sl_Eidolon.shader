@@ -17,7 +17,7 @@ Shader "Selene/Eidolon" {
         HLSLINCLUDE
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
-            #include "Assets/Rendering/Shaders/Functions/Utility.hlsl"
+            #include "Packages/com.seven.utility/ShaderLibrary/MathUtility.hlsl"
             #include "Assets/Rendering/Shaders/Functions/CelLighting.hlsl"
 
             CBUFFER_START(UnityPerMaterial)
