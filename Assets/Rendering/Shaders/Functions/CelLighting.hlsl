@@ -12,6 +12,7 @@
 
 #include "LightingUtilities.hlsl"
 #include "Utility.hlsl"
+#include "ColorUtility.hlsl"
 
 uniform half3 _AmbientLight;
 uniform half _AmbientStrength;
@@ -38,7 +39,7 @@ struct CelLightingInput {
     half accentIntensity;
 };
 
-CelLightingInput GetCelLightingInput( FragLightingInput lightingInput, half specularIntensity = 0, half smoothness = 0, half accentIntensity = 0 ) {
+CelLightingInput GetCelFragLightingInput( FragLightingInput lightingInput, half specularIntensity = 0, half smoothness = 0, half accentIntensity = 0 ) {
     CelLightingInput celLightingInput;
     celLightingInput.clipPosition = lightingInput.clipPosition;
     celLightingInput.worldPosition = lightingInput.worldPosition;
@@ -54,13 +55,13 @@ CelLightingInput GetCelLightingInput( FragLightingInput lightingInput, half spec
     return celLightingInput;
 }
 
-CelLightingInput GetCelLightingInput( VertLightingInput lightingInput, half specularIntensity = 0, half smoothness = 0, half accentIntensity = 0 ) {
-    return GetCelLightingInput( GetFragLightingInput(lightingInput), specularIntensity, smoothness, accentIntensity );
+CelLightingInput GetCelFragLightingInput( VertLightingInput lightingInput, half specularIntensity = 0, half smoothness = 0, half accentIntensity = 0 ) {
+    return GetCelFragLightingInput( GetFragLightingInput(lightingInput), specularIntensity, smoothness, accentIntensity );
 }
 
-CelLightingInput GetCelLightingInput( half3 ObjectPosition, half3 ObjectNormal, half specularIntensity = 0, half smoothness = 0, half accentIntensity = 0 ) {
-    return GetCelLightingInput(GetVertLightingInput( ObjectPosition, ObjectNormal ), specularIntensity, smoothness, accentIntensity);
-}
+// CelLightingInput GetCelLightingInput( half3 ObjectPosition, half3 ObjectNormal, half specularIntensity = 0, half smoothness = 0, half accentIntensity = 0 ) {
+//     return GetCelLightingInput( GetVertLightingInput( ObjectPosition, ObjectNormal ), specularIntensity, smoothness, accentIntensity );
+// }
 
 
 
@@ -68,10 +69,7 @@ CelLightingInput GetCelLightingInput( half3 ObjectPosition, half3 ObjectNormal, 
 half GetAccent(half luminance) {
     // P-Curve
 
-    half h = 5.5 * luminance;
-    // half h = 1 - (8*luminance - 4);
-    // half h = exp(luminance * -9 + 3);
-
+    half h = 5 * luminance + 1;
     return h * exp(1-h);
 }
 
@@ -86,19 +84,7 @@ half GetLuminance(CelLightingInput input, half3 lightDirectionWS) {
 
 half GetShade(half luminance, half attenuation) {
 
-    // Color is dark until 15% luminance then it transitions to light until 55% luminance where it plateaus
-    // the minimum value is 0.25 and the maximum is 1.0
-    
-    // ||                                   -------- 1 ----------------------------------- || This is a curve graph in case you couldn't tell...
-    // ||                          --------                                                ||
-    // || ---------- 0.25 --------                                                         ||
-    // ||  0  |  0.1  |  0.2  |  0.3  | 0.4  |  0.5  |  0.6  |  0.7  |  0.8  |  0.9  |  1  ||
-
     return smoothstep(shadeUpperLimit, lightLowerLimit, luminance) * smoothstep(0, lightLowerLimit - shadeUpperLimit, attenuation);
-
-    // return  luminance < 0.35 ? (luminance * 0.5) + 0.075 : 
-    //         luminance < 0.55 ? (luminance * 0.5) + 0.175 : 
-    //         (luminance * 0.5) + 0.25;
 }
 
 

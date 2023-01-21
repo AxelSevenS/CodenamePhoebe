@@ -63,7 +63,7 @@ Shader "Selene/Template" {
                 float4 frag(VertexOutput input) : SV_Target {
                     half4 baseColor = tex2D(_MainTex, input.uv);
 
-                    CelLightingInput lightingInput = GetCelLightingInput(input.lightingInput, 0, 0, 0);
+                    CelLightingInput lightingInput = GetCelFragLightingInput(input.lightingInput, 0, 0, 0);
 
                     return SimpleCelLighting(baseColor, lightingInput);
                 }
@@ -97,7 +97,7 @@ Shader "Selene/Template" {
                 float4 frag(VertexOutput input) : SV_Target {
                     half4 baseColor = tex2D(_MainTex, input.uv);
 
-                    CelLightingInput lightingInput = GetCelLightingInput(input.lightingInput, 0, 0, 0);
+                    CelLightingInput lightingInput = GetCelFragLightingInput(input.lightingInput, 0, 0, 0);
                     return SimpleCelLighting(float4(0,1,0,0.5), lightingInput);
                 }
 

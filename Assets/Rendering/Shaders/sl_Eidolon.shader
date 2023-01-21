@@ -76,7 +76,7 @@ Shader "Selene/Eidolon" {
 
                     clip (baseColor.a <= 0.5 ? -1 : 0);
 
-                    CelLightingInput lightingInput = GetCelLightingInput(input.lightingInput);
+                    CelLightingInput lightingInput = GetCelFragLightingInput(input.lightingInput);
                     return SimpleCelLighting(baseColor, lightingInput);
                     // return baseColor;
                 }
@@ -110,7 +110,7 @@ Shader "Selene/Eidolon" {
                 float4 frag(VertexOutput input) : SV_Target {
                     half4 baseColor = tex2D(_HuskTex, input.uv);
 
-                    CelLightingInput lightingInput = GetCelLightingInput(input.lightingInput); 
+                    CelLightingInput lightingInput = GetCelFragLightingInput(input.lightingInput); 
 
                     half4 shadedColor = SimpleCelLighting(baseColor, lightingInput);
 
