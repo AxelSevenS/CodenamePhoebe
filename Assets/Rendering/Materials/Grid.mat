@@ -21,8 +21,10 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Grid
-  m_Shader: {fileID: 4800000, guid: 5ec9723f1de93114abc5e30ef50c50b2, type: 3}
-  m_ValidKeywords: []
+  m_Shader: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
+  m_ValidKeywords:
+  - _ENVIRONMENTREFLECTIONS_OFF
+  - _SPECULAR_SETUP
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -30,6 +32,7 @@ Material:
   m_CustomRenderQueue: -1
   stringTagMap:
     MotionVector: User
+    RenderType: Opaque
   disabledShaderPasses:
   - MOTIONVECTORS
   - TransparentDepthPrepass
@@ -362,7 +365,7 @@ Material:
     - _EnableFogOnTransparent: 1
     - _EnableHeightBlend: 0
     - _EnableInstancedPerPixelNormal: 1
-    - _EnvironmentReflections: 1
+    - _EnvironmentReflections: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossinessSource: 0
@@ -392,7 +395,7 @@ Material:
     - _SampleGI: 0
     - _Scale: 1
     - _Shininess: 0.3
-    - _Smoothness: 0.146
+    - _Smoothness: 0
     - _Smoothness0: 0.5
     - _Smoothness1: 0.5
     - _Smoothness2: 0.5
@@ -428,7 +431,7 @@ Material:
     - _UVSec: 0
     - _UseShadowThreshold: 0
     - _UseStencil: 0
-    - _WorkflowMode: 1
+    - _WorkflowMode: 0
     - _ZTestDepthEqualForOpaque: 3
     - _ZTestGBuffer: 4
     - _ZTestTransparent: 4
@@ -436,10 +439,23 @@ Material:
     m_Colors:
     - Color_0f915c3fbe4045b294e1149c13889c54: {r: 0, g: 0, b: 0, a: 0}
     - Color_1a287ec675fe4899bb4a792f25de7640: {r: 0, g: 0, b: 0, a: 0}
-    - _BaseColor: {r: 0.8396226, g: 0.7160555, b: 0.7160555, a: 1}
-    - _Color: {r: 0.8396226, g: 0.7160555, b: 0.7160555, a: 1}
+    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
-    - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
+    - _SpecColor: {r: 1, g: 1, b: 1, a: 1}
     - _SubScatteringColor: {r: 1, g: 0.5, b: 0.5, a: 1}
   m_BuildTextureStacks: []
+--- !u!114 &8996826790172792627
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 5

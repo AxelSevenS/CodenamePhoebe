@@ -28,10 +28,10 @@ namespace SeleneGame.Core {
         public Quaternion moonRotation;
 
         [SerializeField] [ColorUsage(true, true)] private Color _ambientLight = new Color(1f/199f, 0, 1f/57f);
-        [HideInInspector] [ColorUsage(true, true)] public Color ambientLight = new Color(1f/199f, 0, 1f/57f);
+        // [HideInInspector] [ColorUsage(true, true)] public Color ambientLight = new Color(1f/199f, 0, 1f/57f);
 
-        [SerializeField] [Range(0f, 1f)] private float _ambientStrength = 0.025f;
-        [HideInInspector] public float ambientStrength = 0.025f;
+        // [SerializeField] [Range(0f, 1f)] private float _ambientStrength = 0.025f;
+        // [HideInInspector] public float ambientStrength = 0.025f;
 
 
         [Space(15f)]
@@ -68,8 +68,9 @@ namespace SeleneGame.Core {
 
         private void Update(){
             windDirection = Vector3.Slerp(windDirection, _windDirection, 2f * GameUtility.timeDelta).normalized;
-            ambientLight = Color.Lerp(ambientLight, _ambientLight, 5f * GameUtility.timeDelta);
-            ambientStrength = Mathf.Lerp(ambientStrength, _ambientStrength, 5f * GameUtility.timeDelta);
+            RenderSettings.ambientLight = Color.Lerp(RenderSettings.ambientLight, _ambientLight, 5f * GameUtility.timeDelta);
+            RenderSettings.fogColor = Color.Lerp(RenderSettings.fogColor, _ambientLight, 5f * GameUtility.timeDelta);
+            
             snowAmount = Mathf.MoveTowards(snowAmount, System.Convert.ToSingle(snow && precipitation) * 2f, Mathf.Pow( 2f, Mathf.Min(snowAmount, 0.05f) ) * 0.01f * GameUtility.timeDelta);
 
             SetGlobals();
@@ -104,8 +105,8 @@ namespace SeleneGame.Core {
 
         #if UNITY_EDITOR
         private void OnValidate(){
-            ambientLight = _ambientLight;
-            ambientStrength = _ambientStrength;
+            // ambientLight = _ambientLight;
+            // ambientStrength = _ambientStrength;
             SetGlobals();
         }
         #endif
@@ -113,8 +114,8 @@ namespace SeleneGame.Core {
 
 
         private void SetGlobals(){
-            Shader.SetGlobalColor("_AmbientLight", ambientLight);
-            Shader.SetGlobalFloat("_AmbientStrength", ambientStrength);
+            // Shader.SetGlobalColor("_AmbientLight", ambientLight);
+            // Shader.SetGlobalFloat("_AmbientStrength", ambientStrength);
             Shader.SetGlobalVector("_WindDirection", new Vector4(windDirection.x, windDirection.y, windDirection.z, 0));
             Shader.SetGlobalFloat("_SnowAmount", snowAmount);
         }
