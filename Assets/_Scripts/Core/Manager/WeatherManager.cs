@@ -105,8 +105,8 @@ namespace SeleneGame.Core {
 
         #if UNITY_EDITOR
         private void OnValidate(){
-            // ambientLight = _ambientLight;
-            // ambientStrength = _ambientStrength;
+            RenderSettings.ambientLight = _ambientLight;
+            RenderSettings.fogColor = _ambientLight;
             SetGlobals();
         }
         #endif

@@ -15,12 +15,12 @@ RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 9
   m_Fog: 1
-  m_FogColor: {r: 0.6, g: 0.65, b: 0.85, a: 1}
+  m_FogColor: {r: 0.07097722, g: 0.15319481, b: 0.2735849, a: 1}
   m_FogMode: 3
   m_FogDensity: 0.0025
   m_LinearFogStart: 100
   m_LinearFogEnd: 400
-  m_AmbientSkyColor: {r: 0.26837844, g: 0.29527116, b: 0.3490566, a: 1}
+  m_AmbientSkyColor: {r: 0.07097722, g: 0.15319481, b: 0.2735849, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 0.5
@@ -10919,7 +10919,7 @@ MonoBehaviour:
   lightLevel: 1
   sunRotation: {x: 0, y: 0, z: 0, w: 0}
   moonRotation: {x: 0, y: 0, z: 0, w: 0}
-  _ambientLight: {r: 0.3, g: 0.3, b: 0.35, a: 1}
+  _ambientLight: {r: 0.07097722, g: 0.15319481, b: 0.2735849, a: 1}
   _windDirection: {x: 1, y: 0, z: 1}
   windDirection: {x: 1, y: 0, z: 1}
   snowAmount: 0
@@ -16618,14 +16618,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 852649671}
-  m_LocalRotation: {x: -0.87729454, y: -0.114393935, z: 0.38758716, w: -0.2589295}
+  m_LocalRotation: {x: 0.83123976, y: 0.141211, z: -0.47844443, w: 0.24533804}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 520375517}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 147.113, y: 407.672, z: 0}
+  m_LocalEulerAnglesHint: {x: 147.112, y: 59.848, z: 0}
 --- !u!108 &852649674
 Light:
   m_ObjectHideFlags: 0
@@ -16638,7 +16638,7 @@ Light:
   m_Type: 1
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 0.25
+  m_Intensity: 0.1
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -22733,7 +22733,7 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.9027234, g: 0.9130702, b: 0.9245283, a: 1}
   m_Intensity: 1.25
   m_Range: 10
   m_SpotAngle: 30
@@ -22791,14 +22791,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1082643069}
-  m_LocalRotation: {x: -0.21233521, y: -0.009880487, z: -0.014902285, w: -0.9770333}
+  m_LocalRotation: {x: -0.20420133, y: 0.27658316, z: -0.9371079, w: -0.060268667}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 520375517}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 24.496, y: -358.386, z: 2.098}
+  m_LocalEulerAnglesHint: {x: 147.113, y: -155.414, z: 0}
 --- !u!114 &1082643073
 MonoBehaviour:
   m_ObjectHideFlags: 0
