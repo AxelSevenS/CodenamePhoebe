@@ -64,7 +64,16 @@ namespace SeleneGame.Core {
             EditorGUILayout.EndFoldoutHeaderGroup();
             
 
-            DrawDefaultInspector();
+		
+			SerializedProperty prop = serializedObject.GetIterator();
+			if (prop.NextVisible(true)) {
+				while (prop.NextVisible(false)) {
+                    EditorGUILayout.PropertyField(serializedObject.FindProperty(prop.name), true);
+                }
+			}
+		
+			serializedObject.ApplyModifiedProperties();
+            // DrawDefaultInspector();
         }
     }
 }

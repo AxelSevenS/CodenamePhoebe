@@ -17,10 +17,6 @@ namespace SeleneGame.Core {
     public partial class Entity : MonoBehaviour, IDamageable {
         
         
-
-    
-        [Tooltip("The entity's current Character, defines their game Model, portraits, display name and base Stats.")]
-        [SerializeReference][ReadOnly] private Character _character;
     
         [Tooltip("The entity's current Animator.")]
         [SerializeReference][HideInInspector][ReadOnly] private Animator _animator;
@@ -35,6 +31,9 @@ namespace SeleneGame.Core {
     
 
         [Header("Entity Data")]
+        
+        [Tooltip("The entity's current Character, defines their game Model, portraits, display name and base Stats.")]
+        [SerializeReference][ReadOnly] private Character _character;
 
         [Tooltip("The current state of the Entity, can be changed using the SetState method.")]
         [SerializeReference] [ReadOnly] private State _state;
