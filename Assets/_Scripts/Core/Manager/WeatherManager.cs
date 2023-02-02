@@ -55,7 +55,7 @@ namespace SeleneGame.Core {
         }
 
         private void Start(){
-            sunSpeed = new Vector3(.85f, .15f);
+            sunSpeed = new Vector3(28f, .15f);
             moonSpeed  = new Vector3(0, .15f);
 
             sunRotation = Quaternion.identity;
@@ -92,9 +92,6 @@ namespace SeleneGame.Core {
             Vector3 deltaRotation = new Vector3(sunSpeed.x, sunSpeed.y, 0)*GameUtility.timeDelta;
             sunRotation *= Quaternion.Euler(deltaRotation);
 
-            // deltaRotation = new Vector3(moonSpeed.x, moonSpeed.y, 0)*GameUtility.timeDelta;
-            // moonRotation *= Quaternion.Euler(deltaRotation);
-
             // sun.intensity = lightLevel;
             sun.transform.rotation = sunRotation;
             moon.transform.rotation = moonRotation;
@@ -114,8 +111,6 @@ namespace SeleneGame.Core {
 
 
         private void SetGlobals(){
-            // Shader.SetGlobalColor("_AmbientLight", ambientLight);
-            // Shader.SetGlobalFloat("_AmbientStrength", ambientStrength);
             Shader.SetGlobalVector("_WindDirection", new Vector4(windDirection.x, windDirection.y, windDirection.z, 0));
             Shader.SetGlobalFloat("_SnowAmount", snowAmount);
         }

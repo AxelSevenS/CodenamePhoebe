@@ -1,14 +1,12 @@
 Shader "Selene/Lit" {
     
     Properties {
-        [NoScaleOffset] _MainTex ("Main Texture", 2D) = "white" {}
+        [NoScaleOffset] _BaseMap ("Main Texture", 2D) = "white" {}
 
         [NoScaleOffset] _NormalMap ("Normal Map", 2D) = "bump" {}
         _NormalIntensity ("Normal Intensity", Range(0,1)) = 0
 
-        // [NoScaleOffset] _SpecularMap ("Specular Map", 2D) = "white" {}
-        _SpecularIntensity ("Specular Intensity", Range(0,1)) = 0
-        _AccentIntensity ("Accent Intensity", Range(0,1)) = 0
+        [NoScaleOffset] _SpecularMap ("Specular Map", 2D) = "white" {}
         _Smoothness ("Smoothness", Range(0,1)) = 0
 
 
@@ -32,13 +30,13 @@ Shader "Selene/Lit" {
 
             CBUFFER_START(UnityPerMaterial)
 
-                sampler2D _MainTex;
+                sampler2D _BaseMap;
+                float4 _BaseMap_ST;
 
                 sampler2D _NormalMap;
                 float _NormalIntensity;
 
-                float _SpecularIntensity;
-                float _AccentIntensity;
+                sampler2D _SpecularMap;
                 float _Smoothness;
 
                 float _ProximityDither;
@@ -52,6 +50,8 @@ Shader "Selene/Lit" {
                 float3 normalOS : NORMAL;
                 float4 tangentOS : TANGENT;
                 float2 uv : TEXCOORD0;
+                float2 staticLightmapUV : TEXCOORD1;
+                float2 dynamicLightmapUV : TEXCOORD2;
             };
 
             struct VertexOutput{
@@ -66,7 +66,7 @@ Shader "Selene/Lit" {
 
                 DECLARE_LIGHTMAP_OR_SH(staticLightmapUV, vertexSH, 8);
             #ifdef DYNAMICLIGHTMAP_ON
-                float2  dynamicLightmapUV : TEXCOORD9; // Dynamic lightmap UVs
+                float2 dynamicLightmapUV : TEXCOORD9; // Dynamic lightmap UVs
             #endif
             };
 
@@ -98,10 +98,10 @@ Shader "Selene/Lit" {
             }
 
             void CustomFragment( inout SurfaceData surfaceData, inout InputData inputData, VertexOutput input ) {
-                half4 baseColor = tex2D(_MainTex, input.uv);
+                half4 baseColor = tex2D(_BaseMap, input.uv);
                 surfaceData.albedo = baseColor.rgb;
                 surfaceData.alpha = baseColor.a;
-                surfaceData.specular = half3(_SpecularIntensity, _AccentIntensity, 0);
+                surfaceData.specular = tex2D(_SpecularMap, input.uv);
                 surfaceData.metallic = 0;
                 surfaceData.smoothness = _Smoothness;
                 surfaceData.emission = half3(0, 0, 0);
@@ -138,10 +138,19 @@ Shader "Selene/Lit" {
 
                 output.viewDirectionWS = normalize( _WorldSpaceCameraPos.xyz - output.positionWS );
 
+                
+            #if (SHADERPASS == SHADERPASS_FORWARD) || (SHADERPASS == SHADERPASS_GBUFFER)
+                OUTPUT_LIGHTMAP_UV(input.staticLightmapUV, unity_LightmapST, output.staticLightmapUV);
+                #if defined(DYNAMICLIGHTMAP_ON)
+                    output.dynamicLightmapUV.xy = input.dynamicLightmapUV.xy * unity_DynamicLightmapST.xy + unity_DynamicLightmapST.zw;
+                #endif
+                // OUTPUT_SH(normalWS, output.vertexSH);
+            #endif
+
                 output.uv = input.uv;
             }
 
-            void InitializeLightingData( inout SurfaceData surfaceData, inout InputData inputData, VertexOutput input ) {
+            void InitiliazeEmptySurfaceData( inout SurfaceData surfaceData ) {
                 surfaceData.normalTS = float3(0, 1, 0);
                 surfaceData.occlusion = 1;
                 surfaceData.clearCoatMask = 0;
@@ -152,6 +161,11 @@ Shader "Selene/Lit" {
                 surfaceData.metallic = 0;
                 surfaceData.smoothness = 0.5;
                 surfaceData.emission = 0.0.xxx;
+            }
+
+            void InitializeLightingData( inout SurfaceData surfaceData, inout InputData inputData, VertexOutput input ) {
+
+                InitiliazeEmptySurfaceData( surfaceData );
 
                 inputData.positionWS = input.positionWS;
                 inputData.positionCS = input.positionCS;
@@ -167,13 +181,27 @@ Shader "Selene/Lit" {
                 #endif
             #endif
                 inputData.vertexLighting = 0.0.xxx;
-            #if defined(DYNAMICLIGHTMAP_ON)
-                inputData.bakedGI = SAMPLE_GI(input.staticLightmapUV, input.dynamicLightmapUV.xy, SampleSHVertex(inputData.normalWS), inputData.normalWS);
-            #else
-                inputData.bakedGI = SAMPLE_GI(input.staticLightmapUV, SampleSHVertex(inputData.normalWS), inputData.normalWS);
+                
+            #if defined(DEBUG_DISPLAY)
+                #if defined(DYNAMICLIGHTMAP_ON)
+                    inputData.dynamicLightmapUV = input.dynamicLightmapUV;
+                #endif
+                #if defined(LIGHTMAP_ON)
+                    inputData.staticLightmapUV = input.staticLightmapUV;
+                #else
+                    // inputData.vertexSH = input.vertexSH;
+                #endif
             #endif
-                inputData.normalizedScreenSpaceUV = 0.0.xxx;
-                inputData.shadowMask = 0.0.xxxx;
+                half3 vertexSH = SampleSHVertex(inputData.normalWS);
+
+            #if defined(DYNAMICLIGHTMAP_ON)
+                inputData.bakedGI = SAMPLE_GI(input.staticLightmapUV, input.dynamicLightmapUV.xy, vertexSH, inputData.normalWS);
+            #else
+                inputData.bakedGI = SAMPLE_GI(input.staticLightmapUV, vertexSH, inputData.normalWS);
+            #endif
+                inputData.normalizedScreenSpaceUV = input.positionSS;
+                inputData.shadowMask = SAMPLE_SHADOWMASK(input.staticLightmapUV);
+
                 inputData.tangentToWorld = half3x3(
                     input.bitangentWS.x, input.tangentWS.x, input.normalWS.x, 
                     input.bitangentWS.y, input.tangentWS.y, input.normalWS.y, 
@@ -197,17 +225,53 @@ Shader "Selene/Lit" {
 
             HLSLPROGRAM
 
+
+                // -------------------------------------
+                // Material Keywords
+                // #pragma shader_feature_local _NORMALMAP
+                // #pragma shader_feature_local _PARALLAXMAP
+                #pragma shader_feature_local _RECEIVE_SHADOWS_OFF
+                #pragma shader_feature_local _ _DETAIL_MULX2 _DETAIL_SCALED
+                #pragma shader_feature_local_fragment _SURFACE_TYPE_TRANSPARENT
+                #pragma shader_feature_local_fragment _ALPHATEST_ON
+                #pragma shader_feature_local_fragment _ALPHAPREMULTIPLY_ON
+                #pragma shader_feature_local_fragment _EMISSION
+                #pragma shader_feature_local_fragment _METALLICSPECGLOSSMAP
+                #pragma shader_feature_local_fragment _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
+                #pragma shader_feature_local_fragment _OCCLUSIONMAP
+                #pragma shader_feature_local_fragment _SPECULARHIGHLIGHTS_OFF
+                #pragma shader_feature_local_fragment _ENVIRONMENTREFLECTIONS_OFF
+                #pragma shader_feature_local_fragment _SPECULAR_SETUP
+
+                // -------------------------------------
+                // Universal Pipeline keywords
                 #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE _MAIN_LIGHT_SHADOWS_SCREEN
                 #pragma multi_compile _ _ADDITIONAL_LIGHTS_VERTEX _ADDITIONAL_LIGHTS
                 #pragma multi_compile_fragment _ _ADDITIONAL_LIGHT_SHADOWS
+                #pragma multi_compile_fragment _ _REFLECTION_PROBE_BLENDING
+                #pragma multi_compile_fragment _ _REFLECTION_PROBE_BOX_PROJECTION
                 #pragma multi_compile_fragment _ _SHADOWS_SOFT
                 #pragma multi_compile_fragment _ _SCREEN_SPACE_OCCLUSION
                 #pragma multi_compile_fragment _ _DBUFFER_MRT1 _DBUFFER_MRT2 _DBUFFER_MRT3
-                #pragma multi_compile_fragment _ _REFLECTION_PROBE_BLENDING
-                #pragma multi_compile_fragment _ _REFLECTION_PROBE_BOX_PROJECTION
                 #pragma multi_compile_fragment _ _LIGHT_LAYERS
                 #pragma multi_compile_fragment _ _LIGHT_COOKIES
                 #pragma multi_compile _ _CLUSTERED_RENDERING
+
+                // -------------------------------------
+                // Unity defined keywords
+                #pragma multi_compile _ LIGHTMAP_SHADOW_MIXING
+                #pragma multi_compile _ SHADOWS_SHADOWMASK
+                #pragma multi_compile _ DIRLIGHTMAP_COMBINED
+                #pragma multi_compile _ LIGHTMAP_ON
+                #pragma multi_compile _ DYNAMICLIGHTMAP_ON
+                #pragma multi_compile_fog
+                #pragma multi_compile_fragment _ DEBUG_DISPLAY
+
+                //--------------------------------------
+                // GPU Instancing
+                #pragma multi_compile_instancing
+                #pragma instancing_options renderinglayer
+                #pragma multi_compile _ DOTS_INSTANCING_ON
                     
                 #pragma vertex ForwardPassVertex
                 #pragma fragment ForwardPassFragment
@@ -326,7 +390,6 @@ Shader "Selene/Lit" {
 
                     CustomFragment( surfaceData, inputData, input );
 
-
                     return SurfaceDataToGbuffer( surfaceData, inputData, inputData.bakedGI * surfaceData.albedo, 0 ); 
                 }
 
@@ -425,6 +488,78 @@ Shader "Selene/Lit" {
                 return 0;
             }
         
+            ENDHLSL
+        }
+
+        // This pass it not used during regular rendering, only for lightmap baking.
+        Pass
+        {
+            Name "Meta"
+            Tags{"LightMode" = "Meta"}
+
+            Cull Off
+
+            HLSLPROGRAM
+            #pragma only_renderers gles gles3 glcore d3d11
+            #pragma target 2.0
+
+            // #pragma shader_feature EDITOR_VISUALIZATION
+            #pragma shader_feature_local_fragment _SPECULAR_SETUP
+            #pragma shader_feature_local_fragment _EMISSION
+            #pragma shader_feature_local_fragment _METALLICSPECGLOSSMAP
+            #pragma shader_feature_local_fragment _ALPHATEST_ON
+            #pragma shader_feature_local_fragment _ _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
+            #pragma shader_feature_local _ _DETAIL_MULX2 _DETAIL_SCALED
+
+            #pragma shader_feature_local_fragment _SPECGLOSSMAP
+
+
+            struct Attributes {
+                float4 positionOS   : POSITION;
+                float3 normalOS     : NORMAL;
+                float2 uv0          : TEXCOORD0;
+                float2 uv1          : TEXCOORD1;
+                float2 uv2          : TEXCOORD2;
+                UNITY_VERTEX_INPUT_INSTANCE_ID
+            };
+
+            struct Varyings {
+                float4 positionCS   : SV_POSITION;
+                float2 uv           : TEXCOORD0;
+            #ifdef EDITOR_VISUALIZATION
+                float2 VizUV        : TEXCOORD1;
+                float4 LightCoord   : TEXCOORD2;
+            #endif
+            };
+
+            #pragma vertex UniversalVertexMeta
+            #pragma fragment UniversalFragmentMetaLit
+
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/MetaInput.hlsl"
+
+            Varyings UniversalVertexMeta(Attributes input) {
+                Varyings output = (Varyings)0;
+                output.positionCS = UnityMetaVertexPosition(input.positionOS.xyz, input.uv1, input.uv2);
+                output.uv = TRANSFORM_TEX(input.uv0, _BaseMap);
+                return output;
+            }
+
+            half4 UniversalFragmentMetaLit(Varyings input) : SV_Target {
+                half4 baseColor = tex2D(_BaseMap, input.uv);
+                half4 specularColor = tex2D(_SpecularMap, input.uv);
+                half3 diffuse = baseColor.rgb * (1.0.xxx - specularColor);
+
+                MetaInput metaInput;
+                metaInput.Albedo = diffuse + specularColor * 0.5;
+                metaInput.Emission = 10 * baseColor.rgb;
+            #ifdef EDITOR_VISUALIZATION
+                metaInput.VizUV = input.VizUV;
+                metaInput.LightCoord = input.LightCoord;
+            #endif
+
+                return UnityMetaFragment(metaInput);
+            }
+
             ENDHLSL
         }
 

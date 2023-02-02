@@ -6,9 +6,9 @@
         "Unity.RenderPipelines.Universal.Runtime",
         "Unity.ResourceManager",
         "Unity.TextMeshPro",
-        "Seven.Utility",
         "Unity.Addressables",
         "Animancer",
+        "Seven.Utility",
         "Seven.Scribe",
         "Seven.EasySplines"
     ],

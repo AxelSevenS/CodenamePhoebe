@@ -143,7 +143,7 @@ Material:
     - Vector1_1f93deba5516424f927cee1eb2c93ba3: 0
     - Vector1_28676355978446f285fbfe6f1a574316: 0.06
     - Vector1_2c2cfb5643de44f4b13441b1a1e0ea33: 1
-    - Vector1_3578eca6d8ac4314939bfb16bfdbde27: 0.791
+    - Vector1_3578eca6d8ac4314939bfb16bfdbde27: 0.239
     - Vector1_40661633426347afb1a705a362429b36: 0
     - Vector1_45a27133fb8b4113a0746c0d1954c57b: 0.02
     - Vector1_4da6e98cbfa5408fb6352b485aa76d05: 0.08
@@ -236,16 +236,16 @@ Material:
     - _ZWrite: 0
     - _ZWriteControl: 0
     m_Colors:
-    - Color_213be8c364f242cdbabe6ef25c0efbd9: {r: 0.18039216, g: 0.2901961, b: 0.5019608,
+    - Color_213be8c364f242cdbabe6ef25c0efbd9: {r: 0.20714669, g: 0.29316145, b: 0.46226418,
         a: 1}
-    - Color_8b23519dc989478fa19369d8efda52f6: {r: 0.44918123, g: 0.8021964, b: 0.9245283,
+    - Color_8b23519dc989478fa19369d8efda52f6: {r: 0.48420256, g: 0.77663255, b: 0.8773585,
         a: 1}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
-    - __Specular: {r: 3, g: 3, b: 3, a: 0}
+    - __Specular: {r: 1, g: 1, b: 1, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &2195735683574082861
 MonoBehaviour:
