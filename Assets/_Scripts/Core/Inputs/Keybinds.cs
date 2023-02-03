@@ -6,13 +6,15 @@ using UnityEngine.InputSystem.DualShock;
 using UnityEngine.InputSystem.XInput;
 using UnityEngine.InputSystem.Switch;
 
-using SevenGame.Utility;
+// using SevenGame.Utility;
 
 namespace SeleneGame.Core {
     public static class Keybinds {
         
         public const float HOLD_TIME = 0.2f;
 
+        public static bool IsBindPressed(this InputActionMap controlMap, string bindName) => controlMap[bindName].ReadValue<float>() > 0;
+        public static bool IsActuated(this InputAction action) => action.ReadValue<float>() > 0;
 
 
         public static float mouseSpeed = 1f;
