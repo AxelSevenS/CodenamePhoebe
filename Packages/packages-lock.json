@@ -22,6 +22,15 @@
       },
       "hash": "323da32564cc721a77c838b3afd806d2dee60993"
     },
+    "com.seven.saving-system": {
+      "version": "https://github.com/AxelSevenS/SaveSystem.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.seven.utility": "0.0.1"
+      },
+      "hash": "39176f73666521dad652106c10409d20bed51c6f"
+    },
     "com.seven.scribe": {
       "version": "https://github.com/AxelSevenS/Scribe.git",
       "depth": 0,

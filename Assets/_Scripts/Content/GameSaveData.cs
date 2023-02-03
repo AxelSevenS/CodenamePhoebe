@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using SeleneGame.Core;
-using UnityEngine;
+
+using SevenGame.SavingSystem;
+using Scribe;
 
 namespace SeleneGame.Content {
 
@@ -11,6 +13,7 @@ namespace SeleneGame.Content {
 
         // Game Progress Save Data
 
+        public Dictionary<string, int> flags = new Dictionary<string, int>();
 
 
         // General Save Data
@@ -24,6 +27,8 @@ namespace SeleneGame.Content {
             controls.Save();
 
             playerData.Save(PlayerEntityController.current.entity);
+
+            flags = ScribeFlags.flags;
         }
 
         public override void Load() {
@@ -33,6 +38,8 @@ namespace SeleneGame.Content {
             controls.Load();
 
             playerData.Load(PlayerEntityController.current.entity);
+
+            ScribeFlags.flags = flags;
         }
     }
     

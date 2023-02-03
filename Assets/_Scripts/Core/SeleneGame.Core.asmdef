@@ -10,7 +10,8 @@
         "Animancer",
         "Seven.Utility",
         "Seven.Scribe",
-        "Seven.EasySplines"
+        "Seven.EasySplines",
+        "Seven.Saving-System"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -491,7 +491,6 @@ Shader "Selene/Lit" {
             ENDHLSL
         }
 
-        // This pass it not used during regular rendering, only for lightmap baking.
         Pass
         {
             Name "Meta"

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
 
-using SeleneGame.Core;
+using SevenGame.SavingSystem;
 // using SeleneGame.Content;
 
 namespace SeleneGame.Core.UI {
@@ -77,10 +77,10 @@ namespace SeleneGame.Core.UI {
         public override void OnPointerClick(PointerEventData eventData) {
 
             if (eventData.button == PointerEventData.InputButton.Left) {
-                SavingSystem<TData>.SavePlayerData(slotNumber);
+                SavingSystem<TData>.SaveData(slotNumber);
                 LoadPreviewData();
             } else if (eventData.button == PointerEventData.InputButton.Right && saveData != null) {
-                SavingSystem<TData>.LoadPlayerData(slotNumber);
+                SavingSystem<TData>.LoadData(slotNumber);
             }
 
             SaveMenuController<TData>.current.Disable();
