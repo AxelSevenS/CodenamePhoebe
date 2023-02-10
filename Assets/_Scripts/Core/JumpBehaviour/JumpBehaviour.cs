@@ -17,6 +17,17 @@ namespace SeleneGame.Core {
         public virtual bool canJump => cooldownTimer.isDone;
 
 
+        private AnimationClip _jumpAnimation;
+
+        public AnimationClip jumpAnimation {
+            get {
+                if ( _jumpAnimation == null )
+                    _jumpAnimation = entity.character?.GetAnimation("Jump");
+                return _jumpAnimation;
+            }
+        }
+
+
 
         protected internal override void HandleInput(PlayerEntityController contoller) {;}
 
@@ -24,7 +35,7 @@ namespace SeleneGame.Core {
 
             Debug.Log(entity.character.jumpHeight * entity.jumpMultiplier);
 
-            AnimancerState jumpState = entity.animancer.Layers[0].Play(entity.character?.animations.jumpAnimation, 0.3f);
+            AnimancerState jumpState = entity.animancer.Layers[0].Play(jumpAnimation, 0.3f);
             jumpState.Events.OnEnd = () => {
                 jumpState.Stop();
             };

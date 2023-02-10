@@ -3,11 +3,7 @@ guid: 91b6288a508554446862b8829efa3df2
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences:
-  - costume: {fileID: 11400000, guid: 88d05d19418b5cb4eb2b9561a0f90b20, type: 2}
-  - controller: {instanceID: 0}
-  - rightModel: {instanceID: 0}
-  - leftModel: {instanceID: 0}
+  defaultReferences: []
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

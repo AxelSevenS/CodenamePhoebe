@@ -5,6 +5,7 @@ using UnityEngine;
 using Animancer;
 
 using SevenGame.Utility;
+using System.Reflection;
 
 namespace SeleneGame.Core {
 
@@ -33,10 +34,10 @@ namespace SeleneGame.Core {
         [Header("Entity Data")]
         
         [Tooltip("The entity's current Character, defines their game Model, portraits, display name and base Stats.")]
-        [SerializeReference][ReadOnly] private Character _character;
+        [SerializeReference] private Character _character;
 
         [Tooltip("The current state of the Entity, can be changed using the SetState method.")]
-        [SerializeReference] [ReadOnly] private State _state;
+        [SerializeReference] private State _state;
 
         // [Tooltip("The current rotation of the Entity.")]
         // public QuaternionData rotation;
@@ -81,7 +82,13 @@ namespace SeleneGame.Core {
         public event Action onParry;
 
 
-        public Transform modelTransform => character?.model?.transform;
+        public Transform modelTransform { 
+            get {
+                if (character == null || character.model == null)
+                    return null;
+                return character.model.mainTransform;
+            }
+        }
 
 
         /// <summary>
@@ -206,9 +213,9 @@ namespace SeleneGame.Core {
         public GameObject this[string key]{
             get { 
                 try { 
-                    return character.costumeData.bones[key]; 
+                    return character.model.costumeData.bones[key]; 
                 } catch { 
-                    return character.model; 
+                    return character.model.mainTransform.gameObject; 
                 } 
             }
         }
@@ -227,11 +234,12 @@ namespace SeleneGame.Core {
         /// <param name="position">The position of the entity</param>
         /// <param name="rotation">The rotation of the entity</param>
         /// <param name="costume">The costume of the entity, leave empty to use character's default costume</param>
-        public static Entity CreateEntity(System.Type entityType, Character character, Vector3 position, Quaternion rotation, CharacterCostume costume = null){
+        public static Entity CreateEntity<TCharacter>(System.Type entityType, Vector3 position, Quaternion rotation, CharacterCostume costume = null) where TCharacter : Character{
             GameObject entityGO = new GameObject("Entity");
             Entity entity = (Entity)entityGO.AddComponent(entityType);
+            entityGO.AddComponent<EntityController>();
 
-            entity.SetCharacter(character, costume);
+            entity.SetCharacter<TCharacter>(costume);
 
             entity.transform.position = position;
             entity.transform.rotation = rotation;
@@ -247,15 +255,20 @@ namespace SeleneGame.Core {
         /// <param name="position">The position of the entity</param>
         /// <param name="rotation">The rotation of the entity</param>
         /// <param name="costume">The costume of the entity, leave empty to use character's default costume</param>
-        public static Entity CreatePlayerEntity(System.Type entityType, Character character, Vector3 position, Quaternion rotation, CharacterCostume costume = null){
+        public static Entity CreatePlayerEntity<TCharacter>(System.Type entityType, Vector3 position, Quaternion rotation, CharacterCostume costume = null) where TCharacter : Character{
+            return CreatePlayerEntity(entityType, position, rotation, typeof(TCharacter), costume);
+        }
+
+        public static Entity CreatePlayerEntity(System.Type entityType, Vector3 position, Quaternion rotation, System.Type characterType, CharacterCostume costume = null) {
             GameObject entityGO = new GameObject("Entity");
-            entityGO.AddComponent<PlayerEntityController>();
             Entity entity = (Entity)entityGO.AddComponent(entityType);
-            
-            entity.character = Character.Initialize(character, entity, costume);
+            entityGO.AddComponent<PlayerEntityController>();
+
+            entity.SetCharacter(characterType, costume);
 
             entity.transform.position = position;
             entity.transform.rotation = rotation;
+
             return entity;
         }
 
@@ -295,19 +308,24 @@ namespace SeleneGame.Core {
         /// Set the Entity's current Character.
         /// </summary>
         /// <param name="character">The new Character</param>
-        public void SetCharacter(Character character, CharacterCostume costume = null) {
+        public void SetCharacter<TCharacter>(CharacterCostume costume = null) where TCharacter : Character {
+            SetCharacter(typeof(TCharacter), costume);
+        }
+
+        public void SetCharacter(System.Type characterType, CharacterCostume costume = null) {
+
+            // if ( characterType == null || !typeof(Character).IsAssignableFrom(characterType) )
+            //     throw new System.ArgumentNullException("characterType");
 
             bool isPlayer = Character.GetInstanceWithId("Player") == _character;
-            
-            try {
-                character = Character.Initialize(character, this, costume);
-            } catch (Exception e) {
-                Debug.LogError($"Error while Setting Character {character.name} : {e.Message}");
-                return;
-            }
 
             _character?.Dispose();
-            _character = character;
+
+            // I don't like doing this but this is cleaner than any other way I've found
+            // Every other way I've tried implies hard to read code with Setups and a lot of uncertainty
+            // Also this is fast enough that it doesn't matter
+            ConstructorInfo constructor = characterType.GetConstructor(new Type[] { typeof(Entity), typeof(CharacterCostume) });
+            _character = constructor.Invoke(new object[] { this, costume }) as Character;
 
             if (isPlayer)
                 Character.SetInstanceWithId("Player", _character);
@@ -340,15 +358,18 @@ namespace SeleneGame.Core {
         /// Load the Character Model.
         /// </summary>
         protected internal virtual void LoadModel() {
-            character?.LoadModel();
+            // character?.LoadModel();
         }
 
         /// <summary>
         /// Unload the Character Model.
         /// </summary>
         protected internal virtual void UnloadModel() {
-            character?.UnloadModel();
+            // character?.UnloadModel();
         }
+
+
+        public void RotateModelTowards(Vector3 newForward, Vector3 newUp) => RotateModelTowards( Quaternion.LookRotation(newForward, newUp) );
 
         public void RotateModelTowards(Quaternion nowRotation) {
             
@@ -358,8 +379,6 @@ namespace SeleneGame.Core {
 
             modelTransform.rotation = Quaternion.Slerp(modelTransform.rotation, nowRotation, 12f * GameUtility.timeDelta);
         }
-
-        public void RotateModelTowards(Vector3 newForward, Vector3 newUp) => RotateModelTowards( Quaternion.LookRotation(newForward, newUp) );
 
 
         protected virtual void EntityAnimation() {
@@ -468,7 +487,7 @@ namespace SeleneGame.Core {
 
 
             // Check for penetration and adjust accordingly
-            foreach ( Collider entityCollider in character.costumeData.hurtColliders ) {
+            foreach ( Collider entityCollider in character.model.costumeData.colliders ) {
                 foreach ( Collider worldCollider in entityCollider.ColliderOverlap(Vector3.zero, 0f, Global.GroundMask) ) {
                     if ( Physics.ComputePenetration(entityCollider, entityCollider.transform.position, entityCollider.transform.rotation, worldCollider, worldCollider.transform.position, worldCollider.transform.rotation, out Vector3 direction, out float distance) ) {
                         rigidbody.MovePosition(rigidbody.position + (direction * distance));
@@ -490,9 +509,11 @@ namespace SeleneGame.Core {
         /// <param name="skinThickness">The thickness of the skin of the cast, set to a low number to keep the cast accurate but not zero as to not overlap with the terrain</param>
         /// <param name="layerMask">The layer mask to use for the cast.</param>
         public bool ColliderCast( Vector3 position, Vector3 direction, out RaycastHit castHit, float skinThickness, LayerMask layerMask ) {
-            // Debug.Log(costumeData.hurtColliders["main"]);
+            // Debug.Log(costumeData.colliders["main"]);
 
-            foreach (Collider collider in character?.costumeData.hurtColliders){
+            Debug.Log(character?.model);
+
+            foreach (Collider collider in character?.model?.costumeData?.colliders){
                 bool hasHitWall = collider.ColliderCast( collider.transform.position + position, direction, out RaycastHit tempHit, skinThickness, layerMask );
                 if ( !hasHitWall ) continue;
 
@@ -510,7 +531,7 @@ namespace SeleneGame.Core {
         /// <param name="skinThickness">The thickness of the skin of the overlap, set to a low number to keep the overlap accurate but not zero as to not overlap with the terrain</param>
         /// <param name="layerMask">The layer mask to use for the overlap.</param>
         public Collider[] ColliderOverlap( float skinThickness, LayerMask layerMask ) {
-            foreach (Collider collider in character?.costumeData.hurtColliders){
+            foreach (Collider collider in character?.model?.costumeData.colliders){
                 Collider[] hits = collider.ColliderOverlap( collider.transform.position, skinThickness, layerMask );
                 if ( hits.Length > 0 ) return hits;
             }
@@ -554,7 +575,9 @@ namespace SeleneGame.Core {
             _animancer = GetComponent<AnimancerComponent>();
             _rigidbody = GetComponent<Rigidbody>();
             _physicsComponent = GetComponent<CustomPhysicsComponent>();
-            SetCharacter(null);
+
+            character?.Dispose();
+            character = null;
         }
 
         protected virtual void OnEnable(){
@@ -570,6 +593,7 @@ namespace SeleneGame.Core {
         protected virtual void Update(){
             onGround.SetVal( ColliderCast(Vector3.zero, gravityDown.normalized * 0.2f, out groundHit, 0.15f, Global.GroundMask) );
 
+            character?.Update();
             EntityAnimation();
         }
         
@@ -578,6 +602,7 @@ namespace SeleneGame.Core {
             ExecuteMovement();
 
             Gravity();
+            character?.FixedUpdate();
         }
 
     }

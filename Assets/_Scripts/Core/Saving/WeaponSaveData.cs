@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -7,11 +8,11 @@ namespace SeleneGame.Core {
 
     [System.Serializable]
     public class WeaponSaveData {
-        public string name = "Unarmed";
+        public Type weaponType = typeof(UnarmedWeapon);
         public string costumeName = "Unarmed_Base";
 
-        public WeaponSaveData(string name, string costumeName) {
-            this.name = name;
+        public WeaponSaveData(Type weaponType, string costumeName) {
+            this.weaponType = weaponType;
             this.costumeName = costumeName;
         }
 
@@ -19,8 +20,8 @@ namespace SeleneGame.Core {
             if (weapon == null)
                 return;
 
-            name = weapon.name;
-            costumeName = weapon.costume.name;
+            weaponType = weapon.GetType();
+            costumeName = weapon.model?.costume?.name;
         }
     }
 

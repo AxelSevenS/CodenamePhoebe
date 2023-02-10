@@ -12,7 +12,7 @@ namespace SeleneGame.Content {
 
         [Header("Mask")]
         
-        [SerializeReference] [ReadOnly] protected EidolonMask mask;
+        [SerializeReference] [ReadOnly] protected EidolonMask _mask;
 
         public bool focusing;
         public float shiftCooldown;
@@ -29,8 +29,13 @@ namespace SeleneGame.Content {
         public float shiftEnergy = 0f;
 
 
-        
-        public override float weight => character.weight * weapons.current.weightModifier;
+        public EidolonMask mask => _mask;
+
+        public override float weight {
+            get {
+                return character.weight * (weapons?.current?.weight ?? 1f);
+            }
+        }
         public override float jumpMultiplier => 2 - (weight / 15f);
 
         protected virtual bool isMasked {
@@ -53,14 +58,17 @@ namespace SeleneGame.Content {
         public void SetMask(EidolonMask mask, EidolonMaskCostume costume = null) {
 
             try {
-                mask = EidolonMask.Initialize(mask, this, costume);
+                // mask = EidolonMask.Initialize(mask, this, costume);
+                _mask?.Dispose();
+                _mask = mask;
+                _mask?.SetCostume(costume ?? mask.baseCostume);
             } catch (Exception e) {
                 // Debug.Log(mask);
-                Debug.LogError($"Error while Setting Mask {mask.name} : {e.Message}");
+                Debug.LogError($"Error while Setting Mask {mask.internalName} : {e.Message}");
             }
 
-            this.mask?.Dispose();
-            this.mask = mask;
+            _mask?.Dispose();
+            _mask = mask;
         }
 
         protected override void LoadModel() {
@@ -112,7 +120,7 @@ namespace SeleneGame.Content {
 
         public override void HandleInput(PlayerEntityController controller) {
             base.HandleInput(controller);
-            mask.HandleInput(controller);
+            mask?.HandleInput(controller);
         }
 
 
@@ -139,8 +147,8 @@ namespace SeleneGame.Content {
 
             shiftCooldown = Mathf.MoveTowards( shiftCooldown, 0f, GameUtility.timeDelta );
 
-            mask.SetState( isMasked );
-            mask.MaskUpdate();
+            mask?.SetState( isMasked );
+            mask?.Update();
         }
 
         protected override void FixedUpdate() {
@@ -160,7 +168,7 @@ namespace SeleneGame.Content {
                 shiftCooldown -= GameUtility.timeDelta;
             }
 
-            mask.MaskFixedUpdate();
+            mask?.FixedUpdate();
 
         }
 

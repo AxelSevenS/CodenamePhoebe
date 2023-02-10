@@ -10,28 +10,20 @@ using SevenGame.Utility;
 
 namespace SeleneGame.Core {
 
-    [CreateAssetMenu(fileName = "new Character Costume", menuName = "Costume/Character")]
-    public class CharacterCostume : SpeakerCostume<CharacterCostume> {
-        
-        [SerializeField] private GameObject model;
+    // [CreateAssetMenu(fileName = "new Character Costume", menuName = "Costume/Character")]
+    public abstract class CharacterCostume : SpeakerCostume<CharacterCostume> {
 
 
-        /* [ReadOnly] */ public GameObject modelInstance;
-        /* [ReadOnly] */ public CostumeData costumeData;
-
-
-
-        public override void LoadModel() {
-            if (model != null) {
-                modelInstance = Instantiate(model, _entity.transform);
-                costumeData = modelInstance.GetComponent<CostumeData>();
-                _entity.animator.Rebind();
-            }
-        }
-
-        public override void UnloadModel() {
-            modelInstance = GameUtility.SafeDestroy(modelInstance);
-        }
-        
+        public abstract CostumeModel<CharacterCostume> LoadModel(Entity entity);
     }
+
+    public abstract class CharacterModel : CostumeModel<CharacterCostume> {
+
+        [ReadOnly] public readonly Entity entity;
+
+        public CharacterModel(Entity entity, CharacterCostume costume) : base(costume) {
+            this.entity = entity;
+        }
+    }
+
 }

@@ -9,30 +9,37 @@ using EasySplines;
 
 namespace SeleneGame.Content {
 
-    public abstract class EidolonMask : Costumable<EidolonMask, EidolonMaskCostume> {
+    public abstract class EidolonMask : Costumable<EidolonMask, EidolonMaskCostume, EidolonMaskModel> {
 
 
         [Header("Mask Data")]
-        
-        private float maskPosT = 1f;
-        private bool faceState = false;
-        private bool onRight = true;
-        private Vector3 hoveringPosition;
-        private Vector3 relativePos;
+        public readonly MaskedEntity maskedEntity;
 
 
 
-        private Vector3 rightPosition => _entity.modelTransform.rotation * new Vector3(1.2f, 1.3f, -0.8f);
-        private Vector3 leftPosition => _entity.modelTransform.rotation * new Vector3(-1.2f, 1.3f, -0.8f);
+        public float maskPosT { get; protected set;} = 1f;
+        public bool faceState { get; protected set;} = false;
+        public bool onRight { get; protected set;} = true;
+        public Vector3 hoveringPosition { get; protected set;}
+        public Vector3 relativePos { get; protected set;}
 
-        public GameObject model => costume.modelInstance;
 
+
+
+        public bool onFace => faceState || (positionBlocked(leftPosition) && positionBlocked(rightPosition));
+        public Vector3 rightPosition => maskedEntity.modelTransform.rotation * new Vector3(1.2f, 1.3f, -0.8f);
+        public Vector3 leftPosition => maskedEntity.modelTransform.rotation * new Vector3(-1.2f, 1.3f, -0.8f);
+
+
+        public EidolonMask(MaskedEntity maskedEntity) {
+            this.maskedEntity = maskedEntity;
+        }
 
 
         protected internal void HandleInput(PlayerEntityController controller) {
-            if ( !(_entity is MaskedEntity masked) ) return;
+            if ( !(controller.entity is MaskedEntity masked) ) return;
 
-            if (controller.shiftInput.tapped) {
+            if (controller.shiftInput.Tapped()) {
 
                 if (masked.state is MaskedState) {
                     masked.gravityDown = Vector3.down;
@@ -51,38 +58,40 @@ namespace SeleneGame.Content {
         public void SetState(bool onFace) {
             faceState = onFace;
         }
-
-
-        protected internal virtual void MaskUpdate() {
-            Transform headTransform = _entity["head"].transform;
-            
-            BezierQuadratic currentCurve = new BezierQuadratic(
-                hoveringPosition,
-                headTransform.position,
-                headTransform.position + headTransform.forward
-            );
-
-            costume.modelInstance.transform.position = currentCurve.GetPoint(maskPosT).position;
-            costume.modelInstance.transform.rotation = Quaternion.Slerp(_entity.modelTransform.rotation, headTransform.rotation, maskPosT);
+        
+        public override void SetCostume(EidolonMaskCostume costume) {
+            _model?.Dispose();
+            _model = (EidolonMaskModel)costume?.LoadModel(this) ?? null;
         }
 
-        protected internal virtual void MaskFixedUpdate(){
-            bool onFace = faceState || (positionBlocked(leftPosition) && positionBlocked(rightPosition));
+
+        private bool positionBlocked(Vector3 position) {
+            return Physics.SphereCast(maskedEntity.modelTransform.position, 0.35f, position, out _, position.magnitude, Global.GroundMask);
+        }
+
+        protected override void DisposeBehavior() {
+            model?.Dispose();
+        }
+
+
+        public override void Update() {
+            base.Update();
+
+            model?.Update();
+        }
+
+        public override void FixedUpdate(){
+            base.FixedUpdate();
 
             relativePos = Vector3.Lerp(relativePos, onRight ? rightPosition : leftPosition, 3f * GameUtility.timeDelta);
 
             if (!onFace && (positionBlocked(relativePos)))
                 onRight = !onRight;
 
-            hoveringPosition = Vector3.Lerp(hoveringPosition, _entity.modelTransform.position + relativePos, 15f * GameUtility.timeDelta);
+            hoveringPosition = Vector3.Lerp(hoveringPosition, maskedEntity.modelTransform.position + relativePos, 15f * GameUtility.timeDelta);
             maskPosT = Mathf.MoveTowards(maskPosT, System.Convert.ToSingle(onFace), 4f * GameUtility.timeDelta);
 
-            costume.animator.SetBool("OnFace", onFace);
-            costume.animator.SetFloat("OnRight", onRight ? 1f : 0f);
-
-            bool positionBlocked(Vector3 position) {
-                return Physics.SphereCast(_entity.modelTransform.position, 0.35f, position, out _, position.magnitude, Global.GroundMask);
-            }
+            model?.FixedUpdate();
         }
     }
 

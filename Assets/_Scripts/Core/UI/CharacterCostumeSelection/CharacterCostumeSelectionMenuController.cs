@@ -92,7 +92,7 @@ namespace SeleneGame.Core.UI {
 
                     if ( !costume.accessibleInGame ) return;
 
-                    if ( !costume.name.Contains(currentCharacter.name) && costume.name.Contains("_Base") )
+                    if ( !costume.name.Contains(currentCharacter.internalName) && costume.name.Contains("_Base") )
                         return;
 
                     if ( characterCostumes.Exists( (obj) => { return obj.characterCostume == costume; }) ) 

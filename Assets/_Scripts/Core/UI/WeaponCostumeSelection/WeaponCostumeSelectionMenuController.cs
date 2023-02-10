@@ -93,7 +93,7 @@ namespace SeleneGame.Core.UI {
 
                     if ( !costume.accessibleInGame ) return;
 
-                    if ( !costume.name.Contains(weapon.name) && costume.name.Contains("_Base") && !costume.equippableOn.HasFlag(weapon.weaponType) )
+                    if ( !costume.name.Contains(weapon.internalName) && costume.name.Contains("_Base") && !costume.equippableOn.HasFlag(weapon.weaponType) )
                         return;
 
                     if ( weaponCostumes.Exists( (existingCase) => { return existingCase.nameText == costume.displayName; }) ) 

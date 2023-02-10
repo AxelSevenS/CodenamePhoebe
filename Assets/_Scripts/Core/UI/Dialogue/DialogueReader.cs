@@ -126,7 +126,7 @@ namespace SeleneGame.Core.UI {
             cancellationTokenSource = new CancellationTokenSource();
 
             dialogueName.SetText( currentLine.entity.name );
-            dialoguePortrait.sprite = currentLine.entity.character.costume.GetPortrait(currentLine.emotion);
+            dialoguePortrait.sprite = currentLine.entity.character.model.costume.GetPortrait(currentLine.emotion);
             displayedText = String.Empty;
             dialogueText.SetText(displayedText);
             

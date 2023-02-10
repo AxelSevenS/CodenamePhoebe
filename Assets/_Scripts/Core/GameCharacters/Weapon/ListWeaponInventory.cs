@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using SevenGame.Utility;
+using System;
 
 namespace SeleneGame.Core {
 
     [System.Serializable]
     public class ListWeaponInventory : WeaponInventory {
 
-        [SerializeReference] [ReadOnly] private Weapon[] items;
+        [SerializeReference] private Weapon[] items;
         
         [SerializeField] private int currentIndex;
 
@@ -28,13 +29,13 @@ namespace SeleneGame.Core {
         }
 
 
-        public override Weapon Get(int index) => items[index];
+        public override Weapon Get(int index) => items[index] ?? defaultWeapon;
 
-        public override void Set(int index, Weapon weapon, WeaponCostume costume = null){
+        public override void Set(int index, Type weaponType, WeaponCostume costume = null){
             try {
-                weapon = Weapon.Initialize(weapon, entity, costume);
+                // weapon = Weapon.Initialize(weapon, entity, costume);
                 items[index]?.Dispose();
-                items[index] = weapon;
+                items[index] = Weapon.CreateInstance(weaponType, entity, costume);
             } catch (System.Exception e) {
                 Debug.LogError($"Error setting weapon at index {index} in WeaponInventory : {e.Message}.");
             }
@@ -53,7 +54,7 @@ namespace SeleneGame.Core {
             if (index == currentIndex) return;
 
             foreach ( Weapon weapon in items )
-                weapon.Hide();
+                weapon.OnUnequip();
 
             if ( items[index] != null ) {
                 currentIndex = index;
@@ -61,7 +62,7 @@ namespace SeleneGame.Core {
                 Debug.LogError($"Error switching to weapon at index {index} in WeaponInventory; Switching to Default Weapon");
             }
 
-            current.Display();
+            current.OnEquip();
         }
 
 

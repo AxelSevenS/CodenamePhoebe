@@ -25,7 +25,11 @@ namespace SeleneGame.Core {
         public override float gravityMultiplier => 1f;
         public override Vector3 cameraPosition {
             get {
-                return base.cameraPosition - new Vector3(0, 0, moveSpeed / entity.character.baseSpeed);
+                float dynamicCameraDistance = moveSpeed;
+                if (entity.character.baseSpeed > 0f)
+                    dynamicCameraDistance /= entity.character.baseSpeed;
+                    
+                return base.cameraPosition - new Vector3(0, 0, dynamicCameraDistance);
             }
         }
 
@@ -56,7 +60,7 @@ namespace SeleneGame.Core {
 
             Move(groundedMovement);
 
-            if ( controller.evadeInput.started )
+            if ( controller.evadeInput.Tapped() )
                 Evade(evadeDirection);
 
             if ( KeyInputData.SimultaneousTap( controller.lightAttackInput, controller.heavyAttackInput ) )
@@ -110,9 +114,9 @@ namespace SeleneGame.Core {
         protected override void ParryAction() {
             base.ParryAction();
 
-            if ( entity is ArmedEntity armed ) {
-                armed.Parry();
-            }
+            // if ( entity is ArmedEntity armed ) {
+            //     armed.Parry();
+            // }
         }
         protected override void LightAttackAction() {
             base.LightAttackAction();

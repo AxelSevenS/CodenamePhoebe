@@ -6,32 +6,23 @@ using SeleneGame.Core;
 
 using SevenGame.Utility;
 using System;
+using EasySplines;
 
 namespace SeleneGame.Content {
 
-    [CreateAssetMenu(fileName = "new Mask Costume", menuName = "Costume/Mask")]
-    public class EidolonMaskCostume : SpeakerCostume<EidolonMaskCostume> {
+    public abstract class EidolonMaskCostume : SpeakerCostume<EidolonMaskCostume> {
 
-        [SerializeField] private GameObject model;
+        public abstract CostumeModel<EidolonMaskCostume> LoadModel(EidolonMask mask);
+    }
 
+    public abstract class EidolonMaskModel : CostumeModel<EidolonMaskCostume> {
 
-        [ReadOnly] public GameObject modelInstance;
-
-        [ReadOnly] public CostumeData costumeData;
-        [ReadOnly] public Animator animator;
-
+        public readonly EidolonMask mask;
+        protected Transform headTransform => mask.maskedEntity["head"]?.transform ?? null;
 
 
-        public override void LoadModel() {
-            if (model != null) {
-                modelInstance = Instantiate(model, _entity.transform.parent);
-                costumeData = modelInstance.GetComponent<CostumeData>();
-                animator = modelInstance.GetComponent<Animator>();
-            }
-        }
-
-        public override void UnloadModel() {
-            modelInstance = GameUtility.SafeDestroy(modelInstance);
+        public EidolonMaskModel(EidolonMask mask, EidolonMaskCostume costume) : base(costume) {
+            this.mask = mask;
         }
     }
 

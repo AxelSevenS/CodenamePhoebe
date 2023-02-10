@@ -37,7 +37,7 @@ namespace SeleneGame.Core {
 
         
 
-        public override void Invoke(GameObject dialogueObject) {
+        public override void Invoke(GameObject dialogueObject) { 
 
             switch (eventType) {
                 case GameEvent.EventType.SetFlag:

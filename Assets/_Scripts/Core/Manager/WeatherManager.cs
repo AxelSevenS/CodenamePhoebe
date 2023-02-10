@@ -55,7 +55,7 @@ namespace SeleneGame.Core {
         }
 
         private void Start(){
-            sunSpeed = new Vector3(28f, .15f);
+            sunSpeed = new Vector3(0.8f, .15f);
             moonSpeed  = new Vector3(0, .15f);
 
             sunRotation = Quaternion.identity;

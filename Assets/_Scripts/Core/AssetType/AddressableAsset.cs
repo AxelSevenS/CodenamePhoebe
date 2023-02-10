@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.AddressableAssets;
-
+using UnityEngine.ResourceManagement.ResourceLocations;
 
 namespace SeleneGame.Core {
 
@@ -26,18 +26,24 @@ namespace SeleneGame.Core {
 
 
         public static T GetAsset(string assetName) {
+
+            // if ( !AddressablesHelper.AddressableAssetExists<T>( GetPath(assetName) ) ) {
+            //     Debug.LogWarning($"Error getting Asset {assetName}");
+            //     return Fallback();
+            // }
+
             // Get Requested Asset
             AsyncOperationHandle<T> opHandle = Addressables.LoadAssetAsync<T>( GetPath(assetName) );
 
             T result = opHandle.WaitForCompletion();
 
             // If not found, get Default Asset
-            if (result == null || !result._accessibleInGame) {
-                Debug.LogWarning($"Error getting Asset {assetName}");
+            if (result == null || !result._accessibleInGame)
                 return GetDefaultAsset();
-            }
+
 
             return result;
+
         }
         public static T GetDefaultAsset() {
             if (defaultAsset != null) 
@@ -55,13 +61,19 @@ namespace SeleneGame.Core {
         }
         
         public static void GetAssetAsync(string assetName, Action<T> callback) {
+
+            // if ( !AddressablesHelper.AddressableAssetExists<T>( GetPath(assetName) ) ) {
+            //     Debug.LogWarning($"Error getting Asset {assetName}");
+            //     Fallback(callback);
+            //     return;
+            // }
+
             // Get Requested Asset
             AsyncOperationHandle<T> opHandle = Addressables.LoadAssetAsync<T>( GetPath(assetName) );
             opHandle.Completed += operation => {
 
                 // If not found, get Default Asset
                 if (operation.Status == AsyncOperationStatus.Failed) {
-                    Debug.LogWarning($"Error getting Asset {assetName}");
                     GetDefaultAssetAsync(callback);
                     return;
                 }
@@ -100,4 +112,18 @@ namespace SeleneGame.Core {
         }
 
     }
+
+    // public static class AddressablesHelper {
+        
+
+    //     public static bool AddressableAssetExists<T>(object key) {
+    //         foreach (var locator in Addressables.ResourceLocators) {
+    //             IList<IResourceLocation> locs;
+    //             if (locator.Locate(key, typeof(T), out locs))
+    //                 return true;
+    //         }
+    //         return false;
+    //     }
+
+    // }
 }

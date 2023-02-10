@@ -11,50 +11,44 @@ using SevenGame.Utility;
 
 namespace SeleneGame.Core {
 
-    public abstract class Character : Costumable<Character, CharacterCostume> {
-        
+    public abstract class Character : Costumable<Character, CharacterCostume, CharacterModel> {
 
-        [Header("Character Info")]
-        public float maxHealth;
-        public Vector3 size;
-        public float stepHeight;
-        public float weight;
-        public float jumpHeight;
-
-        [Header("Movement Speed")]
-        public float baseSpeed;
-        public float acceleration;
-        public float sprintMultiplier;
-        public float slowMultiplier;
-        public float swimMultiplier;
-
-        [Header("Evade")]
-        public float evadeSpeed;
-        public float evadeDuration;
-        public float evadeCooldown;
+        public readonly Entity entity;
 
 
-        [Header("Animations")]
-        public CharacterAnimationSet animations;
+
+        public virtual float maxHealth => 100f;
+        public virtual Vector3 size => new Vector3(0.5f, 2f, 0.5f);
+        public virtual float stepHeight => 0.5f;
+        public virtual float weight => 12f;
+        public virtual float jumpHeight => 16f;
+
+        public virtual float baseSpeed => 10f;
+        public virtual float acceleration => 100f;
+        public virtual float sprintMultiplier => 1.5f;
+        public virtual float slowMultiplier => 0.5f;
+        public virtual float swimMultiplier => 0.85f;
+
+        public virtual float evadeSpeed => 27f;
+        public virtual float evadeDuration => 0.6f;
+        public virtual float evadeCooldown => 0.01f;
 
 
 
         public float totalEvadeDuration => evadeDuration + evadeCooldown;
 
-        public GameObject model => costume?.modelInstance ?? null;
-        public CostumeData costumeData => _costume.costumeData;
-        
-
-        protected internal virtual void CharacterUpdate( Entity entity ){;}
-        protected internal virtual void CharacterFixedUpdate( Entity entity ){;}
+        public Character(Entity entity, CharacterCostume costume = null) {
+            this.entity = entity;
+            SetCostume(costume ?? baseCostume);
+        }
 
         public override void SetCostume(CharacterCostume costume) {
-            
-            Quaternion modelRotation = model?.transform.rotation ?? Quaternion.identity;
+            _model?.Dispose();
+            _model = (CharacterModel)costume?.LoadModel(entity) ?? null;
+        }
 
-            base.SetCostume(costume);
-
-            model.transform.rotation = modelRotation;
+        protected override void DisposeBehavior() {
+            model?.Dispose();
         }
     }
 }

@@ -9,6 +9,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 using SevenGame.Utility;
+using System.Reflection;
 
 namespace SeleneGame.Core.UI {
     
@@ -26,6 +27,9 @@ namespace SeleneGame.Core.UI {
         [SerializeField] private List<WeaponCase> weapons = new List<WeaponCase>();
 
         private Action<Weapon> onWeaponSelected;
+
+
+        // private static void 
 
 
 
@@ -59,7 +63,7 @@ namespace SeleneGame.Core.UI {
         public void ReplaceWeapon(int index, ArmedEntity armedEntity) {
 
             onWeaponSelected = (selectedWeapon) => {
-                armedEntity.weapons.Set(index, selectedWeapon);
+                armedEntity.weapons.Set(index, selectedWeapon?.GetType() ?? null);
                 OnCancel();
             };
 
@@ -89,37 +93,19 @@ namespace SeleneGame.Core.UI {
                 GameUtility.SafeDestroy(weapon.gameObject);
             }
             weapons = new();
+
             
-            Weapon.GetDefaultAssetAsync( (defaultWeapon) => {
+            CreateWeaponCase(new UnarmedWeapon(null, null));
+            ResetGamePadSelection();
 
-                    // Get the Default Weapon (corresponds to an empty slot, should be in the first space)
-                    CreateWeaponCase(null);
-                    ResetGamePadSelection();
+            foreach (Type weaponType in Weapon._types) {
+                if (weaponType == typeof(UnarmedWeapon)) 
+                    continue;
 
-                    // and then get all the other weapons.
-                    Weapon.GetAssets( (weapon) => {
-
-                            if ( !weapon.accessibleInGame ) return;
-
-                            // Don't include this weapon if it is already included.
-                            if ( weapons.Exists( (existingCase) => { return existingCase.nameText == weapon.name; }) ) 
-                                return;
-
-                            // If the weapon is already equipped, show the current slot index on the weapon case
-                            int index = -1;
-                            for (int i = 0; i < equippedWeapons.Count; i++) {
-                                Weapon equippedWeapon = equippedWeapons[i];
-                                if ( equippedWeapon != null && equippedWeapon.name == weapon.name ) {
-                                    index = i;
-                                    break;
-                                }
-                            }
-
-                            CreateWeaponCase(weapon, index);
-                        }
-                    );
-                }
-            );
+                ConstructorInfo constructor = weaponType.GetConstructor( new Type[] {typeof(ArmedEntity), typeof(WeaponCostume)});
+                Weapon weapon = constructor.Invoke( new object[] {null, null}) as Weapon;
+                CreateWeaponCase(weapon);
+            }
 
 
         }

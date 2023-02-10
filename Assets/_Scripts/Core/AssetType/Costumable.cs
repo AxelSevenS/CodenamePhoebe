@@ -3,103 +3,64 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using SevenGame.Utility;
+using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEngine.AddressableAssets;
+using UnityEditor;
 
 namespace SeleneGame.Core {
 
-    public abstract class Costumable<T, TCostume> : InstantiableAsset<T>, IDisposable where T : Costumable<T, TCostume> where TCostume : Costume<TCostume> {
+    public abstract class Costumable : IDisposable {
 
 
-        private static Dictionary<string, T> _identifiedCostumables = new Dictionary<string, T>();
-        
-        
-        [Header("Info")]
-
-        [SerializeField] protected TCostume _baseCostume;
-
-        [SerializeField] protected string _displayName = "Default Name";
-        [SerializeField] [TextArea] protected string _description = "Default Description";
-
-
-        [Header("Instance Data")]
-        
-        [SerializeField] [ReadOnly] protected Entity _entity;
-
-        [SerializeField] [ReadOnly] protected TCostume _costume;
 
         private bool disposedValue;
 
+        
+        public abstract string internalName { get; }
 
+        public abstract string displayName { get; }
+        public abstract string description { get; }
 
-        public TCostume baseCostume {
-            get => _baseCostume;
-            set {
-                _baseCostume = value;
+        
+
+        private string GetAnimationPath(string assetName) => @$"Animations/{internalName}/{assetName}";
+        private string GetDefaultAnimationPath(string assetName) => @$"Animations/Default/{assetName}";
+        
+        public AnimationClip GetAnimation(string assetName) {
+
+            // if ( !AddressablesHelper.AddressableAssetExists<AnimationClip>( GetAnimationPath(assetName) ) )
+            //     return Fallback();
+
+            // Get Requested Animation
+            AsyncOperationHandle<AnimationClip> opHandle = Addressables.LoadAssetAsync<AnimationClip>( GetAnimationPath(assetName) );
+
+            AnimationClip result = opHandle.WaitForCompletion();
+
+            // If not found, get Default Asset
+            if (result == null) {
+                // Debug.LogWarning($"Error getting Asset {GetAnimationPath(assetName)}");
+                return GetDefaultAnimation(assetName);
             }
+
+            return result;
         }
+        public AnimationClip GetDefaultAnimation(string assetName) {
 
-        public string displayName => _displayName;
-        public string description => _description;
+            Debug.Log($"Getting Default Animation {GetDefaultAnimationPath(assetName)}");
+            AsyncOperationHandle<AnimationClip> opHandle = Addressables.LoadAssetAsync<AnimationClip>( GetDefaultAnimationPath(assetName) );
+            AnimationClip defaultAnim = opHandle.WaitForCompletion();
 
-        public TCostume costume => _costume;
-
-    
-        public static T GetInstanceWithId(string id) {
-            if ( _identifiedCostumables.ContainsKey(id) )
-                return _identifiedCostumables[id];
-
-            return null;
-        }
-
-        public static void SetInstanceWithId(string id, T costumable) {
-            _identifiedCostumables[id] = costumable;
-        }
-
-
-        public static T Initialize( T costumable, Entity entity, TCostume costume = null) {
-            if ( costumable == null )
+            if (defaultAnim == null) {
+                Debug.LogError($"Error getting default Asset {GetDefaultAnimationPath(assetName)}");
                 return null;
-
-            if ( !costumable.isInstance )
-                return Initialize( GetInstanceOf(costumable), entity, costume) ;
-
-            if (costumable._entity != null)
-                throw new InvalidOperationException($"Asset {costumable.name} already initialized");
-
-            costumable._entity = entity;
-            costumable.SetCostume( costume ?? costumable.baseCostume );
-
-            costumable.Setup();
-
-            return costumable;
-        }
-
-        protected virtual void Setup() {;}
-
-
-        public void SetCostume(string costumeName) {
-            SetCostume(Costume<TCostume>.GetInstance(costumeName));
-        }
-
-        public virtual void SetCostume(TCostume costume) {
-
-            try {
-                costume = Costume<TCostume>.Initialize( costume, _entity );
-            } catch (Exception e) {
-                Debug.LogError(e);
-                return;
             }
 
-            _costume?.UnloadModel();
-
-            _costume = costume;
-            _costume.LoadModel();
+            return defaultAnim;
         }
 
 
-        public void LoadModel() => _costume?.LoadModel();
-
-        public void UnloadModel() => _costume?.UnloadModel();
-
+        public virtual void Update(){;}
+        public virtual void FixedUpdate(){;}
         
 
         protected void Dispose(bool disposing) {
@@ -112,13 +73,84 @@ namespace SeleneGame.Core {
             }
         }
 
-        protected virtual void DisposeBehavior() {
-            UnloadModel();
-        }
+        protected abstract void DisposeBehavior();
 
         public void Dispose() {
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
+        }
+    }
+
+    [Serializable]
+    public abstract class Costumable<T, TCostume, TModel> : Costumable where T : Costumable<T, TCostume, TModel> where TCostume : Costume<TCostume> where TModel : CostumeModel<TCostume> {
+
+
+
+        private static Dictionary<string, T> _identifiedCostumables = new Dictionary<string, T>();
+        public static readonly List<Type> _types = new List<Type>();
+
+
+
+        protected TCostume _baseCostume;
+        [SerializeReference] protected TModel _model;
+        
+
+
+        public TCostume baseCostume {
+            get {
+                _baseCostume ??= GetBaseCostume() ?? GetDefaultCostume();
+                return _baseCostume;
+            }
+            // protected internal set => _baseCostume = value;
+        }
+
+        public TModel model {
+            get {
+                if ( _model == null )
+                    SetCostume(baseCostume);
+                return _model;
+            }
+        }
+
+
+
+        static Costumable() {
+            _types = new();
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies()) {
+                foreach (var type in assembly.GetTypes()) {
+                    if (typeof(T).IsAssignableFrom(type) && !type.IsAbstract) {
+                        _types.Add(type);
+                    }
+                }
+            }
+        }
+
+
+
+        public abstract TCostume GetBaseCostume();
+
+        public static TCostume GetDefaultCostume() => Costume<TCostume>.GetDefaultAsset()/*  ?? new TCostume() */; 
+
+
+
+
+        public void SetCostume(string costumeName) {
+            SetCostume(Costume<TCostume>.GetAsset(costumeName));
+        }
+
+        public abstract void SetCostume(TCostume costume);
+
+
+    
+        public static T GetInstanceWithId(string id) {
+            if ( _identifiedCostumables.ContainsKey(id) )
+                return _identifiedCostumables[id];
+
+            return null;
+        }
+
+        public static void SetInstanceWithId(string id, T costumable) {
+            _identifiedCostumables[id] = costumable;
         }
     }
     

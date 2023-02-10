@@ -44,7 +44,7 @@ namespace SeleneGame.Core {
             }
 
             const float regularFallMultiplier = 3.25f;
-            const float fallingMultiplier = 2f;
+            const float fallingMultiplier = 1.7f;
             
             float floatingMultiplier = regularFallMultiplier * fallGravityMultiplier * entity.gravityMultiplier;
             float multiplier = floatingMultiplier * (entity.fallVelocity >= 0 ? 1f : fallingMultiplier);

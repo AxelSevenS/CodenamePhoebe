@@ -5,6 +5,7 @@ using UnityEngine;
 using SeleneGame.Core;
 
 using SevenGame.Utility;
+using System;
 
 namespace SeleneGame.Content {
 
@@ -13,22 +14,22 @@ namespace SeleneGame.Content {
 
         private WeaponIndex _currentIndex;
 
-        [SerializeReference] [ReadOnly] public Weapon primaryWeapon;
-        [SerializeReference] [ReadOnly] public Weapon secondaryWeapon;
-        [SerializeReference] [ReadOnly] public Weapon tertiaryWeapon;
+        [SerializeReference] public Weapon primaryWeapon;
+        [SerializeReference] public Weapon secondaryWeapon;
+        [SerializeReference] public Weapon tertiaryWeapon;
 
         public override int Count => 3;
 
         public override Weapon Get(int index) {
             switch (index) {
                 case (int)WeaponIndex.primary:
-                    return primaryWeapon;
+                    return primaryWeapon ?? defaultWeapon;
                 case (int)WeaponIndex.secondary:
-                    return secondaryWeapon;
+                    return secondaryWeapon ?? defaultWeapon;
                 case (int)WeaponIndex.tertiary:
-                    return tertiaryWeapon;
+                    return tertiaryWeapon ?? defaultWeapon;
                 default:
-                    return null;
+                    return defaultWeapon;
             }
         }
 
@@ -39,21 +40,21 @@ namespace SeleneGame.Content {
             Switch((int)WeaponIndex.primary);
         }
 
-        public override void Set(int index, Weapon weapon, WeaponCostume costume = null){
-            weapon = Weapon.Initialize(weapon, entity, costume);
+        public override void Set(int index, Type weaponType, WeaponCostume costume = null){
+            // weapon = Weapon.Initialize(weapon, entity, costume);
             try {
                 switch (index) {
                     case (int)WeaponIndex.primary:
                         primaryWeapon?.Dispose();
-                        primaryWeapon = weapon;
+                        primaryWeapon = Weapon.CreateInstance(weaponType, entity, costume);
                         break;
                     case (int)WeaponIndex.secondary:
                         secondaryWeapon?.Dispose();
-                        secondaryWeapon = weapon;
+                        secondaryWeapon = Weapon.CreateInstance(weaponType, entity, costume);
                         break;
                     case (int)WeaponIndex.tertiary:
                         tertiaryWeapon?.Dispose();
-                        tertiaryWeapon = weapon;
+                        tertiaryWeapon = Weapon.CreateInstance(weaponType, entity, costume);
                         break;
                     default:
                         throw new System.IndexOutOfRangeException($"Index {index} is out of range for MaskedWeaponInventory");
@@ -66,7 +67,7 @@ namespace SeleneGame.Content {
         public override void Remove(int index) {
             try {
                 Get(index)?.Dispose();
-                Set(index, weapon: null);
+                Set(index, null);
             } catch (System.Exception e) {
                 Debug.LogError($"Error removing weapon at index {index} in WeaponInventory : {e.Message}.");
             }
@@ -75,9 +76,9 @@ namespace SeleneGame.Content {
         public override void Switch(int index){
             if (index == (int)_currentIndex) return;
 
-            current.Hide();
+            current.OnUnequip();
             _currentIndex = (WeaponIndex)index;
-            current.Display();
+            current.OnEquip();
         }
 
         public override IEnumerator GetEnumerator() => new MaskedWeaponInventoryEnumerator(this);

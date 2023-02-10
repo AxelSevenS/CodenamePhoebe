@@ -36,7 +36,6 @@ namespace SeleneGame.Content {
         }
         protected override void UnloadModel(){
             base.UnloadModel();
-
         }
 
         public override void SetStyle(int style){;}

@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace SeleneGame.Core {
 
-    public abstract class Costume<T> : InstantiableAsset<T> where T : Costume<T> {
+    public abstract class Costume<T> : AddressableAsset<T> where T : Costume<T> {
 
         [Tooltip("The Portrait of the Costume, used as a preview in menus.")]
         public Sprite portrait;
@@ -18,31 +18,6 @@ namespace SeleneGame.Core {
         [TextArea] 
         public string description = "Default Costume Description";
 
-        [SerializeField] [ReadOnly] protected Entity _entity;
-
-        
-
-        public static T Initialize( T costume, Entity entity ) {
-            if ( costume == null )
-                return null;
-
-            if ( !costume.isInstance )
-                return Initialize(GetInstanceOf(costume), entity);
-
-            if ( costume._entity != null )
-                throw new InvalidOperationException($"Asset {costume.name} already initialized");
-
-            costume._entity = entity;
-            costume.Setup();
-
-            return costume;
-        }
-
-        protected virtual void Setup() {;}
-
-        public abstract void LoadModel();
-
-        public abstract void UnloadModel();
 
     }
 }

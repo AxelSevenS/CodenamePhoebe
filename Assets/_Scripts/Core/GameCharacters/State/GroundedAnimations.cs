@@ -18,6 +18,26 @@ namespace SeleneGame.Core {
         [SerializeField] [HideInInspector] private LinearMixerState _movementStopMixer;
         [SerializeField] [HideInInspector] private AnimancerState _idleState;
 
+        private AnimationClip _fallAnimation;
+
+        public AnimationClip fallAnimation {
+            get {
+                if ( _fallAnimation == null )
+                    _fallAnimation = entity.character?.GetAnimation("Fall");
+                return _fallAnimation;
+            }
+        }
+
+
+        private AnimationClip _landAnimation;
+
+        public AnimationClip landAnimation {
+            get {
+                if ( _landAnimation == null )
+                    _landAnimation = entity.character?.GetAnimation("Land");
+                return _landAnimation;
+            }
+        }
 
 
         protected AnimancerLayer layer {
@@ -32,7 +52,7 @@ namespace SeleneGame.Core {
         protected AnimancerState idleState {
             get {
                 if (_idleState == null) {
-                    _idleState = layer.GetOrCreateState(entity.character.animations.idleAnimation);
+                    _idleState = layer.GetOrCreateState(entity.character.GetAnimation("Idle"));
                 }
                 return _idleState;
             }
@@ -44,9 +64,9 @@ namespace SeleneGame.Core {
 
                     _movementStartMixer = new LinearMixerState();
                     _movementStartMixer.Initialize(
-                        entity.character.animations.moveStartSlowAnimation,
-                        entity.character.animations.moveStartAnimation,
-                        entity.character.animations.moveStartFastAnimation,
+                        entity.character.GetAnimation("MoveSlowStart"),
+                        entity.character.GetAnimation("MoveNormalStart"),
+                        entity.character.GetAnimation("MoveFastStart"),
                         1f,
                         2f,
                         3f
@@ -66,9 +86,9 @@ namespace SeleneGame.Core {
 
                     _movementMixer = new LinearMixerState();
                     _movementMixer.Initialize(
-                        entity.character.animations.moveCycleSlowAnimation,
-                        entity.character.animations.moveCycleAnimation,
-                        entity.character.animations.moveCycleFastAnimation,
+                        entity.character.GetAnimation("MoveSlowCycle"),
+                        entity.character.GetAnimation("MoveNormalCycle"),
+                        entity.character.GetAnimation("MoveFastCycle"),
                         1f,
                         2f,
                         3f
@@ -88,9 +108,9 @@ namespace SeleneGame.Core {
 
                     _movementStopMixer = new LinearMixerState();
                     _movementStopMixer.Initialize(
-                        entity.character.animations.moveStopSlowAnimation,
-                        entity.character.animations.moveStopAnimation,
-                        entity.character.animations.moveStopFastAnimation,
+                        entity.character.GetAnimation("MoveSlowStop"),
+                        entity.character.GetAnimation("MoveNormalStop"),
+                        entity.character.GetAnimation("MoveFastStop"),
                         1f,
                         2f,
                         3f
@@ -116,7 +136,7 @@ namespace SeleneGame.Core {
                     MovementStartAnimation(movementSpeed);
                 }
             } else {
-                layer.Play(entity.character?.animations.fallAnimation, 0.3f);
+                layer.Play(fallAnimation, 0.3f);
             }
         }
 
@@ -176,17 +196,8 @@ namespace SeleneGame.Core {
                 DefaultAnimationState();
             }
 
-            // if ( !entity.onGround ) {
-            //     movementMixer.Stop();
-            //     movementStartMixer.Stop();
-            //     movementStopMixer.Stop();
-
-            //     if ( Vector3.Dot(entity.rigidbody.velocity, entity.gravityDown) > 0.2f )
-            //         layer.Play(entity.character?.fallAnimation, 0.25f);
-            // }
-
             if ( entity.onGround.started ) {
-                AnimancerState landState = layer.Play(entity.character.animations.landAnimation, 0.1f);
+                AnimancerState landState = layer.Play(landAnimation, 0.1f);
                 landState.Events.OnEnd = () => {
                     DefaultAnimationState();
                 };

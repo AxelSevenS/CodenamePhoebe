@@ -13,9 +13,6 @@ namespace SeleneGame.Core {
         
         public const float HOLD_TIME = 0.2f;
 
-        public static bool IsBindPressed(this InputActionMap controlMap, string bindName) => controlMap[bindName].ReadValue<float>() > 0;
-        public static bool IsActuated(this InputAction action) => action.ReadValue<float>() > 0;
-
 
         public static float mouseSpeed = 1f;
         public static float stickSpeed = 5f;
@@ -44,6 +41,9 @@ namespace SeleneGame.Core {
             playerMap.actionTriggered += ctx => ControllerAction(ctx);
             uiMap.actionTriggered += ctx => ControllerAction(ctx);
         }
+
+        public static bool IsBindPressed(this InputActionMap controlMap, string bindName) => controlMap[bindName].ReadValue<float>() > 0;
+        public static bool IsActuated(this InputAction action) => action.ReadValue<float>() > 0;
 
 
         public static void UpdateKeybind(Guid keybindId){

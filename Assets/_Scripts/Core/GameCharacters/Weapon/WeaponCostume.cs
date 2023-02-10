@@ -6,25 +6,20 @@ using SevenGame.Utility;
 
 namespace SeleneGame.Core {
     
-    [CreateAssetMenu(fileName = "new Weapon Costume", menuName = "Costume/Weapon")]
-    public class WeaponCostume : Costume<WeaponCostume> {
-        
-        [SerializeField] private GameObject model;
+    public abstract class WeaponCostume : Costume<WeaponCostume> {
 
         public Weapon.WeaponType equippableOn;
 
-        [ReadOnly] public GameObject modelInstance;
+        public abstract CostumeModel<WeaponCostume> LoadModel(Entity entity, Weapon weapon);
 
+    }
 
-
-        public override void LoadModel() {
-            if (model != null) {
-                modelInstance = Instantiate(model, _entity["handRight"].transform);
-            }
-        }
-
-        public override void UnloadModel() {
-            modelInstance = GameUtility.SafeDestroy(modelInstance);
+    public abstract class WeaponModel : CostumeModel<WeaponCostume> {
+        
+        [ReadOnly] public Weapon weapon;
+        
+        public WeaponModel(Entity entity, Weapon weapon, WeaponCostume costume) : base(costume) {
+            this.weapon = weapon;
         }
 
     }

@@ -4,11 +4,18 @@ using UnityEngine;
 
 namespace SeleneGame.Core {
     
-    [CreateAssetMenu(fileName = "Unarmed", menuName = "Weapon/Unarmed")]
-    public sealed class UnarmedWeapon : Weapon{
+    public sealed class UnarmedWeapon : Weapon {
 
-        public override void Display() {;}
-        public override void Hide() {;}
+        public override string internalName => "Unarmed";
+
+        public override string displayName => "None";
+
+        public override string description => "Fighting with bare hands? Gutsy move, but you'll have to make do with what you have";
+
+        public UnarmedWeapon(Entity entity, WeaponCostume costume = null) : base(entity, costume) {
+        }
+
+        public override WeaponCostume GetBaseCostume() => WeaponCostume.GetAsset("Unarmed_Base");
 
     }
 }

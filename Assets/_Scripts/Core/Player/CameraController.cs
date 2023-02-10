@@ -14,9 +14,9 @@ namespace SeleneGame.Core {
         public Camera camera;
         public UniversalAdditionalCameraData cameraData;
 
-        private Quaternion entityRotation;
-        private Vector3 delayedPosition;
-        private Vector3 cameraVector;
+        private Quaternion entityRotation = Quaternion.identity;
+        private Vector3 delayedPosition = Vector3.zero;
+        private Vector3 cameraVector = Vector3.zero;
         [SerializeField]private float distanceToPlayer = 1f; 
         [SerializeField]private float fov = 90f;
 
@@ -48,8 +48,9 @@ namespace SeleneGame.Core {
             UpdateCameraPosition();
         }
         private void UpdateCameraDistance(){
+            Debug.Log(PlayerEntityController.current.entity.character.baseSpeed);
             Vector3 cameraRelativePosition = PlayerEntityController.current.entity.state.cameraPosition;
-            Vector3 cameraTargetVector = new Vector3( cameraRelativePosition.x, cameraRelativePosition.y, cameraRelativePosition.z * distanceToPlayer -additionalDistance);
+            Vector3 cameraTargetVector = new Vector3( cameraRelativePosition.x, cameraRelativePosition.y, cameraRelativePosition.z * distanceToPlayer - additionalDistance);
 
             cameraVector = Vector3.Slerp(cameraVector, cameraTargetVector, 3f * GameUtility.timeDelta);
         }
@@ -77,6 +78,7 @@ namespace SeleneGame.Core {
                 
                 camDistance = collisionToPlayer.magnitude - camMargin;
             }
+
 
             Vector3 finalPos = delayedPosition + camPosition.normalized * camDistance;
             
