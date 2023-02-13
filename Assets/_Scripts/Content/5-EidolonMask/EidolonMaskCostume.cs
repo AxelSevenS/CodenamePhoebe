@@ -18,7 +18,6 @@ namespace SeleneGame.Content {
     public abstract class EidolonMaskModel : CostumeModel<EidolonMaskCostume> {
 
         public readonly EidolonMask mask;
-        protected Transform headTransform => mask.maskedEntity["head"]?.transform ?? null;
 
 
         public EidolonMaskModel(EidolonMask mask, EidolonMaskCostume costume) : base(costume) {

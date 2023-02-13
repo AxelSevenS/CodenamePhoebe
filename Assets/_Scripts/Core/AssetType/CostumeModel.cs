@@ -10,7 +10,7 @@ namespace SeleneGame.Core {
     public abstract class CostumeModel<TCostume> : IDisposable where TCostume : Costume<TCostume> {
 
         private bool disposedValue;
-        [SerializeField] [ReadOnly] protected readonly TCostume _costume;
+        [SerializeField] [ReadOnly] protected TCostume _costume;
         [SerializeField] [ReadOnly] protected CostumeData _costumeData;
 
 

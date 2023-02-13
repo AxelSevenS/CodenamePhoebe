@@ -14,9 +14,9 @@ namespace SeleneGame.Content {
 
         private WeaponIndex _currentIndex;
 
-        [SerializeReference] public Weapon primaryWeapon;
-        [SerializeReference] public Weapon secondaryWeapon;
-        [SerializeReference] public Weapon tertiaryWeapon;
+        [SerializeReference] private Weapon primaryWeapon;
+        [SerializeReference] private Weapon secondaryWeapon;
+        [SerializeReference] private Weapon tertiaryWeapon;
 
         public override int Count => 3;
 

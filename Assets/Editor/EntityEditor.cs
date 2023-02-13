@@ -13,48 +13,31 @@ namespace SeleneGame.Core {
     public class EntityEditor : Editor {
 
         private Entity targetEntity;
-        private SerializedProperty soSelectedCharacter;
-        private SerializedProperty soSelectedCharacterCostume;
         private SerializedProperty soAnimator;
         private SerializedProperty soAnimancer;
         private SerializedProperty soRigidbody;
         private SerializedProperty soPhysicsComponent;
+
+
         private bool foldout = true;
 
-
-        private static List<Type> characterTypes = new List<Type>();
-        // private static List<ConstructorInfo> characterConstructors = new List<ConstructorInfo>();
         private static string[] characterOptions;
         int characterTypeIndex = 0;
-
-        CharacterCostume selectedCharacterCostume = null;
 
 
         [UnityEditor.Callbacks.DidReloadScripts]
         private static void PopulateOptions() {
-
-            characterTypes = new();
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies()) {
-                foreach (var type in assembly.GetTypes()) {
-                    if (typeof(Character).IsAssignableFrom(type) && !type.IsAbstract) {
-                        characterTypes.Add(type);
-                    }
-                }
-            }
             
-            characterOptions = new string[characterTypes.Count + 1];
+            characterOptions = new string[Character._types.Count + 1];
             characterOptions[0] = "None";
-            for (int i = 0; i < characterTypes.Count; i++) {
-                characterOptions[i + 1] = characterTypes[i].Name;
+            for (int i = 0; i < Character._types.Count; i++) {
+                characterOptions[i + 1] = Character._types[i].Name;
             }
             
         }
 
 
         private void OnEnable() {
-
-            soSelectedCharacter = serializedObject.FindProperty("m_selectedCharacter");
-            soSelectedCharacterCostume = serializedObject.FindProperty("m_selectedCharacterCostume");
             soAnimator = serializedObject.FindProperty("_animator");
             soAnimancer = serializedObject.FindProperty("_animancer");
             soRigidbody = serializedObject.FindProperty("_rigidbody");
@@ -68,10 +51,8 @@ namespace SeleneGame.Core {
         private void UpdateCharacterInfo() {
             if (targetEntity.character == null) {
                 characterTypeIndex = 0;
-                selectedCharacterCostume = null;
             } else {
-                characterTypeIndex = characterTypes.IndexOf(targetEntity.character.GetType()) + 1;
-                selectedCharacterCostume = targetEntity.character?.model?.costume;
+                characterTypeIndex = Character._types.IndexOf(targetEntity.character.GetType()) + 1;
             }
         }
 
@@ -88,24 +69,11 @@ namespace SeleneGame.Core {
             if (EditorGUI.EndChangeCheck()) {
                 if (characterTypeIndex == 0) {
                     targetEntity.SetCharacter(null);
-                } else if (characterTypes[characterTypeIndex - 1] != null) {
-                    targetEntity.SetCharacter( characterTypes[characterTypeIndex - 1] );
+                } else if (Character._types[characterTypeIndex - 1] != null) {
+                    targetEntity.SetCharacter( Character._types[characterTypeIndex - 1] );
                 }
                 UpdateCharacterInfo();
             }
-
-
-
-            EditorGUI.BeginChangeCheck();
-            
-            selectedCharacterCostume = EditorGUILayout.ObjectField(new GUIContent("Set Character Costume", "Use this to Switch the Character Costume of the Entity"), selectedCharacterCostume, typeof(CharacterCostume), false) as CharacterCostume;
-
-            if ( EditorGUI.EndChangeCheck() ) {
-                targetEntity.SetCostume( selectedCharacterCostume );
-                UpdateCharacterInfo();
-            }
-
-
 
 
             EditorGUILayout.Space(15f);

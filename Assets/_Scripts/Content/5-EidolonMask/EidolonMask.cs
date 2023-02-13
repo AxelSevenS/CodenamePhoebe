@@ -13,9 +13,9 @@ namespace SeleneGame.Content {
 
 
         [Header("Mask Data")]
-        public readonly MaskedEntity maskedEntity;
+        [SerializeField] private MaskedEntity _maskedEntity;
 
-
+        public MaskedEntity maskedEntity => _maskedEntity;
 
         public float maskPosT { get; protected set;} = 1f;
         public bool faceState { get; protected set;} = false;
@@ -32,7 +32,7 @@ namespace SeleneGame.Content {
 
 
         public EidolonMask(MaskedEntity maskedEntity) {
-            this.maskedEntity = maskedEntity;
+            _maskedEntity = maskedEntity;
         }
 
 

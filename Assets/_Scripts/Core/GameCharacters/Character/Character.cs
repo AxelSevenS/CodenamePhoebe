@@ -13,9 +13,11 @@ namespace SeleneGame.Core {
 
     public abstract class Character : Costumable<Character, CharacterCostume, CharacterModel> {
 
-        public readonly Entity entity;
+        [SerializeField] private Entity _entity;
 
 
+
+        public Entity entity => _entity;
 
         public virtual float maxHealth => 100f;
         public virtual Vector3 size => new Vector3(0.5f, 2f, 0.5f);
@@ -34,16 +36,18 @@ namespace SeleneGame.Core {
         public virtual float evadeCooldown => 0.01f;
 
 
-
         public float totalEvadeDuration => evadeDuration + evadeCooldown;
 
+        
+
         public Character(Entity entity, CharacterCostume costume = null) {
-            this.entity = entity;
+            _entity = entity;
             SetCostume(costume ?? baseCostume);
         }
 
         public override void SetCostume(CharacterCostume costume) {
             _model?.Dispose();
+            Debug.Log(costume);
             _model = (CharacterModel)costume?.LoadModel(entity) ?? null;
         }
 

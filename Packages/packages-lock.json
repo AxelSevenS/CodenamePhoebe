@@ -20,16 +20,14 @@
       "dependencies": {
         "com.seven.utility": "0.0.1"
       },
-      "hash": "323da32564cc721a77c838b3afd806d2dee60993"
+      "hash": "30871263c15bd37c87fa98d57ad1b4e69238cf67"
     },
     "com.seven.saving-system": {
       "version": "https://github.com/AxelSevenS/SaveSystem.git",
       "depth": 0,
       "source": "git",
-      "dependencies": {
-        "com.seven.utility": "0.0.1"
-      },
-      "hash": "39176f73666521dad652106c10409d20bed51c6f"
+      "dependencies": {},
+      "hash": "fdcd2bc1401eb34a79832e02303aa16308be0d3e"
     },
     "com.seven.scribe": {
       "version": "https://github.com/AxelSevenS/Scribe.git",
@@ -38,14 +36,14 @@
       "dependencies": {
         "com.seven.utility": "0.0.1"
       },
-      "hash": "1282f659df2893f8611801d51d6eba682ec33203"
+      "hash": "3282edb28d67b5a7d72f4198dff3759eea108479"
     },
     "com.seven.utility": {
       "version": "https://github.com/AxelSevenS/Utility-Package.git",
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "9ef5bb739e01c7689b45315b52332d042cadd55b"
+      "hash": "25ca0d3964597e312281a172fa7e87be5e7e2d8d"
     },
     "com.unity.2d.sprite": {
       "version": "1.0.0",

@@ -317,14 +317,23 @@ namespace SeleneGame.Core {
             // if ( characterType == null || !typeof(Character).IsAssignableFrom(characterType) )
             //     throw new System.ArgumentNullException("characterType");
 
-            bool isPlayer = Character.GetInstanceWithId("Player") == _character;
 
             _character?.Dispose();
+            _character = null;
+
+
+            if (characterType == null)
+                return;
 
             // I don't like doing this but this is cleaner than any other way I've found
             // Every other way I've tried implies hard to read code with Setups and a lot of uncertainty
             // Also this is fast enough that it doesn't matter
             ConstructorInfo constructor = characterType.GetConstructor(new Type[] { typeof(Entity), typeof(CharacterCostume) });
+            if (constructor == null)
+                return;
+
+            bool isPlayer = Character.GetInstanceWithId("Player") == _character;
+
             _character = constructor.Invoke(new object[] { this, costume }) as Character;
 
             if (isPlayer)

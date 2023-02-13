@@ -10,25 +10,20 @@ namespace SeleneGame.Core {
     
     public abstract class Weapon : Costumable<Weapon, WeaponCostume, WeaponModel> {
 
-        public readonly Entity entity;
+        [SerializeField] private Entity _entity;
+
+
+
+        public Entity entity => _entity;
+
 
         public virtual WeaponType weaponType => WeaponType.Sparring;
         public virtual float weight => 1f;
-
-
-        // [SerializeReference] protected WeaponCostumeModel _model;
-
-        // public WeaponCostumeModel model {
-        //     get {
-        //         if ( _model == null )
-        //             SetCostume(baseCostume);
-        //         return _model;
-        //     }
-        // }
+        
 
 
         public Weapon(Entity entity, WeaponCostume costume = null) {
-            this.entity = entity;
+            _entity = entity;
             SetCostume(costume ?? baseCostume);
         }
 
