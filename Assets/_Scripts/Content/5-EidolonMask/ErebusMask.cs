@@ -8,8 +8,8 @@ namespace SeleneGame.Masks {
 
     // [CreateAssetMenu(fileName = "Erebus", menuName = "Masks/Erebus")]
     public class ErebusMask : EidolonMask {
-        
-        public ErebusMask(MaskedEntity maskedEntity) : base(maskedEntity) {
+
+        public ErebusMask(MaskedEntity maskedEntity, EidolonMaskCostume costume = null) : base(maskedEntity, costume) {
         }
 
         public override string internalName => "Erebus";

@@ -22,7 +22,7 @@ namespace SeleneGame.Content {
 
         [ReadOnly] private GameObject _model;
         [ReadOnly] private Animator _animator;
-        protected Transform headTransform => mask.maskedEntity["head"]?.transform ?? null;
+        private Transform headTransform => mask.maskedEntity["head"]?.transform ?? null;
 
         public override Transform mainTransform => _model.transform;
 

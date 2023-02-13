@@ -31,7 +31,7 @@ namespace SeleneGame.Content {
         public Vector3 leftPosition => maskedEntity.modelTransform.rotation * new Vector3(-1.2f, 1.3f, -0.8f);
 
 
-        public EidolonMask(MaskedEntity maskedEntity) {
+        public EidolonMask(MaskedEntity maskedEntity, EidolonMaskCostume costume = null) : base(costume) {
             _maskedEntity = maskedEntity;
         }
 

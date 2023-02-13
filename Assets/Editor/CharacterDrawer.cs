@@ -9,22 +9,36 @@ namespace SeleneGame.Core {
 
         public override void SetValue(SerializedProperty property, int typeIndex) {
 
-            
-            Entity entityRef =
-                (targetCostumable as Character)?.entity ??
-                (Entity)GetParent(property) ?? 
-                ((MonoBehaviour)property.serializedObject.targetObject).GetComponent<Entity>();
-
-
             ((Character)property.managedReferenceValue)?.Dispose();
+
 
             if (typeIndex <= -1) {
                 property.managedReferenceValue = null;
                 return;
             }
 
+            
+            Entity entityRef = (targetCostumable as Character)?.entity;
+
+            if (entityRef == null) {
+
+                Debug.LogWarning($"Character {property.managedReferenceValue} has nulled-out Entity Reference. Not good.");
+
+                MonoBehaviour targetObject = (MonoBehaviour)property.serializedObject.targetObject;
+                entityRef ??= targetObject.GetComponent<Entity>();
+
+            }
+
             Type type = Character._types[typeIndex];
-            entityRef.SetCharacter( type );
+            if (entityRef == null) {
+                Debug.LogError($"No Entity found for Character {property.managedReferenceValue}");
+
+                // property.managedReferenceValue = Character.CreateInstance(type, entityRef);
+            } else {
+
+                entityRef.SetCharacter( type );
+            }
+
         }
     }
 }

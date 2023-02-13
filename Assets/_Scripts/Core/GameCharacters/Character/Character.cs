@@ -40,9 +40,8 @@ namespace SeleneGame.Core {
 
         
 
-        public Character(Entity entity, CharacterCostume costume = null) {
+        public Character(Entity entity, CharacterCostume costume = null) : base(costume) {
             _entity = entity;
-            SetCostume(costume ?? baseCostume);
         }
 
         public override void SetCostume(CharacterCostume costume) {
