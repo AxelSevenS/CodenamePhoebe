@@ -22,9 +22,9 @@ namespace SeleneGame.Core {
         
 
 
-        public Weapon(ArmedEntity armedEntity, WeaponCostume costume = null) : base(costume) {
+        public Weapon(ArmedEntity armedEntity, WeaponCostume costume = null) {
             _armedEntity = armedEntity;
-            // SetCostume(costume ?? baseCostume);
+            SetCostume(costume ?? baseCostume);
         }
 
 

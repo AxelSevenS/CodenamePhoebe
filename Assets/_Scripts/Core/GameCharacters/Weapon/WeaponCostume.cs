@@ -16,7 +16,7 @@ namespace SeleneGame.Core {
 
     public abstract class WeaponModel : CostumeModel<WeaponCostume> {
         
-        [ReadOnly] public Weapon weapon;
+        [SerializeReference] [HideInInspector] public Weapon weapon;
         
         public WeaponModel(Entity entity, Weapon weapon, WeaponCostume costume) : base(costume) {
             this.weapon = weapon;

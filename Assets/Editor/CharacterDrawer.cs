@@ -22,7 +22,8 @@ namespace SeleneGame.Core {
 
             if (entityRef == null) {
 
-                Debug.LogWarning($"Character {property.managedReferenceValue} has nulled-out Entity Reference. Not good.");
+                if (targetCostumable != null)
+                    Debug.LogWarning($"Character {property.managedReferenceValue} has nulled-out Entity Reference. Not good.");
 
                 MonoBehaviour targetObject = (MonoBehaviour)property.serializedObject.targetObject;
                 entityRef ??= targetObject.GetComponent<Entity>();

@@ -12,7 +12,7 @@ namespace SeleneGame.Content {
     [System.Serializable]
     public class MaskedWeaponInventory : WeaponInventory {
 
-        private WeaponIndex _currentIndex;
+        [SerializeField] [ReadOnly] private WeaponIndex _currentIndex;
 
         [SerializeReference] private Weapon primaryWeapon;
         [SerializeReference] private Weapon secondaryWeapon;

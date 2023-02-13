@@ -23,7 +23,7 @@ namespace SeleneGame.Core {
 
         public SimpleWeaponModel(Entity entity, Weapon weapon, SimpleWeaponCostume costume) : base(entity, weapon, costume) {
             if (entity != null && costume?.model != null)
-                model = GameObject.Instantiate(costume.model, entity.transform, false);
+                model = GameObject.Instantiate(costume.model, entity["weaponRight"].transform, false);
         }
 
         public override void Unload() {

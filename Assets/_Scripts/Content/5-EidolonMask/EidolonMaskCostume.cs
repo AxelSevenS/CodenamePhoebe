@@ -17,11 +17,14 @@ namespace SeleneGame.Content {
 
     public abstract class EidolonMaskModel : CostumeModel<EidolonMaskCostume> {
 
-        public readonly EidolonMask mask;
+        [SerializeReference] [HideInInspector] private EidolonMask _mask;
+
+
+        public EidolonMask mask => _mask;
 
 
         public EidolonMaskModel(EidolonMask mask, EidolonMaskCostume costume) : base(costume) {
-            this.mask = mask;
+            _mask = mask;
         }
     }
 

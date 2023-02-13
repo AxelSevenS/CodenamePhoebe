@@ -19,7 +19,7 @@ namespace SeleneGame.Core {
 
     public abstract class CharacterModel : CostumeModel<CharacterCostume> {
 
-        [ReadOnly] public readonly Entity entity;
+        [ReadOnly] public Entity entity;
 
         public CharacterModel(Entity entity, CharacterCostume costume) : base(costume) {
             this.entity = entity;

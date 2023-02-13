@@ -20,24 +20,31 @@ namespace SeleneGame.Content {
 
     public sealed class SimpleEidolonMaskModel : EidolonMaskModel {
 
-        [ReadOnly] private GameObject _model;
-        [ReadOnly] private Animator _animator;
-        private Transform headTransform => mask.maskedEntity["head"]?.transform ?? null;
+        [SerializeField] [ReadOnly] private GameObject _model;
+        [SerializeField] [ReadOnly] private Animator _animator;
 
+
+        private Transform headTransform => mask.maskedEntity["head"]?.transform ?? null;
         public override Transform mainTransform => _model.transform;
+
 
         public SimpleEidolonMaskModel(EidolonMask mask, SimpleEidolonMaskCostume costume) : base(mask, costume) {
             if (mask != null && costume?.model != null) {
 
-                _model = GameObject.Instantiate(costume.model);
+                _model = GameObject.Instantiate(costume.model, mask.maskedEntity.transform.parent);
+
                 _costumeData = _model.GetComponent<CostumeData>();
+
                 _animator = _model.GetComponent<Animator>();
+                _animator ??= _model.AddComponent<Animator>();
             }
         }
 
         public override void Update() {
 
             base.Update();
+
+            Debug.Log(mask == null);
             
             _model.transform.position = mask.maskedEntity.transform.position;
 
@@ -55,8 +62,12 @@ namespace SeleneGame.Content {
 
             base.FixedUpdate();
 
-            _animator.SetBool("OnFace", mask.onFace);
-            _animator.SetFloat("OnRight", mask.onRight ? 1f : 0f);
+            Debug.Log(mask);
+
+            if (_animator != null) {
+                _animator?.SetBool("OnFace", mask.onFace);
+                _animator?.SetFloat("OnRight", mask.onRight ? 1f : 0f);
+            }
         }
 
         public override void Unload() {

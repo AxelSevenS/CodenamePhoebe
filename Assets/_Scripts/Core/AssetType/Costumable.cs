@@ -105,9 +105,9 @@ namespace SeleneGame.Core {
             }
         }
 
-        public Costumable(TCostume costume) {
-            SetCostume(costume ?? baseCostume);
-        }
+        // protected Costumable(TCostume costume) {
+        //     SetCostume(costume ?? baseCostume);
+        // }
 
 
 
