@@ -10,11 +10,11 @@ namespace SeleneGame.Core {
     
     public abstract class Weapon : Costumable<Weapon, WeaponCostume, WeaponModel> {
 
-        [SerializeField] private Entity _entity;
+        [SerializeField] private ArmedEntity _entity;
 
 
 
-        public Entity entity => _entity;
+        public ArmedEntity entity => _entity;
 
 
         public virtual WeaponType weaponType => WeaponType.Sparring;
@@ -22,7 +22,7 @@ namespace SeleneGame.Core {
         
 
 
-        public Weapon(Entity entity, WeaponCostume costume = null) {
+        public Weapon(ArmedEntity entity, WeaponCostume costume = null) {
             _entity = entity;
             SetCostume(costume ?? baseCostume);
         }
@@ -58,12 +58,6 @@ namespace SeleneGame.Core {
         }
         public virtual void OnUnequip(){
             // Hide();
-        }
-
-
-
-        protected override void DisposeBehavior() {
-            _model?.Dispose();
         }
 
 

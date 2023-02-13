@@ -1,37 +1,37 @@
-using UnityEngine;
-using UnityEditor;
-using System.Reflection;
+// using UnityEngine;
+// using UnityEditor;
+// using System.Reflection;
+// using System;
+// using System.Linq;
+// using System.Collections;
+// using SeleneGame.Core;
 
-[CustomPropertyDrawer(typeof(ButtonAttribute))]
-public class ButtonDrawer : PropertyDrawer {
-	ButtonAttribute battribute;
-	Object obj;
-	Rect buttonRect;
-	Rect valueRect;
+// [CustomPropertyDrawer(typeof(ButtonAttribute))]
+// public class ButtonDrawer : PropertyDrawer {
+	
+// 	private static string[] weaponOptions;
+// 	int weaponTypeIndex = 0;
 
-	public override void OnGUI (Rect position, SerializedProperty property, GUIContent label) {
-		battribute = attribute as ButtonAttribute;
-		obj = property.serializedObject.targetObject;
-		MethodInfo method = obj.GetType().GetMethod(battribute.methodName, battribute.flags);
 
-		if (method == null) {
-			EditorGUI.HelpBox(position, "Method Not Found", MessageType.Error);
+// 	[UnityEditor.Callbacks.DidReloadScripts]
+// 	static ButtonDrawer() {
+// 		Debug.Log("PD");
+// 		weaponOptions = new string[Weapon._types.Count + 1];
+// 		weaponOptions[0] = "None";
+// 		for (int i = 0; i < Weapon._types.Count; i++) {
+// 			weaponOptions[i + 1] = Weapon._types[i].Name;
+// 		}
+		
+// 	}
 
-		} else {
-			if (battribute.useValue) {
-				valueRect = new Rect(position.x, position.y, position.width/2f, position.height);
-				buttonRect = new Rect(position.x + position.width/2f, position.y, position.width/2f, position.height);
+// 	public override void OnGUI (Rect position, SerializedProperty property, GUIContent label) {
+// 		// ButtonAttribute battribute = attribute as ButtonAttribute;
+		
 
-				EditorGUI.PropertyField(valueRect, property, GUIContent.none);
-				if (GUI.Button(buttonRect, battribute.buttonName)) {
-					method.Invoke(obj, new object[]{fieldInfo.GetValue(obj)});
-				}
+// 		EditorGUI.PropertyField(valueRect, property, label, true);
+// 	}
 
-			} else {
-				if (GUI.Button(position, battribute.buttonName)) {
-					method.Invoke(obj, null);
-				}
-			}
-		}
-	}
-}
+// 	public override float GetPropertyHeight(SerializedProperty property, GUIContent label) {
+// 		return EditorGUI.GetPropertyHeight(property, label, true);
+// 	}
+// }

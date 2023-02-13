@@ -50,6 +50,10 @@ namespace SeleneGame.Core {
             }
         }
 
+        public override int IndexOf(Weapon weapon) {
+            return Array.IndexOf(items, weapon);
+        }
+
         public override void Switch(int index){
             if (index == currentIndex) return;
 

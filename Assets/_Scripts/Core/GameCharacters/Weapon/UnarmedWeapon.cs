@@ -12,7 +12,7 @@ namespace SeleneGame.Core {
 
         public override string description => "Fighting with bare hands? Gutsy move, but you'll have to make do with what you have";
 
-        public UnarmedWeapon(Entity entity, WeaponCostume costume = null) : base(entity, costume) {
+        public UnarmedWeapon(ArmedEntity entity, WeaponCostume costume = null) : base(entity, costume) {
         }
 
         public override WeaponCostume GetBaseCostume() => WeaponCostume.GetAsset("Unarmed_Base");

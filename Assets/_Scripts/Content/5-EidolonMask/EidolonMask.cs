@@ -69,10 +69,6 @@ namespace SeleneGame.Content {
             return Physics.SphereCast(maskedEntity.modelTransform.position, 0.35f, position, out _, position.magnitude, Global.GroundMask);
         }
 
-        protected override void DisposeBehavior() {
-            model?.Dispose();
-        }
-
 
         public override void Update() {
             base.Update();

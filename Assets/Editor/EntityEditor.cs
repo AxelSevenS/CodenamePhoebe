@@ -21,20 +21,20 @@ namespace SeleneGame.Core {
 
         private bool foldout = true;
 
-        private static string[] characterOptions;
-        int characterTypeIndex = 0;
+        // private static string[] characterOptions;
+        // int characterTypeIndex = 0;
 
 
-        [UnityEditor.Callbacks.DidReloadScripts]
-        private static void PopulateOptions() {
+        // [UnityEditor.Callbacks.DidReloadScripts]
+        // private static void PopulateOptions() {
             
-            characterOptions = new string[Character._types.Count + 1];
-            characterOptions[0] = "None";
-            for (int i = 0; i < Character._types.Count; i++) {
-                characterOptions[i + 1] = Character._types[i].Name;
-            }
+        //     characterOptions = new string[Character._types.Count + 1];
+        //     characterOptions[0] = "None";
+        //     for (int i = 0; i < Character._types.Count; i++) {
+        //         characterOptions[i + 1] = Character._types[i].Name;
+        //     }
             
-        }
+        // }
 
 
         private void OnEnable() {
@@ -45,35 +45,18 @@ namespace SeleneGame.Core {
 
             targetEntity = (Entity)target;
 
-            UpdateCharacterInfo();
+            // UpdateCharacterInfo();
         }
 
-        private void UpdateCharacterInfo() {
-            if (targetEntity.character == null) {
-                characterTypeIndex = 0;
-            } else {
-                characterTypeIndex = Character._types.IndexOf(targetEntity.character.GetType()) + 1;
-            }
-        }
+        // private void UpdateCharacterInfo() {
+        //     if (targetEntity.character == null) {
+        //         characterTypeIndex = 0;
+        //     } else {
+        //         characterTypeIndex = Character._types.IndexOf(targetEntity.character.GetType()) + 1;
+        //     }
+        // }
 
         public override void OnInspectorGUI(){
-
-
-            EditorGUI.BeginChangeCheck();
-
-            characterTypeIndex = EditorGUILayout.Popup(
-                "Character: ",
-                characterTypeIndex,
-                characterOptions);
-
-            if (EditorGUI.EndChangeCheck()) {
-                if (characterTypeIndex == 0) {
-                    targetEntity.SetCharacter(null);
-                } else if (Character._types[characterTypeIndex - 1] != null) {
-                    targetEntity.SetCharacter( Character._types[characterTypeIndex - 1] );
-                }
-                UpdateCharacterInfo();
-            }
 
 
             EditorGUILayout.Space(15f);
@@ -98,7 +81,7 @@ namespace SeleneGame.Core {
 			}
 		
 			serializedObject.ApplyModifiedProperties();
-            // DrawDefaultInspector();
+            
         }
     }
 }

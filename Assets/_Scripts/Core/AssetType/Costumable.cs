@@ -9,11 +9,7 @@ using UnityEditor;
 
 namespace SeleneGame.Core {
 
-    public abstract class Costumable : IDisposable {
-
-
-
-        private bool disposedValue;
+    public abstract class Costumable {
 
         
         public abstract string internalName { get; }
@@ -61,29 +57,13 @@ namespace SeleneGame.Core {
 
         public virtual void Update(){;}
         public virtual void FixedUpdate(){;}
-        
-
-        protected void Dispose(bool disposing) {
-
-            if (!disposedValue) {
-                if (disposing)
-                    DisposeBehavior();
-
-                disposedValue = true;
-            }
-        }
-
-        protected abstract void DisposeBehavior();
-
-        public void Dispose() {
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
-        }
     }
 
     [Serializable]
     public abstract class Costumable<T, TCostume, TModel> : Costumable where T : Costumable<T, TCostume, TModel> where TCostume : Costume<TCostume> where TModel : CostumeModel<TCostume> {
 
+
+        private bool disposedValue;
 
 
         private static Dictionary<string, T> _identifiedCostumables = new Dictionary<string, T>();
@@ -151,6 +131,26 @@ namespace SeleneGame.Core {
 
         public static void SetInstanceWithId(string id, T costumable) {
             _identifiedCostumables[id] = costumable;
+        }
+        
+
+        protected void Dispose(bool disposing) {
+
+            if (!disposedValue) {
+                if (disposing)
+                    DisposeBehavior();
+
+                disposedValue = true;
+            }
+        }
+
+        protected virtual void DisposeBehavior() {
+            _model?.Dispose();
+        }
+
+        public void Dispose() {
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
     

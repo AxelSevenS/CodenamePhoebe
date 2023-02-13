@@ -47,12 +47,8 @@ namespace SeleneGame.Core {
 
         public override void SetCostume(CharacterCostume costume) {
             _model?.Dispose();
-            Debug.Log(costume);
             _model = (CharacterModel)costume?.LoadModel(entity) ?? null;
         }
 
-        protected override void DisposeBehavior() {
-            model?.Dispose();
-        }
     }
 }

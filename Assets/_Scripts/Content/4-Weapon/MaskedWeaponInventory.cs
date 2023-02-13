@@ -73,6 +73,14 @@ namespace SeleneGame.Content {
             }
         }
 
+        public override int IndexOf(Weapon weapon) {
+            if (weapon == null) return -1;
+            if (weapon == primaryWeapon) return (int)WeaponIndex.primary;
+            if (weapon == secondaryWeapon) return (int)WeaponIndex.secondary;
+            if (weapon == tertiaryWeapon) return (int)WeaponIndex.tertiary;
+            return -1;
+        }
+
         public override void Switch(int index){
             if (index == (int)_currentIndex) return;
 

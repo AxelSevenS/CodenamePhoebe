@@ -314,10 +314,6 @@ namespace SeleneGame.Core {
 
         public void SetCharacter(System.Type characterType, CharacterCostume costume = null) {
 
-            // if ( characterType == null || !typeof(Character).IsAssignableFrom(characterType) )
-            //     throw new System.ArgumentNullException("characterType");
-
-
             _character?.Dispose();
             _character = null;
 
@@ -335,6 +331,7 @@ namespace SeleneGame.Core {
             bool isPlayer = Character.GetInstanceWithId("Player") == _character;
 
             _character = constructor.Invoke(new object[] { this, costume }) as Character;
+            Debug.Log(_character);
 
             if (isPlayer)
                 Character.SetInstanceWithId("Player", _character);

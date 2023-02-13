@@ -1,11 +1,11 @@
-using UnityEditor;
+// using UnityEditor;
 
-using SeleneGame.Core;
+// using SeleneGame.Core;
 
-namespace SeleneGame.Content {
+// namespace SeleneGame.Content {
 
-    [CustomPropertyDrawer(typeof(EidolonMask), true)]
-    public class EidolonMaskDrawer : CostumableDrawer<EidolonMask, EidolonMaskCostume, EidolonMaskModel> {
+//     [CustomPropertyDrawer(typeof(EidolonMask), true)]
+//     public class EidolonMaskDrawer : CostumableDrawer<EidolonMask, EidolonMaskCostume, EidolonMaskModel> {
 
-    }
-}
+//     }
+// }

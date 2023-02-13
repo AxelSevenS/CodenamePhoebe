@@ -10,9 +10,9 @@ namespace SeleneGame.Core {
     [System.Serializable]
     public abstract class WeaponInventory : IEnumerable, IDisposable {
 
-        [SerializeField] [ReadOnly] protected ArmedEntity entity;
+        [SerializeField] [ReadOnly] protected ArmedEntity _entity;
 
-        [SerializeReference] private Weapon _defaultWeapon;
+        [SerializeReference] [ReadOnly] private Weapon _defaultWeapon;
         
         
 
@@ -21,11 +21,12 @@ namespace SeleneGame.Core {
         public abstract Weapon current { get; }
 
         public Weapon defaultWeapon => _defaultWeapon;
+        public ArmedEntity entity => _entity;
 
 
 
         public WeaponInventory(ArmedEntity entity) {
-            this.entity = entity;
+            _entity = entity;
             // _defaultWeapon = Weapon.Initialize(Weapon.GetDefaultAsset(), entity);
             _defaultWeapon = new UnarmedWeapon(entity);
         }
@@ -80,6 +81,7 @@ namespace SeleneGame.Core {
             
             throw new System.ArgumentOutOfRangeException();
         }
+        public abstract int IndexOf(Weapon weapon);
 
 
         protected void TypeCheck(Type weaponType) {

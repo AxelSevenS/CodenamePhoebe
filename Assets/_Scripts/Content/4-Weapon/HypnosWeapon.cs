@@ -15,7 +15,7 @@ namespace SeleneGame.Content {
 
         public override string description => "";
 
-        public HypnosWeapon(Entity entity, WeaponCostume costume = null) : base(entity, costume) {
+        public HypnosWeapon(ArmedEntity entity, WeaponCostume costume = null) : base(entity, costume) {
         }
 
         public override WeaponCostume GetBaseCostume() => WeaponCostume.GetAsset("Hypnos_Base");

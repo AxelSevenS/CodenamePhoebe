@@ -14,7 +14,7 @@ namespace SeleneGame.Content {
 
         public override string description => "";
 
-        public ErisWeapon(Entity entity, WeaponCostume costume = null) : base(entity, costume) {
+        public ErisWeapon(ArmedEntity entity, WeaponCostume costume = null) : base(entity, costume) {
         }
 
         public override WeaponCostume GetBaseCostume() => WeaponCostume.GetAsset("Eris_Base");
