@@ -44,9 +44,6 @@ namespace SeleneGame.Content {
 
             base.Update();
 
-            Debug.Log(mask == null);
-            
-            _model.transform.position = mask.maskedEntity.transform.position;
 
             BezierQuadratic currentCurve = new BezierQuadratic(
                 mask.hoveringPosition,
@@ -61,8 +58,6 @@ namespace SeleneGame.Content {
         public override void FixedUpdate() {
 
             base.FixedUpdate();
-
-            Debug.Log(mask);
 
             if (_animator != null) {
                 _animator?.SetBool("OnFace", mask.onFace);
