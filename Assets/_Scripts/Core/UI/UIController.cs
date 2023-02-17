@@ -75,7 +75,8 @@ namespace SeleneGame.Core.UI {
                 currentMenu?.OnCancel();
                 onCancel?.Invoke();
             }
-            
+           
+        #if UNITY_EDITOR 
             keyBindMenuInput.SetVal( Keybinds.debugMap.IsBindPressed("DebugKeyBindMenu") );
             if (keyBindMenuInput.started)
                 KeyBindingMenuController.current.Toggle();
@@ -83,6 +84,7 @@ namespace SeleneGame.Core.UI {
             saveMenuInput.SetVal( Keybinds.debugMap.IsBindPressed("DebugSaveMenu") );
             if (saveMenuInput.started)
                 SaveMenuController.current.Toggle();
+        #endif
         }
 
     }

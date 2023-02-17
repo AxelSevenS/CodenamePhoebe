@@ -23,15 +23,16 @@ namespace SeleneGame.Core {
 
 
         public override float gravityMultiplier => 1f;
-        public override Vector3 cameraPosition {
-            get {
-                float dynamicCameraDistance = moveSpeed;
-                if (entity.character.baseSpeed > 0f)
-                    dynamicCameraDistance /= entity.character.baseSpeed;
-                    
-                return base.cameraPosition - new Vector3(0, 0, dynamicCameraDistance);
-            }
-        }
+        // public override Vector3 cameraPosition {
+        //     get {
+        //         float dynamicCameraDistance = moveSpeed;
+        //         if (entity.character.baseSpeed > 0f)
+        //             dynamicCameraDistance /= entity.character.baseSpeed;
+
+        //         return base.cameraPosition - new Vector3(0, 0, dynamicCameraDistance);
+        //     }
+        // }
+        public override CameraController.CameraType cameraType => CameraController.CameraType.ThirdPersonGrounded;
 
 
         protected override Vector3 jumpDirection => base.jumpDirection;

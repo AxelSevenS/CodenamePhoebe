@@ -9,7 +9,7 @@ namespace SeleneGame.Core {
     public class OutlinePass : ScriptableRenderPass {
 
         private RenderTargetHandle _temporaryBuffer;
-        private Material _material;
+        [SerializeField] private Material _material;
 
         public OutlinePass() {
             _material = new Material(Shader.Find("Hidden/Outline"));

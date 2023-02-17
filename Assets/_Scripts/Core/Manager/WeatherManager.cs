@@ -82,11 +82,13 @@ namespace SeleneGame.Core {
             }
 
             foreach (ParticleSystem particle in snowParticles){
-                particle.enableEmission = precipitation && snow;
+                var emission = particle.emission;
+                emission.enabled = precipitation && snow;
             }
 
             foreach (ParticleSystem particle in rainParticles){
-                particle.enableEmission = precipitation && !snow;
+                var emission = particle.emission;
+                emission.enabled = precipitation && !snow;
             }
 
             Vector3 deltaRotation = new Vector3(sunSpeed.x, sunSpeed.y, 0)*GameUtility.timeDelta;

@@ -9,7 +9,7 @@ namespace SeleneGame.Core {
     public class ViewSpaceNormalsPass : ScriptableRenderPass {
 
         private readonly RenderTargetHandle _normalTextureHandle;
-        private Material _material;
+        [SerializeField] private Material _material;
         private List<ShaderTagId> _shaderTagIds;
 
         public ViewSpaceNormalsPass() {

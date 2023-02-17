@@ -27,22 +27,16 @@ namespace SeleneGame.Core {
 
         public static T GetAsset(string assetName) {
 
-            // if ( !AddressablesHelper.AddressableAssetExists<T>( GetPath(assetName) ) ) {
-            //     Debug.LogWarning($"Error getting Asset {assetName}");
-            //     return Fallback();
-            // }
 
-            // Get Requested Asset
-            AsyncOperationHandle<T> opHandle = Addressables.LoadAssetAsync<T>( GetPath(assetName) );
+            string path = GetPath(assetName);
 
-            T result = opHandle.WaitForCompletion();
+            foreach (var locator in Addressables.ResourceLocators) {
+                if (locator.Locate(path, typeof(T), out var locations)) {
+                    return Addressables.LoadAssetAsync<T>(locations[0]).WaitForCompletion();
+                }
+            }
 
-            // If not found, get Default Asset
-            if (result == null || !result._accessibleInGame)
-                return GetDefaultAsset();
-
-
-            return result;
+            return GetDefaultAsset();
 
         }
         public static T GetDefaultAsset() {
@@ -62,24 +56,20 @@ namespace SeleneGame.Core {
         
         public static void GetAssetAsync(string assetName, Action<T> callback) {
 
-            // if ( !AddressablesHelper.AddressableAssetExists<T>( GetPath(assetName) ) ) {
-            //     Debug.LogWarning($"Error getting Asset {assetName}");
-            //     Fallback(callback);
-            //     return;
-            // }
+            string path = GetPath(assetName);
 
-            // Get Requested Asset
-            AsyncOperationHandle<T> opHandle = Addressables.LoadAssetAsync<T>( GetPath(assetName) );
-            opHandle.Completed += operation => {
-
-                // If not found, get Default Asset
-                if (operation.Status == AsyncOperationStatus.Failed) {
-                    GetDefaultAssetAsync(callback);
+            foreach (var locator in Addressables.ResourceLocators) {
+                if (locator.Locate(path, typeof(T), out var locations)) {
+                    AsyncOperationHandle<T> opHandle = Addressables.LoadAssetAsync<T>(locations[0]);
+                    opHandle.Completed += operation => {
+                        callback?.Invoke( operation.Result );
+                    };
                     return;
                 }
+            }
 
-                callback?.Invoke( operation.Result );
-            };
+            
+            GetDefaultAssetAsync(callback);
         }
         public static void GetDefaultAssetAsync(Action<T> callback) {
             if (defaultAsset != null) {

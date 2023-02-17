@@ -22,7 +22,8 @@ namespace SeleneGame.Content {
 
 
         public override float gravityMultiplier => _gravityMultiplier;
-        public override Vector3 cameraPosition => new Vector3(0.3f, 0.5f, -6.5f);
+        // public override Vector3 cameraPosition => new Vector3(0.3f, 0.5f, -6.5f);
+        public override CameraController.CameraType cameraType => CameraController.CameraType.ThirdPersonGrounded;
 
 
         protected override Vector3 jumpDirection => base.jumpDirection;

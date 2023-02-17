@@ -23,9 +23,9 @@ namespace SeleneGame.Core {
         [InitializeOnLoadMethod]
         private static void OnLoaded() {
             
-            UnityEngine.ResourceManagement.ResourceManager.ExceptionHandler = (op, ex) => {
-                // Debug.LogException(ex);
-            };
+            // UnityEngine.ResourceManagement.ResourceManager.ExceptionHandler = (op, ex) => {
+            //     // Debug.LogException(ex);
+            // };
 
             // assemblies = new Assembly[] {
             //     Assembly.Load("SeleneGame.Core"),

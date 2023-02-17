@@ -23,18 +23,22 @@ namespace SeleneGame.Core {
         private string GetDefaultAnimationPath(string assetName) => @$"Animations/Default/{assetName}";
         
         public AnimationClip GetAnimation(string assetName) {
+            
+            AnimationClip result = null;
 
-            // if ( !AddressablesHelper.AddressableAssetExists<AnimationClip>( GetAnimationPath(assetName) ) )
-            //     return Fallback();
+            string path = GetAnimationPath(assetName);
 
-            // Get Requested Animation
-            AsyncOperationHandle<AnimationClip> opHandle = Addressables.LoadAssetAsync<AnimationClip>( GetAnimationPath(assetName) );
-
-            AnimationClip result = opHandle.WaitForCompletion();
+            foreach (var locator in Addressables.ResourceLocators) {
+                if (locator.Locate(path, typeof(AnimationClip), out var locations)) {
+                    // Debug.Log($"Getting Animation {path}");
+                    result = Addressables.LoadAssetAsync<AnimationClip>(locations[0]).WaitForCompletion();
+                    break;
+                }
+            }
 
             // If not found, get Default Asset
             if (result == null) {
-                // Debug.LogWarning($"Error getting Asset {GetAnimationPath(assetName)}");
+                // Debug.Log(message: $"Couldn't find Asset {path}");
                 return GetDefaultAnimation(assetName);
             }
 
@@ -42,12 +46,14 @@ namespace SeleneGame.Core {
         }
         public AnimationClip GetDefaultAnimation(string assetName) {
 
-            Debug.Log($"Getting Default Animation {GetDefaultAnimationPath(assetName)}");
-            AsyncOperationHandle<AnimationClip> opHandle = Addressables.LoadAssetAsync<AnimationClip>( GetDefaultAnimationPath(assetName) );
+            string path = GetDefaultAnimationPath(assetName);
+
+            Debug.Log($"Getting Default Animation {path}");
+            AsyncOperationHandle<AnimationClip> opHandle = Addressables.LoadAssetAsync<AnimationClip>( path );
             AnimationClip defaultAnim = opHandle.WaitForCompletion();
 
             if (defaultAnim == null) {
-                Debug.LogError($"Error getting default Asset {GetDefaultAnimationPath(assetName)}");
+                Debug.LogError($"Error getting default Asset {path}");
                 return null;
             }
 

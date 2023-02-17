@@ -115,6 +115,8 @@ Shader "Selene/Lit" {
 
             void InitializeVertexOutput( inout VertexOutput output, VertexInput input ) {
 
+                input.normalOS = normalize(input.normalOS);
+
                 UNITY_SETUP_INSTANCE_ID(input);
                 UNITY_TRANSFER_INSTANCE_ID(input, output);
                 UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
@@ -136,7 +138,7 @@ Shader "Selene/Lit" {
                 output.tangentWS = TransformObjectToWorldNormal(input.tangentOS.xyz);
                 output.bitangentWS = input.tangentOS.w * cross(output.normalWS.xyz, output.tangentWS.xyz);
 
-                output.viewDirectionWS = normalize( _WorldSpaceCameraPos.xyz - output.positionWS );
+                output.viewDirectionWS = GetWorldSpaceNormalizeViewDir(output.positionWS);
 
                 
             #if (SHADERPASS == SHADERPASS_FORWARD) || (SHADERPASS == SHADERPASS_GBUFFER)
@@ -170,7 +172,7 @@ Shader "Selene/Lit" {
                 inputData.positionWS = input.positionWS;
                 inputData.positionCS = input.positionCS;
                 inputData.normalWS = input.normalWS;
-                inputData.viewDirectionWS = input.viewDirectionWS;
+                inputData.viewDirectionWS = GetWorldSpaceNormalizeViewDir(inputData.positionWS);
             #ifdef SHADERGRAPH_PREVIEW
                 inputData.shadowCoord = float4(0,0,0,0);
             #else
@@ -192,8 +194,8 @@ Shader "Selene/Lit" {
                     // inputData.vertexSH = input.vertexSH;
                 #endif
             #endif
-                half3 vertexSH = SampleSHVertex(inputData.normalWS);
 
+                half3 vertexSH = SampleSHVertex(inputData.normalWS);
             #if defined(DYNAMICLIGHTMAP_ON)
                 inputData.bakedGI = SAMPLE_GI(input.staticLightmapUV, input.dynamicLightmapUV.xy, vertexSH, inputData.normalWS);
             #else
@@ -228,8 +230,8 @@ Shader "Selene/Lit" {
 
                 // -------------------------------------
                 // Material Keywords
-                // #pragma shader_feature_local _NORMALMAP
-                // #pragma shader_feature_local _PARALLAXMAP
+                #pragma shader_feature_local _NORMALMAP
+                #pragma shader_feature_local _PARALLAXMAP
                 #pragma shader_feature_local _RECEIVE_SHADOWS_OFF
                 #pragma shader_feature_local _ _DETAIL_MULX2 _DETAIL_SCALED
                 #pragma shader_feature_local_fragment _SURFACE_TYPE_TRANSPARENT

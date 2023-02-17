@@ -17,7 +17,7 @@ namespace SeleneGame.Core {
 
 
         public virtual float gravityMultiplier => 1f;
-        public virtual Vector3 cameraPosition => Global.cameraDefaultPosition;
+        public virtual CameraController.CameraType cameraType => CameraController.CameraType.ThirdPerson;
 
         public Entity entity {
             get {

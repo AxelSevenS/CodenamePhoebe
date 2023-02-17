@@ -19,7 +19,7 @@ namespace SeleneGame.Core {
 
 
         public sealed override float gravityMultiplier => 0f; 
-        public override Vector3 cameraPosition => Global.cameraDefaultPosition;
+        // public override CameraController.CameraType cameraPosition => CameraController.CameraType.ThirdPerson;
 
 
         protected override Vector3 jumpDirection => base.jumpDirection;

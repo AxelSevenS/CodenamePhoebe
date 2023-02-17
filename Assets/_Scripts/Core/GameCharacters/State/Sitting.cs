@@ -13,7 +13,6 @@ namespace SeleneGame.Core {
 
         public override float gravityMultiplier => 0f; 
 
-        public override Vector3 cameraPosition => seat.seatEntity?.state.cameraPosition ?? base.cameraPosition;
 
 
         protected override Vector3 jumpDirection => Vector3.zero;

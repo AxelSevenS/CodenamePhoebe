@@ -7,8 +7,8 @@ namespace SeleneGame.Core {
 
     public class OutlineRendererFeature : ScriptableRendererFeature {
             
-        private ViewSpaceNormalsPass _viewSpaceNormalsPass;
-        private OutlinePass _outlinePass;
+        [SerializeField] private ViewSpaceNormalsPass _viewSpaceNormalsPass;
+        [SerializeField] private OutlinePass _outlinePass;
 
         public override void Create() {
             _viewSpaceNormalsPass = new ViewSpaceNormalsPass();

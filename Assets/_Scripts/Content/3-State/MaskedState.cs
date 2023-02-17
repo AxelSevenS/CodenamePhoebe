@@ -26,16 +26,16 @@ namespace SeleneGame.Content {
 
 
         public override float gravityMultiplier => 0f; 
-        public override Vector3 cameraPosition {
-            get {
-                float additionalCameraDistance = 0f; //(maskedEntity.focusing ? -0.7f : 0f) + (maskedEntity.walkSpeed == Entity.WalkSpeed.sprint ? 0.4f : 0f);
-                if (shiftFalling) {
-                    return new Vector3(0f, 1f, -4f) - new Vector3(0,0,additionalCameraDistance);
-                } else {
-                    return new Vector3(0.7f, 0.8f, -2.5f) - new Vector3(0,0,additionalCameraDistance);
-                }
-            }
-        }
+        // public override Vector3 cameraPosition {
+        //     get {
+        //         float additionalCameraDistance = 0f; //(maskedEntity.focusing ? -0.7f : 0f) + (maskedEntity.walkSpeed == Entity.WalkSpeed.sprint ? 0.4f : 0f);
+        //         if (shiftFalling) {
+        //             return new Vector3(0f, 1f, -4f) - new Vector3(0,0,additionalCameraDistance);
+        //         } else {
+        //             return new Vector3(0.7f, 0.8f, -2.5f) - new Vector3(0,0,additionalCameraDistance);
+        //         }
+        //     }
+        // }
 
 
         protected override Vector3 jumpDirection => Vector3.zero;

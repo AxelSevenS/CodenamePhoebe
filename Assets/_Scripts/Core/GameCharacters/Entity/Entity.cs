@@ -515,9 +515,6 @@ namespace SeleneGame.Core {
         /// <param name="skinThickness">The thickness of the skin of the cast, set to a low number to keep the cast accurate but not zero as to not overlap with the terrain</param>
         /// <param name="layerMask">The layer mask to use for the cast.</param>
         public bool ColliderCast( Vector3 position, Vector3 direction, out RaycastHit castHit, float skinThickness, LayerMask layerMask ) {
-            // Debug.Log(costumeData.colliders["main"]);
-
-            Debug.Log(character?.model);
 
             foreach (Collider collider in character?.model?.costumeData?.colliders){
                 bool hasHitWall = collider.ColliderCast( collider.transform.position + position, direction, out RaycastHit tempHit, skinThickness, layerMask );

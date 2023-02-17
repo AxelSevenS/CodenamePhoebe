@@ -25,7 +25,7 @@ RenderSettings:
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 0.5
   m_AmbientMode: 3
-  m_SubtractiveShadowColor: {r: 0, g: 0.28235292, b: 1, a: 1}
+  m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
   m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
@@ -37,7 +37,7 @@ RenderSettings:
   m_ReflectionBounces: 1
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
-  m_Sun: {fileID: 1082643071}
+  m_Sun: {fileID: 0}
   m_IndirectSpecularColor: {r: 0.18208176, g: 0.22441854, b: 0.28791615, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
@@ -97,7 +97,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 112000002, guid: ac40833d430417d4488aa5b94d6cbaec,
+  m_LightingDataAsset: {fileID: 112000002, guid: 9a07159aa0db5fe4a87c634de07ca515,
     type: 2}
   m_LightingSettings: {fileID: 4890085278179872738, guid: 5f053be4a1d293840a44c8f8260ae33f,
     type: 2}
@@ -10952,7 +10952,7 @@ Transform:
   - {fileID: 468731066}
   - {fileID: 1130664904}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &520375518
 MonoBehaviour:
@@ -17561,7 +17561,7 @@ Transform:
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: -187.533, z: 0}
 --- !u!114 &963194229
 MonoBehaviour:
@@ -17578,7 +17578,8 @@ MonoBehaviour:
   camera: {fileID: 963194227}
   cameraData: {fileID: 963194230}
   distanceToPlayer: 1
-  fov: 90
+  horizontalSmoothTime: 0.06
+  verticalSmoothTime: 0.15
 --- !u!114 &963194230
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23041,7 +23042,7 @@ RectTransform:
   - {fileID: 109048142}
   - {fileID: 320558098}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
