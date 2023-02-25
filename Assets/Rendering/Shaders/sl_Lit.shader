@@ -190,8 +190,8 @@ Shader "Selene/Lit" {
                 #endif
                 #if defined(LIGHTMAP_ON)
                     inputData.staticLightmapUV = input.staticLightmapUV;
-                #else
-                    // inputData.vertexSH = input.vertexSH;
+                // #else
+                //     inputData.vertexSH = input.vertexSH;
                 #endif
             #endif
 

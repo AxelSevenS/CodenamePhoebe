@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _accessibleInGame: 1
   portrait: {fileID: 0}
-  displayName: Default Costume Name
+  displayName: Hypnos Base
   description: Default Costume Description
-  equippableOn: 6
+  equippableOn: 0
   model: {fileID: 0}

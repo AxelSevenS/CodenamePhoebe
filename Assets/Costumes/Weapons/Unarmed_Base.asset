@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _accessibleInGame: 1
   portrait: {fileID: 0}
-  displayName: Default Costume Name
+  displayName: Unarmed Base
   description: Default Costume Description
   equippableOn: 0
   model: {fileID: 0}

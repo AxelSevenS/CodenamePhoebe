@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _accessibleInGame: 1
   portrait: {fileID: 0}
-  displayName: Default Costume Name
+  displayName: Hypnos Test
   description: Default Costume Description
   equippableOn: 255
   model: {fileID: 919132149155446097, guid: 9552e0c883c950e489aecfca4256cb69, type: 3}

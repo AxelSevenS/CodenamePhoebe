@@ -19,6 +19,8 @@ namespace SeleneGame.Core.UI {
 
         [SerializeField] private Sprite nullPortrait;
 
+        public WeaponCostume weaponCostume => _weaponCostume;
+
         public Sprite portraitSprite {
             get => weaponCostumePortrait.sprite;
             set => weaponCostumePortrait.sprite = value;

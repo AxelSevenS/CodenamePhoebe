@@ -93,10 +93,15 @@ namespace SeleneGame.Core.UI {
 
                     if ( !costume.accessibleInGame ) return;
 
+                    // Add the costume to the list if it is a valid costume for the weapon.
+                    // This means that either
+                    // 1. The costume is specific to the weapon and contains the weapon's internal name (e.g. "Eris_Base" for Eris; this can work for multiple weapons)
+                    // 2. The costume is generic to the weapon type which means it has the fitting flag set (see equippableOn and weaponType)
                     if ( !costume.name.Contains(weapon.internalName) && costume.name.Contains("_Base") && !costume.equippableOn.HasFlag(weapon.weaponType) )
                         return;
 
-                    if ( weaponCostumes.Exists( (existingCase) => { return existingCase.nameText == costume.displayName; }) ) 
+                    // If the costume is already in the list, don't add it again.
+                    if ( weaponCostumes.Exists( (existingCase) => { return existingCase.weaponCostume == costume; }) ) 
                         return;
 
                     CreateWeaponCostumeCase(costume);

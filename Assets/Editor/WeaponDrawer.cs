@@ -22,12 +22,13 @@ namespace SeleneGame.Core {
 
 
 
-            // If the weapon has a reference to an ArmedEntity, use that; (This should always be the case)
+            // If the weapon has a reference to an ArmedEntity, use that; (This should always be the case as long as the weapon is not null)
             ArmedEntity entityRef = (targetCostumable as Weapon)?.armedEntity;
             
             if (entityRef == null) {
 
-                Debug.LogWarning($"Weapon {property.managedReferenceValue} has nulled-out Entity Reference. Not good.");
+                if (property.managedReferenceValue != null)
+                    Debug.LogWarning($"Weapon {property.managedReferenceValue} has nulled-out Entity Reference. Not good.");
 
                 
                 // If the weapon is in a WeaponInventory, get the entity from the inventory

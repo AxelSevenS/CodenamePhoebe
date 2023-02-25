@@ -18,11 +18,6 @@ void CalculateWave_float(float3 Position, float WaveStrength, float WaveSpeed, f
 
     Out = WaveStrength * sin(_Time[1]*2*WaveSpeed + (Position.x*_WindDirection.x + Position.z*_WindDirection.z) * WaveFrequency);
 }
-
-// void AmbientLight_float(out float3 Out){
-
-//     Out = _AmbientLight;
-// }
  
 void WindDirection_float(out float3 Out){
 
