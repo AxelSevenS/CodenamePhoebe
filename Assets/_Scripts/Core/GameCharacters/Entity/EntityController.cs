@@ -13,6 +13,7 @@ namespace SeleneGame.Core {
 
         public KeyInputData lightAttackInput;
         public KeyInputData heavyAttackInput;
+        public KeyInputData interactInput;
         public KeyInputData jumpInput;
         public KeyInputData evadeInput;
         public KeyInputData walkInput;
@@ -21,6 +22,14 @@ namespace SeleneGame.Core {
         public KeyInputData shiftInput;
         public Vector2Data moveInput;
         public Vector2Data lookInput;
+
+        public KeyInputData switchStyle1Input;
+        public KeyInputData switchStyle2Input;
+        public KeyInputData switchStyle3Input;
+        
+        #if UNITY_EDITOR
+            public KeyInputData debugInput;
+        #endif
 
 
 

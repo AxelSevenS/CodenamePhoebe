@@ -104,7 +104,7 @@ namespace SeleneGame.Core.UI {
 
         public virtual void InterruptDialogue(){
             foreach (GameEvent interruptionEvent in currentLine.interruptionEvents) {
-                interruptionEvent.InvokeEvent(dialogueObject);
+                interruptionEvent.Invoke(dialogueObject);
             }
             EndDialogue();
         }
@@ -113,7 +113,7 @@ namespace SeleneGame.Core.UI {
             lineWasChanged = false;
             foreach (GameEvent gameEvent in currentLine.gameEvents){
                 if (gameEvent.Evaluate())
-                    gameEvent.InvokeEvent(dialogueObject);
+                    gameEvent.Invoke(dialogueObject);
 
                 if (lineWasChanged) {
                     lineWasChanged = false;

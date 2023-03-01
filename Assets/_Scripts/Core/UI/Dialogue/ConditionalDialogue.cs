@@ -13,7 +13,12 @@ namespace SeleneGame.Core {
         
         public DialogueSource dialogueSource;
 
-
-        public bool Evaluate() => conditions.Evaluate();
+        public bool Evaluate() {
+            bool left = conditions.condition.Evaluate();
+            foreach (ScribeSubCondition<FlagCondition> subCondition in conditions.subConditions) {
+                left = subCondition.MultiConditionEvaluate(left, subCondition.condition.Evaluate());
+            }
+            return left;
+        }
     }
 }

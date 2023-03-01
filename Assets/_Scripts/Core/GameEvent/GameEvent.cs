@@ -10,8 +10,6 @@ namespace SeleneGame.Core {
 
     [System.Serializable]
     public class GameEvent : ScribeEvent<GameEvent.EventType, FlagCondition> {
-
-        private GameObject eventObject;
         
         [ScribeField((int)GameEvent.EventType.SetFlag)]
         [ScribeField((int)GameEvent.EventType.RemoveFlag)]
@@ -37,12 +35,8 @@ namespace SeleneGame.Core {
         [ScribeField((int)GameEvent.EventType.SetWeaponCostume)]
         public WeaponCostume targetWeaponCostume;
 
-        public void InvokeEvent(GameObject eventObject) {
-            this.eventObject = eventObject;
-            Invoke();
-        }
+        public void Invoke(GameObject eventObject) {
 
-        protected override void Invoke() {
             switch (eventType) {
                 case GameEvent.EventType.SetFlag:
                     ScribeFlags.SetFlag(editedFlagName, editedFlagValue, editedFlagType == ScribeFlags.FlagType.TemporaryFlag);
@@ -80,6 +74,14 @@ namespace SeleneGame.Core {
                     Object.Destroy(eventObject);
                     break;
             }
+        }
+
+        public bool Evaluate() {
+            bool left = conditions.condition.Evaluate();
+            foreach (ScribeSubCondition<FlagCondition> subCondition in conditions.subConditions) {
+                left = subCondition.MultiConditionEvaluate(left, subCondition.condition.Evaluate());
+            }
+            return left;
         }
 
         public enum EventType {

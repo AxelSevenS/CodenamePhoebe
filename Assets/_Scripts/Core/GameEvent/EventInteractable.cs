@@ -28,7 +28,7 @@ namespace SeleneGame.Core {
 
         public void Interact(Entity entity){
             foreach (GameEvent interactEvent in interactEvents){
-                interactEvent.InvokeEvent(gameObject);
+                interactEvent.Invoke(gameObject);
             }
         }
     }

@@ -21,15 +21,6 @@ namespace SeleneGame.Core {
         public IInteractable interactionCandidate;
         public IManipulable manipulationCandidate;
 
-        private BoolData interactInput;
-        private BoolData switchStyle1Input;
-        private BoolData switchStyle2Input;
-        private BoolData switchStyle3Input;
-        
-        #if UNITY_EDITOR
-            private BoolData debugInput;
-        #endif
-
         private Vector2 mousePos;
 
         public Quaternion softEntityRotation;
