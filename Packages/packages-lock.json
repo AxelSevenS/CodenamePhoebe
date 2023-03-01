@@ -36,7 +36,7 @@
       "dependencies": {
         "com.seven.utility": "0.0.1"
       },
-      "hash": "3282edb28d67b5a7d72f4198dff3759eea108479"
+      "hash": "bc88a807a5da04c4ff829c87ee3747600c1cd06f"
     },
     "com.seven.utility": {
       "version": "https://github.com/AxelSevenS/Utility-Package.git",

@@ -9,7 +9,7 @@ namespace SeleneGame.Core {
     [System.Serializable]
     public class ConditionalDialogue {
 
-        public ScribeEventMultiCondition conditions;
+        public ScribeMultiCondition<FlagCondition> conditions;
         
         public DialogueSource dialogueSource;
 

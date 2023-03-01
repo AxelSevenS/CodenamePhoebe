@@ -9,36 +9,40 @@ using SeleneGame.Core.UI;
 namespace SeleneGame.Core {
 
     [System.Serializable]
-    public class GameEvent : ScribeEvent<GameEvent.EventType> {
+    public class GameEvent : ScribeEvent<GameEvent.EventType, FlagCondition> {
+
+        private GameObject eventObject;
         
-        [ScribeEventData((int)GameEvent.EventType.SetFlag)]
-        [ScribeEventData((int)GameEvent.EventType.RemoveFlag)]
+        [ScribeField((int)GameEvent.EventType.SetFlag)]
+        [ScribeField((int)GameEvent.EventType.RemoveFlag)]
         public ScribeFlags.FlagType editedFlagType;
-        [ScribeEventData((int)GameEvent.EventType.SetFlag)]
-        [ScribeEventData((int)GameEvent.EventType.RemoveFlag)]
+        [ScribeField((int)GameEvent.EventType.SetFlag)]
+        [ScribeField((int)GameEvent.EventType.RemoveFlag)]
         public string editedFlagName;
-        [ScribeEventData((int)GameEvent.EventType.SetFlag)]
+        [ScribeField((int)GameEvent.EventType.SetFlag)]
         public int editedFlagValue;
         
-        [ScribeEventData((int)GameEvent.EventType.StartAlert)]
-        [ScribeEventData((int)GameEvent.EventType.StartDialogue)]
-        [ScribeEventData((int)GameEvent.EventType.SkipToLine)]
+        [ScribeField((int)GameEvent.EventType.StartAlert)]
+        [ScribeField((int)GameEvent.EventType.StartDialogue)]
+        [ScribeField((int)GameEvent.EventType.SkipToLine)]
         public DialogueSource dialogueSource;
 
-        [ScribeEventData((int)GameEvent.EventType.SetCharacterCostume)]
+        [ScribeField((int)GameEvent.EventType.SetCharacterCostume)]
         public string targetCharacterId;
-        [ScribeEventData((int)GameEvent.EventType.SetCharacterCostume)]
+        [ScribeField((int)GameEvent.EventType.SetCharacterCostume)]
         public CharacterCostume targetCharacterCostume;
 
-        [ScribeEventData((int)GameEvent.EventType.SetWeaponCostume)]
+        [ScribeField((int)GameEvent.EventType.SetWeaponCostume)]
         public string targetWeaponId;
-        [ScribeEventData((int)GameEvent.EventType.SetWeaponCostume)]
+        [ScribeField((int)GameEvent.EventType.SetWeaponCostume)]
         public WeaponCostume targetWeaponCostume;
 
-        
+        public void InvokeEvent(GameObject eventObject) {
+            this.eventObject = eventObject;
+            Invoke();
+        }
 
-        public override void Invoke(GameObject eventObject) { 
-
+        protected override void Invoke() {
             switch (eventType) {
                 case GameEvent.EventType.SetFlag:
                     ScribeFlags.SetFlag(editedFlagName, editedFlagValue, editedFlagType == ScribeFlags.FlagType.TemporaryFlag);
