@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e02a967bbf926964aba993f61c2f4fac, type: 3}
   m_Name: GravityBike_Base
   m_EditorClassIdentifier: 
-  _accessibleInGame: 1
+  accessibleInGame: 0
   portrait: {fileID: 0}
-  displayName: Default Costume Name
+  displayName: None
   description: Default Costume Description
   neutralPortrait: {fileID: 0}
   determinedPortrait: {fileID: 0}

@@ -11,19 +11,19 @@ namespace SeleneGame.Core.UI {
 
     public class CharacterCase : CustomButton {
         
-        private Character _character;
+        private CharacterData _characterData;
 
         [SerializeField] private Image characterCostumePortrait;
         [SerializeField] private TextMeshProUGUI characterCostumeName;
 
 
 
-        public Character character {
-            get => _character;
+        public CharacterData characterData {
+            get => _characterData;
             set {
-                _character = value;
-                characterCostumePortrait.sprite = _character.baseCostume.portrait;
-                characterCostumeName.text = _character.displayName;
+                _characterData = value;
+                characterCostumePortrait.sprite = _characterData.baseCostume.portrait;
+                characterCostumeName.text = _characterData.displayName;
             }
         }
 
@@ -31,8 +31,8 @@ namespace SeleneGame.Core.UI {
 
         public override void OnPointerClick(PointerEventData eventData) {
             base.OnPointerClick(eventData);
-            Debug.Log($"Character case {_character.displayName} clicked");
-            CharacterSelectionMenuController.current.OnSelectCharacter(_character);
+            Debug.Log($"Character case {_characterData.displayName} clicked");
+            CharacterSelectionMenuController.current.OnSelectCharacter(_characterData);
         }
     }
     

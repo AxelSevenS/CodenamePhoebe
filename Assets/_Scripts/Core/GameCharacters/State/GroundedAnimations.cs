@@ -23,7 +23,7 @@ namespace SeleneGame.Core {
         public AnimationClip fallAnimation {
             get {
                 if ( _fallAnimation == null )
-                    _fallAnimation = entity.character?.GetAnimation("Fall");
+                    _fallAnimation = entity.character?.data.GetAnimation("Fall");
                 return _fallAnimation;
             }
         }
@@ -34,7 +34,7 @@ namespace SeleneGame.Core {
         public AnimationClip landAnimation {
             get {
                 if ( _landAnimation == null )
-                    _landAnimation = entity.character?.GetAnimation("Land");
+                    _landAnimation = entity.character?.data.GetAnimation("Land");
                 return _landAnimation;
             }
         }
@@ -52,7 +52,7 @@ namespace SeleneGame.Core {
         protected AnimancerState idleState {
             get {
                 if (_idleState == null) {
-                    _idleState = layer.GetOrCreateState(entity.character.GetAnimation("Idle"));
+                    _idleState = layer.GetOrCreateState(entity.character.data.GetAnimation("Idle"));
                 }
                 return _idleState;
             }
@@ -64,9 +64,9 @@ namespace SeleneGame.Core {
 
                     _movementStartMixer = new LinearMixerState();
                     _movementStartMixer.Initialize(
-                        entity.character.GetAnimation("MoveSlowStart"),
-                        entity.character.GetAnimation("MoveNormalStart"),
-                        entity.character.GetAnimation("MoveFastStart"),
+                        entity.character.data.GetAnimation("MoveSlowStart"),
+                        entity.character.data.GetAnimation("MoveNormalStart"),
+                        entity.character.data.GetAnimation("MoveFastStart"),
                         1f,
                         2f,
                         3f
@@ -86,9 +86,9 @@ namespace SeleneGame.Core {
 
                     _movementMixer = new LinearMixerState();
                     _movementMixer.Initialize(
-                        entity.character.GetAnimation("MoveSlowCycle"),
-                        entity.character.GetAnimation("MoveNormalCycle"),
-                        entity.character.GetAnimation("MoveFastCycle"),
+                        entity.character.data.GetAnimation("MoveSlowCycle"),
+                        entity.character.data.GetAnimation("MoveNormalCycle"),
+                        entity.character.data.GetAnimation("MoveFastCycle"),
                         1f,
                         2f,
                         3f
@@ -108,9 +108,9 @@ namespace SeleneGame.Core {
 
                     _movementStopMixer = new LinearMixerState();
                     _movementStopMixer.Initialize(
-                        entity.character.GetAnimation("MoveSlowStop"),
-                        entity.character.GetAnimation("MoveNormalStop"),
-                        entity.character.GetAnimation("MoveFastStop"),
+                        entity.character.data.GetAnimation("MoveSlowStop"),
+                        entity.character.data.GetAnimation("MoveNormalStop"),
+                        entity.character.data.GetAnimation("MoveFastStop"),
                         1f,
                         2f,
                         3f

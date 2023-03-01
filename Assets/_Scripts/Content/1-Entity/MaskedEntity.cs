@@ -34,7 +34,7 @@ namespace SeleneGame.Content {
 
         public override float weight {
             get {
-                return character.weight * (weapons?.current?.weight ?? 1f);
+                return character.data.weight * (weapons?.current?.data.weight ?? 1f);
             }
         }
         public override float jumpMultiplier => 2 - (weight / 15f);
@@ -55,26 +55,17 @@ namespace SeleneGame.Content {
         public override Type defaultState => typeof(Grounded);
 
 
-        public void SetMask<TMask>(EidolonMaskCostume costume = null) where TMask : EidolonMask {
-            SetMask( typeof(TMask), costume );
-        }
-        public void SetMask(Type maskType, EidolonMaskCostume costume = null) {
+        // public void SetMask<TMask>(EidolonMaskCostume costume = null) where TMask : EidolonMask {
+        //     SetMask( typeof(TMask), costume );
+        // }
+        public void SetMask(EidolonMaskData data, EidolonMaskCostume costume = null) {
 
             _mask?.Dispose();
             _mask = null;
             
-            if (maskType == null)
-                return;
+            if (data == null) return;
 
-            // I don't like doing this but this is cleaner than any other way I've found
-            // Every other way I've tried implies hard to read code with Setups and a lot of uncertainty
-            // Also this is fast enough that it doesn't matter
-            ConstructorInfo constructor = maskType.GetConstructor(new Type[] { typeof(MaskedEntity), typeof(EidolonMaskCostume) });
-            if (constructor == null)
-                return;
-
-
-            _mask = constructor.Invoke(new object[] { this, costume }) as EidolonMask;
+            _mask = data.GetMask(this, costume);
 
         }
 

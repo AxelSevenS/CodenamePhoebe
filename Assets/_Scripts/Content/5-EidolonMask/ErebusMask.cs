@@ -1,24 +1,24 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+// using System.Collections;
+// using System.Collections.Generic;
+// using UnityEngine;
 
-using SeleneGame.Content;
+// using SeleneGame.Core;
 
-namespace SeleneGame.Masks {
+// namespace SeleneGame.Content {
 
-    // [CreateAssetMenu(fileName = "Erebus", menuName = "Masks/Erebus")]
-    public class ErebusMask : EidolonMask {
+//     // [CreateAssetMenu(fileName = "Erebus", menuName = "Masks/Erebus")]
+//     public class ErebusMask : EidolonMask {
 
-        public ErebusMask(MaskedEntity maskedEntity, EidolonMaskCostume costume = null) : base(maskedEntity, costume) {
-        }
+//         public ErebusMask(MaskedEntity maskedEntity, EidolonMaskCostume costume = null) : base(maskedEntity, costume) {
+//         }
 
-        public override string internalName => "Erebus";
+//         public override string internalName => "Erebus";
 
-        public override string displayName => "Erebus";
+//         public override string displayName => "Erebus";
 
-        public override string description => "";
+//         public override string description => "";
 
-        public override EidolonMaskCostume GetBaseCostume() => EidolonMaskCostume.GetAsset("Erebus_Base");
-    }
+//         public override EidolonMaskCostume GetBaseCostume() => AddressablesUtils.GetAsset<EidolonMaskCostume>("Erebus_Base");
+//     }
 
-}
+// }

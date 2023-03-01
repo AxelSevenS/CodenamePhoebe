@@ -25,10 +25,10 @@ namespace SeleneGame.Core {
                 if (_airEvadeMixer == null) {
                     _airEvadeMixer = new CartesianMixerState();
                     _airEvadeMixer.Initialize(4);
-                    _airEvadeMixer.CreateChild(0, entity.character.GetAnimation("EvadeFrontAir"), new Vector2(0, 1));
-                    _airEvadeMixer.CreateChild(1, entity.character.GetAnimation("EvadeBackAir"), new Vector2(0, -1));
-                    _airEvadeMixer.CreateChild(2, entity.character.GetAnimation("EvadeRightAir"), new Vector2(1, 0));
-                    _airEvadeMixer.CreateChild(3, entity.character.GetAnimation("EvadeLeftAir"), new Vector2(-1, 0));
+                    _airEvadeMixer.CreateChild(0, entity.character.data.GetAnimation("EvadeFrontAir"), new Vector2(0, 1));
+                    _airEvadeMixer.CreateChild(1, entity.character.data.GetAnimation("EvadeBackAir"), new Vector2(0, -1));
+                    _airEvadeMixer.CreateChild(2, entity.character.data.GetAnimation("EvadeRightAir"), new Vector2(1, 0));
+                    _airEvadeMixer.CreateChild(3, entity.character.data.GetAnimation("EvadeLeftAir"), new Vector2(-1, 0));
 
                     entity.animancer.Layers[0].AddChild(_airEvadeMixer);
                     _airEvadeMixer.SetDebugName("Air Evade");

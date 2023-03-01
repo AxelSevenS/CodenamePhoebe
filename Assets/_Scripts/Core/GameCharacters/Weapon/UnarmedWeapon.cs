@@ -1,21 +1,15 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+// using System.Collections;
+// using System.Collections.Generic;
+// using UnityEngine;
 
-namespace SeleneGame.Core {
+// namespace SeleneGame.Core {
     
-    public sealed class UnarmedWeapon : Weapon {
+//     public sealed class UnarmedWeapon : Weapon {
 
-        public override string internalName => "Unarmed";
+//         public UnarmedWeapon(ArmedEntity entity, WeaponCostume costume = null) : base(entity, costume) {
+//         }
 
-        public override string displayName => "None";
+//         // public override WeaponCostume GetBaseCostume() => AddressablesUtils.GetAsset<WeaponCostume>("Unarmed_Base");
 
-        public override string description => "Fighting with bare hands? Gutsy move, but you'll have to make do with what you have";
-
-        public UnarmedWeapon(ArmedEntity entity, WeaponCostume costume = null) : base(entity, costume) {
-        }
-
-        public override WeaponCostume GetBaseCostume() => WeaponCostume.GetAsset("Unarmed_Base");
-
-    }
-}
+//     }
+// }

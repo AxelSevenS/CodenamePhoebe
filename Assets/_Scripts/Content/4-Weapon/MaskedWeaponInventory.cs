@@ -40,21 +40,21 @@ namespace SeleneGame.Content {
             Switch((int)WeaponIndex.primary);
         }
 
-        public override void Set(int index, Type weaponType, WeaponCostume costume = null){
+        public override void Set(int index, WeaponData data, WeaponCostume costume = null){
             // weapon = Weapon.Initialize(weapon, entity, costume);
             try {
                 switch (index) {
                     case (int)WeaponIndex.primary:
                         primaryWeapon?.Dispose();
-                        primaryWeapon = Weapon.CreateInstance(weaponType, entity, costume);
+                        primaryWeapon = data?.GetWeapon(entity, costume);
                         break;
                     case (int)WeaponIndex.secondary:
                         secondaryWeapon?.Dispose();
-                        secondaryWeapon = Weapon.CreateInstance(weaponType, entity, costume);
+                        secondaryWeapon = data?.GetWeapon(entity, costume);
                         break;
                     case (int)WeaponIndex.tertiary:
                         tertiaryWeapon?.Dispose();
-                        tertiaryWeapon = Weapon.CreateInstance(weaponType, entity, costume);
+                        tertiaryWeapon = data?.GetWeapon(entity, costume);
                         break;
                     default:
                         throw new System.IndexOutOfRangeException($"Index {index} is out of range for MaskedWeaponInventory");

@@ -220,7 +220,7 @@ namespace SeleneGame.Core {
             }
         }
 
-        public virtual float weight => character.weight;
+        public virtual float weight => character?.data?.weight ?? 1f;
         public virtual float jumpMultiplier => 1f;
 
 
@@ -234,12 +234,12 @@ namespace SeleneGame.Core {
         /// <param name="position">The position of the entity</param>
         /// <param name="rotation">The rotation of the entity</param>
         /// <param name="costume">The costume of the entity, leave empty to use character's default costume</param>
-        public static Entity CreateEntity<TCharacter>(System.Type entityType, Vector3 position, Quaternion rotation, CharacterCostume costume = null) where TCharacter : Character{
+        public static Entity CreateEntity(System.Type entityType, Vector3 position, Quaternion rotation, CharacterData data, CharacterCostume costume = null) {
             GameObject entityGO = new GameObject("Entity");
             Entity entity = (Entity)entityGO.AddComponent(entityType);
             entityGO.AddComponent<EntityController>();
 
-            entity.SetCharacter<TCharacter>(costume);
+            entity.SetCharacter(data, costume);
 
             entity.transform.position = position;
             entity.transform.rotation = rotation;
@@ -255,16 +255,16 @@ namespace SeleneGame.Core {
         /// <param name="position">The position of the entity</param>
         /// <param name="rotation">The rotation of the entity</param>
         /// <param name="costume">The costume of the entity, leave empty to use character's default costume</param>
-        public static Entity CreatePlayerEntity<TCharacter>(System.Type entityType, Vector3 position, Quaternion rotation, CharacterCostume costume = null) where TCharacter : Character{
-            return CreatePlayerEntity(entityType, position, rotation, typeof(TCharacter), costume);
-        }
+        // public static Entity CreatePlayerEntity<TCharacter>(System.Type entityType, Vector3 position, Quaternion rotation, CharacterCostume costume = null) where TCharacter : Character{
+        //     return CreatePlayerEntity(entityType, position, rotation, typeof(TCharacter), costume);
+        // }
 
-        public static Entity CreatePlayerEntity(System.Type entityType, Vector3 position, Quaternion rotation, System.Type characterType, CharacterCostume costume = null) {
+        public static Entity CreatePlayerEntity(System.Type entityType, Vector3 position, Quaternion rotation, CharacterData data, CharacterCostume costume = null) {
             GameObject entityGO = new GameObject("Entity");
             Entity entity = (Entity)entityGO.AddComponent(entityType);
             entityGO.AddComponent<PlayerEntityController>();
 
-            entity.SetCharacter(characterType, costume);
+            entity.SetCharacter(data, costume);
 
             entity.transform.position = position;
             entity.transform.rotation = rotation;
@@ -276,7 +276,7 @@ namespace SeleneGame.Core {
         [ContextMenu("Set As Player Entity")]
         public void SetAsPlayer() {
             gameObject.AddComponent<PlayerEntityController>();
-            Character.SetInstanceWithId("Player", character);
+            // Character.SetInstanceWithId("Player", character);
         }
 
         /// <summary>
@@ -308,33 +308,24 @@ namespace SeleneGame.Core {
         /// Set the Entity's current Character.
         /// </summary>
         /// <param name="character">The new Character</param>
-        public void SetCharacter<TCharacter>(CharacterCostume costume = null) where TCharacter : Character {
-            SetCharacter(typeof(TCharacter), costume);
-        }
+        // public void SetCharacter<TCharacter>(CharacterCostume costume = null) where TCharacter : Character {
+        //     SetCharacter(typeof(TCharacter), costume);
+        // }
 
-        public void SetCharacter(System.Type characterType, CharacterCostume costume = null) {
+        public void SetCharacter(CharacterData characterData, CharacterCostume costume = null) {
 
             _character?.Dispose();
             _character = null;
 
+            _character = characterData.GetCharacter(this, costume);
 
-            if (characterType == null)
-                return;
+            // bool isPlayer = Character.GetInstanceWithId("Player") == _character;
 
-            // I don't like doing this but this is cleaner than any other way I've found
-            // Every other way I've tried implies hard to read code with Setups and a lot of uncertainty
-            // Also this is fast enough that it doesn't matter
-            ConstructorInfo constructor = characterType.GetConstructor(new Type[] { typeof(Entity), typeof(CharacterCostume) });
-            if (constructor == null)
-                return;
+            // _character = constructor.Invoke(new object[] { this, costume }) as Character;
+            // Debug.Log(_character);
 
-            bool isPlayer = Character.GetInstanceWithId("Player") == _character;
-
-            _character = constructor.Invoke(new object[] { this, costume }) as Character;
-            Debug.Log(_character);
-
-            if (isPlayer)
-                Character.SetInstanceWithId("Player", _character);
+            // if (isPlayer)
+            //     Character.SetInstanceWithId("Player", _character);
         }
 
         /// <summary>

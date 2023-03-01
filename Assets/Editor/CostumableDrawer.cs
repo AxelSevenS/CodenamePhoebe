@@ -9,24 +9,12 @@ using UnityEngine;
 namespace SeleneGame.Core {
 
 
-    public abstract class CostumableDrawer<TCostumable, TCostume, TModel> : PropertyDrawer where TCostumable : Costumable<TCostumable, TCostume, TModel> where TCostume : Costume<TCostume> where TModel : CostumeModel<TCostume> {
+    public abstract class CostumableDrawer<TCostumable, TData, TCostume, TModel> : PropertyDrawer where TCostumable : Costumable<TData, TCostume, TModel> where TData : CostumableData<TCostume> where TCostume : Costume where TModel : CostumeModel<TCostume> {
 
         private bool foldout = false;
         protected TCostumable targetCostumable;
 
-        private static string[] typeOptions;
-        int typeIndex = 0;
 
-
-        static CostumableDrawer() {
-            
-            typeOptions = new string[Costumable<TCostumable, TCostume, TModel>._types.Count + 1];
-            typeOptions[0] = "None";
-            for (int i = 0; i < Costumable<TCostumable, TCostume, TModel>._types.Count; i++) {
-                typeOptions[i + 1] = Costumable<TCostumable, TCostume, TModel>._types[i].Name;
-            }
-            
-        }
             
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {
 
@@ -37,28 +25,18 @@ namespace SeleneGame.Core {
             EditorGUI.BeginProperty( position, label, property );
 
 
-
-
-            if (targetCostumable == null)
-                typeIndex = 0;
-            else 
-                typeIndex = Costumable<TCostumable, TCostume, TModel>._types.IndexOf( targetCostumable.GetType() ) + 1;
-
-
-            Rect valueRect = new Rect(position.x, position.y, position.width, position.height);
-            Rect buttonRect = new Rect(position.x + position.width/2f, position.y, position.width/2f, EditorGUIUtility.singleLineHeight);
+            Rect dataRect = new Rect(position.x + position.width/2f, position.y, position.width/2f, EditorGUIUtility.singleLineHeight);
             
 
             EditorGUI.BeginChangeCheck();
 
-            typeIndex = EditorGUI.Popup(
-                buttonRect,
-                typeIndex,
-                typeOptions);
+            TData selectedData = targetCostumable?.data ?? null;
+            selectedData = EditorGUI.ObjectField(dataRect, selectedData, typeof(TData), false) as TData;
 
-            if (EditorGUI.EndChangeCheck()) {
-                SetValue(property, typeIndex - 1);
+            if ( EditorGUI.EndChangeCheck() ) {
+                SetValue(property, selectedData);
             }
+
 
             Rect rectType = new Rect(position.x, position.y, position.width, EditorGUIUtility.singleLineHeight);
 
@@ -77,7 +55,7 @@ namespace SeleneGame.Core {
                     selectedCostume = EditorGUI.ObjectField(rectType, new GUIContent("Costume"), selectedCostume, typeof(TCostume), false) as TCostume;
 
                     if ( EditorGUI.EndChangeCheck() ) {
-                        targetCostumable.SetCostume( selectedCostume ?? targetCostumable.baseCostume);
+                        targetCostumable.SetCostume( selectedCostume ?? targetCostumable.data.baseCostume);
                     }
 
                     rectType.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
@@ -110,11 +88,7 @@ namespace SeleneGame.Core {
 
         }
 
-        public abstract void SetValue(SerializedProperty property, int typeIndex);
-
-        public virtual void PreWork(Rect position, SerializedProperty property, GUIContent label) {
-
-        }
+        public abstract void SetValue(SerializedProperty property, TData data);
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label) {
             float height = EditorGUIUtility.singleLineHeight;

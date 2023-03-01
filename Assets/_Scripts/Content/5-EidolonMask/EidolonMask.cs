@@ -9,11 +9,10 @@ using EasySplines;
 
 namespace SeleneGame.Content {
 
-    public abstract class EidolonMask : Costumable<EidolonMask, EidolonMaskCostume, EidolonMaskModel> {
+    public class EidolonMask : Costumable<EidolonMaskData, EidolonMaskCostume, EidolonMaskModel> {
 
 
-        [Header("Mask Data")]
-        [SerializeField] private MaskedEntity _maskedEntity;
+        [SerializeField] [ReadOnly] private MaskedEntity _maskedEntity;
 
         public MaskedEntity maskedEntity => _maskedEntity;
 
@@ -31,9 +30,11 @@ namespace SeleneGame.Content {
         public Vector3 leftPosition => maskedEntity.modelTransform.rotation * new Vector3(-1.2f, 1.3f, -0.8f);
 
 
-        public EidolonMask(MaskedEntity maskedEntity, EidolonMaskCostume costume = null) {
+        public EidolonMask(MaskedEntity maskedEntity, EidolonMaskData data, EidolonMaskCostume costume = null) : base(data){
             _maskedEntity = maskedEntity;
-            SetCostume(costume ?? baseCostume);
+
+            // We have to set the costume after the entity is set
+            SetCostume(costume);
         }
 
 
@@ -62,7 +63,9 @@ namespace SeleneGame.Content {
         
         public override void SetCostume(EidolonMaskCostume costume) {
             _model?.Dispose();
-            _model = (EidolonMaskModel)costume?.LoadModel(this) ?? null;
+            
+            costume ??= data.baseCostume ?? AddressablesUtils.GetDefaultAsset<EidolonMaskCostume>();
+            _model = costume?.LoadModel(maskedEntity, this);
         }
 
 
@@ -71,14 +74,13 @@ namespace SeleneGame.Content {
         }
 
 
-        public override void Update() {
-            base.Update();
+
+        public virtual void Update() {
 
             model?.Update();
         }
 
-        public override void FixedUpdate(){
-            base.FixedUpdate();
+        public virtual void FixedUpdate() {
 
             relativePos = Vector3.Lerp(relativePos, onRight ? rightPosition : leftPosition, 3f * GameUtility.timeDelta);
 

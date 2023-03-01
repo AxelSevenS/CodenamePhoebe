@@ -18,33 +18,33 @@ MonoBehaviour:
   m_GUID: 6773cbc2bd9e3ce4999ce45fc46b0d51
   m_SerializeEntries:
   - m_GUID: 32c5215d78678094a90500600c9a8ab2
-    m_Address: CharacterCostume/GravityBike_Base
+    m_Address: GravityBike_Base
     m_ReadOnly: 0
     m_SerializedLabels:
     - CharacterCostume
   - m_GUID: 6dd8fd82761438340bc1eb5136cc90fe
-    m_Address: CharacterCostume/Selene_Test
+    m_Address: Selene_Test
     m_ReadOnly: 0
     m_SerializedLabels:
     - CharacterCostume
   - m_GUID: 88d05d19418b5cb4eb2b9561a0f90b20
-    m_Address: WeaponCostume/Eris_Base
+    m_Address: Eris_Base
     m_ReadOnly: 0
     m_SerializedLabels:
     - WeaponCostume
   - m_GUID: 993c489841ef0fd4d974e79a4d014409
-    m_Address: CharacterCostume/Selene_Base
+    m_Address: Selene_Base
     m_ReadOnly: 0
     m_SerializedLabels:
     - CharacterCostume
     - default
   - m_GUID: f1c6cebfdf4f4554288c95a4539c3610
-    m_Address: WeaponCostume/Hypnos_Test
+    m_Address: Hypnos_Test
     m_ReadOnly: 0
     m_SerializedLabels:
     - WeaponCostume
   - m_GUID: 4fcb14e16ae7e7b4287ef3e8b382de17
-    m_Address: WeaponCostume/Unarmed_Base
+    m_Address: Unarmed_Base
     m_ReadOnly: 0
     m_SerializedLabels:
     - WeaponCostume
@@ -535,15 +535,48 @@ MonoBehaviour:
     m_SerializedLabels:
     - AnimationClip
   - m_GUID: 01507fe7b51003a4ebc926fba9781970
-    m_Address: WeaponCostume/Hypnos_Base
+    m_Address: Hypnos_Base
     m_ReadOnly: 0
     m_SerializedLabels:
     - WeaponCostume
   - m_GUID: a65383a7517fc97478cfb5437335986a
-    m_Address: EidolonMaskCostume/Erebus_Base
+    m_Address: Erebus_Base
     m_ReadOnly: 0
     m_SerializedLabels:
     - EidolonMaskCostume
+    - default
+  - m_GUID: 15f4e43bc39a90d47935e34a81aef004
+    m_Address: GravityBike
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - CharacterData
+  - m_GUID: 90bcfc725e5a2d64a9b6ddc58c3dd84f
+    m_Address: Selene
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - CharacterData
+    - default
+  - m_GUID: d0e937fdec003f14fb4a76ba534978a3
+    m_Address: Eris
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - WeaponData
+  - m_GUID: 64baa27970f036a4095a1ff04bdfb903
+    m_Address: Hypnos
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - WeaponData
+  - m_GUID: 16b2d29fdbb1b4c4c9373bf75e7f6272
+    m_Address: Unarmed
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - WeaponData
+    - default
+  - m_GUID: c50b13d7356941e419f821f0ceb1e12a
+    m_Address: Erebus
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - EidolonMaskData
     - default
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 9fff86865a633c0488e9533aaa0b59b1, type: 2}

@@ -56,6 +56,10 @@ namespace SeleneGame.Core {
             UpdateAddressableAddressWithTypeName<CharacterCostume>(addressablesSettings, "Assets/Costumes/Characters");
             UpdateAddressableAddressWithTypeName<WeaponCostume>(addressablesSettings, "Assets/Costumes/Weapons");
             UpdateAddressableAddressWithTypeName<EidolonMaskCostume>(addressablesSettings, "Assets/Costumes/Masks");
+            
+            UpdateAddressableAddressWithTypeName<CharacterData>(addressablesSettings, "Assets/Data/Characters");
+            UpdateAddressableAddressWithTypeName<WeaponData>(addressablesSettings, "Assets/Data/Weapons");
+            UpdateAddressableAddressWithTypeName<EidolonMaskData>(addressablesSettings, "Assets/Data/Masks");
 
 
         }
@@ -75,33 +79,27 @@ namespace SeleneGame.Core {
             foreach (string assetGUID in assetGUIDs) {
                 
                 AddressableAssetEntry assetEntry = addressablesSettings.CreateOrMoveEntry(assetGUID, addressablesSettings.DefaultGroup);
-                assetEntry.labels.Add(typeName);
 
                 string newAddress = assetEntry.AssetPath.Replace(Path.GetExtension(assetEntry.AssetPath), "");
                 newAddress = newAddress.Replace("Assets/", "");
                 assetEntry.address = Path.Combine(newAddress);
+                // assetEntry.address = Path.GetFileNameWithoutExtension(assetEntry.address);
 
             }
         }
         
-        private static void UpdateAddressableAddressWithTypeName<TAsset>(AddressableAssetSettings addressablesSettings, string assetPath) where TAsset : AddressableAsset<TAsset> {
+        private static void UpdateAddressableAddressWithTypeName<TAsset>(AddressableAssetSettings addressablesSettings, string assetPath) where TAsset : ScriptableObject {
 
             string typeName = typeof(TAsset).Name;
-
-            // if it doesn't exist, create the label
-            if ( !addressablesSettings.GetLabels().Contains(typeName) ) {
-                addressablesSettings.AddLabel(typeName);
-            }
 
 
             string[] assetGUIDs = AssetDatabase.FindAssets($"t:{typeName}", new string[] { assetPath });
             foreach (string assetGUID in assetGUIDs) {
                 
                 AddressableAssetEntry assetEntry = addressablesSettings.CreateOrMoveEntry(assetGUID, addressablesSettings.DefaultGroup);
-                assetEntry.labels.Add(typeName);
 
                 TAsset asset = AssetDatabase.LoadAssetAtPath(assetEntry.AssetPath, typeof(TAsset)) as TAsset;
-                assetEntry.address = AddressableAsset<TAsset>.GetPath(asset.name);
+                assetEntry.address = AddressablesUtils.GetPath<TAsset>(asset.name);
 
             }
         }

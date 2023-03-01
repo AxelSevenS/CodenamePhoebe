@@ -1,24 +1,24 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+// using System.Collections;
+// using System.Collections.Generic;
+// using UnityEngine;
 
-using SeleneGame.Core;
+// using SeleneGame.Core;
 
 
-namespace SeleneGame.Content {
+// namespace SeleneGame.Content {
 
-    public class HypnosWeapon : Weapon {
+//     public class HypnosWeapon : Weapon {
 
-        public override string internalName => "Hypnos";
+//         public override string internalName => "Hypnos";
 
-        public override string displayName => "Hypnos";
+//         public override string displayName => "Hypnos";
 
-        public override string description => "";
+//         public override string description => "";
 
-        public HypnosWeapon(ArmedEntity entity, WeaponCostume costume = null) : base(entity, costume) {
-        }
+//         public HypnosWeapon(ArmedEntity entity, WeaponCostume costume = null) : base(entity, costume) {
+//         }
 
-        public override WeaponCostume GetBaseCostume() => WeaponCostume.GetAsset("Hypnos_Base");
+//         public override WeaponCostume GetBaseCostume() => AddressablesUtils.GetAsset<WeaponCostume>("Hypnos_Base");
 
-    }
-}
+//     }
+// }

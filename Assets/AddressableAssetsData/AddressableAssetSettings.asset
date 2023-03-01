@@ -84,9 +84,6 @@ MonoBehaviour:
   m_LabelTable:
     m_LabelNames:
     - default
-    - WeaponCostume
-    - CharacterCostume
-    - EidolonMaskCostume
     - AnimationClip
   m_SchemaTemplates: []
   m_GroupTemplateObjects:

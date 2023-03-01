@@ -27,11 +27,7 @@ namespace SeleneGame.Core {
         public Quaternion sunRotation;
         public Quaternion moonRotation;
 
-        [SerializeField] [ColorUsage(true, true)] private Color _ambientLight = new Color(1f/199f, 0, 1f/57f);
-        // [HideInInspector] [ColorUsage(true, true)] public Color ambientLight = new Color(1f/199f, 0, 1f/57f);
-
-        // [SerializeField] [Range(0f, 1f)] private float _ambientStrength = 0.025f;
-        // [HideInInspector] public float ambientStrength = 0.025f;
+        [SerializeField] [ColorUsage(false, true)] private Color _ambientLight = new Color(1f/199f, 0, 1f/57f);
 
 
         [Space(15f)]
@@ -71,13 +67,13 @@ namespace SeleneGame.Core {
             RenderSettings.ambientLight = Color.Lerp(RenderSettings.ambientLight, _ambientLight, 5f * GameUtility.timeDelta);
             RenderSettings.fogColor = Color.Lerp(RenderSettings.fogColor, _ambientLight, 5f * GameUtility.timeDelta);
             
-            snowAmount = Mathf.MoveTowards(snowAmount, System.Convert.ToSingle(snow && precipitation) * 2f, Mathf.Pow( 2f, Mathf.Min(snowAmount, 0.05f) ) * 0.01f * GameUtility.timeDelta);
+            snowAmount = Mathf.MoveTowards(snowAmount, (snow && precipitation) ? 2f : 0f, Mathf.Pow( 2f, Mathf.Min(snowAmount, 0.05f) ) * 0.01f * GameUtility.timeDelta);
 
             SetGlobals();
 
-            if(precipitation){
+            if (precipitation) {
                 lightLevel = Mathf.MoveTowards(lightLevel, .85f*sunLight, GameUtility.timeDelta);
-            }else{
+            } else {
                 lightLevel = Mathf.MoveTowards(lightLevel, 1f*sunLight, GameUtility.timeDelta);
             }
 
@@ -94,7 +90,7 @@ namespace SeleneGame.Core {
             Vector3 deltaRotation = new Vector3(sunSpeed.x, sunSpeed.y, 0)*GameUtility.timeDelta;
             sunRotation *= Quaternion.Euler(deltaRotation);
 
-            // sun.intensity = lightLevel;
+
             sun.transform.rotation = sunRotation;
             moon.transform.rotation = moonRotation;
 
@@ -102,17 +98,17 @@ namespace SeleneGame.Core {
             
         }
 
-        #if UNITY_EDITOR
+
+
         private void OnValidate(){
-            RenderSettings.ambientLight = _ambientLight;
-            RenderSettings.fogColor = _ambientLight;
             SetGlobals();
         }
-        #endif
 
 
 
-        private void SetGlobals(){
+        private void SetGlobals() {
+            RenderSettings.ambientLight = _ambientLight;
+            RenderSettings.fogColor = _ambientLight;
             Shader.SetGlobalVector("_WindDirection", new Vector4(windDirection.x, windDirection.y, windDirection.z, 0));
             Shader.SetGlobalFloat("_SnowAmount", snowAmount);
         }

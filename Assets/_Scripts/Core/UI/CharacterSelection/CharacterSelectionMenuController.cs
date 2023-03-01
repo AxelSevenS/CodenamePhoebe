@@ -27,7 +27,7 @@ namespace SeleneGame.Core.UI {
 
         private Entity currentEntity;
 
-        private Action<Character> onCharacterSelected;
+        private Action<CharacterData> onCharacterDataSelected;
 
 
 
@@ -61,8 +61,8 @@ namespace SeleneGame.Core.UI {
         public void ReplaceCharacter(Entity entity) {
             currentEntity = entity;
 
-            onCharacterSelected = (selectedCharacter) => {
-                currentEntity.SetCharacter(selectedCharacter.GetType());
+            onCharacterDataSelected = (selectedCharacterData) => {
+                currentEntity.SetCharacter(selectedCharacterData);
                 OnCancel();
             };
 
@@ -72,9 +72,9 @@ namespace SeleneGame.Core.UI {
         }
 
 
-        public void OnSelectCharacter(Character character) {
+        public void OnSelectCharacter(CharacterData data) {
             if ( !Enabled ) return;
-            onCharacterSelected?.Invoke( character );
+            onCharacterDataSelected?.Invoke( data );
         }
 
         private void GetCharacters() {
@@ -85,25 +85,26 @@ namespace SeleneGame.Core.UI {
             characters = new();
 
             
-            CreateCharacterCase(new SeleneCharacter(null, null));
+            CreateCharacterCase(AddressablesUtils.GetDefaultAsset<CharacterData>());
             ResetGamePadSelection();
 
-            foreach (Type characterType in Character._types) {
-                if (characterType == typeof(SeleneCharacter)) 
-                    continue;
+            AddressablesUtils.GetAssets<CharacterData>((data) => {
 
-                ConstructorInfo constructor = characterType.GetConstructor( new Type[] {typeof(Entity), typeof(CharacterCostume)});
-                Character weapon = constructor.Invoke( new object[] {null, null} ) as Character;
-                CreateCharacterCase(weapon);
-            }
+                    if (characters.Exists( (c) => c.characterData == data ))
+                        return;
+
+                    CreateCharacterCase(data);
+                }
+
+            );
 
 
         }
 
-        private void CreateCharacterCase(Character character){
+        private void CreateCharacterCase(CharacterData data){
             var caseObject = Instantiate(characterCaseTemplate, characterSelectionContainer.transform);
             var characterCase = caseObject.GetComponentInChildren<CharacterCase>();
-            characterCase.character = character;
+            characterCase.characterData = data;
             characters.Add( characterCase );
 
             if (characters.Count > 1) {

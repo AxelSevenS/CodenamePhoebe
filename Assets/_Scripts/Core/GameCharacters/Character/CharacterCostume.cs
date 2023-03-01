@@ -10,20 +10,10 @@ using SevenGame.Utility;
 
 namespace SeleneGame.Core {
 
-    // [CreateAssetMenu(fileName = "new Character Costume", menuName = "Costume/Character")]
-    public abstract class CharacterCostume : SpeakerCostume<CharacterCostume> {
+    public abstract class CharacterCostume : SpeakerCostume {
 
-
-        public abstract CostumeModel<CharacterCostume> LoadModel(Entity entity);
-    }
-
-    public abstract class CharacterModel : CostumeModel<CharacterCostume> {
-
-        [ReadOnly] public Entity entity;
-
-        public CharacterModel(Entity entity, CharacterCostume costume) : base(costume) {
-            this.entity = entity;
-        }
+        public abstract CharacterModel LoadModel(Entity entity);
+        
     }
 
 }

@@ -182,13 +182,13 @@ namespace SeleneGame.Core {
         private void FixedUpdate(){
 
 
-            float newSpeed = moveDirection.sqrMagnitude == 0f ? 0f : entity.character.baseSpeed;
+            float newSpeed = moveDirection.sqrMagnitude == 0f ? 0f : entity.character.data.baseSpeed;
             if (movementSpeed != Entity.MovementSpeed.Normal) 
-                newSpeed *= movementSpeed == Entity.MovementSpeed.Fast ? entity.character.sprintMultiplier : entity.character.slowMultiplier;
+                newSpeed *= movementSpeed == Entity.MovementSpeed.Fast ? entity.character.data.sprintMultiplier : entity.character.data.slowMultiplier;
 
             // Acceleration is quicker than Deceleration 
             float speedDelta = newSpeed > moveSpeed ? 1f : 0.65f;
-            moveSpeed = Mathf.MoveTowards(moveSpeed, newSpeed, speedDelta * entity.character.acceleration * GameUtility.timeDelta);
+            moveSpeed = Mathf.MoveTowards(moveSpeed, newSpeed, speedDelta * entity.character.data.acceleration * GameUtility.timeDelta);
             
             // Evade movement restricts the Walking movement.
             moveSpeed *= Mathf.Max(1 - evadeBehaviour.Speed, 0.05f);

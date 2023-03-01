@@ -7,7 +7,7 @@ using UnityEngine;
 namespace SeleneGame.Core {
 
     [Serializable]
-    public abstract class CostumeModel<TCostume> : IDisposable where TCostume : Costume<TCostume> {
+    public abstract class CostumeModel<TCostume> : IDisposable where TCostume : Costume {
 
         private bool disposedValue;
         [SerializeField] [ReadOnly] protected TCostume _costume;

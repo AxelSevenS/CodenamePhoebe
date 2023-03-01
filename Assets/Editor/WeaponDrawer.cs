@@ -8,27 +8,19 @@ using UnityEngine;
 namespace SeleneGame.Core {
 
     [CustomPropertyDrawer(typeof(Weapon), true)]
-    public class WeaponDrawer : CostumableDrawer<Weapon, WeaponCostume, WeaponModel> {
+    public class WeaponDrawer : CostumableDrawer<Weapon, WeaponData, WeaponCostume, WeaponModel> {
 
-        public override void SetValue(SerializedProperty property, int typeIndex) {
+        public override void SetValue(SerializedProperty property, WeaponData data) {
 
             ((Weapon)property.managedReferenceValue)?.Dispose();
 
 
-            if (typeIndex <= -1) {
-                property.managedReferenceValue = null;
-                return;
-            }
-
-
-
             // If the weapon has a reference to an ArmedEntity, use that; (This should always be the case as long as the weapon is not null)
             ArmedEntity entityRef = (targetCostumable as Weapon)?.armedEntity;
-            
             if (entityRef == null) {
 
-                if (property.managedReferenceValue != null)
-                    Debug.LogWarning($"Weapon {property.managedReferenceValue} has nulled-out Entity Reference. Not good.");
+                if (targetCostumable != null)
+                    Debug.LogWarning($"Weapon {targetCostumable} has nulled-out Entity Reference. Not good.");
 
                 
                 // If the weapon is in a WeaponInventory, get the entity from the inventory
@@ -41,13 +33,12 @@ namespace SeleneGame.Core {
 
 
             if (entityRef == null) {
-                Debug.LogError($"No ArmedEntity found for Weapon {property.managedReferenceValue}");
+                Debug.LogError($"No ArmedEntity found for Weapon {targetCostumable}");
                 // return;
             }
-            
 
-            Type type = Weapon._types[typeIndex];
-            property.managedReferenceValue = Weapon.CreateInstance(type, entityRef);
+            property.managedReferenceValue = data.GetWeapon( entityRef );
+            
         }
     }
 }

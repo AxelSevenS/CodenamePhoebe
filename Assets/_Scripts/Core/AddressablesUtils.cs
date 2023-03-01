@@ -8,27 +8,18 @@ using UnityEngine.ResourceManagement.ResourceLocations;
 
 namespace SeleneGame.Core {
 
-    public abstract class AddressableAsset<T> : ScriptableObject where T : AddressableAsset<T> {
-
-        [SerializeField] private bool _accessibleInGame = true;
-
-        public static T defaultAsset { get; private set; }
-
-
-
-        public bool accessibleInGame => _accessibleInGame;
+    public static class AddressablesUtils {
         
         
 
-        public static string GetPath(string assetName){
-            return $"{typeof(T).Name}/{assetName}";
+        public static string GetPath<T>(string assetName){
+            return assetName;
         }
 
 
-        public static T GetAsset(string assetName) {
+        public static T GetAsset<T>(string assetName) {
 
-
-            string path = GetPath(assetName);
+            string path = GetPath<T>(assetName);
 
             foreach (var locator in Addressables.ResourceLocators) {
                 if (locator.Locate(path, typeof(T), out var locations)) {
@@ -36,27 +27,25 @@ namespace SeleneGame.Core {
                 }
             }
 
-            return GetDefaultAsset();
+            return GetDefaultAsset<T>();
 
         }
-        public static T GetDefaultAsset() {
-            if (defaultAsset != null) 
-                return defaultAsset;
+        public static T GetDefaultAsset<T>() {
 
             AsyncOperationHandle<T> opHandle = Addressables.LoadAssetAsync<T>( "default" );
-            defaultAsset = opHandle.WaitForCompletion();
+            T asset = opHandle.WaitForCompletion();
 
-            if (defaultAsset == null) {
+            if (asset == null) {
                 Debug.LogError($"Error getting default Asset");
-                return null;
+                return default(T);
             }
 
-            return defaultAsset;
+            return asset;
         }
         
-        public static void GetAssetAsync(string assetName, Action<T> callback) {
+        public static void GetAssetAsync<T>(string assetName, Action<T> callback) {
 
-            string path = GetPath(assetName);
+            string path = GetPath<T>(assetName);
 
             foreach (var locator in Addressables.ResourceLocators) {
                 if (locator.Locate(path, typeof(T), out var locations)) {
@@ -69,13 +58,9 @@ namespace SeleneGame.Core {
             }
 
             
-            GetDefaultAssetAsync(callback);
+            GetDefaultAssetAsync<T>(callback);
         }
-        public static void GetDefaultAssetAsync(Action<T> callback) {
-            if (defaultAsset != null) {
-                callback?.Invoke( defaultAsset );
-                return;
-            }
+        public static void GetDefaultAssetAsync<T>(Action<T> callback) {
 
             AsyncOperationHandle<T> opHandle = Addressables.LoadAssetAsync<T>( "default" );
             opHandle.Completed += operation => {
@@ -84,12 +69,12 @@ namespace SeleneGame.Core {
                     return;
                 }
 
-                defaultAsset = operation.Result;
+                T asset = operation.Result;
                 callback?.Invoke( operation.Result );
             };
         }
 
-        public static void GetAssets(Action<T> callback) {
+        public static void GetAssets<T>(Action<T> callback) {
 
             AsyncOperationHandle<IList<T>> opHandle = Addressables.LoadAssetsAsync<T>(
                 typeof(T).Name,
@@ -103,17 +88,4 @@ namespace SeleneGame.Core {
 
     }
 
-    // public static class AddressablesHelper {
-        
-
-    //     public static bool AddressableAssetExists<T>(object key) {
-    //         foreach (var locator in Addressables.ResourceLocators) {
-    //             IList<IResourceLocation> locs;
-    //             if (locator.Locate(key, typeof(T), out locs))
-    //                 return true;
-    //         }
-    //         return false;
-    //     }
-
-    // }
 }

@@ -31,8 +31,16 @@ namespace SeleneGame.Core.UI {
 
 
         public void SetDisplayWeapon(Weapon weapon) {
-            portraitSprite = weapon?.model?.costume?.portrait ?? nullPortrait;
-            nameText = weapon?.displayName;
+            
+            if (weapon == null) {
+                WeaponData defaultData = AddressablesUtils.GetDefaultAsset<WeaponData>();
+                portraitSprite = defaultData?.baseCostume?.portrait;
+                nameText = defaultData?.displayName;
+                return;
+            }
+
+            portraitSprite = weapon.model?.costume?.portrait ?? nullPortrait;
+            nameText = weapon.data?.displayName ?? "None";
         }
 
         public override void OnPointerClick(PointerEventData eventData) {

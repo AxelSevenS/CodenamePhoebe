@@ -10,7 +10,7 @@ namespace SeleneGame.Core {
 
         public GameObject model;
 
-        public override CostumeModel<CharacterCostume> LoadModel(Entity entity) {
+        public override CharacterModel LoadModel(Entity entity) {
             return new SimpleCharacterModel(entity, this);
         }
     }

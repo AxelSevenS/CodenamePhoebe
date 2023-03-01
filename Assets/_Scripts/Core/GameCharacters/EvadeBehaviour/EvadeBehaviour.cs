@@ -30,10 +30,10 @@ namespace SeleneGame.Core {
                 if (_evadeMixer == null) {
                     _evadeMixer = new CartesianMixerState();
                     _evadeMixer.Initialize(4);
-                    _evadeMixer.CreateChild(0, entity.character.GetAnimation("EvadeFront"), new Vector2(0, 1));
-                    _evadeMixer.CreateChild(1, entity.character.GetAnimation("EvadeBack"), new Vector2(0, -1));
-                    _evadeMixer.CreateChild(2, entity.character.GetAnimation("EvadeRight"), new Vector2(1, 0));
-                    _evadeMixer.CreateChild(3, entity.character.GetAnimation("EvadeLeft"), new Vector2(-1, 0));
+                    _evadeMixer.CreateChild(0, entity.character.data.GetAnimation("EvadeFront"), new Vector2(0, 1));
+                    _evadeMixer.CreateChild(1, entity.character.data.GetAnimation("EvadeBack"), new Vector2(0, -1));
+                    _evadeMixer.CreateChild(2, entity.character.data.GetAnimation("EvadeRight"), new Vector2(1, 0));
+                    _evadeMixer.CreateChild(3, entity.character.data.GetAnimation("EvadeLeft"), new Vector2(-1, 0));
 
                     entity.animancer.Layers[0].AddChild(_evadeMixer);
                     _evadeMixer.SetDebugName("Evade");
@@ -50,13 +50,13 @@ namespace SeleneGame.Core {
 
             // Debug.Log(entityState);
 
-            state.SetVal( timer > entity.character.evadeCooldown );
+            state.SetVal( timer > entity.character.data.evadeCooldown );
 
             if ( !state ) {
                 Time = 0f;
                 Speed = 0f;
             } else {
-                Time = Mathf.Clamp01( 1 - ( (timer - entity.character.evadeCooldown) / entity.character.evadeDuration ) );
+                Time = Mathf.Clamp01( 1 - ( (timer - entity.character.data.evadeCooldown) / entity.character.data.evadeDuration ) );
                 Speed = Mathf.Clamp01( EntityManager.current.evadeCurve.Evaluate( Time ) );
             }
 
@@ -72,13 +72,13 @@ namespace SeleneGame.Core {
 
         protected virtual void FixedUpdate() {
             if (state)
-                entity.Displace( Speed * entity.character.evadeSpeed * currentDirection );
+                entity.Displace( Speed * entity.character.data.evadeSpeed * currentDirection );
         }
 
         protected internal virtual void Evade(Vector3 direction) {
 
             currentDirection = direction;
-            timer.SetDuration(entity.character.totalEvadeDuration);
+            timer.SetDuration(entity.character.data.totalEvadeDuration);
             Animation();
         }
 

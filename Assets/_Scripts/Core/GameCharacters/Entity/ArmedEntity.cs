@@ -20,7 +20,7 @@ namespace SeleneGame.Core {
 
 
 
-        public override float weight => Mathf.Min( base.weight, weapons.current.weight ); 
+        public override float weight => Mathf.Min( base.weight, weapons.current.data.weight ); 
 
         public WeaponInventory weapons {
             get {

@@ -103,9 +103,9 @@ namespace SeleneGame.Content {
 
             bool terrainFlatEnough = Vector3.Dot(entity.groundHit.normal, -entity.gravityDown) > 0.75f;
             
-            float newSpeed = Vector3.Dot(entity.absoluteForward, inputDirection) * accelerationLinger * entity.character.baseSpeed;
+            float newSpeed = Vector3.Dot(entity.absoluteForward, inputDirection) * accelerationLinger * entity.character.data.baseSpeed;
             float speedDelta = newSpeed > moveSpeed ? 1f : 0.65f;
-            moveSpeed = Mathf.MoveTowards(moveSpeed, newSpeed, speedDelta * entity.character.acceleration * GameUtility.timeDelta);
+            moveSpeed = Mathf.MoveTowards(moveSpeed, newSpeed, speedDelta * entity.character.data.acceleration * GameUtility.timeDelta);
 
             if (inputDirection.sqrMagnitude != 0f)
                 entity.absoluteForward = Vector3.Slerp(entity.absoluteForward, inputDirection, GameUtility.timeDelta * 3f).normalized;

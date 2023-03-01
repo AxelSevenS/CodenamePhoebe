@@ -104,9 +104,9 @@ namespace SeleneGame.Core {
                 entity.RotateModelTowards(entity.absoluteForward, newUp);
             }
 
-            float newSpeed = moveDirection.sqrMagnitude == 0f ? 0f : entity.character.baseSpeed;
+            float newSpeed = moveDirection.sqrMagnitude == 0f ? 0f : entity.character.data.baseSpeed;
             float speedDelta = newSpeed > moveSpeed ? 1f : 0.65f;
-            moveSpeed = Mathf.MoveTowards(moveSpeed, newSpeed, speedDelta * entity.character.acceleration * GameUtility.timeDelta);
+            moveSpeed = Mathf.MoveTowards(moveSpeed, newSpeed, speedDelta * entity.character.data.acceleration * GameUtility.timeDelta);
 
         }
 

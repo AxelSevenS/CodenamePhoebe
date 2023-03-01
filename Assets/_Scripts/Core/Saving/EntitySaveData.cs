@@ -17,7 +17,7 @@ namespace SeleneGame.Core {
         private const string characterCostumeDefaultName = "Base";
 
         public string entityTypeName = entityDefaultTypeName;
-        public string characterTypeName = characterDefaultTypeName;
+        public string characterName = characterDefaultTypeName;
         public string characterCostumeName = characterCostumeDefaultName;
         public float[] position = new float[3]{0f, 0f, 0f};
         public float[] rotation = new float[4]{0f, 0f, 0f, 0f};
@@ -30,9 +30,9 @@ namespace SeleneGame.Core {
             entityTypeName = entityType?.AssemblyQualifiedName ?? entityDefaultTypeName;
 
             System.Type characterType = entity?.character?.GetType();
-            characterTypeName = characterType?.AssemblyQualifiedName ?? characterDefaultTypeName;
+            characterName = characterType?.AssemblyQualifiedName ?? "";
 
-            characterCostumeName = entity.character?.model?.costume?.name ?? characterCostumeDefaultName;
+            characterCostumeName = entity.character?.model?.costume?.name ?? "";
             
             position = new float[3]{entity.transform.position.x, entity.transform.position.y, entity.transform.position.z};
             rotation = new float[4]{entity.transform.rotation.x, entity.transform.rotation.y, entity.transform.rotation.z, entity.transform.rotation.w};
@@ -59,16 +59,13 @@ namespace SeleneGame.Core {
             if (oldEntity != null) 
                 GameUtility.SafeDestroy(oldEntity.gameObject);
 
-
-            System.Type characterType = Type.GetType(characterTypeName);
-
                 
             Entity entity = Entity.CreatePlayerEntity(
                 entityType,
                 new Vector3(position[0], position[1], position[2]), 
                 new Quaternion(rotation[0], rotation[1], rotation[2], rotation[3]),
-                characterType,
-                CharacterCostume.GetAsset(characterCostumeName)
+                AddressablesUtils.GetAsset<CharacterData>(characterName),
+                AddressablesUtils.GetAsset<CharacterCostume>(characterCostumeName)
             );
             entity.gravityDown = new Vector3(gravity[0], gravity[1], gravity[2]);
 
@@ -83,8 +80,8 @@ namespace SeleneGame.Core {
                     int currIndex = i;
                     WeaponSaveData currWeaponData = weaponData[currIndex];
                     
-                    WeaponCostume costume = WeaponCostume.GetAsset(currWeaponData.costumeName);
-                    armed.weapons.Set(currIndex, currWeaponData.weaponType, costume);
+                    WeaponCostume costume = AddressablesUtils.GetAsset<WeaponCostume>(currWeaponData.costumeName);
+                    armed.weapons.Set(currIndex, AddressablesUtils.GetAsset<WeaponData>(currWeaponData.weaponName), costume);
                 }
             }
             return entity;

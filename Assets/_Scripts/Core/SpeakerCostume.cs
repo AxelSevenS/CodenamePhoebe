@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace SeleneGame.Core {
 
-    public abstract class SpeakerCostume<T> : Costume<T> where T : SpeakerCostume<T> {
+    public abstract class SpeakerCostume : Costume {
 
         public Sprite neutralPortrait;
         public Sprite determinedPortrait;

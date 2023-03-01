@@ -5,39 +5,31 @@ using UnityEngine;
 namespace SeleneGame.Core {
 
     [CustomPropertyDrawer(typeof(Character), true)]
-    public class CharacterDrawer : CostumableDrawer<Character, CharacterCostume, CharacterModel> {
+    public class CharacterDrawer : CostumableDrawer<Character, CharacterData, CharacterCostume, CharacterModel> {
 
-        public override void SetValue(SerializedProperty property, int typeIndex) {
+        public override void SetValue(SerializedProperty property, CharacterData data) {
 
             ((Character)property.managedReferenceValue)?.Dispose();
 
-
-            if (typeIndex <= -1) {
-                property.managedReferenceValue = null;
-                return;
-            }
-
             
             Entity entityRef = (targetCostumable as Character)?.entity;
-
             if (entityRef == null) {
 
                 if (targetCostumable != null)
-                    Debug.LogWarning($"Character {property.managedReferenceValue} has nulled-out Entity Reference. Not good.");
+                    Debug.LogWarning($"Character {targetCostumable} has nulled-out Entity Reference. Not good.");
 
                 MonoBehaviour targetObject = (MonoBehaviour)property.serializedObject.targetObject;
                 entityRef ??= targetObject.GetComponent<Entity>();
 
             }
-
-            Type type = Character._types[typeIndex];
+            
             if (entityRef == null) {
-                Debug.LogError($"No Entity found for Character {property.managedReferenceValue}");
+                Debug.LogError($"No Entity found for Character {targetCostumable}");
 
-                // property.managedReferenceValue = Character.CreateInstance(type, entityRef);
+                property.managedReferenceValue = data.GetCharacter( entityRef );
             } else {
 
-                entityRef.SetCharacter( type );
+                entityRef.SetCharacter( data );
             }
 
         }

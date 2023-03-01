@@ -10,7 +10,7 @@ namespace SeleneGame.Core.UI {
 
     public class WeaponCase : CustomButton {
         
-        private Weapon _weapon;
+        private WeaponData _weaponData;
 
         [SerializeField] private Image weaponPortrait;
         [SerializeField] private TextMeshProUGUI weaponName;
@@ -18,6 +18,8 @@ namespace SeleneGame.Core.UI {
         [SerializeField] private Sprite nullPortrait;
 
 
+
+        public WeaponData weaponData => _weaponData;
 
         public Sprite portraitSprite {
             get => weaponPortrait.sprite;
@@ -30,10 +32,12 @@ namespace SeleneGame.Core.UI {
         }
 
 
-        public void SetDisplayWeapon(Weapon weapon) {
-            _weapon = weapon;
-            portraitSprite = weapon?.baseCostume?.portrait ?? nullPortrait;
-            nameText = weapon?.displayName ?? "None";
+        public void SetDisplayWeapon(WeaponData data) {
+
+            _weaponData = data ?? AddressablesUtils.GetDefaultAsset<WeaponData>();
+
+            portraitSprite = _weaponData.baseCostume?.portrait ?? nullPortrait;
+            nameText = _weaponData?.displayName ?? "None";
         }
 
 
@@ -41,7 +45,7 @@ namespace SeleneGame.Core.UI {
         public override void OnPointerClick(PointerEventData eventData) {
             base.OnPointerClick(eventData);
             Debug.Log($"Weapon case {weaponName.text} clicked");
-            WeaponSelectionMenuController.current.OnSelectWeapon(_weapon);
+            WeaponSelectionMenuController.current.OnSelectWeapon(_weaponData);
         }
     }
     

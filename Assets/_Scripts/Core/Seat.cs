@@ -41,7 +41,7 @@ namespace SeleneGame.Core {
         public Vector3 sitPosition { 
             get {
                 Vector3 seatOccupantUp = seatOccupant?.modelTransform.up ?? transform.up;
-                float seatOccupantSize = seatOccupant?.character.size.y/2f ?? 1.67f;
+                float seatOccupantSize = seatOccupant?.character.data.size.y/2f ?? 1.67f;
 
                 return transform.TransformPoint(currentSittingPose.position) + (seatOccupantUp * seatOccupantSize);
             }

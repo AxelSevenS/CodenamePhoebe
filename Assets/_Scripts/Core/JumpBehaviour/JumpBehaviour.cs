@@ -22,7 +22,7 @@ namespace SeleneGame.Core {
         public AnimationClip jumpAnimation {
             get {
                 if ( _jumpAnimation == null )
-                    _jumpAnimation = entity.character?.GetAnimation("Jump");
+                    _jumpAnimation = entity.character?.data.GetAnimation("Jump");
                 return _jumpAnimation;
             }
         }
@@ -33,7 +33,7 @@ namespace SeleneGame.Core {
 
         protected internal virtual void Jump(Vector3 direction) {
 
-            Debug.Log(entity.character.jumpHeight * entity.jumpMultiplier);
+            Debug.Log(entity.character.data.jumpHeight * entity.jumpMultiplier);
 
             AnimancerState jumpState = entity.animancer.Layers[0].Play(jumpAnimation, 0.3f);
             jumpState.Events.OnEnd = () => {
@@ -41,7 +41,7 @@ namespace SeleneGame.Core {
             };
 
             Vector3 newVelocity = entity.rigidbody.velocity.NullifyInDirection( -direction );
-            newVelocity += entity.character.jumpHeight * entity.jumpMultiplier * direction;
+            newVelocity += entity.character.data.jumpHeight * entity.jumpMultiplier * direction;
             entity.rigidbody.velocity = newVelocity;
 
             cooldownTimer.SetDuration(0.4f);

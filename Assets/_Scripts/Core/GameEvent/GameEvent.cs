@@ -37,7 +37,7 @@ namespace SeleneGame.Core {
 
         
 
-        public override void Invoke(GameObject dialogueObject) { 
+        public override void Invoke(GameObject eventObject) { 
 
             switch (eventType) {
                 case GameEvent.EventType.SetFlag:
@@ -47,10 +47,10 @@ namespace SeleneGame.Core {
                     ScribeFlags.RemoveFlag(editedFlagName, editedFlagType == ScribeFlags.FlagType.TemporaryFlag);
                     break;
                 case GameEvent.EventType.StartDialogue:
-                    DialogueController.current.StartDialogue(dialogueSource, dialogueObject);
+                    DialogueController.current.StartDialogue(dialogueSource, eventObject);
                     break;
                 case GameEvent.EventType.StartAlert:
-                    AlertController.current.StartDialogue(dialogueSource, dialogueObject);
+                    AlertController.current.StartDialogue(dialogueSource, eventObject);
                     break;
                 case GameEvent.EventType.SkipToLine:
                     UIController.currentDialogueReader.SkipToLine(dialogueSource);
@@ -59,21 +59,21 @@ namespace SeleneGame.Core {
                     UIController.currentDialogueReader.EndDialogue();
                     break;
                 case GameEvent.EventType.SetCharacterCostume:
-                    Character character;
-                    if (targetCharacterId == "Player") {
-                        character = PlayerEntityController.current.entity.character;
-                    } else {
-                        character = Character.GetInstanceWithId(targetCharacterId);
-                    }
-                    character?.SetCostume(targetCharacterCostume);
+                    // Character character;
+                    // if (targetCharacterId == "Player") {
+                    //     character = PlayerEntityController.current.entity.character;
+                    // } else {
+                    //     character = Character.GetInstanceWithId(targetCharacterId);
+                    // }
+                    // character?.SetCostume(targetCharacterCostume);
                     break;
                 case GameEvent.EventType.SetWeaponCostume:
-                    Weapon weapon;
-                    weapon = Weapon.GetInstanceWithId(targetWeaponId);
-                    weapon?.SetCostume(targetWeaponCostume);
+                    // Weapon weapon;
+                    // weapon = Weapon.GetInstanceWithId(targetWeaponId);
+                    // weapon?.SetCostume(targetWeaponCostume);
                     break;
                 case GameEvent.EventType.Destroy:
-                    Object.Destroy(dialogueObject);
+                    Object.Destroy(eventObject);
                     break;
             }
         }

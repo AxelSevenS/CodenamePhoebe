@@ -10,10 +10,12 @@ namespace SeleneGame.Core {
         [SerializeField] private ViewSpaceNormalsPass _viewSpaceNormalsPass;
         [SerializeField] private OutlinePass _outlinePass;
 
+        [SerializeField] private OutlinePassSettings _outlinePassSettings;
+
         public override void Create() {
             _viewSpaceNormalsPass = new ViewSpaceNormalsPass();
             _viewSpaceNormalsPass.renderPassEvent = RenderPassEvent.AfterRenderingSkybox;
-            _outlinePass = new OutlinePass();
+            _outlinePass = new OutlinePass(_outlinePassSettings);
             _outlinePass.renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing;
         }
 

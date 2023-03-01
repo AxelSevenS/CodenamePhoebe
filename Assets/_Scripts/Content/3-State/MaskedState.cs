@@ -108,7 +108,7 @@ namespace SeleneGame.Content {
                 if (direction.sqrMagnitude != 0f){
 
                     maskedEntity.absoluteForward = direction;
-                    maskedEntity.rigidbody.velocity += direction * maskedEntity.character.baseSpeed * GameUtility.timeDelta;
+                    maskedEntity.rigidbody.velocity += direction * maskedEntity.character.data.baseSpeed * GameUtility.timeDelta;
                 }
             }
         }
@@ -230,7 +230,7 @@ namespace SeleneGame.Content {
 
             } else {
                     
-                maskedEntity.Displace( (maskedEntity.character.baseSpeed * 0.5f) * flyDirection );
+                maskedEntity.Displace( (maskedEntity.character.data.baseSpeed * 0.5f) * flyDirection );
     
             }
             

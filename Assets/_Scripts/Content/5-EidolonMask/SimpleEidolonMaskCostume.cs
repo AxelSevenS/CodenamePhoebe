@@ -13,8 +13,8 @@ namespace SeleneGame.Content {
 
         [SerializeField] public GameObject model;
 
-        public override CostumeModel<EidolonMaskCostume> LoadModel(EidolonMask mask) {
-            return new SimpleEidolonMaskModel(mask, this);
+        public override EidolonMaskModel LoadModel(MaskedEntity entity, EidolonMask mask) {
+            return new SimpleEidolonMaskModel(entity, mask, this);
         }
     }
 
@@ -28,8 +28,8 @@ namespace SeleneGame.Content {
         public override Transform mainTransform => _model.transform;
 
 
-        public SimpleEidolonMaskModel(EidolonMask mask, SimpleEidolonMaskCostume costume) : base(mask, costume) {
-            if (mask != null && costume?.model != null) {
+        public SimpleEidolonMaskModel(MaskedEntity entity, EidolonMask mask, SimpleEidolonMaskCostume costume) : base(entity, mask, costume) {
+            if (mask?.maskedEntity != null && costume?.model != null) {
 
                 _model = GameObject.Instantiate(costume.model, mask.maskedEntity.transform.parent);
 

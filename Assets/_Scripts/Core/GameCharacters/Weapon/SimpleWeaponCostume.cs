@@ -10,7 +10,7 @@ namespace SeleneGame.Core {
 
         [SerializeField] public GameObject model;
 
-        public override CostumeModel<WeaponCostume> LoadModel(Entity entity, Weapon weapon) {
+        public override WeaponModel LoadModel(Entity entity, Weapon weapon) {
             return new SimpleWeaponModel(entity, weapon, this);
         }
     }

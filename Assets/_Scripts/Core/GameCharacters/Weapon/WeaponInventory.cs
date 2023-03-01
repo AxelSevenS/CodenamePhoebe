@@ -27,8 +27,7 @@ namespace SeleneGame.Core {
 
         public WeaponInventory(ArmedEntity entity) {
             _entity = entity;
-            // _defaultWeapon = Weapon.Initialize(Weapon.GetDefaultAsset(), entity);
-            _defaultWeapon = new UnarmedWeapon(entity);
+            _defaultWeapon = AddressablesUtils.GetDefaultAsset<WeaponData>().GetWeapon(entity);
         }
 
 
@@ -41,53 +40,35 @@ namespace SeleneGame.Core {
 
         public abstract Weapon Get(int index);
 
-        public void Set<TWeapon>(int index, WeaponCostume costume = null) where TWeapon : Weapon {
-            Set(index, typeof(TWeapon), costume);
-        }
-        public abstract void Set(int index, Type weapon, WeaponCostume costume = null);
+        // public void Set<TWeapon>(int index, WeaponCostume costume = null) where TWeapon : Weapon {
+        //     Set(index, typeof(TWeapon), costume);
+        // }
+        public abstract void Set(int index, WeaponData data, WeaponCostume costume = null);
 
 
-        public void Replace<TOldWeapon, TNewWeapon>(int index, WeaponCostume costume = null) where TOldWeapon : Weapon where TNewWeapon : Weapon {
-            Replace(typeof(TOldWeapon), typeof(TNewWeapon), costume);
-        }
-        public void Replace(Type oldWeaponType, Type newWeaponType, WeaponCostume costume = null) {
+        // public void Replace<TOldWeapon, TNewWeapon>(int index, WeaponCostume costume = null) where TOldWeapon : Weapon where TNewWeapon : Weapon {
+        //     Replace(typeof(TOldWeapon), typeof(TNewWeapon), costume);
+        // }
+        public void Replace(Weapon oldWeapon, WeaponData newWeaponData, WeaponCostume costume = null) {
 
-            TypeCheck(oldWeaponType);
-
-            if (newWeaponType != null)
-                TypeCheck(newWeaponType);
-
-            if (oldWeaponType == newWeaponType) return;
+            if (oldWeapon.data == newWeaponData) return;
             
             try {
-                int index = IndexOf(oldWeaponType);
-                Set(index, newWeaponType, costume);
+                int index = IndexOf(oldWeapon);
+                Set(index, newWeaponData, costume);
             } catch (System.ArgumentOutOfRangeException) {
                 
             }
         }
 
 
-        public int IndexOf<TWeapon>() where TWeapon : Weapon {
-            return IndexOf(typeof(TWeapon));
-        }
-        public int IndexOf(Type weaponType){
-
-            TypeCheck(weaponType);
-
-            for (int i = 0; i < Count; i++) {
-                if (this[i].GetType() == weaponType) return i;
-            }
-            
-            throw new System.ArgumentOutOfRangeException();
-        }
         public abstract int IndexOf(Weapon weapon);
 
 
-        protected void TypeCheck(Type weaponType) {
-            if (!typeof(Weapon).IsAssignableFrom(weaponType))
-                throw new System.ArgumentException("Type must be a Weapon type.", "weaponType");
-        }
+        // protected void TypeCheck(Type weaponType) {
+        //     if (!typeof(Weapon).IsAssignableFrom(weaponType))
+        //         throw new System.ArgumentException("Type must be a Weapon type.", "weaponType");
+        // }
 
 
         public abstract void Remove(int index);

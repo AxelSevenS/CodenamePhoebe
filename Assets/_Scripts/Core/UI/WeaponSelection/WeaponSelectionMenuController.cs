@@ -26,7 +26,7 @@ namespace SeleneGame.Core.UI {
         [SerializeField] private List<Weapon> equippedWeapons = new List<Weapon>();
         [SerializeField] private List<WeaponCase> weapons = new List<WeaponCase>();
 
-        private Action<Weapon> onWeaponSelected;
+        private Action<WeaponData> onWeaponDataSelected;
 
 
         // private static void 
@@ -62,8 +62,8 @@ namespace SeleneGame.Core.UI {
 
         public void ReplaceWeapon(int index, ArmedEntity armedEntity) {
 
-            onWeaponSelected = (selectedWeapon) => {
-                armedEntity.weapons.Set(index, selectedWeapon?.GetType() ?? null);
+            onWeaponDataSelected = (selectedWeapon) => {
+                armedEntity.weapons.Set(index, selectedWeapon);
                 OnCancel();
             };
 
@@ -74,9 +74,9 @@ namespace SeleneGame.Core.UI {
         }
 
 
-        public void OnSelectWeapon(Weapon weapon) {
+        public void OnSelectWeapon(WeaponData weapon) {
             if ( !Enabled ) return;
-            onWeaponSelected?.Invoke( weapon );
+            onWeaponDataSelected?.Invoke( weapon );
         }
 
         private void GetEntityWeapons(ArmedEntity armedEntity) {
@@ -95,22 +95,23 @@ namespace SeleneGame.Core.UI {
             weapons = new();
 
             
-            CreateWeaponCase(new UnarmedWeapon(null, null));
+            CreateWeaponCase(null);
             ResetGamePadSelection();
 
-            foreach (Type weaponType in Weapon._types) {
-                if (weaponType == typeof(UnarmedWeapon)) 
-                    continue;
+            AddressablesUtils.GetAssets<WeaponData>((data) => {
 
-                ConstructorInfo constructor = weaponType.GetConstructor( new Type[] {typeof(ArmedEntity), typeof(WeaponCostume)});
-                Weapon weapon = constructor.Invoke( new object[] {null, null}) as Weapon;
-                CreateWeaponCase(weapon);
-            }
+                    if (weapons.Exists( (c) => c.weaponData == data ))
+                        return;
+
+                    CreateWeaponCase(data);
+                }
+
+            );
 
 
         }
 
-        private void CreateWeaponCase(Weapon weapon, int equippedIndex = -1){
+        private void CreateWeaponCase(WeaponData weapon, int equippedIndex = -1){
             var caseObject = Instantiate(weaponCaseTemplate, weaponSelectionContainer.transform);
             var weaponCase = caseObject.GetComponentInChildren<WeaponCase>();
 

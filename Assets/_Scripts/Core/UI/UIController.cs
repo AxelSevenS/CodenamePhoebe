@@ -10,19 +10,21 @@ using SevenGame.Utility;
 
 namespace SeleneGame.Core.UI {
 
-    public class UIController : Singleton<UIController>{
+    public class UIController : Singleton<UIController> {
 
         public static IUIMenu currentMenu;
         public static IDialogueReader currentDialogueReader;
-
-        private BoolData keyBindMenuInput;
-        private BoolData saveMenuInput;
 
 
         private static KeyInputData cancelInput;
         public static event Action onCancel;
 
         public static bool IsMenuOpen => currentMenu != null;
+
+        
+
+        private BoolData keyBindMenuInput;
+        private BoolData saveMenuInput;
 
 
 

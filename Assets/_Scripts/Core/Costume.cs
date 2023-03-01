@@ -6,8 +6,10 @@ using UnityEngine;
 
 namespace SeleneGame.Core {
 
-    public abstract class Costume<T> : AddressableAsset<T> where T : Costume<T> {
+    public abstract class Costume : ScriptableObject {
 
+        public bool accessibleInGame = false;
+        
         [Tooltip("The Portrait of the Costume, used as a preview in menus.")]
         public Sprite portrait;
 

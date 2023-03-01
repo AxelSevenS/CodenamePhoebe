@@ -9,7 +9,7 @@ namespace SeleneGame.Core {
 
         public Seat.SittingPose[] sittingPoses;
 
-        public VehicleCharacter(Entity entity, CharacterCostume costume) : base(entity, costume) {
+        public VehicleCharacter(Entity entity, CharacterData data, CharacterCostume costume = null) : base(entity, data, costume) {
         }
     }
 }

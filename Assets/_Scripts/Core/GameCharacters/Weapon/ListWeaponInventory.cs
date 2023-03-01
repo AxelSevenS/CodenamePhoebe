@@ -31,11 +31,11 @@ namespace SeleneGame.Core {
 
         public override Weapon Get(int index) => items[index] ?? defaultWeapon;
 
-        public override void Set(int index, Type weaponType, WeaponCostume costume = null){
+        public override void Set(int index, WeaponData data, WeaponCostume costume = null){
             try {
                 // weapon = Weapon.Initialize(weapon, entity, costume);
                 items[index]?.Dispose();
-                items[index] = Weapon.CreateInstance(weaponType, entity, costume);
+                items[index] = data?.GetWeapon(entity, costume);
             } catch (System.Exception e) {
                 Debug.LogError($"Error setting weapon at index {index} in WeaponInventory : {e.Message}.");
             }

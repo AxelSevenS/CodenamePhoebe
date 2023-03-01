@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e02a967bbf926964aba993f61c2f4fac, type: 3}
   m_Name: Selene_Test
   m_EditorClassIdentifier: 
-  _accessibleInGame: 1
+  accessibleInGame: 1
   portrait: {fileID: 0}
-  displayName: Default Costume Name
+  displayName: Selene Test
   description: Default Costume Description
   neutralPortrait: {fileID: 0}
   determinedPortrait: {fileID: 0}
