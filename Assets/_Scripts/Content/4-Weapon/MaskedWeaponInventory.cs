@@ -21,20 +21,25 @@ namespace SeleneGame.Content {
         public override int Count => 3;
 
         public override Weapon Get(int index) {
+            return GetNullable(index) ?? defaultWeapon;
+        }
+
+        protected Weapon GetNullable(int index) {
             switch (index) {
                 case (int)WeaponIndex.primary:
-                    return primaryWeapon ?? defaultWeapon;
+                    return primaryWeapon;
                 case (int)WeaponIndex.secondary:
-                    return secondaryWeapon ?? defaultWeapon;
+                    return secondaryWeapon;
                 case (int)WeaponIndex.tertiary:
-                    return tertiaryWeapon ?? defaultWeapon;
+                    return tertiaryWeapon;
                 default:
-                    return defaultWeapon;
+                    return null;
             }
         }
 
 
-        public override Weapon current => Get((int)_currentIndex) ?? defaultWeapon;
+        public override Weapon current => Get((int)_currentIndex);
+        protected Weapon currentNullable => GetNullable((int)_currentIndex);
 
         public MaskedWeaponInventory(ArmedEntity entity) : base(entity) {
             Switch((int)WeaponIndex.primary);
@@ -42,25 +47,33 @@ namespace SeleneGame.Content {
 
         public override void Set(int index, WeaponData data, WeaponCostume costume = null){
             // weapon = Weapon.Initialize(weapon, entity, costume);
-            try {
+            // try {
                 switch (index) {
+                    default:
+                        // Debug.LogError($"Index {index} is out of range for MaskedWeaponInventory");
                     case (int)WeaponIndex.primary:
-                        primaryWeapon?.Dispose();
-                        primaryWeapon = data?.GetWeapon(entity, costume);
+                        SetWeapon(ref primaryWeapon, WeaponIndex.primary, data, costume);
                         break;
                     case (int)WeaponIndex.secondary:
-                        secondaryWeapon?.Dispose();
-                        secondaryWeapon = data?.GetWeapon(entity, costume);
+                        SetWeapon(ref secondaryWeapon, WeaponIndex.secondary, data, costume);
                         break;
                     case (int)WeaponIndex.tertiary:
-                        tertiaryWeapon?.Dispose();
-                        tertiaryWeapon = data?.GetWeapon(entity, costume);
+                        SetWeapon(ref tertiaryWeapon, WeaponIndex.tertiary, data, costume);
                         break;
-                    default:
-                        throw new System.IndexOutOfRangeException($"Index {index} is out of range for MaskedWeaponInventory");
                 }
-            } catch (System.Exception e) {
-                Debug.LogError($"Error setting weapon at index {index} in WeaponInventory : {e.Message}.");
+            // } catch (System.Exception e) {
+            //     Debug.LogError($"Error setting weapon at index {index} in WeaponInventory : {e.GetType()} : {e.Message}.");
+            // }
+
+            void SetWeapon(ref Weapon weapon, WeaponIndex index, WeaponData data, WeaponCostume costume = null) {
+                if (weapon == null)
+                    defaultWeapon?.Hide();
+                else
+                    weapon.Dispose();
+                    
+                weapon = data?.GetWeapon(entity, costume);
+                if (_currentIndex == index)
+                    (weapon ?? defaultWeapon)?.Display();
             }
         }
 
@@ -100,7 +113,7 @@ namespace SeleneGame.Content {
                 index = -1;
             }
             
-            public object Current => inventory[index];
+            public object Current => inventory.GetNullable(index);
 
             public bool MoveNext(){
                 index++;

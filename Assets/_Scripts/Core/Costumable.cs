@@ -12,6 +12,8 @@ namespace SeleneGame.Core {
     [Serializable]
     public abstract class Costumable<TData, TCostume, TModel> where TData : CostumableData<TCostume> where TCostume : Costume where TModel : CostumeModel<TCostume> {
 
+        [SerializeField] /* [ReadOnly] */ protected bool displayed = false;
+
         private bool disposedValue;
 
         [SerializeField] [HideInInspector] protected TData _data;
@@ -36,6 +38,23 @@ namespace SeleneGame.Core {
         }
 
         public abstract void SetCostume(TCostume costume);
+
+
+        public void Display() {
+            if (displayed)
+                return;
+
+            displayed = true;
+            _model?.Display();
+        }
+
+        public void Hide() {
+            if (!displayed)
+                return;
+
+            displayed = false;
+            _model?.Hide();
+        }
 
         
 

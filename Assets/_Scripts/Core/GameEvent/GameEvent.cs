@@ -9,30 +9,43 @@ using SeleneGame.Core.UI;
 namespace SeleneGame.Core {
 
     [System.Serializable]
-    public class GameEvent : ScribeEvent<GameEvent.EventType, FlagCondition> {
+    public class GameEvent : ScribeEvent<FlagCondition> {
+
+        [ScribeHideLabel]
+        [ScribeOption] 
+        public GameEvent.EventType eventType;
         
-        [ScribeField((int)GameEvent.EventType.SetFlag)]
-        [ScribeField((int)GameEvent.EventType.RemoveFlag)]
+        [ScribeHideLabel]
+        [ScribeField(nameof(eventType), (int)GameEvent.EventType.SetFlag)]
+        [ScribeField(nameof(eventType), (int)GameEvent.EventType.RemoveFlag)]
         public ScribeFlags.FlagType editedFlagType;
-        [ScribeField((int)GameEvent.EventType.SetFlag)]
-        [ScribeField((int)GameEvent.EventType.RemoveFlag)]
+
+        [ScribeField(nameof(eventType), (int)GameEvent.EventType.SetFlag)]
+        [ScribeField(nameof(eventType), (int)GameEvent.EventType.RemoveFlag)]
         public string editedFlagName;
-        [ScribeField((int)GameEvent.EventType.SetFlag)]
+
+        [ScribeField(nameof(eventType), (int)GameEvent.EventType.SetFlag)]
         public int editedFlagValue;
         
-        [ScribeField((int)GameEvent.EventType.StartAlert)]
-        [ScribeField((int)GameEvent.EventType.StartDialogue)]
-        [ScribeField((int)GameEvent.EventType.SkipToLine)]
+
+        [ScribeHideLabel]
+        [ScribeField(nameof(eventType), (int)GameEvent.EventType.StartAlert)]
+        [ScribeField(nameof(eventType), (int)GameEvent.EventType.StartDialogue)]
+        [ScribeField(nameof(eventType), (int)GameEvent.EventType.SkipToLine)]
         public DialogueSource dialogueSource;
 
-        [ScribeField((int)GameEvent.EventType.SetCharacterCostume)]
+        [ScribeField(nameof(eventType), (int)GameEvent.EventType.SetCharacterCostume)]
         public string targetCharacterId;
-        [ScribeField((int)GameEvent.EventType.SetCharacterCostume)]
+
+        [ScribeHideLabel]
+        [ScribeField(nameof(eventType), (int)GameEvent.EventType.SetCharacterCostume)]
         public CharacterCostume targetCharacterCostume;
 
-        [ScribeField((int)GameEvent.EventType.SetWeaponCostume)]
+        [ScribeField(nameof(eventType), (int)GameEvent.EventType.SetWeaponCostume)]
         public string targetWeaponId;
-        [ScribeField((int)GameEvent.EventType.SetWeaponCostume)]
+        
+        [ScribeHideLabel]
+        [ScribeField(nameof(eventType), (int)GameEvent.EventType.SetWeaponCostume)]
         public WeaponCostume targetWeaponCostume;
 
         public void Invoke(GameObject eventObject) {

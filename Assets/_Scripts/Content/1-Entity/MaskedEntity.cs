@@ -26,7 +26,7 @@ namespace SeleneGame.Content {
             new Vector3(-2.5f, 2.5f, 3f)
         };
 
-        private SpeedlinesEffect speedlines;
+        // private SpeedlinesEffect speedlines;
         public float shiftEnergy = 0f;
 
 
@@ -67,17 +67,7 @@ namespace SeleneGame.Content {
 
             _mask = data.GetMask(this, costume);
 
-        }
-
-        protected override void LoadModel() {
-            base.LoadModel();
-        }
-
-        protected override void UnloadModel(){
-            base.UnloadModel();
-            
-            GameUtility.SafeDestroy(speedlines);
-        }   
+        } 
         
         public override void Grab(Grabbable grabbable){
             if (grabbedObjects.Count >= 4) return;

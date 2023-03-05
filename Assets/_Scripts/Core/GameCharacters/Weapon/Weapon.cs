@@ -3,8 +3,6 @@ using System;
 using UnityEngine;
 
 using SevenGame.Utility;
-using System.Collections.Generic;
-using System.Reflection;
 
 namespace SeleneGame.Core {
     
@@ -29,18 +27,23 @@ namespace SeleneGame.Core {
 
             costume ??= data.baseCostume ?? AddressablesUtils.GetDefaultAsset<WeaponCostume>();
             _model = costume?.LoadModel(armedEntity, this);
+
+            if (displayed)
+                _model?.Display();
+            else
+                _model?.Hide();
         }
 
         public virtual void OnEquip() {
+            Display();
         }
         public virtual void OnUnequip() {
+            Hide();
         }
 
 
-        public virtual void Update() {
-        }
-        public virtual void FixedUpdate() {
-        }
+        public virtual void Update() {;}
+        public virtual void FixedUpdate() {;}
 
 
 
@@ -52,5 +55,6 @@ namespace SeleneGame.Core {
             DoubleOneHanded = 1 << 3,
             Sparring = 1 << 4
         };
+
     }
 }

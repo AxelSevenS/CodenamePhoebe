@@ -32,9 +32,22 @@ namespace SeleneGame.Content {
 
         public EidolonMask(MaskedEntity maskedEntity, EidolonMaskData data, EidolonMaskCostume costume = null) : base(data){
             _maskedEntity = maskedEntity;
-
-            // We have to set the costume after the entity is set
+            displayed = true;
             SetCostume(costume);
+        }
+
+
+        
+        public override void SetCostume(EidolonMaskCostume costume) {
+            _model?.Dispose();
+            
+            costume ??= data.baseCostume ?? AddressablesUtils.GetDefaultAsset<EidolonMaskCostume>();
+            _model = costume?.LoadModel(maskedEntity, this);
+
+            if (displayed)
+                _model?.Display();
+            else
+                _model?.Hide();
         }
 
 
@@ -55,19 +68,9 @@ namespace SeleneGame.Content {
             }
         }
 
-        
-
         public void SetState(bool onFace) {
             faceState = onFace;
         }
-        
-        public override void SetCostume(EidolonMaskCostume costume) {
-            _model?.Dispose();
-            
-            costume ??= data.baseCostume ?? AddressablesUtils.GetDefaultAsset<EidolonMaskCostume>();
-            _model = costume?.LoadModel(maskedEntity, this);
-        }
-
 
         private bool positionBlocked(Vector3 position) {
             return Physics.SphereCast(maskedEntity.modelTransform.position, 0.35f, position, out _, position.magnitude, Global.GroundMask);

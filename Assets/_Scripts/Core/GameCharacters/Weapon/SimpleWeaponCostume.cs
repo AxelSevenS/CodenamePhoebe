@@ -19,7 +19,7 @@ namespace SeleneGame.Core {
 
         [ReadOnly] public GameObject model;
 
-        public override Transform mainTransform => model.transform;
+        public override Transform mainTransform => model?.transform ?? null;
 
         public SimpleWeaponModel(Entity entity, Weapon weapon, SimpleWeaponCostume costume) : base(entity, weapon, costume) {
             if (entity != null && costume?.model != null)
@@ -28,6 +28,19 @@ namespace SeleneGame.Core {
 
         public override void Unload() {
             model = GameUtility.SafeDestroy(model);
+        }
+
+        public override void Display() {
+            // Null-propagating operator doesn't work here
+            // Probably because of the Unity.Object operator overrides
+            // Please fix :/
+            if (model != null)
+                model.SetActive(true);
+        }
+
+        public override void Hide() {
+            if (model != null)
+                model.SetActive(false);
         }
     }
 }

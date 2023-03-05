@@ -63,11 +63,11 @@ namespace SeleneGame.Core {
         [Tooltip("The direction in which the Entity is attracted by Gravity.")]
         public Vector3 gravityDown = Vector3.down;
 
+        private Vector3 _totalMovement = Vector3.zero; 
+
 
 
         [Header("Misc")]
-
-        private Vector3 _totalMovement = Vector3.zero; 
 
         public RaycastHit groundHit;
 
@@ -82,6 +82,7 @@ namespace SeleneGame.Core {
         public event Action onParry;
 
 
+
         public Transform modelTransform { 
             get {
                 if (character == null || character.model == null)
@@ -92,11 +93,13 @@ namespace SeleneGame.Core {
 
 
         /// <summary>
-        /// The entity's current Character, defines their game Model, portraits, display name and base Stats.
+        /// The entity's current Character, defines their Game Model, portraits, display name and base Stats.
         /// </summary>
+        /// <remarks>
+        /// You can set this value by calling <see cref="SetCharacter"/> and providing CharacterData.
+        /// </remarks>
         public Character character {
             get => _character;
-            private set => _character = value;
         }
 
         /// <summary>
@@ -143,8 +146,11 @@ namespace SeleneGame.Core {
         }
 
         /// <summary>
-        /// The current state of the Entity, can be changed using the SetState method.
+        /// The current state (Behaviour) of the Entity.
         /// </summary>
+        /// <remarks>
+        /// You can change the State using <see cref="SetState"/>.
+        /// </remarks>
         public State state {
             get {
                 if ( _state == null )
@@ -155,13 +161,19 @@ namespace SeleneGame.Core {
         }
 
         /// <summary>
-        /// The default state of the entity.
+        /// The default state Type of the entity.
         /// </summary>
+        /// <remarks>
+        /// The Entity state is set to this when it is first created, or when using <see cref="ResetState"/>.
+        /// </remarks>
         public virtual System.Type defaultState => typeof(Grounded); 
 
         /// <summary>
         /// The current health of the Entity.
         /// </summary>
+        /// <remarks>
+        /// You can change the health using <see cref="Heal"/> and <see cref="Damage"/>, or by using this property instead.
+        /// </remarks>
         public float health {
             get {
                 return _health;
@@ -175,8 +187,16 @@ namespace SeleneGame.Core {
         }
 
         /// <summary>
+        /// Returns true if the Entity is not moving.
+        /// </summary>
+        public bool isIdle => moveDirection.sqrMagnitude == 0;
+
+        /// <summary>
         /// The forward direction in absolute space of the Entity.
         /// </summary>
+        /// <remarks>
+        /// Editing this value also changes <see cref="relativeForward"/> to match.
+        /// </remarks>
         public Vector3 absoluteForward { 
             get => _absoluteForward; 
             set { 
@@ -188,6 +208,9 @@ namespace SeleneGame.Core {
         /// <summary>
         /// The forward direction in relative space of the Entity.
         /// </summary>
+        /// <remarks>
+        /// Editing this value also changes <see cref="absoluteForward"/> to match.
+        /// </remarks>
         public Vector3 relativeForward { 
             get => _relativeForward; 
             set { 
@@ -197,19 +220,26 @@ namespace SeleneGame.Core {
         }
 
         /// <summary>
-        /// The force of gravity applied to the Entity.
+        /// The strength of gravity applied to the Entity.
         /// </summary>
         public float gravityMultiplier => state.gravityMultiplier;
 
+        /// <summary>
+        /// The strength of gravity applied to the Entity.
+        /// </summary>
         public Vector3 gravityForce => weight * gravityMultiplier * gravityDown;
-
-        public bool isIdle => moveDirection.sqrMagnitude == 0;
 
         public float fallVelocity => Vector3.Dot(rigidbody.velocity, -gravityDown);
         public bool inWater => physicsComponent.inWater;
         public bool isOnWaterSurface => inWater && Mathf.Abs(physicsComponent.waterHeight - transform.position.y) < 0.5f;
 
 
+        /// <summary>
+        /// Returns an Armature Bone by name.
+        /// </summary>
+        /// <remarks>
+        /// If the bone is not found, the main Transform of the Entity's Model is returned instead.
+        /// </remarks>
         public GameObject this[string key]{
             get { 
                 try { 
@@ -251,14 +281,10 @@ namespace SeleneGame.Core {
         /// Create an Entity with a PlayerEntityController.
         /// </summary>
         /// <param name="entityType">The type of entity to create</param>
-        /// <param name="character">The character of the entity to create</param>
         /// <param name="position">The position of the entity</param>
         /// <param name="rotation">The rotation of the entity</param>
+        /// <param name="character">The character of the entity to create</param>
         /// <param name="costume">The costume of the entity, leave empty to use character's default costume</param>
-        // public static Entity CreatePlayerEntity<TCharacter>(System.Type entityType, Vector3 position, Quaternion rotation, CharacterCostume costume = null) where TCharacter : Character{
-        //     return CreatePlayerEntity(entityType, position, rotation, typeof(TCharacter), costume);
-        // }
-
         public static Entity CreatePlayerEntity(System.Type entityType, Vector3 position, Quaternion rotation, CharacterData data, CharacterCostume costume = null) {
             GameObject entityGO = new GameObject("Entity");
             Entity entity = (Entity)entityGO.AddComponent(entityType);
@@ -302,16 +328,16 @@ namespace SeleneGame.Core {
             Debug.Log($"{name} switched state to {stateType.Name}");
         }
 
-        public void ResetState() => _state = GameUtility.SafeDestroy(_state); 
+        /// <summary>
+        /// Set the Entity state to <see cref="defaultState"/>.
+        /// </summary>
+        public void ResetState() => SetState(defaultState);
 
         /// <summary>
         /// Set the Entity's current Character.
         /// </summary>
-        /// <param name="character">The new Character</param>
-        // public void SetCharacter<TCharacter>(CharacterCostume costume = null) where TCharacter : Character {
-        //     SetCharacter(typeof(TCharacter), costume);
-        // }
-
+        /// <param name="characterData">The data of the Character</param>
+        /// <param name="characterCostume">The costume to give the character, leave null to use CharacterData's base costume</param>
         public void SetCharacter(CharacterData characterData, CharacterCostume costume = null) {
 
             _character?.Dispose();
@@ -339,7 +365,7 @@ namespace SeleneGame.Core {
         /// <summary>
         /// Set the Entity's current Character Costume.
         /// </summary>
-        /// <param name="costumeName">The new Character Costume</param>
+        /// <param name="costume">The new Character Costume</param>
         public void SetCostume(CharacterCostume costume) {
             _character?.SetCostume(costume);
         }
@@ -351,30 +377,25 @@ namespace SeleneGame.Core {
         /// <param name="newStyle">The style to set the Entity to</param>
         public virtual void SetStyle(int newStyle){;}
 
-        /// <summary>
-        /// Load the Character Model.
-        /// </summary>
-        protected internal virtual void LoadModel() {
-            // character?.LoadModel();
-        }
 
         /// <summary>
-        /// Unload the Character Model.
+        /// Rotate the Entity's model towards the given direction, with the given up direction.
         /// </summary>
-        protected internal virtual void UnloadModel() {
-            // character?.UnloadModel();
-        }
-
-
+        /// <param name="newForward">The direction to rotate towards</param>
+        /// <param name="newUp">The up direction to use</param>
         public void RotateModelTowards(Vector3 newForward, Vector3 newUp) => RotateModelTowards( Quaternion.LookRotation(newForward, newUp) );
 
-        public void RotateModelTowards(Quaternion nowRotation) {
+        /// <summary>
+        /// Rotate the Entity's model using the given rotation.
+        /// </summary>
+        /// <param name="newRotation">The rotation to use</param>
+        public void RotateModelTowards(Quaternion newRotation) {
             
             if (modelTransform == null) return;
 
             Quaternion inverseTransformRotation = Quaternion.Inverse(transform.rotation);
 
-            modelTransform.rotation = Quaternion.Slerp(modelTransform.rotation, nowRotation, 12f * GameUtility.timeDelta);
+            modelTransform.rotation = Quaternion.Slerp(modelTransform.rotation, newRotation, 12f * GameUtility.timeDelta);
         }
 
 
@@ -416,6 +437,7 @@ namespace SeleneGame.Core {
             if (health == 0f)
                 Death();
 
+            // TODO: Add knockback animations and actual movement
             rigidbody.AddForce(knockback, ForceMode.Impulse);
 
             onDamage?.Invoke(amount);
@@ -435,9 +457,16 @@ namespace SeleneGame.Core {
 
         /// <summary>
         /// Move in the given direction.
-        /// Not supposed to be used to instruct the Entity to "Walk" to a specific position; 
-        /// This is just used to change the Entity's position.
         /// </summary>
+        /// <remarks>
+        ///     <para>
+        ///         This is not supposed to be used to instruct the Entity to "Walk" to a specific position; 
+        ///         use <see cref="Move"/> for that.
+        ///     </para>
+        ///     <para>
+        ///         This is just used to change the Entity's position.
+        ///     </para>
+        /// </remarks>
         /// <param name="direction">The direction to move in</param>
         /// <param name="canStep">If the Entity can move up or down stair steps, like on a slope.</param>
         public void Displace(Vector3 direction, bool canStep = false) {
@@ -468,7 +497,7 @@ namespace SeleneGame.Core {
 
         /// <summary>
         /// Apply all instructed movement to the Entity.
-        /// This is where the collision is calculated.
+        /// This is where collision is calculated.
         /// </summary>
         private void ExecuteMovement() {
 
@@ -570,8 +599,8 @@ namespace SeleneGame.Core {
             _rigidbody = GetComponent<Rigidbody>();
             _physicsComponent = GetComponent<CustomPhysicsComponent>();
 
-            character?.Dispose();
-            character = null;
+            _character?.Dispose();
+            _character = null;
         }
 
         protected virtual void OnEnable(){

@@ -29860,8 +29860,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  entityAnimatorController: {fileID: 9100000, guid: 080e304828b097b4cac678d0babd1671,
-    type: 2}
+  entityAnimatorController: {fileID: 0}
   entityList: []
   stepHeight: 0.35
 --- !u!114 &1953257001

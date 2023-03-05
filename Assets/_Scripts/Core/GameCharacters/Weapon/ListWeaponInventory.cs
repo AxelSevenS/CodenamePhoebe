@@ -33,9 +33,11 @@ namespace SeleneGame.Core {
 
         public override void Set(int index, WeaponData data, WeaponCostume costume = null){
             try {
-                // weapon = Weapon.Initialize(weapon, entity, costume);
                 items[index]?.Dispose();
                 items[index] = data?.GetWeapon(entity, costume);
+
+                if (currentIndex != index)
+                    items[index]?.Hide();
             } catch (System.Exception e) {
                 Debug.LogError($"Error setting weapon at index {index} in WeaponInventory : {e.Message}.");
             }
@@ -57,14 +59,11 @@ namespace SeleneGame.Core {
         public override void Switch(int index){
             if (index == currentIndex) return;
 
-            foreach ( Weapon weapon in items )
-                weapon.OnUnequip();
+            current.OnUnequip();
 
-            if ( items[index] != null ) {
+            // if ( items[index] != null ) {
                 currentIndex = index;
-            } else {
-                Debug.LogError($"Error switching to weapon at index {index} in WeaponInventory; Switching to Default Weapon");
-            }
+            // }
 
             current.OnEquip();
         }

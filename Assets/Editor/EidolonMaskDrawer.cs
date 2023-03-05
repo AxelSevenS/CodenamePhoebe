@@ -26,11 +26,10 @@ namespace SeleneGame.Content {
 
             }
 
-            // Type type = EidolonMask._types[typeIndex];
             if (entityRef == null) {
                 Debug.LogError($"No MaskedEntity found for EidolonMask {targetCostumable}");
                 
-                property.managedReferenceValue = data.GetMask( entityRef );
+                property.managedReferenceValue = data?.GetMask( entityRef ) ?? null;
             } else {
 
                 entityRef.SetMask( data );

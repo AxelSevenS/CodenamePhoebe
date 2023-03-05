@@ -40,9 +40,25 @@ namespace SeleneGame.Content {
             }
         }
 
+        public override void Unload() {
+            _model = GameUtility.SafeDestroy(_model);
+        }
+
+        public override void Display() {
+            _model?.SetActive(true);
+        }
+
+        public override void Hide() {
+            _model?.SetActive(false);
+        }
+
         public override void Update() {
 
             base.Update();
+
+
+            if (_model == null || headTransform == null)
+                return;
 
 
             BezierQuadratic currentCurve = new BezierQuadratic(
@@ -63,10 +79,6 @@ namespace SeleneGame.Content {
                 _animator?.SetBool("OnFace", mask.onFace);
                 _animator?.SetFloat("OnRight", mask.onRight ? 1f : 0f);
             }
-        }
-
-        public override void Unload() {
-            _model = GameUtility.SafeDestroy(_model);
         }
     } 
 }

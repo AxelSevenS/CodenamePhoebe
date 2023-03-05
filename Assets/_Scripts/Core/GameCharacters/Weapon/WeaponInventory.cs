@@ -12,7 +12,7 @@ namespace SeleneGame.Core {
 
         [SerializeField] [ReadOnly] protected ArmedEntity _entity;
 
-        [SerializeReference] [ReadOnly] private Weapon _defaultWeapon;
+        [SerializeReference] /* [ReadOnly] */ private Weapon _defaultWeapon;
         
         
 
@@ -28,6 +28,7 @@ namespace SeleneGame.Core {
         public WeaponInventory(ArmedEntity entity) {
             _entity = entity;
             _defaultWeapon = AddressablesUtils.GetDefaultAsset<WeaponData>().GetWeapon(entity);
+            _defaultWeapon.Display();
         }
 
 
@@ -76,5 +77,14 @@ namespace SeleneGame.Core {
         public abstract void Switch(int index);
 
         public abstract IEnumerator GetEnumerator();
+
+
+        public void UpdateDisplay() {
+            _defaultWeapon?.OnUnequip();
+            foreach (Weapon weapon in this) {
+                weapon?.OnUnequip();
+            }
+            current?.OnEquip();
+        }
     }
 }

@@ -7,17 +7,22 @@ using SevenGame.Utility;
 
 namespace SeleneGame.Core {
 
-    public class InputCondition : ScribeCondition<InputCondition.InputConditionType> {
+    [System.Serializable]
+    public class InputCondition : ScribeCondition {
         
-        [ScribeField] 
         public InputKey inputKey;
 
-        [ScribeField((int)InputConditionType.Tap)] 
-        [ScribeField((int)InputConditionType.Hold)] 
-        [ScribeField((int)InputConditionType.DoubleTap)] 
+        [ScribeHideLabel]
+        [ScribeOption] 
+        public InputConditionType inputType;
+
+        [ScribeField(nameof(inputType), (int)InputConditionType.Tapped)] 
+        [ScribeField(nameof(inputType), (int)InputConditionType.Held)] 
+        [ScribeField(nameof(inputType), (int)InputConditionType.DoubleTapped)] 
         public float holdTime = 0.15f;
 
-        [ScribeField((int)InputConditionType.DoubleTap)] 
+        [ScribeHideLabel]
+        [ScribeField(nameof(inputType), (int)InputConditionType.DoubleTapped)] 
         public InputKey doubleTapKey;
 
 
@@ -26,17 +31,19 @@ namespace SeleneGame.Core {
 
             KeyInputData keyInputData = GetInputData(entityController, inputKey);
 
-            switch (conditionType) {
+            switch (inputType) {
                 default:
-                case InputConditionType.KeyDown:
+                case InputConditionType.Actuated:
+                    return keyInputData;
+                case InputConditionType.Started:
                     return keyInputData.started;
-                case InputConditionType.KeyUp:
+                case InputConditionType.Stopped:
                     return keyInputData.stopped;
-                case InputConditionType.Tap:
+                case InputConditionType.Tapped:
                     return keyInputData.Tapped(holdTime);
-                case InputConditionType.Hold:
+                case InputConditionType.Held:
                     return keyInputData.Held(holdTime);
-                case InputConditionType.DoubleTap:
+                case InputConditionType.DoubleTapped:
                     KeyInputData doubleTapKeyInputData = GetInputData(entityController, doubleTapKey);
                     return keyInputData.SimultaneousTap(doubleTapKeyInputData, holdTime);
             }
@@ -92,11 +99,12 @@ namespace SeleneGame.Core {
         }
 
         public enum InputConditionType {
-            KeyDown,
-            KeyUp,
-            Tap,
-            Hold,
-            DoubleTap,
+            Actuated,
+            Started,
+            Stopped,
+            Tapped,
+            Held,
+            DoubleTapped,
             
         }
     }

@@ -17,3 +17,14 @@ MonoBehaviour:
   _baseCostume: {fileID: 11400000, guid: 4fcb14e16ae7e7b4287ef3e8b382de17, type: 2}
   weaponType: 16
   weight: 1
+  inputEvents:
+  - conditions:
+      condition:
+        binaryModifier: 0
+        inputKey: 1
+        inputType: 1
+        holdTime: 0
+        doubleTapKey: 0
+      subConditions: []
+    eventType: 2
+    evadeDirection: {x: 0, y: 0, z: 0}

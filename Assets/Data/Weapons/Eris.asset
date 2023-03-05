@@ -17,3 +17,4 @@ MonoBehaviour:
   _baseCostume: {fileID: 11400000, guid: 88d05d19418b5cb4eb2b9561a0f90b20, type: 2}
   weaponType: 2
   weight: 1.2
+  inputEvents: []

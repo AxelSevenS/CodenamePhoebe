@@ -17,6 +17,8 @@ namespace SeleneGame.Core {
 
             // If the weapon has a reference to an ArmedEntity, use that; (This should always be the case as long as the weapon is not null)
             ArmedEntity entityRef = (targetCostumable as Weapon)?.armedEntity;
+            WeaponInventory inventory = entityRef?.weapons ??(WeaponInventory)GetParent(property);
+            Debug.Log(inventory);
             if (entityRef == null) {
 
                 if (targetCostumable != null)
@@ -24,7 +26,6 @@ namespace SeleneGame.Core {
 
                 
                 // If the weapon is in a WeaponInventory, get the entity from the inventory
-                WeaponInventory inventory = (WeaponInventory)GetParent(property);
                 entityRef = inventory?.entity;
 
                 // If the weapon is on a MonoBehaviour, get the entity from the MonoBehaviour
@@ -37,7 +38,10 @@ namespace SeleneGame.Core {
                 // return;
             }
 
-            property.managedReferenceValue = data.GetWeapon( entityRef );
+            property.managedReferenceValue = data?.GetWeapon( entityRef );
+            property.serializedObject.ApplyModifiedProperties();
+
+            inventory?.UpdateDisplay();
             
         }
     }

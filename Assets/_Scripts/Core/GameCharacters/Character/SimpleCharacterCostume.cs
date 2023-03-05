@@ -32,5 +32,13 @@ namespace SeleneGame.Core {
         public override void Unload() {
             model = GameUtility.SafeDestroy(model);
         }
+
+        public override void Display() {
+            model?.SetActive(true);
+        }
+
+        public override void Hide() {
+            model?.SetActive(false);
+        }
     }
 }

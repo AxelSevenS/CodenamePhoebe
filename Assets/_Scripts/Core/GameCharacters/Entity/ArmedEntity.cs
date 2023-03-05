@@ -43,12 +43,12 @@ namespace SeleneGame.Core {
             weapons.Switch(newStyle);
         }
 
-        protected internal override void LoadModel() {
-            base.LoadModel();
-            // foreach(Weapon weapon in weapons) {
-            //     weapon.LoadModel();
-            // }
-        }
+        // protected internal override void LoadModel() {
+        //     base.LoadModel();
+        //     // foreach(Weapon weapon in weapons) {
+        //     //     weapon.LoadModel();
+        //     // }
+        // }
 
 
         protected override void EntityAnimation() {

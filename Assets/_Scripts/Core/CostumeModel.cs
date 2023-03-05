@@ -26,6 +26,9 @@ namespace SeleneGame.Core {
 
         public abstract void Unload();
 
+        public abstract void Display();
+        public abstract void Hide();
+
 
         public virtual void Update(){;}
         public virtual void FixedUpdate(){;}

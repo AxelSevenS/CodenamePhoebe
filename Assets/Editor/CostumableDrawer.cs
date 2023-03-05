@@ -64,7 +64,23 @@ namespace SeleneGame.Core {
                         
                         
                         if (prop.name == "m_Script" || prop.depth > depth) {
-                            // Debug.Log("continue");
+                            continue;
+                        }
+
+                        if (prop.name == "displayed") {
+                            EditorGUI.BeginChangeCheck();
+                            
+                            EditorGUI.PropertyField(rectType, prop, true);
+
+                            if ( EditorGUI.EndChangeCheck() ) {
+                                bool displayed = prop.boolValue;
+                                if (displayed) {
+                                    targetCostumable.Display();
+                                } else {
+                                    targetCostumable.Hide();
+                                }
+                            }
+                            rectType.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
                             continue;
                         }
 

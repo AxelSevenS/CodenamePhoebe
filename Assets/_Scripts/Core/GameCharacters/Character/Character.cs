@@ -22,6 +22,7 @@ namespace SeleneGame.Core {
 
         public Character(Entity entity, CharacterData data, CharacterCostume costume = null) : base(data) {
             _entity = entity;
+            displayed = true;
             SetCostume(costume);
         }
 
@@ -30,6 +31,11 @@ namespace SeleneGame.Core {
 
             costume ??= data.baseCostume ?? AddressablesUtils.GetDefaultAsset<CharacterCostume>();
             _model = costume?.LoadModel(entity);
+            
+            if (displayed)
+                _model?.Display();
+            else
+                _model?.Hide();
         }
 
 
