@@ -29,9 +29,10 @@ namespace SeleneGame.Core {
 
 
         // Options
+        [SerializeField] private Vector3 cameraOriginPosition;
         [SerializeField] private float distanceToPlayer = 1f;
-        [SerializeField] private float horizontalSmoothTime = 0.06f;
-        [SerializeField] private float verticalSmoothTime = 0.15f;
+        [SerializeField] private float horizontalSmoothTime = 0.02f;
+        [SerializeField] private float verticalSmoothTime = 0.04f;
 
 
 
@@ -58,7 +59,7 @@ namespace SeleneGame.Core {
                 verticalSpeed = horizontalSmoothTime;
 
 
-            Vector3 followPosition = PlayerEntityController.current.entity["head"].transform.position;
+            Vector3 followPosition = PlayerEntityController.current.entity["head"].transform.position + cameraOriginPosition;
 
             // Make The Camera Movement slower on the Y axis than on the X axis
             Vector3 camHorizontalPos = Vector3.ProjectOnPlane( followPosition, PlayerEntityController.current.entity.gravityDown );

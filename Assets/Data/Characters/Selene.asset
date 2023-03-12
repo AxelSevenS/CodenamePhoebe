@@ -18,8 +18,8 @@ MonoBehaviour:
   maxHealth: 100
   size: {x: 0.5, y: 2, z: 0.5}
   stepHeight: 0.5
-  weight: 12
-  jumpHeight: 16
+  weight: 40
+  jumpHeight: 19
   baseSpeed: 10
   acceleration: 100
   sprintMultiplier: 1.5

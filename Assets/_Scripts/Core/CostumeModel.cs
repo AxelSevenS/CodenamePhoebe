@@ -11,12 +11,12 @@ namespace SeleneGame.Core {
 
         private bool disposedValue;
         [SerializeField] [ReadOnly] protected TCostume _costume;
-        [SerializeField] [ReadOnly] protected CostumeData _costumeData;
+        [SerializeField] [ReadOnly] protected ModelProperties _costumeData;
 
 
         public abstract Transform mainTransform { get; }
         public TCostume costume => _costume;
-        public CostumeData costumeData => _costumeData;
+        public ModelProperties costumeData => _costumeData;
 
 
 

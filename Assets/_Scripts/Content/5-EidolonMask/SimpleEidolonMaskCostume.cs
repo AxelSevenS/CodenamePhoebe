@@ -24,8 +24,31 @@ namespace SeleneGame.Content {
         [SerializeField] [ReadOnly] private Animator _animator;
 
 
-        private Transform headTransform => mask.maskedEntity["head"]?.transform ?? null;
         public override Transform mainTransform => _model.transform;
+
+        public float maskPosT { get; private set;} = 1f;
+        public bool onRight { get; private set;} = true;
+        public Vector3 hoveringPosition { get; private set;}
+        public Vector3 relativePos { get; private set;}
+
+
+        private Transform headTransform => mask.maskedEntity["head"]?.transform ?? null;
+
+        public bool faceState {
+            get {
+                if (mask.maskedEntity.state is MaskedState || mask.maskedEntity.state is Swimming)
+                    return true;
+
+                else if (mask.maskedEntity.state is Grounded)
+                    return Vector3.Dot( mask.maskedEntity.gravityDown, Vector3.down ) < 0.95f;
+
+                return false;
+            }
+        }
+        public bool onFace => faceState || (positionBlocked(leftPosition) && positionBlocked(rightPosition));
+        public Vector3 rightPosition => mask.maskedEntity.modelTransform.rotation * new Vector3(1.2f, 1.3f, -0.8f);
+        public Vector3 leftPosition => mask.maskedEntity.modelTransform.rotation * new Vector3(-1.2f, 1.3f, -0.8f);
+
 
 
         public SimpleEidolonMaskModel(MaskedEntity entity, EidolonMask mask, SimpleEidolonMaskCostume costume) : base(entity, mask, costume) {
@@ -33,12 +56,13 @@ namespace SeleneGame.Content {
 
                 _model = GameObject.Instantiate(costume.model, mask.maskedEntity.transform.parent);
 
-                _costumeData = _model.GetComponent<CostumeData>();
+                _costumeData = _model.GetComponent<ModelProperties>();
 
                 _animator = _model.GetComponent<Animator>();
                 _animator ??= _model.AddComponent<Animator>();
             }
         }
+
 
         public override void Unload() {
             _model = GameUtility.SafeDestroy(_model);
@@ -52,6 +76,12 @@ namespace SeleneGame.Content {
             _model?.SetActive(false);
         }
 
+
+        private bool positionBlocked(Vector3 position) {
+            return Physics.SphereCast(mask.maskedEntity.modelTransform.position, 0.35f, position, out _, position.magnitude, Global.GroundMask);
+        }
+
+
         public override void Update() {
 
             base.Update();
@@ -62,22 +92,31 @@ namespace SeleneGame.Content {
 
 
             BezierQuadratic currentCurve = new BezierQuadratic(
-                mask.hoveringPosition,
+                hoveringPosition,
                 headTransform.position,
                 headTransform.position + headTransform.forward
             );
 
-            _model.transform.position = currentCurve.GetPoint(mask.maskPosT).position;
-            _model.transform.rotation = Quaternion.Slerp(mask.maskedEntity.modelTransform.rotation, headTransform.rotation, mask.maskPosT);
+            _model.transform.position = currentCurve.GetPoint(maskPosT).position;
+            _model.transform.rotation = Quaternion.Slerp(mask.maskedEntity.modelTransform.rotation, headTransform.rotation, maskPosT);
         }
 
         public override void FixedUpdate() {
 
             base.FixedUpdate();
 
+            relativePos = Vector3.Lerp(relativePos, onRight ? rightPosition : leftPosition, 3f * GameUtility.timeDelta);
+
+            if (!onFace && (positionBlocked(relativePos)))
+                onRight = !onRight;
+
+            hoveringPosition = Vector3.Lerp(hoveringPosition, mask.maskedEntity.modelTransform.position + relativePos, 15f * GameUtility.timeDelta);
+            maskPosT = Mathf.MoveTowards(maskPosT, System.Convert.ToSingle(onFace), 4f * GameUtility.timeDelta);
+
+
             if (_animator != null) {
-                _animator?.SetBool("OnFace", mask.onFace);
-                _animator?.SetFloat("OnRight", mask.onRight ? 1f : 0f);
+                _animator?.SetBool("OnFace", onFace);
+                _animator?.SetFloat("OnRight", onRight ? 1f : 0f);
             }
         }
     } 

@@ -10,19 +10,21 @@ namespace SeleneGame {
 
         [SerializeField] private GameObject Sail;
         [SerializeField] private List<GameObject> floaters = new List<GameObject>();
+        [SerializeField] private Rigidbody _rigidbody;
         
         void OnEnable() => ObjectManager.current.objects.Add( this.gameObject );
         void OnDisable() => ObjectManager.current.objects.Remove( this.gameObject );
 
         void Awake(){
+            
             if (Sail != null){
                 var sailC = Sail.AddComponent<Sail>();
-                sailC.rigidbody = GetComponent<Rigidbody>();
+                sailC.rigidbody = _rigidbody;
             }
-            foreach (GameObject floater in floaters){
-                var floaterC = floater.AddComponent<Floater>();
-                floaterC.rigidbody = GetComponent<Rigidbody>();
-                floaterC.floaterCount = floaters.Count;
+            foreach (GameObject floaterObject in floaters){
+                var floater = floaterObject.AddComponent<Floater>();
+                floater.rigidbody = _rigidbody;
+                floater.floaterCount = floaters.Count;
             }
         }
     }

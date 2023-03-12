@@ -60,7 +60,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Shift",
+                    "name": "Focus",
                     "type": "PassThrough",
                     "id": "30d035c5-3ac9-44ff-ac8e-403cd1f507dc",
                     "expectedControlType": "Button",
@@ -96,7 +96,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Focus",
+                    "name": "TFSDF",
                     "type": "PassThrough",
                     "id": "8827df5f-e731-4a02-b8b0-86769aff0dee",
                     "expectedControlType": "Button",
@@ -723,7 +723,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
-                    "action": "Shift",
+                    "action": "Focus",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -734,7 +734,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
-                    "action": "Shift",
+                    "action": "Focus",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -745,7 +745,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
-                    "action": "Shift",
+                    "action": "Focus",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -756,7 +756,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
-                    "action": "Shift",
+                    "action": "Focus",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -767,7 +767,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
-                    "action": "Shift",
+                    "action": "Focus",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -778,7 +778,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
-                    "action": "Shift",
+                    "action": "Focus",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -789,7 +789,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
-                    "action": "Shift",
+                    "action": "Focus",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -800,7 +800,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
-                    "action": "Shift",
+                    "action": "Focus",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -1339,7 +1339,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
-                    "action": "Focus",
+                    "action": "TFSDF",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -1350,7 +1350,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
-                    "action": "Focus",
+                    "action": "TFSDF",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -1361,7 +1361,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
-                    "action": "Focus",
+                    "action": "TFSDF",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -1372,7 +1372,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
-                    "action": "Focus",
+                    "action": "TFSDF",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -1383,7 +1383,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
-                    "action": "Focus",
+                    "action": "TFSDF",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -1394,7 +1394,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
-                    "action": "Focus",
+                    "action": "TFSDF",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -1405,7 +1405,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
-                    "action": "Focus",
+                    "action": "TFSDF",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -1416,7 +1416,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
-                    "action": "Focus",
+                    "action": "TFSDF",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

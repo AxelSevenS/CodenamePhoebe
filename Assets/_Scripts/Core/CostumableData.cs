@@ -11,6 +11,7 @@ namespace SeleneGame.Core {
 
         public string displayName;
 
+        [TextArea(3, 10)]
         public string description;
 
         [SerializeField] protected TCostume _baseCostume;
@@ -52,7 +53,7 @@ namespace SeleneGame.Core {
 
             string path = GetDefaultAnimationPath(assetName);
 
-            Debug.Log($"Getting Default Animation {path}");
+            // Debug.Log($"Getting Default Animation {path}");
 
             AnimationClip defaultAnim = null;
             try {

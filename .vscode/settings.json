@@ -21,7 +21,6 @@
         "**/*.LXO": true,
         "**/*.ma": true,
         "**/*.MA": true,
-        "**/*.mat": true,
         "**/*.mid": true,
         "**/*.midi": true,
         "**/*.obj": true,

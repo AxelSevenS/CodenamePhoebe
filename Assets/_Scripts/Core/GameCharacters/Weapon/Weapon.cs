@@ -49,11 +49,21 @@ namespace SeleneGame.Core {
 
         [Flags]
         public enum WeaponType : byte {
-            OneHanded = 1 << 0,
-            TwoHanded = 1 << 1,
-            Staff = 1 << 2,
-            DoubleOneHanded = 1 << 3,
-            Sparring = 1 << 4
+            Sparring = 1 << 0,
+            OneHanded = 1 << 1,
+            TwoHanded = 1 << 2,
+            Polearm = 1 << 3,
+            LightDual = 1 << 4,
+            HeavyDual = 1 << 5
+        };
+
+        public enum DamageType : byte {
+            Physical,
+            Critical,
+            Heat,
+            Cold,
+            Shock,
+            Wind,
         };
 
     }

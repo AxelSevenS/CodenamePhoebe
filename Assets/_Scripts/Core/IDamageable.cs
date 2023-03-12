@@ -8,5 +8,7 @@ namespace SeleneGame.Core {
 
         void Damage(float amount, Vector3 knockback = default);
         void Heal(float amount);
+        void Kill();
+        
     }
 }

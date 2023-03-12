@@ -3357,6 +3357,11 @@ PrefabInstance:
       objectReference: {fileID: 9100000, guid: 080e304828b097b4cac678d0babd1671, type: 2}
     - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc,
         type: 3}
+      propertyPath: colliders.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc,
+        type: 3}
       propertyPath: boundsOnce.m_Center.y
       value: 0.010296106
       objectReference: {fileID: 0}
@@ -3390,6 +3395,11 @@ PrefabInstance:
       propertyPath: bones._pairs.Array.size
       value: 7
       objectReference: {fileID: 0}
+    - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc,
+        type: 3}
+      propertyPath: colliders.Array.data[0]
+      value: 
+      objectReference: {fileID: 1349480310}
     - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc,
         type: 3}
       propertyPath: hitColliders.Array.size

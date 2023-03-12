@@ -16,26 +16,26 @@ MonoBehaviour:
   description: 
   _baseCostume: {fileID: 11400000, guid: 32c5215d78678094a90500600c9a8ab2, type: 2}
   maxHealth: 100
-  size: {x: 0.5, y: 2, z: 0.5}
+  size: {x: 0.82, y: 0.82, z: 4.7}
   stepHeight: 0.5
-  weight: 12
-  jumpHeight: 16
-  baseSpeed: 10
-  acceleration: 100
+  weight: 45
+  jumpHeight: 20
+  baseSpeed: 22
+  acceleration: 50
   sprintMultiplier: 1.5
-  slowMultiplier: 0.5
+  slowMultiplier: 0.65
   swimMultiplier: 0.85
   evadeSpeed: 27
   evadeDuration: 0.6
   evadeCooldown: 0.01
   sittingPoses:
   - position: {x: -1, y: 0, z: 0}
-    rotation: {x: 0, y: -0.70710677, z: 0, w: 0.70710677}
+    rotation: {x: 0, y: 0.70710677, z: 0, w: 0.70710677}
     startAnimation: {fileID: 0}
     loopAnimation: {fileID: 0}
     endAnimation: {fileID: 0}
   - position: {x: 1, y: 0, z: 0}
-    rotation: {x: 0, y: 0.70710677, z: 0, w: 0.70710677}
+    rotation: {x: 0, y: 0.70710677, z: 0, w: -0.70710677}
     startAnimation: {fileID: 0}
     loopAnimation: {fileID: 0}
     endAnimation: {fileID: 0}

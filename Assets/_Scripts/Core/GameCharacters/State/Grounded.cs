@@ -10,8 +10,6 @@ namespace SeleneGame.Core {
     [System.Serializable]
     public partial class Grounded : State {
 
-        private const float WATER_HOVER_WEIGHT_THRESHOLD = 10f;
-
 
         public Entity.MovementSpeed movementSpeed = Entity.MovementSpeed.Normal;
 
@@ -42,6 +40,15 @@ namespace SeleneGame.Core {
         protected override bool canParry => base.canParry;
 
 
+        public override void Transition(Vector3 direction, float speed) {
+            Move(direction);
+            // entity.absoluteForward = moveDirection;
+            moveSpeed = speed;
+        }
+        public override void GetTransitionData(out Vector3 direction, out float speed) {
+            direction = moveDirection;
+            speed = moveSpeed;
+        }
         
         protected internal override void HandleInput(PlayerEntityController controller){
 
@@ -71,7 +78,7 @@ namespace SeleneGame.Core {
                 Jump();
 
 
-            if (controller.shiftInput.trueTimer > Keybinds.HOLD_TIME){
+            if (controller.focusInput.trueTimer > Keybinds.HOLD_TIME){
                 entity.gravityDown = Vector3.down;
             }
 
@@ -79,7 +86,7 @@ namespace SeleneGame.Core {
 
 
         protected internal override void Move(Vector3 direction) {
-            moveDirection.SetVal( (direction.normalized).NullifyInDirection(entity.gravityDown) );
+            moveDirection.SetVal( Vector3.ProjectOnPlane(direction, entity.gravityDown).normalized );
         }
         protected internal override void Jump() {
             base.Jump();
@@ -121,17 +128,47 @@ namespace SeleneGame.Core {
         }
         protected override void LightAttackAction() {
             base.LightAttackAction();
+            if ( entity is ArmedEntity armed ) {
+                armed.LightAttack();
+            }
         }
         protected override void HeavyAttackAction() {
             base.HeavyAttackAction();
+            if ( entity is ArmedEntity armed ) {
+                armed.HeavyAttack();
+            }
+        }
+        
+
+        private bool WaterHoverCheck() {
+            // foreach (RaycastHit collision in entity.rigidbody.SweepTestAll(entity.gravityDown, 0.2f, QueryTriggerInteraction.Ignore)) {
+
+            //     if (collision.collider.gameObject.layer == Global.WaterMask) {
+
+            //         entity.groundHit = collision;
+            //         entity.onGround.SetVal(true);
+            //         entity.rigidbody.velocity = entity.rigidbody.velocity.NullifyInDirection(entity.gravityDown);
+            //         return true;
+
+            //     }
+            // }
+
+            if ( entity.ColliderCast( Vector3.zero, entity.gravityDown, out RaycastHit hit, 0.15f, Global.WaterMask ) ) {
+                entity.groundHit = hit;
+                entity.onGround.SetVal(true);
+                entity.rigidbody.velocity = entity.rigidbody.velocity.NullifyInDirection(entity.gravityDown);
+                return true;
+            }
+
+            return false;
         }
 
 
 
         protected internal override void Awake() {
             base.Awake();
-            evadeBehaviour = gameObject.AddComponent<GroundedEvadeBehaviour>();
-            jumpBehaviour = gameObject.AddComponent<GroundedJumpBehaviour>();
+            _evadeBehaviour = gameObject.AddComponent<GroundedEvadeBehaviour>();
+            _jumpBehaviour = gameObject.AddComponent<GroundedJumpBehaviour>();
             IdleAnimation();
         }
 
@@ -147,13 +184,14 @@ namespace SeleneGame.Core {
 
             
             // Hover over water as long as the entity is moving
-            bool canWaterHover = entity.weight < WATER_HOVER_WEIGHT_THRESHOLD && moveDirection.zeroTimer < 0.6f;
+            bool canWaterHover = entity.weightCategory == Entity.WeightCategory.Light && moveDirection.zeroTimer < 0.6f;
+            bool waterHover = canWaterHover && WaterHoverCheck();
 
-            if ( canWaterHover && entity.ColliderCast(Vector3.zero, entity.gravityDown * 0.2f, out RaycastHit waterHoverHit, 0.15f, Global.WaterMask) ) {
-                entity.groundHit = waterHoverHit;
-                entity.onGround.SetVal(true);
-                entity.rigidbody.velocity = entity.rigidbody.velocity.NullifyInDirection(entity.gravityDown);
-            } else if ( entity.inWater && entity.weight < Swimming.entityWeightSinkTreshold ) {
+
+            bool canSwim = !waterHover && entity.weightCategory != Entity.WeightCategory.Heavy;
+            float distanceToWaterSurface = entity.physicsComponent.totalWaterHeight - entity.transform.position.y;
+            
+            if ( entity.inWater && canSwim && distanceToWaterSurface > 0f ) {
                 entity.SetState<Swimming>();
             }
 
@@ -161,7 +199,7 @@ namespace SeleneGame.Core {
 
 
             if ( moveDirection.sqrMagnitude != 0f )
-                entity.absoluteForward = Vector3.Slerp( entity.absoluteForward, moveDirection, 100f * GameUtility.timeDelta);
+                entity.absoluteForward = Vector3.Lerp( entity.absoluteForward, moveDirection, 100f * GameUtility.timeDelta);
 
                 
             if ( entity.onGround ) {
@@ -169,10 +207,10 @@ namespace SeleneGame.Core {
             }
 
 
-            if ( !evadeBehaviour.state ){
+            if ( !_evadeBehaviour.state ){
                 rotationForward = entity.absoluteForward;
             } else if ( moveDirection.sqrMagnitude != 0f ) {
-                evadeBehaviour.currentDirection = Vector3.Slerp(evadeBehaviour.currentDirection, entity.absoluteForward, evadeBehaviour.Time * evadeBehaviour.Time);
+                _evadeBehaviour.currentDirection = Vector3.Lerp(_evadeBehaviour.currentDirection, entity.absoluteForward, _evadeBehaviour.Time * _evadeBehaviour.Time);
             }
             
             entity.RotateModelTowards(rotationForward, -entity.gravityDown);
@@ -187,11 +225,11 @@ namespace SeleneGame.Core {
                 newSpeed *= movementSpeed == Entity.MovementSpeed.Fast ? entity.character.data.sprintMultiplier : entity.character.data.slowMultiplier;
 
             // Acceleration is quicker than Deceleration 
-            float speedDelta = newSpeed > moveSpeed ? 1f : 0.65f;
+            float speedDelta = newSpeed > moveSpeed ? 1f : 0.45f;
             moveSpeed = Mathf.MoveTowards(moveSpeed, newSpeed, speedDelta * entity.character.data.acceleration * GameUtility.timeDelta);
             
             // Evade movement restricts the Walking movement.
-            moveSpeed *= Mathf.Max(1 - evadeBehaviour.Speed, 0.05f);
+            moveSpeed *= Mathf.Max(1 - _evadeBehaviour.Speed, 0.05f);
 
             entity.Displace(entity.absoluteForward * moveSpeed);
 

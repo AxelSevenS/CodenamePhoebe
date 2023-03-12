@@ -71,8 +71,10 @@ namespace SeleneGame.Core {
         }
 
         protected virtual void FixedUpdate() {
-            if (state)
+            if (state) {
                 entity.Displace( Speed * entity.character.data.evadeSpeed * currentDirection );
+                entity.rigidbody.AddForce( Speed * entity.character.data.evadeSpeed * currentDirection * GameUtility.timeDelta, ForceMode.VelocityChange );
+            }
         }
 
         protected internal virtual void Evade(Vector3 direction) {

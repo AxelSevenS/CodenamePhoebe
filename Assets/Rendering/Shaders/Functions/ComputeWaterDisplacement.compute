@@ -1,0 +1,26 @@
+#include "WaterWaveDisplacement.hlsl"
+
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+struct WaveData {
+    float3 position;
+    float waveStrength;
+    float waveSpeed;
+    float waveFrequency;
+};
+
+
+RWStructuredBuffer<WaveData> waveData;
+RWStructuredBuffer<float> waveHeight;
+
+float _Time;
+
+[numthreads(8,8,1)]
+void CSMain (uint3 id : SV_DispatchThreadID) {
+    // TODO: insert actual code here!
+
+    WaveData data = waveData[id.x];
+
+    waveHeight[id.x] = WaveDisplacement(data.position, data.waveStrength, data.waveSpeed, data.waveFrequency, _Time);
+}

@@ -9,27 +9,35 @@ namespace SeleneGame.Core {
     [System.Serializable]
     public sealed class Swimming : State {
 
-        public const float entityWeightSinkTreshold = 16.25f;
+        public const float swimTreshold = 1f;
+        public const float surfaceTreshold = 2f;
 
 
 
         private Vector3 moveDirection;
-        private float moveSpeed;
+        [SerializeField] private float moveSpeed;
+
+        [SerializeField] private float distanceToWaterSurface;
+
 
 
 
         public sealed override float gravityMultiplier => 0f; 
-        // public override CameraController.CameraType cameraPosition => CameraController.CameraType.ThirdPerson;
 
+        private bool isOnWaterSurface => Mathf.Abs(distanceToWaterSurface) < surfaceTreshold;
 
         protected override Vector3 jumpDirection => base.jumpDirection;
-        // protected override bool canJump => entity.isOnWaterSurface;
-
         protected override Vector3 evadeDirection => base.evadeDirection;
-
         protected override bool canParry => base.canParry;
 
-
+        public override void Transition(Vector3 direction, float speed) {
+            moveDirection = direction;
+            moveSpeed = speed;
+        }
+        public override void GetTransitionData(out Vector3 direction, out float speed) {
+            direction = moveDirection;
+            speed = moveSpeed;
+        }
 
         protected internal override void HandleInput(PlayerEntityController controller){
 
@@ -37,11 +45,17 @@ namespace SeleneGame.Core {
             
             if ( controller.evadeInput.started )
                 Evade(evadeDirection);
+
+            if (isOnWaterSurface && controller.jumpInput.started) {
+                JumpOutOfWater();
+                GameUtility.SafeDestroy(this);
+                return;
+            }
             
             controller.RawInputToCameraRelativeMovement(out Quaternion cameraRotation, out Vector3 cameraRelativeMovement);
             float verticalInput = (controller.jumpInput ? 1f: 0f) - (controller.crouchInput ? 1f: 0f);
 
-            Move( cameraRelativeMovement + (cameraRotation * Vector3.up * verticalInput) );
+            Move( cameraRelativeMovement + (Vector3.up * verticalInput) );
 
         }
 
@@ -50,8 +64,19 @@ namespace SeleneGame.Core {
             moveDirection = direction;
         }
         protected internal override void Jump() {
-            base.Jump();
         }
+
+        private void JumpOutOfWater() {
+            if (entity.state.GetType() != typeof(Swimming))
+                return;
+
+            entity.transform.position = entity.transform.position + (Vector3.up * (Mathf.Max(distanceToWaterSurface + swimTreshold/2f, 0f))); 
+
+            entity.ResetState();
+            if (!entity.state.jumpBehaviour.canJump)
+                entity.state.jumpBehaviour.Jump(jumpDirection * 1.1f);
+        }
+
         protected internal override void Evade(Vector3 direction) {
             base.Evade(direction);
         }
@@ -82,7 +107,7 @@ namespace SeleneGame.Core {
 
         protected internal override void Awake(){
             base.Awake();
-            evadeBehaviour = gameObject.AddComponent<EvadeBehaviour>();
+            _evadeBehaviour = gameObject.AddComponent<EvadeBehaviour>();
             entity.gravityDown = Vector3.down;
         }
 
@@ -92,32 +117,58 @@ namespace SeleneGame.Core {
 
         private void Update() {
 
-            if ( !entity.inWater || entity.weight > entityWeightSinkTreshold ){
+            distanceToWaterSurface = entity.physicsComponent.totalWaterHeight - entity.transform.position.y;
+
+            bool canSwim = entity.weightCategory != Entity.WeightCategory.Heavy;
+            if ( !entity.inWater || !canSwim )
                 entity.ResetState();
-            }
 
             if (moveDirection.sqrMagnitude != 0f){
-                
-                entity.absoluteForward = Vector3.Slerp( entity.absoluteForward, moveDirection, 100f * GameUtility.timeDelta);
-                Vector3 newUp = Vector3.Cross(entity.absoluteForward, Vector3.Cross(entity.absoluteForward, entity.gravityDown));
-
-                entity.RotateModelTowards(entity.absoluteForward, newUp);
+                entity.absoluteForward = Vector3.Lerp( entity.absoluteForward, moveDirection, 20f * GameUtility.timeDelta);
             }
 
+
             float newSpeed = moveDirection.sqrMagnitude == 0f ? 0f : entity.character.data.baseSpeed;
-            float speedDelta = newSpeed > moveSpeed ? 1f : 0.65f;
+            float speedDelta = newSpeed > moveSpeed ? 0.5f : 0.25f;
             moveSpeed = Mathf.MoveTowards(moveSpeed, newSpeed, speedDelta * entity.character.data.acceleration * GameUtility.timeDelta);
 
         }
 
         private void FixedUpdate() {
 
-            // entity.SetUp(-entity.gravityDown);
             entity.transform.rotation = Quaternion.FromToRotation(entity.transform.up, -entity.gravityDown) * entity.transform.rotation;
             
-            entity.Displace( moveDirection * moveSpeed );
+            float floatingDisplacement = isOnWaterSurface ? distanceToWaterSurface + swimTreshold/3f : 0f;
+            Vector3 floatingDisplacementVector = Vector3.up * floatingDisplacement * 3f;
 
-            entity.rigidbody.velocity = Vector3.Dot(entity.rigidbody.velocity.normalized, entity.gravityDown) > 0f ? entity.rigidbody.velocity / 1.1f : entity.rigidbody.velocity;
+            Vector3 movement = entity.absoluteForward * moveSpeed;
+            if (isOnWaterSurface && !entity.onGround) {
+                _evadeBehaviour.currentDirection = _evadeBehaviour.currentDirection.NullifyInDirection(Vector3.up);
+                entity.rigidbody.velocity = entity.rigidbody.velocity.NullifyInDirection(Vector3.up);
+                movement = movement.NullifyInDirection(Vector3.up);
+            }
+
+            Vector3 displacement = (floatingDisplacementVector + movement) * GameUtility.timeDelta;
+            // if (isOnWaterSurface && !entity.onGround) {
+            //     displacement.y = Mathf.Max(displacement.y, entity.physicsComponent.totalWaterHeight + swimTreshold/2f - entity.transform.position.y);
+            // }
+
+            entity.Displace( displacement, false, deltaTime: 1f );
+
+
+            Vector3 newUp;
+            Vector3 modelForward;
+            if (isOnWaterSurface) {                
+                newUp = -entity.gravityDown;
+                modelForward = Vector3.Cross(newUp, Vector3.Cross(entity.absoluteForward, newUp));
+            } else {
+                newUp = Vector3.Cross(entity.absoluteForward, Vector3.Cross(entity.absoluteForward, entity.gravityDown));
+                modelForward = entity.absoluteForward;
+            }
+
+            entity.RotateModelTowards(modelForward, newUp, 5f);
+
+            entity.rigidbody.velocity *= 0.95f;
 
         }
     }

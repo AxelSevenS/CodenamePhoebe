@@ -23,6 +23,12 @@ namespace SeleneGame.Core {
 
 
 
+        public override void Transition(Vector3 direction, float speed) {;}
+        public override void GetTransitionData(out Vector3 direction, out float speed) {
+            direction = Vector3.zero;
+            speed = 0f;
+        }
+
         protected internal override void HandleInput(PlayerEntityController controller) {
 
             base.HandleInput(controller);
@@ -55,7 +61,7 @@ namespace SeleneGame.Core {
             } else {
                 entity.transform.position = seat.sitPosition;
             }
-            entity.RotateModelTowards(seat.sitRotation);
+            entity.RotateModelTowards(seat.sitRotation, Mathf.Infinity);
             entity.absoluteForward = entity.transform.forward;
         }
     }

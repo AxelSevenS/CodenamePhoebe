@@ -78,9 +78,6 @@ namespace SeleneGame.Core {
                 case InputKey.Focus:
                     keyInputData = entityController.focusInput;
                     break;
-                case InputKey.Shift:
-                    keyInputData = entityController.shiftInput;
-                    break;
             }
 
             return keyInputData;
@@ -94,9 +91,8 @@ namespace SeleneGame.Core {
             Evade,
             Walk,
             Crouch,
-            Focus,
-            Shift
-        }
+            Focus
+        };
 
         public enum InputConditionType {
             Actuated,
@@ -106,6 +102,6 @@ namespace SeleneGame.Core {
             Held,
             DoubleTapped,
             
-        }
+        };
     }
 }

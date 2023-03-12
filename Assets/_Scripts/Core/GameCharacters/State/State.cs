@@ -11,10 +11,12 @@ namespace SeleneGame.Core {
 
         private Entity _entity;
 
-        [SerializeReference] [ReadOnly] protected EvadeBehaviour evadeBehaviour;
-        [SerializeReference] [ReadOnly] protected JumpBehaviour jumpBehaviour; 
+        [SerializeReference] [ReadOnly] protected EvadeBehaviour _evadeBehaviour;
+        [SerializeReference] [ReadOnly] protected JumpBehaviour _jumpBehaviour; 
 
 
+        public EvadeBehaviour evadeBehaviour => _evadeBehaviour;
+        public JumpBehaviour jumpBehaviour => _jumpBehaviour;
 
         public virtual float gravityMultiplier => 1f;
         public virtual CameraController.CameraType cameraType => CameraController.CameraType.ThirdPerson;
@@ -33,31 +35,31 @@ namespace SeleneGame.Core {
         protected virtual Vector3 evadeDirection => entity.absoluteForward;
 
         protected virtual bool canParry => true;
+
+
+        public abstract void Transition(Vector3 direction = default, float speed = 0f);
+        public abstract void GetTransitionData(out Vector3 direction, out float speed);
         
 
 
         protected internal virtual void HandleInput(PlayerEntityController controller) {
-            jumpBehaviour?.HandleInput(controller);
-            evadeBehaviour?.HandleInput(controller);
+            _jumpBehaviour?.HandleInput(controller);
+            _evadeBehaviour?.HandleInput(controller);
         }
 
 
         protected internal abstract void Move(Vector3 direction);
         protected internal virtual void Jump() {
-            if (jumpBehaviour == null) return;
+            if (_jumpBehaviour == null) return;
 
-            if ( jumpBehaviour.canJump )
-                jumpBehaviour.Jump(jumpDirection);
+            if ( _jumpBehaviour.canJump )
+                _jumpBehaviour.Jump(jumpDirection);
         }
         protected internal virtual void Evade(Vector3 direction) {
-            if (evadeBehaviour == null) return;
+            if (_evadeBehaviour == null) return;
 
-            if ( evadeBehaviour.canEvade )
-                evadeBehaviour.Evade(evadeDirection);
-        }
-        protected internal virtual void Parry() {
-            if (canParry)
-                ParryAction();
+            if ( _evadeBehaviour.canEvade )
+                _evadeBehaviour.Evade(evadeDirection);
         }
         protected internal virtual void LightAttack() {
             if (true)
@@ -67,12 +69,16 @@ namespace SeleneGame.Core {
             if (true)
                 HeavyAttackAction();
         }
+        protected internal virtual void Parry() {
+            if (canParry)
+                ParryAction();
+        }
         protected internal abstract void SetSpeed(Entity.MovementSpeed speed);
 
 
-        protected virtual void ParryAction() {;}
         protected virtual void LightAttackAction() {;}
         protected virtual void HeavyAttackAction() {;}
+        protected virtual void ParryAction() {;}
 
 
         protected internal virtual void Awake() {;}
@@ -82,7 +88,7 @@ namespace SeleneGame.Core {
             GameObject.Destroy(jumpBehaviour);
         }
 
-        protected internal virtual void StateAnimation(){;}
+        protected internal virtual void Animation(){;}
 
     }
 }

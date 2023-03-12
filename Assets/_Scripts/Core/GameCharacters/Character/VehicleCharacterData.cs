@@ -10,5 +10,9 @@ namespace SeleneGame.Core {
         
         public Seat.SittingPose[] sittingPoses;
 
+        public override Character GetCharacter(Entity entity, CharacterCostume costume = null) { 
+            return new VehicleCharacter(entity, this, costume ?? baseCostume ?? AddressablesUtils.GetDefaultAsset<CharacterCostume>());
+        }
+
     }
 }

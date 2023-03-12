@@ -5,11 +5,12 @@ using UnityEngine;
 namespace SeleneGame.Core {
 
     [System.Serializable]
-    public abstract class VehicleCharacter : Character {
+    public class VehicleCharacter : Character {
 
         public Seat.SittingPose[] sittingPoses;
 
-        public VehicleCharacter(Entity entity, CharacterData data, CharacterCostume costume = null) : base(entity, data, costume) {
+        public VehicleCharacter(Entity entity, VehicleCharacterData data, CharacterCostume costume = null) : base(entity, data, costume) {
+            this.sittingPoses = data.sittingPoses;
         }
     }
 }

@@ -11,7 +11,7 @@ namespace SeleneGame {
         
         public new Rigidbody rigidbody;
         public CustomPhysicsComponent physicsComponent;
-        public int floaterCount;
+        public int floaterCount = 1;
         // Start is called before the first frame update
 
         private void Awake(){

@@ -13,27 +13,30 @@ namespace SeleneGame.Content {
         private float _gravityMultiplier = 1f;
 
         private float moveSpeed;
-        private float accelerationLinger = 0f;
         private Vector3 inputDirection;
-
-        [SerializeField] private int jumpCount;
-        [SerializeField] private TimeUntil jumpCooldownTimer;
 
 
 
         public override float gravityMultiplier => _gravityMultiplier;
-        // public override Vector3 cameraPosition => new Vector3(0.3f, 0.5f, -6.5f);
         public override CameraController.CameraType cameraType => CameraController.CameraType.ThirdPersonGrounded;
 
 
         protected override Vector3 jumpDirection => base.jumpDirection;
-        // protected override bool canJump => base.canJump && jumpCount > 0 && jumpCooldownTimer.isDone;
 
         protected override Vector3 evadeDirection => base.evadeDirection;
 
         protected override bool canParry => base.canParry;
         
 
+
+        public override void Transition(Vector3 direction, float speed) {
+            Move(direction);
+            moveSpeed = speed;
+        }
+        public override void GetTransitionData(out Vector3 direction, out float speed) {
+            direction = inputDirection;
+            speed = moveSpeed;
+        }
 
         protected override void HandleInput(PlayerEntityController controller){
 
@@ -43,7 +46,7 @@ namespace SeleneGame.Content {
 
             Move(groundedMovement);
 
-            if (controller.jumpInput) 
+            if (controller.jumpInput)
                 Jump();
             
             // If Jump input is pressed, slow down the fall.
@@ -53,11 +56,7 @@ namespace SeleneGame.Content {
 
         protected override void Move(Vector3 direction) {
                 
-            float newLinger = direction.magnitude;
-            accelerationLinger = Mathf.Lerp(accelerationLinger, newLinger, (newLinger > accelerationLinger ? 3f : 2f) * GameUtility.timeDelta );
-
-            if (newLinger != 0f)
-                inputDirection = direction / newLinger;
+            inputDirection = direction;
 
         }
         protected override void Jump() {
@@ -93,6 +92,8 @@ namespace SeleneGame.Content {
 
         protected override void Awake(){
             base.Awake();
+            _evadeBehaviour = gameObject.AddComponent<GroundedEvadeBehaviour>();
+            _jumpBehaviour = gameObject.AddComponent<GroundedJumpBehaviour>();
         }
 
         protected override void OnDestroy(){
@@ -101,27 +102,19 @@ namespace SeleneGame.Content {
 
         private void Update(){
 
-            bool terrainFlatEnough = Vector3.Dot(entity.groundHit.normal, -entity.gravityDown) > 0.75f;
             
-            float newSpeed = Vector3.Dot(entity.absoluteForward, inputDirection) * accelerationLinger * entity.character.data.baseSpeed;
-            float speedDelta = newSpeed > moveSpeed ? 1f : 0.65f;
+            float newSpeed = Vector3.Dot(entity.absoluteForward, inputDirection) * entity.character.data.baseSpeed;
+            float speedDelta = newSpeed > moveSpeed ? 1f : 0.25f;
             moveSpeed = Mathf.MoveTowards(moveSpeed, newSpeed, speedDelta * entity.character.data.acceleration * GameUtility.timeDelta);
 
             if (inputDirection.sqrMagnitude != 0f)
                 entity.absoluteForward = Vector3.Slerp(entity.absoluteForward, inputDirection, GameUtility.timeDelta * 3f).normalized;
 
 
-            Vector3 groundUp = terrainFlatEnough ? entity.groundHit.normal : -entity.gravityDown;
-            Vector3 rightDir = Vector3.Cross(entity.absoluteForward, groundUp);
-            Vector3 finalUp = (groundUp*4f + (Vector3.Dot( inputDirection, rightDir ) * rightDir)).normalized;
-
-            entity.RotateModelTowards(entity.absoluteForward, finalUp);
-
             inputDirection = Vector3.zero;
 
 
             if ( entity.onGround ) {
-                jumpCount = 1;
                 entity.rigidbody.velocity *= 0.995f;
             }
 
@@ -130,6 +123,16 @@ namespace SeleneGame.Content {
         private void FixedUpdate() {
 
             entity.Displace( moveSpeed * entity.absoluteForward );
+
+            
+            float groundFlatness = Vector3.Dot(entity.groundHit.normal, -entity.gravityDown);
+
+            Vector3 groundUp = groundFlatness > 0.5f ? entity.groundHit.normal : -entity.gravityDown;
+            Vector3 rightDir = Vector3.Cross(entity.absoluteForward, groundUp).normalized;
+            Vector3 finalUp = (groundUp*4f + (Vector3.Dot( inputDirection, rightDir ) * rightDir)).normalized;
+            Vector3 finalForward = Vector3.Cross(finalUp, rightDir);
+
+            entity.RotateModelTowards(finalForward, finalUp);
 
 
         }

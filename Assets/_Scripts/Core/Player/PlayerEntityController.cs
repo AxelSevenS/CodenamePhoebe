@@ -19,7 +19,7 @@ namespace SeleneGame.Core {
         Collider[] _colliderBuffer = new Collider[5];
     
         public IInteractable interactionCandidate;
-        public IManipulable manipulationCandidate;
+        // public IManipulable manipulationCandidate;
 
         private Vector2 mousePos;
 
@@ -172,7 +172,7 @@ namespace SeleneGame.Core {
             walkInput.SetVal( Keybinds.playerMap.IsBindPressed("Walk") );
             crouchInput.SetVal( Keybinds.playerMap.IsBindPressed("Crouch") );
             focusInput.SetVal( Keybinds.playerMap.IsBindPressed("Focus") );
-            shiftInput.SetVal( Keybinds.playerMap.IsBindPressed("Shift") );
+            // shiftInput.SetVal( Keybinds.playerMap.IsBindPressed("Shift") );
             moveInput.SetVal( Keybinds.playerMap.FindAction("Move").ReadValue<Vector2>() );
             lookInput.SetVal( Keybinds.playerMap.FindAction("Look").ReadValue<Vector2>() );
 
@@ -191,7 +191,7 @@ namespace SeleneGame.Core {
             Vector3 camUp = entity.transform.rotation * Vector3.up;
             Vector3 camForward = Vector3.Cross(camRight, camUp).normalized;
             camRotation = Quaternion.LookRotation(camForward, camUp);
-            groundedMovement = camRotation * new Vector3(moveInput.x, 0, moveInput.y);
+            groundedMovement = camRotation * new Vector3(moveInput.x, 0, moveInput.y).normalized;
         }
         public override void RawInputToCameraRelativeMovement(out Quaternion camRotation, out Vector3 cameraRelativeMovement){
             camRotation = worldCameraRotation;
@@ -203,8 +203,8 @@ namespace SeleneGame.Core {
 
             if (entity == null || !entity.enabled) return;
 
-            PlayerInput();
             EntityControl();
+            PlayerInput();
         }
 
 

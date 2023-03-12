@@ -1,13 +1,9 @@
-#ifndef MYHLSLINCLUDE_INCLUDED
-#define MYHLSLINCLUDE_INCLUDED
+#ifndef URPFUNCS_INCLUDED
+#define URPFUNCS_INCLUDED
 
 
-// void GetAmbientLight_float(out float4 Out){
-//     Out = _AmbientLight;
-// }
+#include "WaterWaveDisplacement.hlsl"
 
-// uniform float3 _AmbientLight;
-uniform float3 _WindDirection;
 
 void CalculateNoise_float(float3 Position, float NoiseSpeed, float NoiseScale, out float2 Out){
 
@@ -16,7 +12,7 @@ void CalculateNoise_float(float3 Position, float NoiseSpeed, float NoiseScale, o
 
 void CalculateWave_float(float3 Position, float WaveStrength, float WaveSpeed, float WaveFrequency, out float Out){
 
-    Out = WaveStrength * sin(_Time[1]*2*WaveSpeed + (Position.x*_WindDirection.x + Position.z*_WindDirection.z) * WaveFrequency);
+    Out = WaveDisplacement(Position, WaveStrength, WaveSpeed, WaveFrequency, _Time[1]);
 }
  
 void WindDirection_float(out float3 Out){

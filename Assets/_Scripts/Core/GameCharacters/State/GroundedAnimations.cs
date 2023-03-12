@@ -184,9 +184,9 @@ namespace SeleneGame.Core {
 
 
 
-        protected internal override void StateAnimation(){
+        protected internal override void Animation(){
 
-            base.StateAnimation();
+            base.Animation();
 
             movementSpeedWeight = Mathf.MoveTowards(movementSpeedWeight, (float)movementSpeed, 5f * GameUtility.timeDelta);
 

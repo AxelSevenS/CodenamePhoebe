@@ -19,7 +19,7 @@ namespace SeleneGame.Core {
         public KeyInputData walkInput;
         public KeyInputData crouchInput;
         public KeyInputData focusInput;
-        public KeyInputData shiftInput;
+        // public KeyInputData shiftInput;
         public Vector2Data moveInput;
         public Vector2Data lookInput;
 

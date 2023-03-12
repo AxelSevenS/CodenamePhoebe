@@ -84,7 +84,7 @@ namespace SeleneGame.Core
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Shift"",
+                    ""name"": ""Focus"",
                     ""type"": ""PassThrough"",
                     ""id"": ""30d035c5-3ac9-44ff-ac8e-403cd1f507dc"",
                     ""expectedControlType"": ""Button"",
@@ -120,7 +120,7 @@ namespace SeleneGame.Core
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Focus"",
+                    ""name"": ""TFSDF"",
                     ""type"": ""PassThrough"",
                     ""id"": ""8827df5f-e731-4a02-b8b0-86769aff0dee"",
                     ""expectedControlType"": ""Button"",
@@ -747,7 +747,7 @@ namespace SeleneGame.Core
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""Shift"",
+                    ""action"": ""Focus"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -758,7 +758,7 @@ namespace SeleneGame.Core
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
-                    ""action"": ""Shift"",
+                    ""action"": ""Focus"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -769,7 +769,7 @@ namespace SeleneGame.Core
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
-                    ""action"": ""Shift"",
+                    ""action"": ""Focus"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -780,7 +780,7 @@ namespace SeleneGame.Core
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
-                    ""action"": ""Shift"",
+                    ""action"": ""Focus"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -791,7 +791,7 @@ namespace SeleneGame.Core
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
-                    ""action"": ""Shift"",
+                    ""action"": ""Focus"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -802,7 +802,7 @@ namespace SeleneGame.Core
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
-                    ""action"": ""Shift"",
+                    ""action"": ""Focus"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -813,7 +813,7 @@ namespace SeleneGame.Core
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
-                    ""action"": ""Shift"",
+                    ""action"": ""Focus"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -824,7 +824,7 @@ namespace SeleneGame.Core
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
-                    ""action"": ""Shift"",
+                    ""action"": ""Focus"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -1363,7 +1363,7 @@ namespace SeleneGame.Core
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""Focus"",
+                    ""action"": ""TFSDF"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -1374,7 +1374,7 @@ namespace SeleneGame.Core
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
-                    ""action"": ""Focus"",
+                    ""action"": ""TFSDF"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -1385,7 +1385,7 @@ namespace SeleneGame.Core
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
-                    ""action"": ""Focus"",
+                    ""action"": ""TFSDF"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -1396,7 +1396,7 @@ namespace SeleneGame.Core
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
-                    ""action"": ""Focus"",
+                    ""action"": ""TFSDF"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -1407,7 +1407,7 @@ namespace SeleneGame.Core
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
-                    ""action"": ""Focus"",
+                    ""action"": ""TFSDF"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -1418,7 +1418,7 @@ namespace SeleneGame.Core
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
-                    ""action"": ""Focus"",
+                    ""action"": ""TFSDF"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -1429,7 +1429,7 @@ namespace SeleneGame.Core
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
-                    ""action"": ""Focus"",
+                    ""action"": ""TFSDF"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -1440,7 +1440,7 @@ namespace SeleneGame.Core
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
-                    ""action"": ""Focus"",
+                    ""action"": ""TFSDF"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -2461,11 +2461,11 @@ namespace SeleneGame.Core
             m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
             m_Player_LightAttack = m_Player.FindAction("LightAttack", throwIfNotFound: true);
             m_Player_HeavyAttack = m_Player.FindAction("HeavyAttack", throwIfNotFound: true);
-            m_Player_Shift = m_Player.FindAction("Shift", throwIfNotFound: true);
+            m_Player_Focus = m_Player.FindAction("Focus", throwIfNotFound: true);
             m_Player_Evade = m_Player.FindAction("Evade", throwIfNotFound: true);
             m_Player_Crouch = m_Player.FindAction("Crouch", throwIfNotFound: true);
             m_Player_Walk = m_Player.FindAction("Walk", throwIfNotFound: true);
-            m_Player_Focus = m_Player.FindAction("Focus", throwIfNotFound: true);
+            m_Player_TFSDF = m_Player.FindAction("TFSDF", throwIfNotFound: true);
             m_Player_PrimaryWeapon = m_Player.FindAction("PrimaryWeapon", throwIfNotFound: true);
             m_Player_SecondaryWeapon = m_Player.FindAction("SecondaryWeapon", throwIfNotFound: true);
             m_Player_TertiaryWeapon = m_Player.FindAction("TertiaryWeapon", throwIfNotFound: true);
@@ -2552,11 +2552,11 @@ namespace SeleneGame.Core
         private readonly InputAction m_Player_Jump;
         private readonly InputAction m_Player_LightAttack;
         private readonly InputAction m_Player_HeavyAttack;
-        private readonly InputAction m_Player_Shift;
+        private readonly InputAction m_Player_Focus;
         private readonly InputAction m_Player_Evade;
         private readonly InputAction m_Player_Crouch;
         private readonly InputAction m_Player_Walk;
-        private readonly InputAction m_Player_Focus;
+        private readonly InputAction m_Player_TFSDF;
         private readonly InputAction m_Player_PrimaryWeapon;
         private readonly InputAction m_Player_SecondaryWeapon;
         private readonly InputAction m_Player_TertiaryWeapon;
@@ -2570,11 +2570,11 @@ namespace SeleneGame.Core
             public InputAction @Jump => m_Wrapper.m_Player_Jump;
             public InputAction @LightAttack => m_Wrapper.m_Player_LightAttack;
             public InputAction @HeavyAttack => m_Wrapper.m_Player_HeavyAttack;
-            public InputAction @Shift => m_Wrapper.m_Player_Shift;
+            public InputAction @Focus => m_Wrapper.m_Player_Focus;
             public InputAction @Evade => m_Wrapper.m_Player_Evade;
             public InputAction @Crouch => m_Wrapper.m_Player_Crouch;
             public InputAction @Walk => m_Wrapper.m_Player_Walk;
-            public InputAction @Focus => m_Wrapper.m_Player_Focus;
+            public InputAction @TFSDF => m_Wrapper.m_Player_TFSDF;
             public InputAction @PrimaryWeapon => m_Wrapper.m_Player_PrimaryWeapon;
             public InputAction @SecondaryWeapon => m_Wrapper.m_Player_SecondaryWeapon;
             public InputAction @TertiaryWeapon => m_Wrapper.m_Player_TertiaryWeapon;
@@ -2605,9 +2605,9 @@ namespace SeleneGame.Core
                     @HeavyAttack.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnHeavyAttack;
                     @HeavyAttack.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnHeavyAttack;
                     @HeavyAttack.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnHeavyAttack;
-                    @Shift.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnShift;
-                    @Shift.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnShift;
-                    @Shift.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnShift;
+                    @Focus.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFocus;
+                    @Focus.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFocus;
+                    @Focus.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFocus;
                     @Evade.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEvade;
                     @Evade.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEvade;
                     @Evade.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEvade;
@@ -2617,9 +2617,9 @@ namespace SeleneGame.Core
                     @Walk.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnWalk;
                     @Walk.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnWalk;
                     @Walk.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnWalk;
-                    @Focus.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFocus;
-                    @Focus.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFocus;
-                    @Focus.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFocus;
+                    @TFSDF.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTFSDF;
+                    @TFSDF.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTFSDF;
+                    @TFSDF.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTFSDF;
                     @PrimaryWeapon.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPrimaryWeapon;
                     @PrimaryWeapon.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPrimaryWeapon;
                     @PrimaryWeapon.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPrimaryWeapon;
@@ -2651,9 +2651,9 @@ namespace SeleneGame.Core
                     @HeavyAttack.started += instance.OnHeavyAttack;
                     @HeavyAttack.performed += instance.OnHeavyAttack;
                     @HeavyAttack.canceled += instance.OnHeavyAttack;
-                    @Shift.started += instance.OnShift;
-                    @Shift.performed += instance.OnShift;
-                    @Shift.canceled += instance.OnShift;
+                    @Focus.started += instance.OnFocus;
+                    @Focus.performed += instance.OnFocus;
+                    @Focus.canceled += instance.OnFocus;
                     @Evade.started += instance.OnEvade;
                     @Evade.performed += instance.OnEvade;
                     @Evade.canceled += instance.OnEvade;
@@ -2663,9 +2663,9 @@ namespace SeleneGame.Core
                     @Walk.started += instance.OnWalk;
                     @Walk.performed += instance.OnWalk;
                     @Walk.canceled += instance.OnWalk;
-                    @Focus.started += instance.OnFocus;
-                    @Focus.performed += instance.OnFocus;
-                    @Focus.canceled += instance.OnFocus;
+                    @TFSDF.started += instance.OnTFSDF;
+                    @TFSDF.performed += instance.OnTFSDF;
+                    @TFSDF.canceled += instance.OnTFSDF;
                     @PrimaryWeapon.started += instance.OnPrimaryWeapon;
                     @PrimaryWeapon.performed += instance.OnPrimaryWeapon;
                     @PrimaryWeapon.canceled += instance.OnPrimaryWeapon;
@@ -2894,11 +2894,11 @@ namespace SeleneGame.Core
             void OnJump(InputAction.CallbackContext context);
             void OnLightAttack(InputAction.CallbackContext context);
             void OnHeavyAttack(InputAction.CallbackContext context);
-            void OnShift(InputAction.CallbackContext context);
+            void OnFocus(InputAction.CallbackContext context);
             void OnEvade(InputAction.CallbackContext context);
             void OnCrouch(InputAction.CallbackContext context);
             void OnWalk(InputAction.CallbackContext context);
-            void OnFocus(InputAction.CallbackContext context);
+            void OnTFSDF(InputAction.CallbackContext context);
             void OnPrimaryWeapon(InputAction.CallbackContext context);
             void OnSecondaryWeapon(InputAction.CallbackContext context);
             void OnTertiaryWeapon(InputAction.CallbackContext context);

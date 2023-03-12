@@ -10982,6 +10982,8 @@ MonoBehaviour:
   snowAmount: 0
   precipitation: 1
   snow: 1
+  waterDisplacementShader: {fileID: 7200000, guid: e55a859cc948a3a4d81ac2407bb2a1bf,
+    type: 3}
 --- !u!1 &596157889
 GameObject:
   m_ObjectHideFlags: 0
@@ -17577,6 +17579,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   camera: {fileID: 963194227}
   cameraData: {fileID: 963194230}
+  cameraOriginPosition: {x: 0, y: 0, z: 0}
   distanceToPlayer: 1
   horizontalSmoothTime: 0.06
   verticalSmoothTime: 0.15

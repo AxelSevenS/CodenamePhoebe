@@ -43,13 +43,16 @@ namespace SeleneGame.Core {
                 Vector3 seatOccupantUp = seatOccupant?.modelTransform.up ?? transform.up;
                 float seatOccupantSize = seatOccupant?.character.data.size.y/2f ?? 1.67f;
 
-                return transform.TransformPoint(currentSittingPose.position) + (seatOccupantUp * seatOccupantSize);
+                Transform seatTransform = seatEntity?.modelTransform ?? transform;
+
+                return seatTransform.TransformPoint(currentSittingPose.position) + (seatOccupantUp * seatOccupantSize);
             }
         }
 
         public Quaternion sitRotation {
             get {
-                return transform.rotation * currentSittingPose.rotation;
+                Transform seatTransform = seatEntity?.modelTransform ?? transform;
+                return seatTransform.rotation * currentSittingPose.rotation;
             }
         }
 

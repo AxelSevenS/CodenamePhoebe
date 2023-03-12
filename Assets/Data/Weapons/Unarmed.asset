@@ -9,22 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: afedebda6d7ea2041a2ab297b813bcd4, type: 3}
+  m_Script: {fileID: 11500000, guid: ae0fe6850e0713b4ba8fc866bf1faa47, type: 3}
   m_Name: Unarmed
   m_EditorClassIdentifier: 
   displayName: None
   description: 
   _baseCostume: {fileID: 11400000, guid: 4fcb14e16ae7e7b4287ef3e8b382de17, type: 2}
-  weaponType: 16
-  weight: 1
-  inputEvents:
-  - conditions:
-      condition:
-        binaryModifier: 0
-        inputKey: 1
-        inputType: 1
-        holdTime: 0
-        doubleTapKey: 0
-      subConditions: []
-    eventType: 2
-    evadeDirection: {x: 0, y: 0, z: 0}
+  _weaponType: 1
+  _weight: 1
+  inputEvents: []

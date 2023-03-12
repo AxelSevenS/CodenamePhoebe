@@ -46,6 +46,15 @@ namespace SeleneGame.Content {
 
 
 
+        public override void Transition(Vector3 direction, float speed) {
+            fallDirection = direction;
+            flyDirection = direction;
+        }
+        public override void GetTransitionData(out Vector3 direction, out float speed) {
+            direction = shiftFalling ? fallDirection : flyDirection;
+            speed = entity.rigidbody.velocity.magnitude;
+        }
+
         protected override void HandleInput(PlayerEntityController controller){
 
             base.HandleInput(controller);
@@ -177,7 +186,7 @@ namespace SeleneGame.Content {
             }
             maskedEntity = masked;
 
-            evadeBehaviour = gameObject.AddComponent<EvadeBehaviour>();
+            _evadeBehaviour = gameObject.AddComponent<EvadeBehaviour>();
 
             // landCursor = GameObject.Instantiate(Resources.Load("Prefabs/UI/LandCursor"), HUDController.current.transform) as GameObject;
         }
@@ -193,32 +202,17 @@ namespace SeleneGame.Content {
             if ( maskedEntity.inWater ){
                 maskedEntity.gravityDown = Vector3.down;
                 maskedEntity.ResetState();
+                return;
             }
 
             if ( maskedEntity.onGround && shiftFalling ) {
                 maskedEntity.gravityDown = fallDirection;
                 maskedEntity.ResetState();
+                return;
             }
 
 
-
-            Vector3 forwardDirection;
-            if (shiftFalling){
-
-                maskedEntity.gravityDown = fallDirection;
-                forwardDirection = maskedEntity.transform.forward;
-                // forwardDirection = maskedEntity.transform.rotation * new Vector3(randomRotation.x, 0f, randomRotation.y);
-
-            }else{
-
-                maskedEntity.gravityDown = maskedEntity.transform.rotation * Vector3.down;
-                forwardDirection = maskedEntity.absoluteForward;
-            }
-
-            // UpdateLandCursorPos();
-
-
-            maskedEntity.RotateModelTowards(forwardDirection, -maskedEntity.gravityDown);
+            maskedEntity.gravityDown = shiftFalling ? fallDirection : maskedEntity.transform.rotation * Vector3.down;
 
         }
         
@@ -233,6 +227,10 @@ namespace SeleneGame.Content {
                 maskedEntity.Displace( (maskedEntity.character.data.baseSpeed * 0.5f) * flyDirection );
     
             }
+
+            Vector3 forwardDirection = shiftFalling ? fallDirection : maskedEntity.absoluteForward;
+
+            maskedEntity.RotateModelTowards(forwardDirection, -maskedEntity.gravityDown);
             
         }
 

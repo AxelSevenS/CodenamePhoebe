@@ -21,11 +21,21 @@ namespace SeleneGame.Content {
                     _seat = GetComponent<Seat>();
 
                     seat.seatEntity = this;
-                    if (character is VehicleCharacter vehicle) {
-                        seat.SetSittingPoses(vehicle.sittingPoses);
-                    }
+                    SetSittingPoses();
                 }
                 return _seat;
+            }
+        }
+
+
+        public override void SetCharacter(CharacterData characterData, CharacterCostume costume = null) {
+            base.SetCharacter(characterData, costume);
+            SetSittingPoses();
+        }
+
+        private void SetSittingPoses() {
+            if (character is VehicleCharacter vehicle) {
+                seat.SetSittingPoses(vehicle.sittingPoses);
             }
         }
         
