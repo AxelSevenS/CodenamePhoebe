@@ -153,7 +153,7 @@ namespace SeleneGame.Core {
             //     }
             // }
 
-            if ( entity.ColliderCast( Vector3.zero, entity.gravityDown, out RaycastHit hit, 0.15f, Global.WaterMask ) ) {
+            if ( entity.character.model.ColliderCast( Vector3.zero, entity.gravityDown, out RaycastHit hit, 0.15f, Global.WaterMask ) ) {
                 entity.groundHit = hit;
                 entity.onGround.SetVal(true);
                 entity.rigidbody.velocity = entity.rigidbody.velocity.NullifyInDirection(entity.gravityDown);
@@ -179,6 +179,8 @@ namespace SeleneGame.Core {
 
         private void Update(){
 
+            entity.rigidbody.velocity *= 0.995f;
+
 
             entity.transform.rotation = Quaternion.FromToRotation(entity.transform.up, -entity.gravityDown) * entity.transform.rotation;
 
@@ -196,8 +198,6 @@ namespace SeleneGame.Core {
             }
 
 
-
-
             if ( moveDirection.sqrMagnitude != 0f )
                 entity.absoluteForward = Vector3.Lerp( entity.absoluteForward, moveDirection, 100f * GameUtility.timeDelta);
 
@@ -213,7 +213,7 @@ namespace SeleneGame.Core {
                 _evadeBehaviour.currentDirection = Vector3.Lerp(_evadeBehaviour.currentDirection, entity.absoluteForward, _evadeBehaviour.Time * _evadeBehaviour.Time);
             }
             
-            entity.RotateModelTowards(rotationForward, -entity.gravityDown);
+            entity.character.model.RotateTowards(rotationForward, -entity.gravityDown);
             
         }
 

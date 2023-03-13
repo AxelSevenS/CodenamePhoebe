@@ -230,7 +230,7 @@ namespace SeleneGame.Content {
 
             Vector3 forwardDirection = shiftFalling ? fallDirection : maskedEntity.absoluteForward;
 
-            maskedEntity.RotateModelTowards(forwardDirection, -maskedEntity.gravityDown);
+            maskedEntity.character.model.RotateTowards(forwardDirection, -maskedEntity.gravityDown);
             
         }
 

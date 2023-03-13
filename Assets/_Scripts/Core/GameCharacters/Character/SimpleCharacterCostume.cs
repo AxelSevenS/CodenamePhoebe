@@ -29,6 +29,14 @@ namespace SeleneGame.Core {
             }
         }
 
+
+        public override void RotateTowards(Quaternion newRotation, float speed = 12) {
+            if (mainTransform == null) return;
+
+            mainTransform.rotation = Quaternion.Slerp(mainTransform.rotation, newRotation, speed * GameUtility.timeDelta);
+        }
+
+
         public override void Unload() {
             model = GameUtility.SafeDestroy(model);
         }

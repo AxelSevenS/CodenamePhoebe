@@ -25,6 +25,6 @@ MonoBehaviour:
   sprintMultiplier: 1.5
   slowMultiplier: 0.5
   swimMultiplier: 0.85
-  evadeSpeed: 27
-  evadeDuration: 0.6
+  evadeSpeed: 40
+  evadeDuration: 0.3
   evadeCooldown: 0.01

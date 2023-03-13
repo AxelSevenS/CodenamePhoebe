@@ -578,6 +578,10 @@ MonoBehaviour:
     m_SerializedLabels:
     - EidolonMaskData
     - default
+  - m_GUID: bf7a8ef1468307a4a9a8de9112372277
+    m_Address: Attack\Base
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 9fff86865a633c0488e9533aaa0b59b1, type: 2}
   m_SchemaSet:

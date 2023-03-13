@@ -61,7 +61,7 @@ namespace SeleneGame.Core {
             } else {
                 entity.transform.position = seat.sitPosition;
             }
-            entity.RotateModelTowards(seat.sitRotation, Mathf.Infinity);
+            entity.character.model.RotateTowards(seat.sitRotation, Mathf.Infinity);
             entity.absoluteForward = entity.transform.forward;
         }
     }

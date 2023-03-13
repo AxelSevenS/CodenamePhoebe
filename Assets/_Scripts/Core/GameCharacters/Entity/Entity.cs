@@ -70,7 +70,10 @@ namespace SeleneGame.Core {
         [SerializeField] private float _damagedHealthVelocity = 0f;
 
         public event Action<float> onHeal;
-        public event Action<float> onDamage;
+        public event Action<float, DamageType> onDamage;
+
+        public event Action<float> onHealed;
+        public event Action<float, DamageType> onDamaged;
         public event Action onDeath;
 
 
@@ -247,8 +250,6 @@ namespace SeleneGame.Core {
             set {
                 if (value == _health)
                     return;
-
-                _damagedHealthTimer.SetDuration(0.5f);
                 
                 if ( value < _health )
                     Damage( _health - value );
@@ -374,6 +375,15 @@ namespace SeleneGame.Core {
         }
 
         /// <summary>
+        /// Set the current state of the Entity
+        /// </summary>
+        /// <param name="stateName">The name of the state to set the Entity to</param>
+        public void SetState(string stateName) {
+            Type stateType = System.Type.GetType(stateName, false, false);
+            SetState(stateType);
+        }
+
+        /// <summary>
         /// Set the Entity state to <see cref="defaultState"/>.
         /// </summary>
         public void ResetState() => SetState(defaultState);
@@ -391,6 +401,8 @@ namespace SeleneGame.Core {
 
             _character = characterData.GetCharacter(this, costume);
 
+            _health = _character.data.maxHealth;
+            _damagedHealth = health;
         }
 
         /// <summary>
@@ -416,28 +428,6 @@ namespace SeleneGame.Core {
         /// </summary>
         /// <param name="newStyle">The style to set the Entity to</param>
         public virtual void SetStyle(int newStyle){;}
-
-
-        /// <summary>
-        /// Rotate the Entity's model towards the given direction, with the given up direction.
-        /// </summary>
-        /// <param name="newForward">The direction to rotate towards</param>
-        /// <param name="newUp">The up direction to use</param>
-        public void RotateModelTowards(Vector3 newForward, Vector3 newUp, float speed = 12f) => RotateModelTowards( Quaternion.LookRotation(newForward, newUp), speed );
-
-        /// <summary>
-        /// Rotate the Entity's model using the given rotation.
-        /// </summary>
-        /// <param name="newRotation">The rotation to use</param>
-        public void RotateModelTowards(Quaternion newRotation, float speed = 12f) {
-            
-            if (modelTransform == null) return;
-
-            // Quaternion inverseTransformRotation = Quaternion.Inverse(transform.rotation);
-
-            modelTransform.rotation = Quaternion.Slerp(modelTransform.rotation, newRotation, speed * GameUtility.timeDelta);
-        }
-
 
 
         public virtual void HandleInput(PlayerEntityController controller) {
@@ -467,38 +457,31 @@ namespace SeleneGame.Core {
             state?.SetSpeed(speed);
         }
 
-        
-
-        /// <summary>
-        /// Pickup a grabbable item.
-        /// </summary>
-        /// <param name="grabbable">The item to pick up</param>
-        public virtual void Grab(Grabbable grabbable){;}
-
-
-        /// <summary>
-        /// Throw a grabbable item.
-        /// </summary>
-        /// <param name="grabbable">The item to throw</param>
-        public virtual void Throw(Grabbable grabbable){;}
-
 
         /// <summary>
         /// Deal damage to the Entity.
         /// </summary>
         /// <param name="amount">The amount of damage done to the Entity</param>
         /// <param name="knockback">The direction of Knockback applied through the damage</param>
-        public void Damage(float amount, Vector3 knockback = default) {
+        public void Damage(float amount, DamageType damageType = DamageType.Physical, Vector3 knockback = default, Entity owner = null) {
 
-            health = Mathf.Max(health - amount, 0f);
+            if (owner == this) return;
 
-            if (health == 0f)
+            // TODO: Award damage to owner
+            // owner.AwardDamage(amount, damageType);
+
+            const float damagedHealthDuration = 1.25f;
+
+            _health = Mathf.Max(_health - amount, 0f);
+            _damagedHealthTimer.SetDuration(damagedHealthDuration);
+
+            if (_health == 0f)
                 Kill();
 
-            // TODO: Add knockback animations and actual movement
+            // TODO: Add actual knockback animations
             rigidbody.AddForce(knockback, ForceMode.Impulse);
 
-            onDamage?.Invoke(amount);
+            onDamaged?.Invoke(amount, damageType);
         }
 
         /// <summary>
@@ -509,7 +492,7 @@ namespace SeleneGame.Core {
 
             health = Mathf.Max(health + amount, Mathf.Infinity);
 
-            onHeal?.Invoke(amount);
+            onHealed?.Invoke(amount);
         }
 
         /// <summary>
@@ -576,11 +559,10 @@ namespace SeleneGame.Core {
 
             if (_totalMovement.sqrMagnitude == 0f) return;
 
-
-            bool walkCollision = ColliderCast(Vector3.zero, _totalMovement, out RaycastHit walkHit, 0.15f, Global.GroundMask);
-
-            Vector3 executedMovement = walkCollision ? _totalMovement.normalized * walkHit.distance : _totalMovement;
-            rigidbody.MovePosition(rigidbody.position + executedMovement);
+            if ( character.model.ColliderCast(Vector3.zero, _totalMovement, out RaycastHit walkHit, 0.15f, Global.GroundMask) ) {    
+                _totalMovement = _totalMovement.normalized * walkHit.distance;
+            }
+            rigidbody.MovePosition(rigidbody.position + _totalMovement);
 
 
             // Check for penetration and adjust accordingly
@@ -594,44 +576,6 @@ namespace SeleneGame.Core {
             
             _totalMovement = Vector3.zero;
         }
-
-
-
-        /// <summary>
-        /// Cast all of the Entity's colliders in the given direction and return the first hit.
-        /// </summary>
-        /// <param name="position">The position of the start of the Cast, relative to the position of the entity.</param>
-        /// <param name="direction">The direction to cast in.</param>
-        /// <param name="castHit">The first hit that was found.</param>
-        /// <param name="skinThickness">The thickness of the skin of the cast, set to a low number to keep the cast accurate but not zero as to not overlap with the terrain</param>
-        /// <param name="layerMask">The layer mask to use for the cast.</param>
-        public bool ColliderCast( Vector3 position, Vector3 direction, out RaycastHit castHit, float skinThickness, LayerMask layerMask ) {
-
-            foreach (Collider collider in character?.model?.costumeData?.colliders){
-                bool hasHitWall = collider.ColliderCast( collider.transform.position + position, direction, out RaycastHit tempHit, skinThickness, layerMask );
-                if ( !hasHitWall ) continue;
-
-                castHit = tempHit;
-                return true;
-            }
-
-            castHit = new RaycastHit();
-            return false;
-        }
-
-        /// <summary>
-        /// Check if there are any colliders overlap with the entity's colliders.
-        /// </summary>
-        /// <param name="skinThickness">The thickness of the skin of the overlap, set to a low number to keep the overlap accurate but not zero as to not overlap with the terrain</param>
-        /// <param name="layerMask">The layer mask to use for the overlap.</param>
-        public Collider[] ColliderOverlap( float skinThickness, LayerMask layerMask ) {
-            foreach (Collider collider in character?.model?.costumeData.colliders){
-                Collider[] hits = collider.ColliderOverlap( collider.transform.position, skinThickness, layerMask );
-                if ( hits.Length > 0 ) return hits;
-            }
-            return new Collider[0];
-        }
-
 
         protected virtual void EntityAnimation() {
             state?.Animation();
@@ -675,9 +619,12 @@ namespace SeleneGame.Core {
         protected virtual void OnDestroy(){;}
 
         protected virtual void Update(){
-            onGround.SetVal( ColliderCast(Vector3.zero, gravityDown.normalized * 0.2f, out groundHit, 0.15f, Global.GroundMask) );
+            onGround.SetVal( character?.model?.ColliderCast(Vector3.zero, gravityDown.normalized * 0.2f, out groundHit, 0.15f, Global.GroundMask) ?? false );
             if ( _damagedHealthTimer.isDone )
-                _damagedHealth = Mathf.SmoothDamp(_damagedHealth, _health, ref _damagedHealthVelocity, 0.2f); 
+                _damagedHealth = Mathf.SmoothDamp(_damagedHealth, _health, ref _damagedHealthVelocity, 0.2f);
+            else {
+                _damagedHealthVelocity = 0f;
+            }
 
             character?.Update();
             EntityAnimation();

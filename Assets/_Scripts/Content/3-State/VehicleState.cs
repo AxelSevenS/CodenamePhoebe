@@ -132,7 +132,7 @@ namespace SeleneGame.Content {
             Vector3 finalUp = (groundUp*4f + (Vector3.Dot( inputDirection, rightDir ) * rightDir)).normalized;
             Vector3 finalForward = Vector3.Cross(finalUp, rightDir);
 
-            entity.RotateModelTowards(finalForward, finalUp);
+            entity.character.model.RotateTowards(finalForward, finalUp);
 
 
         }

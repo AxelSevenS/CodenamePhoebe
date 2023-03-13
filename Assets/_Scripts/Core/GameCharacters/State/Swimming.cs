@@ -166,7 +166,7 @@ namespace SeleneGame.Core {
                 modelForward = entity.absoluteForward;
             }
 
-            entity.RotateModelTowards(modelForward, newUp, 5f);
+            entity.character.model.RotateTowards(modelForward, newUp, 5f);
 
             entity.rigidbody.velocity *= 0.95f;
 

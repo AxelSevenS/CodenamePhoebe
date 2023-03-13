@@ -10972,9 +10972,9 @@ MonoBehaviour:
   moon: {fileID: 852649674}
   sunLight: 1
   sunSpeed: {x: 0.5, y: 0.35}
-  moonSpeed: {x: 0, y: 0}
-  lightLevel: 1
   sunRotation: {x: 0, y: 0, z: 0, w: 0}
+  lightLevel: 1
+  moonSpeed: {x: 0, y: 0}
   moonRotation: {x: 0, y: 0, z: 0, w: 0}
   _ambientLight: {r: 0.0993236, g: 0.146529, b: 0.2264151, a: 1}
   _windDirection: {x: 1, y: 0, z: 1}
@@ -29808,22 +29808,13 @@ MonoBehaviour:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
-      inSlope: 0.43106425
-      outSlope: 0.43106425
+      value: 1
+      inSlope: 0.0009453552
+      outSlope: 0.0009453552
       tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
-      outWeight: 0.29762033
-    - serializedVersion: 3
-      time: 0.09583181
-      value: 0.8183885
-      inSlope: 2.6125596
-      outSlope: 2.6125596
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.3513578
+      outWeight: 1
     - serializedVersion: 3
       time: 0.25
       value: 1
@@ -29834,14 +29825,14 @@ MonoBehaviour:
       inWeight: 0.33333334
       outWeight: 0.4301042
     - serializedVersion: 3
-      time: 0.65
-      value: 1
-      inSlope: 0.0076474375
-      outSlope: 0.0076474375
+      time: 0.5304626
+      value: 0.8598404
+      inSlope: -1.4133134
+      outSlope: -1.4133134
       tangentMode: 0
       weightedMode: 0
       inWeight: 0.55489856
-      outWeight: 0.64447266
+      outWeight: 0.24001275
     - serializedVersion: 3
       time: 0.9
       value: 0.1

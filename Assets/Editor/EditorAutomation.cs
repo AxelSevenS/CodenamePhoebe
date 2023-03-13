@@ -52,6 +52,7 @@ namespace SeleneGame.Core {
             AddressableAssetSettings addressablesSettings = AddressableAssetSettingsDefaultObject.GetSettings(false);
 
             UpdateAddressableAddress<AnimationClip>(addressablesSettings, "Assets/Animations");
+            UpdateAddressableAddressWithPrefix<GameObject>(addressablesSettings, "Assets/Attacks", "Attacks/");
             
             UpdateAddressableAddressWithTypeName<CharacterCostume>(addressablesSettings, "Assets/Costumes/Characters");
             UpdateAddressableAddressWithTypeName<WeaponCostume>(addressablesSettings, "Assets/Costumes/Weapons");
@@ -69,12 +70,6 @@ namespace SeleneGame.Core {
 
             string typeName = typeof(TAsset).Name;
 
-            // if it doesn't exist, create the label
-            if ( !addressablesSettings.GetLabels().Contains(typeName) ) {
-                addressablesSettings.AddLabel(typeName);
-            }
-
-
             string[] assetGUIDs = AssetDatabase.FindAssets($"t:{typeName}", new string[] { assetPath });
             foreach (string assetGUID in assetGUIDs) {
                 
@@ -88,7 +83,7 @@ namespace SeleneGame.Core {
             }
         }
         
-        private static void UpdateAddressableAddressWithTypeName<TAsset>(AddressableAssetSettings addressablesSettings, string assetPath) where TAsset : ScriptableObject {
+        private static void UpdateAddressableAddressWithTypeName<TAsset>(AddressableAssetSettings addressablesSettings, string assetPath) where TAsset : UnityEngine.Object {
 
             string typeName = typeof(TAsset).Name;
 
@@ -100,6 +95,22 @@ namespace SeleneGame.Core {
 
                 TAsset asset = AssetDatabase.LoadAssetAtPath(assetEntry.AssetPath, typeof(TAsset)) as TAsset;
                 assetEntry.address = AddressablesUtils.GetPath<TAsset>(asset.name);
+
+            }
+        }
+        
+        private static void UpdateAddressableAddressWithPrefix<TAsset>(AddressableAssetSettings addressablesSettings, string assetPath, string prefix) where TAsset : UnityEngine.Object {
+
+            string typeName = typeof(TAsset).Name;
+
+
+            string[] assetGUIDs = AssetDatabase.FindAssets($"t:{typeName}", new string[] { assetPath });
+            foreach (string assetGUID in assetGUIDs) {
+                
+                AddressableAssetEntry assetEntry = addressablesSettings.CreateOrMoveEntry(assetGUID, addressablesSettings.DefaultGroup);
+
+                TAsset asset = AssetDatabase.LoadAssetAtPath(assetEntry.AssetPath, typeof(TAsset)) as TAsset;
+                assetEntry.address = Path.Combine(prefix, AddressablesUtils.GetPath<TAsset>(asset.name));
 
             }
         }

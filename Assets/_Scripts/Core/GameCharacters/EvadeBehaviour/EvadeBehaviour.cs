@@ -52,13 +52,13 @@ namespace SeleneGame.Core {
 
             state.SetVal( timer > entity.character.data.evadeCooldown );
 
-            if ( !state ) {
-                Time = 0f;
-                Speed = 0f;
-            } else {
-                Time = Mathf.Clamp01( 1 - ( (timer - entity.character.data.evadeCooldown) / entity.character.data.evadeDuration ) );
-                Speed = Mathf.Clamp01( EntityManager.current.evadeCurve.Evaluate( Time ) );
+            Time = Mathf.Clamp01( 1 - ( (timer - entity.character.data.evadeCooldown) / entity.character.data.evadeDuration ) );
+            
+            float newSpeed = 0f;
+            if ( state ) {
+                newSpeed = Mathf.Clamp01( EntityManager.current.evadeCurve.Evaluate( Time ) );
             }
+            Speed = Mathf.Lerp(Speed, newSpeed, 5f * GameUtility.timeDelta);
 
             if ( entity.modelTransform == null ) return;
 
@@ -71,10 +71,7 @@ namespace SeleneGame.Core {
         }
 
         protected virtual void FixedUpdate() {
-            if (state) {
-                entity.Displace( Speed * entity.character.data.evadeSpeed * currentDirection );
-                entity.rigidbody.AddForce( Speed * entity.character.data.evadeSpeed * currentDirection * GameUtility.timeDelta, ForceMode.VelocityChange );
-            }
+            entity.Displace( Speed * entity.character.data.evadeSpeed * currentDirection );
         }
 
         protected internal virtual void Evade(Vector3 direction) {

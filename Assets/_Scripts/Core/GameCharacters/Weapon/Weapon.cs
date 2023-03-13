@@ -57,14 +57,5 @@ namespace SeleneGame.Core {
             HeavyDual = 1 << 5
         };
 
-        public enum DamageType : byte {
-            Physical,
-            Critical,
-            Heat,
-            Cold,
-            Shock,
-            Wind,
-        };
-
     }
 }
