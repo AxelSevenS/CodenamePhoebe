@@ -3,24 +3,22 @@
 // Each #kernel tells which function to compile; you can have many kernels
 #pragma kernel CSMain
 
-struct WaveData {
-    float3 position;
-    float waveStrength;
-    float waveSpeed;
-    float waveFrequency;
-};
+// struct WaveData {
+//     float3 position;
+//     float waveStrength;
+//     float waveSpeed;
+//     float waveFrequency;
+// };
 
 
-RWStructuredBuffer<WaveData> waveData;
-RWStructuredBuffer<float> waveHeight;
+RWStructuredBuffer<float3> samplePositions;
+RWStructuredBuffer<float> waveHeights;
 
-float _Time;
+uniform float _Time;
 
 [numthreads(8,8,1)]
 void CSMain (uint3 id : SV_DispatchThreadID) {
-    // TODO: insert actual code here!
+    
+    waveHeights[id.x] = WaveHeight(samplePositions[id.x], _Time);
 
-    WaveData data = waveData[id.x];
-
-    waveHeight[id.x] = WaveDisplacement(data.position, data.waveStrength, data.waveSpeed, data.waveFrequency, _Time);
 }

@@ -11,7 +11,7 @@ namespace SeleneGame.Core {
     [System.Serializable]
     public class JumpBehaviour : BehaviourStrategy {
 
-        public TimeUntil cooldownTimer;
+        public TimeInterval cooldownTimer;
 
         
         public virtual bool canJump => cooldownTimer.isDone;
@@ -41,7 +41,7 @@ namespace SeleneGame.Core {
             Vector3 newVelocity = Vector3.ProjectOnPlane(entity.rigidbody.velocity, direction);
             float jumpHeight = entity.character.data.jumpHeight * entity.jumpMultiplier;
 
-            Debug.Log($"Entity {entity.name} is jumping {jumpHeight}!");
+            Debug.Log($"Entity {entity.name} jumped with force : {jumpHeight}");
 
 
             entity.rigidbody.velocity = newVelocity + (jumpHeight * direction);

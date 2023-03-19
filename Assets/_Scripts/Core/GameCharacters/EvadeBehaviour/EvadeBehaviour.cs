@@ -14,7 +14,7 @@ namespace SeleneGame.Core {
 
         public BoolData state;
         public Vector3 currentDirection = Vector3.forward;
-        public TimeUntil timer;
+        public TimeInterval timer;
 
         private CartesianMixerState _evadeMixer;
         

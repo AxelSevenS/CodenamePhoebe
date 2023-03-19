@@ -21,7 +21,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Grid
-  m_Shader: {fileID: 4800000, guid: 5ec9723f1de93114abc5e30ef50c50b2, type: 3}
+  m_Shader: {fileID: 4800000, guid: ec13ba290b05af042b4c6a3fa3fbadb7, type: 3}
   m_ValidKeywords:
   - _ENVIRONMENTREFLECTIONS_OFF
   - _SPECULAR_SETUP

@@ -579,7 +579,7 @@ MonoBehaviour:
     - EidolonMaskData
     - default
   - m_GUID: bf7a8ef1468307a4a9a8de9112372277
-    m_Address: Attack\Base
+    m_Address: Attacks/Base
     m_ReadOnly: 0
     m_SerializedLabels: []
   m_ReadOnly: 0

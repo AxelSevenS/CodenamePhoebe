@@ -66,7 +66,7 @@ namespace SeleneGame.Core {
         [Tooltip("The health of the entity, before it took damage. Slowly moves toward the true health.")]
         [SerializeField] private float _damagedHealth;
 
-        [SerializeField] private TimeUntil _damagedHealthTimer = new TimeUntil();
+        [SerializeField] private TimeInterval _damagedHealthTimer = new TimeInterval();
         [SerializeField] private float _damagedHealthVelocity = 0f;
 
         public event Action<float> onHeal;
@@ -467,8 +467,7 @@ namespace SeleneGame.Core {
 
             if (owner == this) return;
 
-            // TODO: Award damage to owner
-            // owner.AwardDamage(amount, damageType);
+            owner?.AwardDamage(amount, damageType);
 
             const float damagedHealthDuration = 1.25f;
 
@@ -493,6 +492,10 @@ namespace SeleneGame.Core {
             health = Mathf.Max(health + amount, Mathf.Infinity);
 
             onHealed?.Invoke(amount);
+        }
+
+        public void AwardDamage(float amount, DamageType damageType) {
+            onDamage?.Invoke(amount, damageType);
         }
 
         /// <summary>

@@ -21,11 +21,12 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Skin
-  m_Shader: {fileID: 4800000, guid: 5ec9723f1de93114abc5e30ef50c50b2, type: 3}
+  m_Shader: {fileID: 4800000, guid: ec13ba290b05af042b4c6a3fa3fbadb7, type: 3}
   m_ValidKeywords: []
-  m_InvalidKeywords: []
+  m_InvalidKeywords:
+  - _PROXIMITYDITHER_ON
   m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
+  m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
@@ -119,10 +120,10 @@ Material:
     - _NormalIntensity: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
-    - _ProximityDither: 0
+    - _ProximityDither: 1
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _Smoothness: 0.044
+    - _Smoothness: 0
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SpecularIntensity: 0.038

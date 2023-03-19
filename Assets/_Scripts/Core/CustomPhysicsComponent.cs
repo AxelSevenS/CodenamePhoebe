@@ -28,9 +28,6 @@ namespace SeleneGame.Core {
 
 
         public Vector3 position => transform.position;
-        public float waveStrength => waterController?.waveStrength ?? 0f;
-        public float waveSpeed => waterController?.waveSpeed ?? 0f;
-        public float waveFrequency => waterController?.waveFrequency ?? 0f;
 
 
 
@@ -44,10 +41,15 @@ namespace SeleneGame.Core {
             
         }
 
+        private void OnDrawGizmos() {
+            Gizmos.color = Color.red;
+            Vector3 waterPosition = transform.position;
+            waterPosition.y = totalWaterHeight;
+            Gizmos.DrawWireSphere(waterPosition, 0.1f);
+        }
 
-
-        private void OnEnable() => WeatherManager.AddWaterDisplaceable(this);
-        private void OnDisable() => WeatherManager.RemoveWaterDisplaceable(this);
+        private void OnEnable() => WaterManager.AddWaterDisplaceable(this);
+        private void OnDisable() => WaterManager.RemoveWaterDisplaceable(this);
 
         private void FixedUpdate(){
 
@@ -55,7 +57,7 @@ namespace SeleneGame.Core {
             waterController = null;
 
             _colliderBuffer[0] = null;
-            Physics.OverlapSphereNonAlloc(transform.position, 1f, _colliderBuffer, Global.WaterMask);
+            Physics.OverlapSphereNonAlloc(transform.position, 5f, _colliderBuffer, Global.WaterMask);
             foreach (Collider waterCollider in _colliderBuffer) {
                 if (waterCollider != null && waterCollider.TryGetComponent<WaterController>(out WaterController waterController)){
                     this.waterCollider = waterCollider;

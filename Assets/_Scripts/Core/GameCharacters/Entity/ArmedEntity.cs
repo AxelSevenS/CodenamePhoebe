@@ -16,7 +16,7 @@ namespace SeleneGame.Core {
 
 
         [Header("Parrying")]
-        public TimeUntil parryTimer;
+        public TimeInterval parryTimer;
 
 
 

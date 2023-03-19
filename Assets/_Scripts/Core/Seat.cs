@@ -84,7 +84,7 @@ namespace SeleneGame.Core {
         protected virtual void SeatedInteract(Entity entity){;}
 
     
-        private /* async */ void StartSitting(Entity entity){
+        private void StartSitting(Entity entity){
             
             StopSitting();
 
@@ -98,15 +98,6 @@ namespace SeleneGame.Core {
                     currentSittingPose = pose;
                 }
             }
-
-            // Move the entity to the seat
-            // if (speed < 4){
-            //     seatOccupant.ResetState();
-            //     seatOccupant.walkingTo = true;
-            //     await seatOccupant.WalkTo( sitPosition, (Entity.WalkSpeed)(speed+1) );
-            //     await seatOccupant.TurnTo( transform.rotation * -sittingDir );
-            //     seatOccupant.walkingTo = false;
-            // }
             
             entity.SetState<Sitting>();
             ((Sitting)entity.state).seat = this;

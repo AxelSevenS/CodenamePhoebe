@@ -15,12 +15,12 @@ RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 9
   m_Fog: 1
-  m_FogColor: {r: 0.0993236, g: 0.146529, b: 0.2264151, a: 1}
+  m_FogColor: {r: 0.16802251, g: 0.16740835, b: 0.20754719, a: 1}
   m_FogMode: 3
   m_FogDensity: 0.0025
   m_LinearFogStart: 100
   m_LinearFogEnd: 400
-  m_AmbientSkyColor: {r: 0.0993236, g: 0.146529, b: 0.2264151, a: 1}
+  m_AmbientSkyColor: {r: 0.16802251, g: 0.16740835, b: 0.20754719, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 0.5
@@ -1250,12 +1250,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 468731065}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -12.666831, y: -11.0460005, z: 12.219025}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 969150540}
-  m_Father: {fileID: 520375517}
+  m_Father: {fileID: 1690774072}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!199 &468731069
@@ -10879,7 +10879,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1690774072}
-  m_RootOrder: 0
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!1 &504245597
 GameObject:
@@ -10918,72 +10918,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!1 &520375516
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 520375517}
-  - component: {fileID: 520375518}
-  m_Layer: 0
-  m_Name: Weather
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &520375517
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 520375516}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1082643072}
-  - {fileID: 852649672}
-  - {fileID: 468731066}
-  - {fileID: 1130664904}
-  m_Father: {fileID: 0}
-  m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &520375518
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 520375516}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e8f4303e02af5f141a7ea80216bae5ef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rainEffects: {fileID: 468731065}
-  snowEffects: {fileID: 1130664903}
-  sun: {fileID: 1082643071}
-  moon: {fileID: 852649674}
-  sunLight: 1
-  sunSpeed: {x: 0.5, y: 0.35}
-  sunRotation: {x: 0, y: 0, z: 0, w: 0}
-  lightLevel: 1
-  moonSpeed: {x: 0, y: 0}
-  moonRotation: {x: 0, y: 0, z: 0, w: 0}
-  _ambientLight: {r: 0.0993236, g: 0.146529, b: 0.2264151, a: 1}
-  _windDirection: {x: 1, y: 0, z: 1}
-  windDirection: {x: 1, y: 0, z: 1}
-  snowAmount: 0
-  precipitation: 1
-  snow: 1
-  waterDisplacementShader: {fileID: 7200000, guid: e55a859cc948a3a4d81ac2407bb2a1bf,
-    type: 3}
 --- !u!1 &596157889
 GameObject:
   m_ObjectHideFlags: 0
@@ -16754,11 +16688,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 852649671}
   m_LocalRotation: {x: -0.40727854, y: 0.25628856, z: -0.868326, w: -0.12020944}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -12.666831, y: -11.0460005, z: 12.219025}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 520375517}
+  m_Father: {fileID: 1690774072}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 147.112, y: 230.257, z: 0}
 --- !u!108 &852649674
@@ -17558,7 +17492,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   m_LocalRotation: {x: -0, y: -0.99784017, z: -0, w: -0.065688975}
-  m_LocalPosition: {x: 37.39, y: 12.35, z: 47.38}
+  m_LocalPosition: {x: 40.98, y: 16.9, z: 20.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -22929,11 +22863,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1082643069}
   m_LocalRotation: {x: -0.06016664, y: 0.16903374, z: -0.9837178, w: -0.010338526}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -12.666831, y: -11.0460005, z: 12.219025}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 520375517}
+  m_Father: {fileID: 1690774072}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 160.5, y: 187, z: 0}
 --- !u!114 &1082643073
@@ -23139,12 +23073,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1130664903}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -12.666831, y: -11.0460005, z: 12.219025}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 657871522}
-  m_Father: {fileID: 520375517}
+  m_Father: {fileID: 1690774072}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!199 &1130664907
@@ -29187,6 +29121,10 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1082643072}
+  - {fileID: 852649672}
+  - {fileID: 468731066}
+  - {fileID: 1130664904}
   - {fileID: 479659525}
   m_Father: {fileID: 0}
   m_RootOrder: 2
@@ -29769,6 +29707,8 @@ GameObject:
   - component: {fileID: 1953256998}
   - component: {fileID: 1953257000}
   - component: {fileID: 1953257001}
+  - component: {fileID: 1953257003}
+  - component: {fileID: 1953257002}
   m_Layer: 0
   m_Name: World Manager
   m_TagString: Untagged
@@ -29870,6 +29810,65 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objects: []
+--- !u!114 &1953257002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1953256997}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c15b0d17e4f2bb24295e13373f74bf39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  waterDisplacementShader: {fileID: 7200000, guid: e55a859cc948a3a4d81ac2407bb2a1bf,
+    type: 3}
+  waves:
+  - {x: -0.16009924, y: 0.71012855, z: 0.04772329, w: 32.768394}
+  - {x: 0.48223367, y: 0.8680747, z: 0.026125927, w: 21.228485}
+  - {x: 0.8704693, y: -0.1982313, z: 0.016109234, w: 9.836371}
+  - {x: -0.16235018, y: 0.9638877, z: 0.048764043, w: 18.814053}
+  - {x: 0.00677862, y: -0.5312633, z: 0.043745287, w: 5.0132394}
+  - {x: -0.65245837, y: -0.699492, z: 0.06072742, w: 9.555338}
+  - {x: -0.437, y: -0.86016446, z: 0.006578807, w: 40.953484}
+  - {x: 0.62249374, y: -0.78142565, z: 0.034775384, w: 33.118042}
+  - {x: 0.09065985, y: 0.64462507, z: 0.015207144, w: 29.951649}
+  - {x: 0.037701286, y: 0.6689109, z: 0.011679886, w: 10.116661}
+  - {x: -0.9067478, y: 0.0047355075, z: 0.051436674, w: 16.85616}
+  - {x: 0.65305024, y: -0.46889687, z: 0.06528215, w: 27.410698}
+  - {x: -0.15629017, y: 0.23142126, z: 0.06386808, w: 11.4484005}
+  - {x: -0.9371137, y: 0.09610804, z: 0.059564326, w: 18.229584}
+  - {x: 0.99822605, y: -0.05715302, z: 0.013067867, w: 23.626617}
+  - {x: -0.020511627, y: -0.32163453, z: 0.03662952, w: 11.363566}
+--- !u!114 &1953257003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1953256997}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8f4303e02af5f141a7ea80216bae5ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rainEffects: {fileID: 468731065}
+  snowEffects: {fileID: 1130664903}
+  sun: {fileID: 1082643071}
+  moon: {fileID: 852649674}
+  sunLight: 1
+  sunSpeed: {x: 0.5, y: 0.35}
+  sunRotation: {x: 0, y: 0, z: 0, w: 0}
+  lightLevel: 1
+  moonSpeed: {x: 0, y: 0}
+  moonRotation: {x: 0, y: 0, z: 0, w: 0}
+  _ambientLight: {r: 0.16802251, g: 0.16740835, b: 0.20754719, a: 1}
+  _windDirection: {x: 1, y: 0, z: -1}
+  windDirection: {x: 0.70710677, y: 0, z: -0.70710677}
+  snowAmount: 0
+  precipitation: 1
+  snow: 1
 --- !u!1 &1974932573
 GameObject:
   m_ObjectHideFlags: 0

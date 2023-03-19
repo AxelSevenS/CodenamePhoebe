@@ -14,7 +14,7 @@ namespace SeleneGame.Core {
         private float fallGravityMultiplier = 1f;
 
         public int jumpCount = 1;
-        [SerializeField] private TimeUntil jumpCooldownTimer;
+        [SerializeField] private TimeInterval jumpCooldownTimer;
 
         private float fallInertia = 0f;
 

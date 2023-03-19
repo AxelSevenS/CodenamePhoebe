@@ -5,14 +5,13 @@
 #include "WaterWaveDisplacement.hlsl"
 
 
-void CalculateNoise_float(float3 Position, float NoiseSpeed, float NoiseScale, out float2 Out){
+void CalculateNoise_float(float3 Position, float Time, float NoiseSpeed, float NoiseScale, out float2 Out){
 
-    Out = float2(Position.x*NoiseScale + _Time[1]*-_WindDirection.x/20 * NoiseSpeed, Position.z*NoiseScale + _Time[1]*-_WindDirection.z/20 * NoiseSpeed);
+    Out = float2(Position.x*NoiseScale + Time*-_WindDirection.x/20 * NoiseSpeed, Position.z*NoiseScale + Time*-_WindDirection.z/20 * NoiseSpeed);
 }
 
-void CalculateWave_float(float3 Position, float WaveStrength, float WaveSpeed, float WaveFrequency, out float Out){
-
-    Out = WaveDisplacement(Position, WaveStrength, WaveSpeed, WaveFrequency, _Time[1]);
+void CalculateWave_float(float3 Position, float Time, out float3 Displacement, out float3 Tangent, out float3 Binormal, out float3 Normal){
+    Displacement = WaveDisplacement(Position, Time, Tangent, Binormal, Normal);
 }
  
 void WindDirection_float(out float3 Out){
