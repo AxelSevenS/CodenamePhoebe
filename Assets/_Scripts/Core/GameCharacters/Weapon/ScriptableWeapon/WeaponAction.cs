@@ -35,11 +35,11 @@ namespace SeleneGame.Core {
         public void Invoke(Weapon weapon) {
             switch (eventType) {
                 case WeaponActionType.CreateDamageZone:
-                    // Vector3 position = weapon.armedEntity.modelTransform.position + (weapon.armedEntity.modelTransform.rotation * damageZoneOffset);
-                    // Quaternion rotation = weapon.armedEntity.modelTransform.rotation * damageZoneRotation;
-                    // Vector3 scale = damageZoneScale;
-                    // Transform parent = parentToEntity ? weapon.armedEntity.transform : null;
-                    // DamageZone.Create(weapon.armedEntity, attackName, position, rotation, scale, parent);
+                    Vector3 position = weapon.armedEntity.modelTransform.position + (weapon.armedEntity.modelTransform.rotation * damageZoneOffset);
+                    Quaternion rotation = weapon.armedEntity.modelTransform.rotation * damageZoneRotation;
+                    Vector3 scale = damageZoneScale;
+                    Transform parent = parentToEntity ? weapon.armedEntity.transform : null;
+                    DamageZone.Create(weapon.armedEntity, attackName, position, rotation, scale, parent);
                     break;
                 case WeaponActionType.PlayAnimation:
                     break;

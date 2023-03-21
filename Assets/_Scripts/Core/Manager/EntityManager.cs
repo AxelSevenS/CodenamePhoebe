@@ -15,6 +15,8 @@ namespace SeleneGame.Core {
         
         public List<Entity> entityList = new List<Entity>();
 
+        Coroutine hitStopCoroutine;
+
         // public Dictionary<string, string> entityCostumes = new Dictionary<string, string>();
         // public Dictionary<string, string> weaponCostumes = new Dictionary<string, string>();
 
@@ -24,5 +26,25 @@ namespace SeleneGame.Core {
             SetCurrent();
         }
 
+        public void PlayerHitStop(float damage) {
+            if (hitStopCoroutine != null)
+                StopCoroutine(hitStopCoroutine);
+
+            hitStopCoroutine = StartCoroutine(HitStop(damage * 5f));
+        }
+
+        public void EnemyHitStop(float damage) {
+            if (hitStopCoroutine != null)
+                StopCoroutine(hitStopCoroutine);
+
+            hitStopCoroutine = StartCoroutine(HitStop(damage));
+        }
+
+        private IEnumerator HitStop(float damage) {
+            Time.timeScale = 0.1f;
+            float time = Mathf.Pow(damage, 0.3f) * 0.5f;
+            yield return new WaitForSecondsRealtime(0.05f * time);
+            Time.timeScale = 1f;
+        }
     }
 }

@@ -466,6 +466,12 @@ namespace SeleneGame.Core {
 
             if (owner == this) return;
 
+            if (isPlayer) {
+                EntityManager.current?.PlayerHitStop(amount);
+            } else if (owner.isPlayer) {
+                EntityManager.current?.EnemyHitStop(amount);
+            }
+
             owner?.AwardDamage(amount, damageType);
 
             const float damagedHealthDuration = 1.25f;

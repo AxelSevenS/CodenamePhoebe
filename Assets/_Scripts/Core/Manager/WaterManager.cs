@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace SeleneGame.Core {
 
+    [ExecuteAlways]
     public class WaterManager : Singleton<WaterManager> {
         
         private static List<IWaterDisplaceable> waterDisplaceables = new List<IWaterDisplaceable>();
@@ -39,22 +40,18 @@ namespace SeleneGame.Core {
             waveHeightBuffer?.Release();
         }
 
-        private void AllocateWaveDataBuffer() {
-            ReleaseWaveDataBuffer();
-            
-            int count = waves.Length;
-            if (count == 0) return;
-
-            gerstnerWavesBuffer = new GraphicsBuffer(GraphicsBuffer.Target.Structured, count, sizeof(float) * 4);
-
-            UpdateWaveDataBuffer();
-        }
-
         private void ReleaseWaveDataBuffer() {
             gerstnerWavesBuffer?.Release();
         }
 
         private void UpdateWaveDataBuffer() {
+            ReleaseWaveDataBuffer();
+
+            int count = waves.Length;
+            if (count == 0) return;
+
+            gerstnerWavesBuffer = new GraphicsBuffer(GraphicsBuffer.Target.Structured, count, sizeof(float) * 4);
+
             gerstnerWavesBuffer?.SetData(waves);
             Shader.SetGlobalBuffer("_GerstnerWaves", gerstnerWavesBuffer);
         }
@@ -102,25 +99,33 @@ namespace SeleneGame.Core {
             }
         }
 
-
         private void OnEnable() {
 
             SetCurrent();
 
             AllocateWaveHeightSampleBuffers();
 
-            AllocateWaveDataBuffer();
             UpdateWaveDataBuffer();
 
         }
 
         private void OnDisable() {
             ReleaseWaveHeightSampleBuffers();
-            ReleaseWaveDataBuffer();
+            
+            ReleaseWaveDataBuffer(); 
         }
 
+        // Executed in edit mode, this clears the buffer after/before the scene is rendered, preventing memory leaks
         private void Update() {
-            UpdateWaveDataBuffer();
+            #if UNITY_EDITOR
+                ReleaseWaveDataBuffer();
+            #endif
+        }
+
+        private void LateUpdate() {
+            #if UNITY_EDITOR
+                UpdateWaveDataBuffer();
+            #endif
             CalculateWaveHeight();
         }
 
@@ -130,13 +135,9 @@ namespace SeleneGame.Core {
                 Vector2 direction = Random.insideUnitSphere.normalized;
                 waves[i] = new Vector4(direction.x, direction.y, Random.value * 0.075f, Random.value * 40f + 2f/* 30f + 5f */);
             }
-            UpdateWaveDataBuffer();
         }
 
         private void OnValidate() {
-            if ( gerstnerWavesBuffer?.count != waves.Length ) {
-                AllocateWaveDataBuffer();
-            }
         }
     }
 }
