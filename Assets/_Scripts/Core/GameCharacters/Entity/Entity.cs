@@ -5,7 +5,6 @@ using UnityEngine;
 using Animancer;
 
 using SevenGame.Utility;
-using System.Reflection;
 
 namespace SeleneGame.Core {
 
@@ -287,7 +286,7 @@ namespace SeleneGame.Core {
             }
         }
 
-
+        public bool isPlayer => PlayerEntityController.current?.entity == this;
 
         public bool inWater => physicsComponent.inWater;
 
@@ -505,7 +504,6 @@ namespace SeleneGame.Core {
             onDeath?.Invoke();
         }
 
-
         /// <summary>
         /// Move in the given direction.
         /// </summary>
@@ -562,20 +560,14 @@ namespace SeleneGame.Core {
 
             if (_totalMovement.sqrMagnitude == 0f) return;
 
-            if ( character.model.ColliderCast(Vector3.zero, _totalMovement, out RaycastHit walkHit, 0.15f, Global.GroundMask) ) {    
-                _totalMovement = _totalMovement.normalized * walkHit.distance;
-            }
-            rigidbody.MovePosition(rigidbody.position + _totalMovement);
+            bool castHit = character.model.ColliderCast(Vector3.zero, moveDirection * (_totalMovement.magnitude + 0.15f), out RaycastHit walkHit, out Collider castOrigin, 0.15f, Global.GroundMask);
 
-
-            // Check for penetration and adjust accordingly
-            foreach ( Collider entityCollider in character.model.costumeData.colliders ) {
-                foreach ( Collider worldCollider in entityCollider.ColliderOverlap(Vector3.zero, 0f, Global.GroundMask) ) {
-                    if ( Physics.ComputePenetration(entityCollider, entityCollider.transform.position, entityCollider.transform.rotation, worldCollider, worldCollider.transform.position, worldCollider.transform.rotation, out Vector3 direction, out float distance) ) {
-                        rigidbody.MovePosition(rigidbody.position + (direction * distance));
-                    }
-                }
+            transform.position += _totalMovement;
+                
+            if ( castHit && Physics.ComputePenetration(castOrigin, castOrigin.transform.position, castOrigin.transform.rotation, walkHit.collider, walkHit.collider.transform.position, walkHit.collider.transform.rotation, out Vector3 direction, out float distance) ) {
+                transform.position += (direction * distance);
             }
+
             
             _totalMovement = Vector3.zero;
         }
@@ -615,29 +607,34 @@ namespace SeleneGame.Core {
             EntityManager.current.entityList.Add( this );
         }
         protected virtual void OnDisable(){
-            EntityManager.current.entityList.Remove( this ); 
-            // GameObject.Destroy(state);
+            EntityManager.current.entityList.Remove( this );
         }
         
         protected virtual void OnDestroy(){;}
 
         protected virtual void Update(){
-            onGround.SetVal( character?.model?.ColliderCast(Vector3.zero, gravityDown.normalized * 0.2f, out groundHit, 0.15f, Global.GroundMask) ?? false );
+            onGround.SetVal( character?.model?.ColliderCast(Vector3.zero, gravityDown.normalized * 0.2f, out groundHit, out _, 0.15f, Global.GroundMask) ?? false );
             if ( _damagedHealthTimer.isDone )
                 _damagedHealth = Mathf.SmoothDamp(_damagedHealth, _health, ref _damagedHealthVelocity, 0.2f);
             else {
                 _damagedHealthVelocity = 0f;
             }
 
-            character?.Update();
             EntityAnimation();
+
+            character?.Update();
         }
         
 
-        protected virtual void FixedUpdate(){
+        protected virtual void LateUpdate(){
             ExecuteMovement();
 
+            character?.LateUpdate();
+        }
+
+        protected virtual void FixedUpdate() {
             Gravity();
+
             character?.FixedUpdate();
         }
 

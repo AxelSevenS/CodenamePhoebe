@@ -6,7 +6,30 @@ namespace SeleneGame.Core {
     
     public class PlayerEntityController : EntityController {
 
-        public static PlayerEntityController current;
+        private static PlayerEntityController _current;
+        public static PlayerEntityController current {
+            get => _current;
+            private set {
+                if (Application.isEditor) {
+                    foreach (PlayerEntityController playerController in FindObjectsOfType<PlayerEntityController>() ) {
+                        if (playerController != value) {
+                            GameObject go = playerController.gameObject;
+                            DestroyImmediate(playerController);
+                            go.AddComponent<EntityController>();
+                        }
+                    }
+                }
+                
+                if (_current != null && _current != value) {
+                    GameObject go = _current.gameObject;
+                    GameUtility.SafeDestroy(_current);
+                    go.AddComponent<EntityController>();
+                }
+
+                _current = value;
+                Debug.Log(_current);
+            }
+        }
 
 
         public bool talking;
@@ -34,47 +57,6 @@ namespace SeleneGame.Core {
 
 
 
-        protected override void SetController() {
-            base.SetController();
-
-            if (Application.isEditor) {
-                foreach (PlayerEntityController playerController in FindObjectsOfType<PlayerEntityController>() ) {
-                    if (playerController != this) {
-                        GameObject go = playerController.gameObject;
-                        DestroyImmediate(playerController);
-                        go.AddComponent<EntityController>();
-                    }
-                }
-            }
-            
-            if (current != null && current != this) {
-                GameObject go = current.gameObject;
-                GameUtility.SafeDestroy(current);
-                go.AddComponent<EntityController>();
-            }
-
-            current = this;
-        }
-
-        // private IManipulable GetManipulationCandidate(Collider[] buffer){
-        //     // if ( !(entity.state is FocusState) ) return null;
-
-        //     Physics.OverlapSphereNonAlloc(entity.transform.position, 15f, buffer, Global.EntityObjectMask);
-        //     foreach ( Collider hit in buffer ){
-
-        //         Rigidbody rb = hit?.attachedRigidbody ?? null;
-        //         if (rb == null || rb.transform == entity.transform) continue;
-
-        //         if ( rb.TryGetComponent<IManipulable>(out var manipulationComponent) ){
-        //             Ray cameraRay = new Ray(camera.transform.position, camera.transform.forward);
-
-        //             if ( hit.Raycast(cameraRay, out RaycastHit ManipulationHit, 15f) )
-        //                 return manipulationComponent;
-        //         }
-        //     }
-
-        //     return null;
-        // }
 
         private IInteractable GetInteractionCandidate(Collider[] buffer){
 
@@ -115,7 +97,42 @@ namespace SeleneGame.Core {
             return candidate;
         }
 
+        
+        private Quaternion UpdateCameraRotation(Quaternion currentRotation){
+            softEntityRotation = Quaternion.Slerp(softEntityRotation, entity.transform.rotation, GameUtility.timeDelta * 6f);
 
+            if (!canLook) return currentRotation;
+
+            Vector2 mouseInput = lookInput * Keybinds.cameraSpeed;
+
+            float additionalCameraSpeed = Keybinds.controllerType == Keybinds.ControllerType.MouseKeyboard ? Keybinds.mouseSpeed : Keybinds.stickSpeed;
+            mouseInput *= additionalCameraSpeed;
+
+            mousePos = new Vector2( Mathf.Clamp(mousePos.x-mouseInput.y, -90, 90), mousePos.y+mouseInput.x );
+
+            return Quaternion.AngleAxis(mousePos.y, Vector3.up) * Quaternion.AngleAxis(mousePos.x, Vector3.right);
+        }
+
+        private void EntityControl(){
+
+            // if ( Time.timeScale == 0f ) return;
+
+            lightAttackInput.SetVal( Keybinds.playerMap.IsBindPressed("LightAttack") );
+            heavyAttackInput.SetVal( Keybinds.playerMap.IsBindPressed("HeavyAttack") );
+            jumpInput.SetVal( Keybinds.playerMap.IsBindPressed("Jump") );
+            evadeInput.SetVal( Keybinds.playerMap.IsBindPressed("Evade") );
+            walkInput.SetVal( Keybinds.playerMap.IsBindPressed("Walk") );
+            crouchInput.SetVal( Keybinds.playerMap.IsBindPressed("Crouch") );
+            focusInput.SetVal( Keybinds.playerMap.IsBindPressed("Focus") );
+            // shiftInput.SetVal( Keybinds.playerMap.IsBindPressed("Shift") );
+            moveInput.SetVal( Keybinds.playerMap.FindAction("Move").ReadValue<Vector2>() );
+            lookInput.SetVal( Keybinds.playerMap.FindAction("Look").ReadValue<Vector2>() );
+
+            localCameraRotation.SetVal( UpdateCameraRotation( localCameraRotation ) );
+
+            interactionCandidate = GetInteractionCandidate(_colliderBuffer);
+
+        }
 
         private void PlayerInput() {
             interactInput.SetVal(Keybinds.playerMap.IsBindPressed("Interact"));
@@ -145,42 +162,7 @@ namespace SeleneGame.Core {
                 targetEntity.SetStyle(2);
 
         }
-        
-        private Quaternion UpdateCameraRotation(Quaternion currentRotation){
-            softEntityRotation = Quaternion.Slerp(softEntityRotation, entity.transform.rotation, GameUtility.timeDelta * 6f);
 
-            if (!canLook) return currentRotation;
-
-            Vector2 mouseInput = lookInput * Keybinds.cameraSpeed;
-
-            float additionalCameraSpeed = Keybinds.controllerType == Keybinds.ControllerType.MouseKeyboard ? Keybinds.mouseSpeed : Keybinds.stickSpeed;
-            mouseInput *= additionalCameraSpeed;
-
-            mousePos = new Vector2( Mathf.Clamp(mousePos.x-mouseInput.y, -90, 90), mousePos.y+mouseInput.x );
-
-            return Quaternion.AngleAxis(mousePos.y, Vector3.up) * Quaternion.AngleAxis(mousePos.x, Vector3.right);
-        }
-
-        private void EntityControl(){
-
-            if ( Time.timeScale == 0f ) return;
-
-            lightAttackInput.SetVal( Keybinds.playerMap.IsBindPressed("LightAttack") );
-            heavyAttackInput.SetVal( Keybinds.playerMap.IsBindPressed("HeavyAttack") );
-            jumpInput.SetVal( Keybinds.playerMap.IsBindPressed("Jump") );
-            evadeInput.SetVal( Keybinds.playerMap.IsBindPressed("Evade") );
-            walkInput.SetVal( Keybinds.playerMap.IsBindPressed("Walk") );
-            crouchInput.SetVal( Keybinds.playerMap.IsBindPressed("Crouch") );
-            focusInput.SetVal( Keybinds.playerMap.IsBindPressed("Focus") );
-            // shiftInput.SetVal( Keybinds.playerMap.IsBindPressed("Shift") );
-            moveInput.SetVal( Keybinds.playerMap.FindAction("Move").ReadValue<Vector2>() );
-            lookInput.SetVal( Keybinds.playerMap.FindAction("Look").ReadValue<Vector2>() );
-
-            localCameraRotation.SetVal( UpdateCameraRotation( localCameraRotation ) );
-
-            interactionCandidate = GetInteractionCandidate(_colliderBuffer);
-
-        }
 
         public void LookAt( Vector3 direction) {
             localCameraRotation.SetVal( Quaternion.LookRotation( Quaternion.Inverse(entity.transform.rotation) * direction, entity.transform.rotation * Vector3.up ) );
@@ -205,6 +187,11 @@ namespace SeleneGame.Core {
 
             EntityControl();
             PlayerInput();
+        }
+        protected override void Reset() {
+            base.Reset();
+
+            current = this;
         }
 
 

@@ -12,6 +12,11 @@ namespace SeleneGame.Content {
         public EidolonMask GetMask(MaskedEntity entity, EidolonMaskCostume costume = null) {
             return new EidolonMask(entity, this, costume);
         }
+
+
+        public virtual void MaskUpdate(EidolonMask mask) {;}
+        public virtual void MaskLateUpdate(EidolonMask mask) {;}
+        public virtual void MaskFixedUpdate(EidolonMask mask) {;}
     }
 
 }

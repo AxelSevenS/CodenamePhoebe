@@ -28,7 +28,7 @@ MonoBehaviour:
     m_SerializedLabels:
     - CharacterCostume
   - m_GUID: 88d05d19418b5cb4eb2b9561a0f90b20
-    m_Address: Eris_Base
+    m_Address: Nemesis_Base
     m_ReadOnly: 0
     m_SerializedLabels:
     - WeaponCostume
@@ -557,7 +557,7 @@ MonoBehaviour:
     - CharacterData
     - default
   - m_GUID: d0e937fdec003f14fb4a76ba534978a3
-    m_Address: Eris
+    m_Address: Nemesis
     m_ReadOnly: 0
     m_SerializedLabels:
     - WeaponData
@@ -580,6 +580,14 @@ MonoBehaviour:
     - default
   - m_GUID: bf7a8ef1468307a4a9a8de9112372277
     m_Address: Attacks/Base
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 2d9be5b33d869ee4b9c289d335c718d3
+    m_Address: Attacks/FireSlashSmall
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: cd313caff2c2bc748a573e2cce861a9b
+    m_Address: Attacks/FireSlashStrong
     m_ReadOnly: 0
     m_SerializedLabels: []
   m_ReadOnly: 0

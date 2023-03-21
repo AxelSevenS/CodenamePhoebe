@@ -85,10 +85,25 @@ namespace SeleneGame.Content {
         public override void Update() {
 
             base.Update();
+        }
+
+        public override void LateUpdate() {
+            base.LateUpdate();
 
 
             if (_model == null || headTransform == null)
                 return;
+
+
+            relativePos = Vector3.Lerp(relativePos, onRight ? rightPosition : leftPosition, 3f * GameUtility.timeDelta);
+
+            if (!onFace && (positionBlocked(relativePos)))
+                onRight = !onRight;
+
+
+            hoveringPosition = Vector3.Lerp(hoveringPosition, mask.maskedEntity.modelTransform.position + relativePos, 15f * Time.deltaTime);
+            
+            maskPosT = Mathf.MoveTowards(maskPosT, (onFace ? 1f : 0f), 4f * GameUtility.timeDelta);
 
 
             BezierQuadratic currentCurve = new BezierQuadratic(
@@ -98,26 +113,19 @@ namespace SeleneGame.Content {
             );
 
             _model.transform.position = currentCurve.GetPoint(maskPosT).position;
+            // _model.transform.position = hoveringPosition;
             _model.transform.rotation = Quaternion.Slerp(mask.maskedEntity.modelTransform.rotation, headTransform.rotation, maskPosT);
+
+
+            // if (_animator != null) {
+            //     _animator?.SetBool("OnFace", onFace);
+            //     _animator?.SetFloat("OnRight", onRight ? 1f : 0f);
+            // }
+
         }
 
         public override void FixedUpdate() {
-
             base.FixedUpdate();
-
-            relativePos = Vector3.Lerp(relativePos, onRight ? rightPosition : leftPosition, 3f * GameUtility.timeDelta);
-
-            if (!onFace && (positionBlocked(relativePos)))
-                onRight = !onRight;
-
-            hoveringPosition = Vector3.Lerp(hoveringPosition, mask.maskedEntity.modelTransform.position + relativePos, 15f * GameUtility.timeDelta);
-            maskPosT = Mathf.MoveTowards(maskPosT, System.Convert.ToSingle(onFace), 4f * GameUtility.timeDelta);
-
-
-            if (_animator != null) {
-                _animator?.SetBool("OnFace", onFace);
-                _animator?.SetFloat("OnRight", onRight ? 1f : 0f);
-            }
         }
     } 
 }

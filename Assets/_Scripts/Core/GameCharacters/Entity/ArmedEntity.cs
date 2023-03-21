@@ -67,15 +67,19 @@ namespace SeleneGame.Core {
         protected override void Update(){
             base.Update();
             
-            foreach (Weapon weapon in weapons)
-                weapon?.Update();
+            weapons?.Update();
+        }
+
+        protected override void LateUpdate() {
+            base.LateUpdate();
+
+            weapons?.LateUpdate();
         }
 
         protected override void FixedUpdate() {
             base.FixedUpdate();
 
-            foreach (Weapon weapon in weapons)
-                weapon?.FixedUpdate();
+            weapons?.FixedUpdate();
         }
 
     }

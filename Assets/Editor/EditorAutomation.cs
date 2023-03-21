@@ -77,8 +77,7 @@ namespace SeleneGame.Core {
 
                 string newAddress = assetEntry.AssetPath.Replace(Path.GetExtension(assetEntry.AssetPath), "");
                 newAddress = newAddress.Replace("Assets/", "");
-                assetEntry.address = Path.Combine(newAddress);
-                // assetEntry.address = Path.GetFileNameWithoutExtension(assetEntry.address);
+                assetEntry.address = newAddress;
 
             }
         }
@@ -94,7 +93,7 @@ namespace SeleneGame.Core {
                 AddressableAssetEntry assetEntry = addressablesSettings.CreateOrMoveEntry(assetGUID, addressablesSettings.DefaultGroup);
 
                 TAsset asset = AssetDatabase.LoadAssetAtPath(assetEntry.AssetPath, typeof(TAsset)) as TAsset;
-                assetEntry.address = AddressablesUtils.GetPath<TAsset>(asset.name);
+                assetEntry.address = asset.name;
 
             }
         }
@@ -110,7 +109,7 @@ namespace SeleneGame.Core {
                 AddressableAssetEntry assetEntry = addressablesSettings.CreateOrMoveEntry(assetGUID, addressablesSettings.DefaultGroup);
 
                 TAsset asset = AssetDatabase.LoadAssetAtPath(assetEntry.AssetPath, typeof(TAsset)) as TAsset;
-                assetEntry.address = Path.Combine(prefix, AddressablesUtils.GetPath<TAsset>(asset.name));
+                assetEntry.address = Path.Combine(prefix, asset.name);
 
             }
         }

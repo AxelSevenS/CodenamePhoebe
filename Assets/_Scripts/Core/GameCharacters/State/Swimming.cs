@@ -132,12 +132,25 @@ namespace SeleneGame.Core {
             float speedDelta = newSpeed > moveSpeed ? 0.5f : 0.25f;
             moveSpeed = Mathf.MoveTowards(moveSpeed, newSpeed, speedDelta * entity.character.data.acceleration * GameUtility.timeDelta);
 
-        }
 
-        private void FixedUpdate() {
+
+
+            Vector3 newUp;
+            Vector3 modelForward;
+            if (isOnWaterSurface) {                
+                newUp = -entity.gravityDown;
+                modelForward = Vector3.Cross(newUp, Vector3.Cross(entity.absoluteForward, newUp));
+            } else {
+                newUp = Vector3.Cross(entity.absoluteForward, Vector3.Cross(entity.absoluteForward, entity.gravityDown));
+                modelForward = entity.absoluteForward;
+            }
 
             entity.transform.rotation = Quaternion.FromToRotation(entity.transform.up, -entity.gravityDown) * entity.transform.rotation;
+
+            entity.character.model.RotateTowards(modelForward, newUp, 5f);
             
+
+
             float floatingDisplacement = isOnWaterSurface ? distanceToWaterSurface + swimTreshold/3f : 0f;
             Vector3 floatingDisplacementVector = Vector3.up * floatingDisplacement * 3f;
 
@@ -156,17 +169,6 @@ namespace SeleneGame.Core {
             entity.Displace( displacement, false, deltaTime: 1f );
 
 
-            Vector3 newUp;
-            Vector3 modelForward;
-            if (isOnWaterSurface) {                
-                newUp = -entity.gravityDown;
-                modelForward = Vector3.Cross(newUp, Vector3.Cross(entity.absoluteForward, newUp));
-            } else {
-                newUp = Vector3.Cross(entity.absoluteForward, Vector3.Cross(entity.absoluteForward, entity.gravityDown));
-                modelForward = entity.absoluteForward;
-            }
-
-            entity.character.model.RotateTowards(modelForward, newUp, 5f);
 
             entity.rigidbody.velocity *= 0.95f;
 

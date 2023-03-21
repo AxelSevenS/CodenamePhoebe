@@ -30,5 +30,9 @@ namespace SeleneGame.Core {
             return new Character(entity, this, costume ?? baseCostume ?? AddressablesUtils.GetDefaultAsset<CharacterCostume>());
         }
 
+        public virtual void CharacterUpdate(Character character) {;}
+        public virtual void CharacterLateUpdate(Character character) {;}
+        public virtual void CharacterFixedUpdate(Character character) {;}
+
     }
 }

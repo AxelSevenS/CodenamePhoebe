@@ -11,7 +11,7 @@ namespace SeleneGame.Core {
     
     public class CameraController : Singleton<CameraController>{
 
-        public Camera camera;
+        public new Camera camera;
         public UniversalAdditionalCameraData cameraData;
 
 
@@ -40,59 +40,7 @@ namespace SeleneGame.Core {
 
 
         
-        private void UpdateCameraDistance(){
-
-            Vector3 cameraRelativePosition = Global.cameraDefaultPosition;
-            Vector3 cameraTargetVector = new Vector3( cameraRelativePosition.x, cameraRelativePosition.y, cameraRelativePosition.z * distanceToPlayer - additionalDistance);
-
-            cameraVector = Vector3.Slerp(cameraVector, cameraTargetVector, 3f * GameUtility.timeDelta);
-        }
-
-        private void UpdateCameraPosition(){
-            
-            transform.rotation = PlayerEntityController.current.worldCameraRotation;
-
-
-            float verticalSpeed = verticalSmoothTime;
-
-            if ( cameraType != CameraType.ThirdPersonGrounded )
-                verticalSpeed = horizontalSmoothTime;
-
-
-            Vector3 followPosition = PlayerEntityController.current.entity["head"].transform.position + cameraOriginPosition;
-
-            // Make The Camera Movement slower on the Y axis than on the X axis
-            Vector3 camHorizontalPos = Vector3.ProjectOnPlane( followPosition, PlayerEntityController.current.entity.gravityDown );
-            Vector3 camVerticalPos = followPosition - camHorizontalPos;
-            delayedHorizontalPosition = Vector3.SmoothDamp( delayedHorizontalPosition, camHorizontalPos, ref horizontalVelocity, horizontalSmoothTime );
-            delayedVerticalPosition = Vector3.SmoothDamp( delayedVerticalPosition, camVerticalPos, ref verticalVelocity, verticalSpeed );
-
-            Vector3 delayedPosition = delayedHorizontalPosition + delayedVerticalPosition;
-
-
-
-            Vector3 camPosition = transform.rotation * cameraVector;
-            cameraDistance = Mathf.SmoothDamp( cameraDistance, camPosition.magnitude, ref distanceVelocity, 0.2f );
-
-            // Check for collision with the camera
-            const float distanceToWall = 0.4f;
-            if ( Physics.Raycast( delayedPosition, camPosition, out RaycastHit cameraCollisionHit, camPosition.magnitude + distanceToWall, Global.GroundMask ) ){
-
-                Vector3 collisionToPlayer = delayedPosition - cameraCollisionHit.point;
-                Vector3 collisionTangent = Vector3.up;
-
-                Debug.DrawRay( cameraCollisionHit.point, collisionToPlayer * 3f, Color.red );
-                float collisionAngle = 90 - Vector3.Angle( collisionToPlayer.normalized, cameraCollisionHit.normal );
-
-                float camMargin = distanceToWall / Mathf.Sin(collisionAngle * Mathf.Deg2Rad);
-                
-                cameraDistance = collisionToPlayer.magnitude - camMargin;
-            }
-
-
-            Vector3 finalPos = delayedPosition + camPosition.normalized * cameraDistance;
-            
-            transform.position = finalPos;
+        private void UpdateCamera(){
         }
 
 
@@ -108,17 +56,66 @@ namespace SeleneGame.Core {
         }
 
 
-        private void Update(){
-
+        private void LateUpdate() {
             if (PlayerEntityController.current?.entity == null) return;
+            
+            
 
-            UpdateCameraDistance();
-        }
+            Vector3 cameraRelativePosition = Global.cameraDefaultPosition;
+            Vector3 cameraTargetVector = new Vector3( cameraRelativePosition.x, cameraRelativePosition.y, cameraRelativePosition.z * distanceToPlayer - additionalDistance);
 
-        private void FixedUpdate(){
-            if (PlayerEntityController.current?.entity == null) return;
+            cameraVector = Vector3.Slerp(cameraVector, cameraTargetVector, 3f * GameUtility.timeUnscaledDelta);
+            
+            transform.rotation = PlayerEntityController.current.worldCameraRotation;
 
-            UpdateCameraPosition();
+
+
+            float verticalSpeed = verticalSmoothTime;
+
+            if ( cameraType != CameraType.ThirdPersonGrounded )
+                verticalSpeed = horizontalSmoothTime;
+
+
+            Vector3 followPosition = PlayerEntityController.current.entity["head"].transform.position + cameraOriginPosition;
+
+            // Make The Camera Movement slower on the Y axis than on the X axis
+            Vector3 camHorizontalPos = Vector3.ProjectOnPlane( followPosition, PlayerEntityController.current.entity.gravityDown );
+            if ( delayedHorizontalPosition != camHorizontalPos)
+                delayedHorizontalPosition = Vector3.SmoothDamp( delayedHorizontalPosition, camHorizontalPos, ref horizontalVelocity, horizontalSmoothTime );
+
+            Vector3 camVerticalPos = followPosition - camHorizontalPos;
+            if ( delayedVerticalPosition != camVerticalPos)
+                delayedVerticalPosition = Vector3.SmoothDamp( delayedVerticalPosition, camVerticalPos, ref verticalVelocity, verticalSpeed );
+
+            Vector3 delayedPosition = delayedHorizontalPosition + delayedVerticalPosition;
+            // Vector3 delayedPosition = followPosition;
+
+
+
+            Vector3 camPosition = transform.rotation * cameraVector;
+            if (cameraDistance != camPosition.magnitude)
+                cameraDistance = Mathf.SmoothDamp( cameraDistance, camPosition.magnitude, ref distanceVelocity, 0.2f );
+
+            // Check for collision with the camera
+            const float distanceToWall = 0.4f;
+            if ( Physics.Raycast( delayedPosition, camPosition, out RaycastHit cameraCollisionHit, camPosition.magnitude + distanceToWall, Global.GroundMask ) ){
+
+                Vector3 collisionToPlayer = delayedPosition - cameraCollisionHit.point;
+                Vector3 collisionTangent = Vector3.up;
+
+                Debug.DrawRay( cameraCollisionHit.point, collisionToPlayer * 3f, Color.red );
+                float collisionAngle = 90 - Vector3.Angle( collisionToPlayer.normalized, cameraCollisionHit.normal );
+
+                // Fancy Trigonometry to keep the camera at least distanceToWall away from the wall
+                float camMargin = distanceToWall / Mathf.Sin(collisionAngle * Mathf.Deg2Rad);
+                
+                cameraDistance = collisionToPlayer.magnitude - camMargin;
+            }
+
+            Vector3 finalPos = delayedPosition + camPosition.normalized * cameraDistance;
+            
+            transform.position = finalPos;
+
         }
 
 

@@ -54,6 +54,13 @@ namespace SeleneGame.Core {
             seat.seatOccupant = null;
         }
 
+        private void OnEnable() {
+            entity.rigidbody.detectCollisions = false;
+        }
+        private void OnDisable() {
+            entity.rigidbody.detectCollisions = true;
+        }
+
 
         private void FixedUpdate(){
             if (seat.affectCamera) {

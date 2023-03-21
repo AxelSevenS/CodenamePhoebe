@@ -116,12 +116,7 @@ namespace SeleneGame.Content {
 
 
 
-        public virtual void Update() {
-
-            model?.Update();
-        }
-
-        public virtual void FixedUpdate() {
+        public override void Update() {
 
             int index = 0;
             foreach (GrabbableObject grabbableObject in grabbables) {
@@ -134,6 +129,19 @@ namespace SeleneGame.Content {
 
             }
 
+            data?.MaskUpdate(this);
+            base.Update();
+        }
+
+        public override void LateUpdate() {
+                
+            data?.MaskUpdate(this);
+            model?.LateUpdate();
+        }
+
+        public override void FixedUpdate() {
+
+            data?.MaskFixedUpdate(this);
             model?.FixedUpdate();
         }
 

@@ -16,7 +16,6 @@ namespace SeleneGame.Content {
         [SerializeReference] /* [ReadOnly]  */protected EidolonMask _mask;
 
         public bool focusing;
-        public float shiftCooldown;
 
         // private SpeedlinesEffect speedlines;
         public float shiftEnergy = 0f;
@@ -65,20 +64,19 @@ namespace SeleneGame.Content {
         protected override void Update(){
             base.Update();
 
-            shiftCooldown = Mathf.MoveTowards( shiftCooldown, 0f, GameUtility.timeDelta );
-
             mask?.Update();
+        }
+
+        protected override void LateUpdate() {
+            base.LateUpdate();
+
+            mask?.LateUpdate();
         }
 
         protected override void FixedUpdate() {
             base.FixedUpdate();
 
-            if (shiftCooldown > 0f){
-                shiftCooldown -= GameUtility.timeDelta;
-            }
-
             mask?.FixedUpdate();
-
         }
         
 

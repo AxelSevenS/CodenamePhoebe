@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using Scribe;
 using SevenGame.Utility;
 using UnityEngine;
 
@@ -30,6 +31,20 @@ namespace SeleneGame.Core {
             _defaultWeapon = AddressablesUtils.GetDefaultAsset<WeaponData>().GetWeapon(entity);
             _defaultWeapon.Display();
         }
+
+
+        public virtual void HandleInput(EntityController controller) {
+            current?.HandleInput(controller);
+        }
+
+        public virtual void LightAttack() {
+            current?.LightAttack();
+        }
+
+        public virtual void HeavyAttack() {
+            current?.HeavyAttack();
+        }
+
 
 
 
@@ -85,6 +100,26 @@ namespace SeleneGame.Core {
                 weapon?.OnUnequip();
             }
             current?.OnEquip();
+        }
+
+
+
+        public virtual void Update() {
+            foreach (Weapon weapon in this) {
+                weapon?.Update();
+            }
+        }
+
+        public virtual void LateUpdate() {
+            foreach (Weapon weapon in this) {
+                weapon?.LateUpdate();
+            }
+        }
+
+        public virtual void FixedUpdate() {
+            foreach (Weapon weapon in this) {
+                weapon?.FixedUpdate();
+            }
         }
     }
 }

@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae0fe6850e0713b4ba8fc866bf1faa47, type: 3}
+  m_Name: Nemesis
+  m_EditorClassIdentifier: 
+  displayName: Nemesis
+  description: 'Lava Sword
+
+'
+  _baseCostume: {fileID: 11400000, guid: 88d05d19418b5cb4eb2b9561a0f90b20, type: 2}
+  _weaponType: 4
+  _weight: 1.25
+  inputEvents: []
+  lightAttackEvents:
+  - conditions:
+      condition:
+        binaryModifier: 2
+        flagType: 0
+        flagName: 
+        operationType: 0
+        flagValue: 0
+      subConditions: []
+    actions:
+    - eventType: 0
+      attackName: FireSlashSmall
+      damageZoneOffset: {x: 0, y: 0, z: 1}
+      damageZoneRotation: {x: 0, y: 0, z: 0.50000006, w: -0.8660254}
+      damageZoneScale: {x: 1, y: 1, z: 1}
+      parentToEntity: 1
+      evadeDirection: {x: 0, y: 0, z: 0}
+      stateName: 
+  heavyAttackEvents:
+  - conditions:
+      condition:
+        binaryModifier: 2
+        flagType: 0
+        flagName: 
+        operationType: 0
+        flagValue: 0
+      subConditions: []
+    actions:
+    - eventType: 0
+      attackName: FireSlashStrong
+      damageZoneOffset: {x: 0, y: 0, z: 0}
+      damageZoneRotation: {x: 0, y: 0, z: 0, w: 1}
+      damageZoneScale: {x: 1, y: 1, z: 1}
+      parentToEntity: 0
+      evadeDirection: {x: 0, y: 0, z: 0}
+      stateName: 

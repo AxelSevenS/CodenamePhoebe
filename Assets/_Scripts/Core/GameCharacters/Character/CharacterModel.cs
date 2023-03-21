@@ -27,17 +27,19 @@ namespace SeleneGame.Core {
         /// <param name="castHit">The first hit that was found.</param>
         /// <param name="skinThickness">The thickness of the skin of the cast, set to a low number to keep the cast accurate but not zero as to not overlap with the terrain</param>
         /// <param name="layerMask">The layer mask to use for the cast.</param>
-        public bool ColliderCast( Vector3 position, Vector3 direction, out RaycastHit castHit, float skinThickness, LayerMask layerMask ) {
+        public bool ColliderCast( Vector3 position, Vector3 direction, out RaycastHit castHit, out Collider castOrigin, float skinThickness, LayerMask layerMask ) {
 
             foreach (Collider collider in costumeData?.colliders){
                 bool hasHitWall = collider.ColliderCast( collider.transform.position + position, direction, out RaycastHit tempHit, skinThickness, layerMask );
                 if ( !hasHitWall ) continue;
 
                 castHit = tempHit;
+                castOrigin = collider;
                 return true;
             }
 
             castHit = new RaycastHit();
+            castOrigin = null;
             return false;
         }
 

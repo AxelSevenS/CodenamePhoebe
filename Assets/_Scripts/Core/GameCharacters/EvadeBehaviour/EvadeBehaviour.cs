@@ -46,7 +46,7 @@ namespace SeleneGame.Core {
 
         protected internal override void HandleInput(PlayerEntityController contoller) {;}
 
-        protected virtual void Update() { 
+        protected virtual void Update() {
 
             // Debug.Log(entityState);
 
@@ -58,7 +58,7 @@ namespace SeleneGame.Core {
             if ( state ) {
                 newSpeed = Mathf.Clamp01( EntityManager.current.evadeCurve.Evaluate( Time ) );
             }
-            Speed = Mathf.Lerp(Speed, newSpeed, 5f * GameUtility.timeDelta);
+            Speed = Mathf.Lerp(Speed, newSpeed, 3f * GameUtility.timeDelta);
 
             if ( entity.modelTransform == null ) return;
 
@@ -68,10 +68,14 @@ namespace SeleneGame.Core {
 
             evadeMixer.Parameter = new Vector2(rightDirection, forwardDirection);
 
+            entity.Displace( Speed * entity.character.data.evadeSpeed * currentDirection );
+        }
+
+        protected virtual void LateUpdate() { 
+
         }
 
         protected virtual void FixedUpdate() {
-            entity.Displace( Speed * entity.character.data.evadeSpeed * currentDirection );
         }
 
         protected internal virtual void Evade(Vector3 direction) {

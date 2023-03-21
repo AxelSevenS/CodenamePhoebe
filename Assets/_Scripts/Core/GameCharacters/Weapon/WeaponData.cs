@@ -18,9 +18,19 @@ namespace SeleneGame.Core {
         public float weight => _weight;
 
 
+        public abstract void HandleInput(Weapon weapon, EntityController controller);
+
+        public abstract void LightAttack(Weapon weapon);
+
+        public abstract void HeavyAttack(Weapon weapon);
+
         public virtual Weapon GetWeapon(ArmedEntity entity, WeaponCostume costume = null) {
             return new Weapon(entity, this, costume);
         }
+
+        public virtual void WeaponUpdate(Weapon weapon) {;}
+        public virtual void WeaponLateUpdate(Weapon weapon) {;}
+        public virtual void WeaponFixedUpdate(Weapon weapon) {;}
 
     }
 }

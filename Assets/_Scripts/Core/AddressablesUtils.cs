@@ -9,20 +9,12 @@ using UnityEngine.ResourceManagement.ResourceLocations;
 namespace SeleneGame.Core {
 
     public static class AddressablesUtils {
-        
-        
-
-        public static string GetPath<T>(string assetName){
-            return assetName;
-        }
 
 
         public static T GetAsset<T>(string assetName) {
 
-            string path = GetPath<T>(assetName);
-
             foreach (var locator in Addressables.ResourceLocators) {
-                if (locator.Locate(path, typeof(T), out var locations)) {
+                if (locator.Locate(assetName, typeof(T), out var locations)) {
                     return Addressables.LoadAssetAsync<T>(locations[0]).WaitForCompletion();
                 }
             }
@@ -45,10 +37,8 @@ namespace SeleneGame.Core {
         
         public static void GetAssetAsync<T>(string assetName, Action<T> callback) {
 
-            string path = GetPath<T>(assetName);
-
             foreach (var locator in Addressables.ResourceLocators) {
-                if (locator.Locate(path, typeof(T), out var locations)) {
+                if (locator.Locate(assetName, typeof(T), out var locations)) {
                     AsyncOperationHandle<T> opHandle = Addressables.LoadAssetAsync<T>(locations[0]);
                     opHandle.Completed += operation => {
                         callback?.Invoke( operation.Result );

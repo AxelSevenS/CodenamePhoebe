@@ -68,6 +68,15 @@ namespace SeleneGame.Core {
 
             Move(groundedMovement);
 
+            if ( entity is ArmedEntity armedEntity )
+                armedEntity.weapons.HandleInput(controller);
+
+            if ( controller.lightAttackInput.started )
+                LightAttack();
+
+            if ( controller.heavyAttackInput.started )
+                HeavyAttack();
+
             if ( controller.evadeInput.Tapped() )
                 Evade(evadeDirection);
 
@@ -78,9 +87,9 @@ namespace SeleneGame.Core {
                 Jump();
 
 
-            if (controller.focusInput.trueTimer > Keybinds.HOLD_TIME){
-                entity.gravityDown = Vector3.down;
-            }
+            // if (controller.focusInput.trueTimer > Keybinds.HOLD_TIME){
+            //     entity.gravityDown = Vector3.down;
+            // }
 
         }
 
@@ -129,13 +138,13 @@ namespace SeleneGame.Core {
         protected override void LightAttackAction() {
             base.LightAttackAction();
             if ( entity is ArmedEntity armed ) {
-                armed.LightAttack();
+                armed.weapons.LightAttack();
             }
         }
         protected override void HeavyAttackAction() {
             base.HeavyAttackAction();
             if ( entity is ArmedEntity armed ) {
-                armed.HeavyAttack();
+                armed.weapons.HeavyAttack();
             }
         }
         
@@ -153,7 +162,7 @@ namespace SeleneGame.Core {
             //     }
             // }
 
-            if ( entity.character.model.ColliderCast( Vector3.zero, entity.gravityDown, out RaycastHit hit, 0.15f, Global.WaterMask ) ) {
+            if ( entity.character.model.ColliderCast( Vector3.zero, entity.gravityDown, out RaycastHit hit, out _, 0.15f, Global.WaterMask ) ) {
                 entity.groundHit = hit;
                 entity.onGround.SetVal(true);
                 entity.rigidbody.velocity = entity.rigidbody.velocity.NullifyInDirection(entity.gravityDown);
@@ -178,8 +187,6 @@ namespace SeleneGame.Core {
         }
 
         private void Update(){
-
-            entity.rigidbody.velocity *= 0.995f;
 
 
             entity.transform.rotation = Quaternion.FromToRotation(entity.transform.up, -entity.gravityDown) * entity.transform.rotation;
@@ -214,10 +221,6 @@ namespace SeleneGame.Core {
             }
             
             entity.character.model.RotateTowards(rotationForward, -entity.gravityDown);
-            
-        }
-
-        private void FixedUpdate(){
 
 
             float newSpeed = moveDirection.sqrMagnitude == 0f ? 0f : entity.character.data.baseSpeed;
@@ -232,6 +235,10 @@ namespace SeleneGame.Core {
             moveSpeed *= Mathf.Max(1 - _evadeBehaviour.Speed, 0.05f);
 
             entity.Displace(entity.absoluteForward * moveSpeed);
+            
+        }
+
+        private void FixedUpdate(){
 
         }
 

@@ -31,6 +31,7 @@ namespace SeleneGame.Core {
 
 
         public virtual void Update(){;}
+        public virtual void LateUpdate(){;}
         public virtual void FixedUpdate(){;}
 
 

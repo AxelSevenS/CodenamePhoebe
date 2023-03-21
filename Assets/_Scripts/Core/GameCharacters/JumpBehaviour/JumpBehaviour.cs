@@ -11,7 +11,7 @@ namespace SeleneGame.Core {
     [System.Serializable]
     public class JumpBehaviour : BehaviourStrategy {
 
-        public TimeInterval cooldownTimer;
+        public ScaledTimeInterval cooldownTimer;
 
         
         public virtual bool canJump => cooldownTimer.isDone;

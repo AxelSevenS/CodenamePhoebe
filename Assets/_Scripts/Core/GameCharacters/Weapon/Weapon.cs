@@ -21,6 +21,18 @@ namespace SeleneGame.Core {
             SetCostume(costume);
         }
 
+        public virtual void HandleInput(EntityController controller) {
+            data?.HandleInput(this, controller);
+        }
+
+        public virtual void LightAttack() {
+            data?.LightAttack(this);
+        }
+
+        public virtual void HeavyAttack() {
+            data?.HeavyAttack(this);
+        }
+
 
         public override void SetCostume(WeaponCostume costume) {
             _model?.Dispose();
@@ -42,8 +54,18 @@ namespace SeleneGame.Core {
         }
 
 
-        public virtual void Update() {;}
-        public virtual void FixedUpdate() {;}
+        public override void Update() {
+            data?.WeaponUpdate(this);
+            base.Update();
+        }
+        public override void LateUpdate() {
+            data?.WeaponLateUpdate(this);
+            base.Update();
+        }
+        public override void FixedUpdate() {
+            data?.WeaponFixedUpdate(this);
+            base.Update();
+        }
 
 
 

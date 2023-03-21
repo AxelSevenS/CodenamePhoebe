@@ -55,19 +55,14 @@ namespace SeleneGame.Core {
             camRotation = Quaternion.identity;
             cameraRelativeMovement = new Vector3(moveInput.x, 0, moveInput.y);
         }
-
-        protected virtual void SetController() {
-            EntityController[] controllers = GetComponents<EntityController>();
-            foreach (EntityController controller in controllers) {
-                if (controller != this) {
-                    GameUtility.SafeDestroy(controller);
-                }
-            }
-        } 
         
         
+        protected virtual void OnEnable () {
+            Reset();
+        }
 
-        protected virtual void OnEnable() => SetController(); 
-        protected virtual void Reset() => SetController();
+        protected virtual void Reset() {
+            _entity = GetComponent<Entity>();
+        }
     }
 }

@@ -76,6 +76,17 @@ namespace SeleneGame.Core {
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }
+
+
+        public virtual void Update() {
+            _model?.Update();
+        }
+        public virtual void LateUpdate() {
+            _model?.LateUpdate();
+        }
+        public virtual void FixedUpdate() {
+            _model?.FixedUpdate();
+        }
     }
     
 }

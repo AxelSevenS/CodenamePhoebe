@@ -39,8 +39,18 @@ namespace SeleneGame.Core {
         }
 
 
-        public virtual void Update() {;}
-        public virtual void FixedUpdate() {;}
+        public override void Update() {
+            data?.CharacterUpdate(this);
+            base.Update();
+        }
+        public override void LateUpdate() {
+            data?.CharacterLateUpdate(this);
+            base.LateUpdate();
+        }
+        public override void FixedUpdate() {
+            data?.CharacterFixedUpdate(this);
+            base.FixedUpdate();
+        }
 
     }
 
