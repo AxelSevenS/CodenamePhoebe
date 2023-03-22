@@ -99,8 +99,10 @@ namespace SeleneGame.Core {
                 }
             }
             
-            entity.SetState<Sitting>();
-            ((Sitting)entity.state).seat = this;
+            SittingBehaviourBuilder builder = new SittingBehaviourBuilder();
+            builder.SetSeat(this);
+            
+            entity.SetState(builder);
         }
 
         public void StopSitting(){

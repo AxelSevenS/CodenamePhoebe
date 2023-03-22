@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3945214ea8ea05b4f97c2fc80ad1dc38, type: 3}
   m_Name: Erebus
   m_EditorClassIdentifier: 
-  displayName: Erebus
+  displayName: 
   description: 
-  _baseCostume: {fileID: 11400000, guid: a65383a7517fc97478cfb5437335986a, type: 2}
+  _baseCostume: {fileID: 11400000, guid: d5ec1e9e3d3967c4d94cd9bef418af32, type: 2}

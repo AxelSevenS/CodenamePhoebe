@@ -39,17 +39,7 @@ namespace SeleneGame.Core {
         }
 
 
-
-        protected override void Update() {
-
-            base.Update();
-
-            airEvadeMixer.Parameter = evadeMixer.Parameter;
-
-            if ( entity.onGround ) {
-                evadeCount = 1;
-            }
-        }
+        public GroundedEvadeBehaviour(Entity entity) : base(entity) {;}
 
 
         protected internal override void Evade(Vector3 direction) {
@@ -58,7 +48,7 @@ namespace SeleneGame.Core {
 
             evadeCount--;
                 
-            if (entity.state.gravityMultiplier > 0f) {
+            if (entity.behaviour.gravityMultiplier > 0f) {
 
                 Vector3 newVelocity = entity.rigidbody.velocity.NullifyInDirection( entity.gravityDown );
                 if (!entity.onGround){
@@ -79,6 +69,18 @@ namespace SeleneGame.Core {
                 airEvadeMixer.Events.OnEnd = () => {
                     airEvadeMixer.Stop();
                 };
+            }
+        }
+
+
+        public override void Update() {
+
+            base.Update();
+
+            airEvadeMixer.Parameter = evadeMixer.Parameter;
+
+            if ( entity.onGround ) {
+                evadeCount = 1;
             }
         }
     }

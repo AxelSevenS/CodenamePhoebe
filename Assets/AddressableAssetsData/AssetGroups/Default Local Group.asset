@@ -15,67 +15,10 @@ MonoBehaviour:
   m_GroupName: Default Local Group
   m_Data:
     m_SerializedData: []
-  m_GUID: 6773cbc2bd9e3ce4999ce45fc46b0d51
+  m_GUID: a6110ee8ed1ab264a85239645962e627
   m_SerializeEntries:
-  - m_GUID: 32c5215d78678094a90500600c9a8ab2
-    m_Address: GravityBike_Base
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - CharacterCostume
-  - m_GUID: 6dd8fd82761438340bc1eb5136cc90fe
-    m_Address: Selene_Test
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - CharacterCostume
-  - m_GUID: 88d05d19418b5cb4eb2b9561a0f90b20
-    m_Address: Nemesis_Base
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - WeaponCostume
-  - m_GUID: 993c489841ef0fd4d974e79a4d014409
-    m_Address: Selene_Base
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - CharacterCostume
-    - default
-  - m_GUID: f1c6cebfdf4f4554288c95a4539c3610
-    m_Address: Hypnos_Test
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - WeaponCostume
-  - m_GUID: 4fcb14e16ae7e7b4287ef3e8b382de17
-    m_Address: Unarmed_Base
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - WeaponCostume
-    - default
   - m_GUID: 90a75108e7f02254995325352304f9ca
     m_Address: Animations/Default/EvadeBack
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: 21ad36120dbd3b24bb132c4a717136bb
-    m_Address: Animations/Default/EvadeLeftAir
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: d15a071adc3f3104b90b004bcc29f33d
-    m_Address: Animations/Default/EvadeRightAir
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: 926a582c9fe460f4cbb84d08dfe8707e
-    m_Address: Animations/Default/SittingStop
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: f2c4fe228c9dc7f41afc4725a52d69c9
-    m_Address: Animations/Default/EvadeRight
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: 332d96930200bcf46ae530f563282828
-    m_Address: Animations/Default/EvadeFrontAir
     m_ReadOnly: 0
     m_SerializedLabels:
     - AnimationClip
@@ -84,43 +27,13 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - AnimationClip
-  - m_GUID: f62ae6a7c9f3e2b43bee07de6af94c5c
-    m_Address: Animations/Default/MoveSlowCycle
+  - m_GUID: 9d212d7716cb1d54998b6e6dbecfc26e
+    m_Address: Animations/Default/EvadeFront
     m_ReadOnly: 0
     m_SerializedLabels:
     - AnimationClip
-  - m_GUID: 27bc7cbf7da835145b259be83c88cf51
-    m_Address: Animations/Default/Land
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: 6751e25da1f65ee40987639fa39c6b4f
-    m_Address: Animations/Default/SittingCycle
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: 083563380751712408e43ab686cc88c8
-    m_Address: Animations/Default/MoveNormalStop
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: 18be4fda3d27ed44cb674cd68431c87a
-    m_Address: Animations/Default/MoveSlowStop
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: 38e94fd053ed91b4b9fc14c140ad37d5
-    m_Address: Animations/Default/MoveNormalStart
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: 395b06d4eaed1e547a4db40831e4c958
-    m_Address: Animations/Default/SittingStart
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: 899297eae2289ba4c99c00fa4db7c0a8
-    m_Address: Animations/Default/MoveNormalCycle
+  - m_GUID: 332d96930200bcf46ae530f563282828
+    m_Address: Animations/Default/EvadeFrontAir
     m_ReadOnly: 0
     m_SerializedLabels:
     - AnimationClip
@@ -129,68 +42,23 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - AnimationClip
-  - m_GUID: 9aeeaf386d122b04dbd9cbca73dd5504
-    m_Address: Animations/Default/MoveFastStart
+  - m_GUID: 21ad36120dbd3b24bb132c4a717136bb
+    m_Address: Animations/Default/EvadeLeftAir
     m_ReadOnly: 0
     m_SerializedLabels:
     - AnimationClip
-  - m_GUID: 5bc60c30f79ae9b42b657a87ca900b24
-    m_Address: Animations/Default/MoveFastCycle
+  - m_GUID: f2c4fe228c9dc7f41afc4725a52d69c9
+    m_Address: Animations/Default/EvadeRight
     m_ReadOnly: 0
     m_SerializedLabels:
     - AnimationClip
-  - m_GUID: 7be59d2ed3f91134689a0373b4bf095d
-    m_Address: Animations/Default/MoveSlowStart
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: cb0f4c4498fd109489e3551ac13e2eed
-    m_Address: Animations/Default/Jump
+  - m_GUID: d15a071adc3f3104b90b004bcc29f33d
+    m_Address: Animations/Default/EvadeRightAir
     m_ReadOnly: 0
     m_SerializedLabels:
     - AnimationClip
   - m_GUID: eb7ffb7e0504949409194d0777dd9057
     m_Address: Animations/Default/Fall
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: 9d212d7716cb1d54998b6e6dbecfc26e
-    m_Address: Animations/Default/EvadeFront
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: 1e777bfd61c6d50439a457227d20ca52
-    m_Address: Animations/Default/MoveFastStop
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: df2b8d40d251e574d8197ecd180fc025
-    m_Address: Animations/Default/Idle
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: 12d7a0995cc235949be3d0147d56661d
-    m_Address: Animations/GravityBike/SittingCycle
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: b4e6ba22baaae7e4fbc6851c8fedd58e
-    m_Address: Animations/GravityBike/SittingStartLeft
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: faa1b250b5ec67d42ab5c17519c50f39
-    m_Address: Animations/GravityBike/SittingStartRight
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: e89ff38ef543cde4caf3adea8a5a2255
-    m_Address: Animations/GravityBike/SittingStopLeft
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: c4d3dc2b69a36414e9c570806bdda997
-    m_Address: Animations/GravityBike/SittingStopRight
     m_ReadOnly: 0
     m_SerializedLabels:
     - AnimationClip
@@ -256,6 +124,21 @@ MonoBehaviour:
     - AnimationClip
   - m_GUID: 690c7438101ba974aab322ed6af05e37
     m_Address: Animations/Default/HeavySword/WalkingHeavySwordStop
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: df2b8d40d251e574d8197ecd180fc025
+    m_Address: Animations/Default/Idle
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: cb0f4c4498fd109489e3551ac13e2eed
+    m_Address: Animations/Default/Jump
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: 27bc7cbf7da835145b259be83c88cf51
+    m_Address: Animations/Default/Land
     m_ReadOnly: 0
     m_SerializedLabels:
     - AnimationClip
@@ -336,6 +219,66 @@ MonoBehaviour:
     - AnimationClip
   - m_GUID: 8faf6c39ae47c424a8622af6ed1ef838
     m_Address: Animations/Default/MaskWearRight
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: 5bc60c30f79ae9b42b657a87ca900b24
+    m_Address: Animations/Default/MoveFastCycle
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: 9aeeaf386d122b04dbd9cbca73dd5504
+    m_Address: Animations/Default/MoveFastStart
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: 1e777bfd61c6d50439a457227d20ca52
+    m_Address: Animations/Default/MoveFastStop
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: 899297eae2289ba4c99c00fa4db7c0a8
+    m_Address: Animations/Default/MoveNormalCycle
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: 38e94fd053ed91b4b9fc14c140ad37d5
+    m_Address: Animations/Default/MoveNormalStart
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: 083563380751712408e43ab686cc88c8
+    m_Address: Animations/Default/MoveNormalStop
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: f62ae6a7c9f3e2b43bee07de6af94c5c
+    m_Address: Animations/Default/MoveSlowCycle
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: 7be59d2ed3f91134689a0373b4bf095d
+    m_Address: Animations/Default/MoveSlowStart
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: 18be4fda3d27ed44cb674cd68431c87a
+    m_Address: Animations/Default/MoveSlowStop
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: 6751e25da1f65ee40987639fa39c6b4f
+    m_Address: Animations/Default/SittingCycle
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: 395b06d4eaed1e547a4db40831e4c958
+    m_Address: Animations/Default/SittingStart
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: 926a582c9fe460f4cbb84d08dfe8707e
+    m_Address: Animations/Default/SittingStop
     m_ReadOnly: 0
     m_SerializedLabels:
     - AnimationClip
@@ -534,17 +477,87 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - AnimationClip
+  - m_GUID: 12d7a0995cc235949be3d0147d56661d
+    m_Address: Animations/GravityBike/SittingCycle
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: b4e6ba22baaae7e4fbc6851c8fedd58e
+    m_Address: Animations/GravityBike/SittingStartLeft
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: faa1b250b5ec67d42ab5c17519c50f39
+    m_Address: Animations/GravityBike/SittingStartRight
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: e89ff38ef543cde4caf3adea8a5a2255
+    m_Address: Animations/GravityBike/SittingStopLeft
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: c4d3dc2b69a36414e9c570806bdda997
+    m_Address: Animations/GravityBike/SittingStopRight
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: bf7a8ef1468307a4a9a8de9112372277
+    m_Address: Attacks/Base
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - default
+    - GameObject
+    - Attacks
+  - m_GUID: 2d9be5b33d869ee4b9c289d335c718d3
+    m_Address: Attacks/FireSlashSmall
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - GameObject
+    - Attacks
+  - m_GUID: cd313caff2c2bc748a573e2cce861a9b
+    m_Address: Attacks/FireSlashStrong
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - GameObject
+    - Attacks
+  - m_GUID: 32c5215d78678094a90500600c9a8ab2
+    m_Address: GravityBike_Base
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - CharacterCostume
+  - m_GUID: 993c489841ef0fd4d974e79a4d014409
+    m_Address: Selene_Base
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - default
+    - CharacterCostume
+  - m_GUID: 6dd8fd82761438340bc1eb5136cc90fe
+    m_Address: Selene_Test
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - CharacterCostume
   - m_GUID: 01507fe7b51003a4ebc926fba9781970
     m_Address: Hypnos_Base
     m_ReadOnly: 0
     m_SerializedLabels:
     - WeaponCostume
-  - m_GUID: a65383a7517fc97478cfb5437335986a
-    m_Address: Erebus_Base
+  - m_GUID: f1c6cebfdf4f4554288c95a4539c3610
+    m_Address: Hypnos_Test
     m_ReadOnly: 0
     m_SerializedLabels:
-    - EidolonMaskCostume
+    - WeaponCostume
+  - m_GUID: 88d05d19418b5cb4eb2b9561a0f90b20
+    m_Address: Nemesis_Base
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - WeaponCostume
+  - m_GUID: 4fcb14e16ae7e7b4287ef3e8b382de17
+    m_Address: Unarmed_Base
+    m_ReadOnly: 0
+    m_SerializedLabels:
     - default
+    - WeaponCostume
   - m_GUID: 15f4e43bc39a90d47935e34a81aef004
     m_Address: GravityBike
     m_ReadOnly: 0
@@ -554,15 +567,15 @@ MonoBehaviour:
     m_Address: Selene
     m_ReadOnly: 0
     m_SerializedLabels:
-    - CharacterData
     - default
-  - m_GUID: d0e937fdec003f14fb4a76ba534978a3
-    m_Address: Nemesis
+    - CharacterData
+  - m_GUID: 64baa27970f036a4095a1ff04bdfb903
+    m_Address: Hypnos
     m_ReadOnly: 0
     m_SerializedLabels:
     - WeaponData
-  - m_GUID: 64baa27970f036a4095a1ff04bdfb903
-    m_Address: Hypnos
+  - m_GUID: d0e937fdec003f14fb4a76ba534978a3
+    m_Address: Nemesis
     m_ReadOnly: 0
     m_SerializedLabels:
     - WeaponData
@@ -570,29 +583,21 @@ MonoBehaviour:
     m_Address: Unarmed
     m_ReadOnly: 0
     m_SerializedLabels:
-    - WeaponData
     - default
-  - m_GUID: c50b13d7356941e419f821f0ceb1e12a
+    - WeaponData
+  - m_GUID: d5ec1e9e3d3967c4d94cd9bef418af32
+    m_Address: Erebus_Base
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - EidolonMaskCostume
+  - m_GUID: b00d13250c5955c4d9e8ff646130a19a
     m_Address: Erebus
     m_ReadOnly: 0
     m_SerializedLabels:
     - EidolonMaskData
-    - default
-  - m_GUID: bf7a8ef1468307a4a9a8de9112372277
-    m_Address: Attacks/Base
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-  - m_GUID: 2d9be5b33d869ee4b9c289d335c718d3
-    m_Address: Attacks/FireSlashSmall
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-  - m_GUID: cd313caff2c2bc748a573e2cce861a9b
-    m_Address: Attacks/FireSlashStrong
-    m_ReadOnly: 0
-    m_SerializedLabels: []
   m_ReadOnly: 0
-  m_Settings: {fileID: 11400000, guid: 9fff86865a633c0488e9533aaa0b59b1, type: 2}
+  m_Settings: {fileID: 11400000, guid: 7258e2e04bac10d46b4f8c1803b38751, type: 2}
   m_SchemaSet:
     m_Schemas:
-    - {fileID: 11400000, guid: cb6d2aa29a746264992842f0777ab990, type: 2}
-    - {fileID: 11400000, guid: 5d0bb99d7166a0340a20a72cab52b0ce, type: 2}
+    - {fileID: 11400000, guid: 97d1549f91fc390459060b927c0d237e, type: 2}
+    - {fileID: 11400000, guid: 91cd6651c618c9c46b64266b4a4b42d8, type: 2}

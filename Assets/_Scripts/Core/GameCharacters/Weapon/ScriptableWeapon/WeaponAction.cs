@@ -28,8 +28,8 @@ namespace SeleneGame.Core {
         [ScribeField(nameof(eventType), (int)WeaponActionType.EvadeAbsolute)]
         public Vector3 evadeDirection;
 
-        [ScribeField(nameof(eventType), (int)WeaponActionType.SetState)]
-        public string stateName;
+        // [ScribeField(nameof(eventType), (int)WeaponActionType.SetState)]
+        // public string stateName;
 
 
         public void Invoke(Weapon weapon) {
@@ -48,14 +48,14 @@ namespace SeleneGame.Core {
                 case WeaponActionType.ResetState:
                     weapon.armedEntity.ResetState();
                     break;
-                case WeaponActionType.SetState:
-                    try {
-                        Type stateType = Type.GetType(stateName, false, true);
-                        weapon.armedEntity.SetState(stateType);
-                    } catch (Exception e) {
-                        Debug.LogError(e);
-                    }
-                    break;
+                // case WeaponActionType.SetState:
+                //     try {
+                //         Type stateType = Type.GetType(stateName, false, true);
+                //         weapon.armedEntity.SetState(stateType);
+                //     } catch (Exception e) {
+                //         Debug.LogError(e);
+                //     }
+                //     break;
                 case WeaponActionType.Jump:
                     weapon.armedEntity.Jump();
                     break;
@@ -76,7 +76,7 @@ namespace SeleneGame.Core {
             PlayAnimation,
             PlaySound,
             ResetState,
-            SetState,
+            // SetState,
             Jump,
             EvadeRelative,
             EvadeAbsolute

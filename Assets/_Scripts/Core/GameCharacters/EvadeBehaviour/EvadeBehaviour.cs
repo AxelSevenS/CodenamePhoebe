@@ -17,7 +17,7 @@ namespace SeleneGame.Core {
         public TimeInterval timer;
 
         private CartesianMixerState _evadeMixer;
-        
+
         public float Time { get; protected set; }
         public float Speed { get; protected set; }
 
@@ -44,9 +44,30 @@ namespace SeleneGame.Core {
         }
 
 
+
+        public EvadeBehaviour(Entity entity) : base(entity) {;}
+
+
+
         protected internal override void HandleInput(PlayerEntityController contoller) {;}
 
-        protected virtual void Update() {
+
+        protected internal virtual void Evade(Vector3 direction) {
+
+            currentDirection = direction;
+            timer.SetDuration(entity.character.data.totalEvadeDuration);
+            Animation();
+        }
+
+        protected virtual void Animation() {
+            evadeMixer.Stop();
+            entity.animancer.Layers[0].Play(evadeMixer, 0.1f);
+            evadeMixer.Events.OnEnd = () => {
+                evadeMixer.Stop();
+            };
+        }
+
+        public override void Update() {
 
             // Debug.Log(entityState);
 
@@ -71,26 +92,11 @@ namespace SeleneGame.Core {
             entity.Displace( Speed * entity.character.data.evadeSpeed * currentDirection );
         }
 
-        protected virtual void LateUpdate() { 
+        public override void LateUpdate() { 
 
         }
 
-        protected virtual void FixedUpdate() {
-        }
-
-        protected internal virtual void Evade(Vector3 direction) {
-
-            currentDirection = direction;
-            timer.SetDuration(entity.character.data.totalEvadeDuration);
-            Animation();
-        }
-
-        protected virtual void Animation() {
-            evadeMixer.Stop();
-            entity.animancer.Layers[0].Play(evadeMixer, 0.1f);
-            evadeMixer.Events.OnEnd = () => {
-                evadeMixer.Stop();
-            };
+        public override void FixedUpdate() {
         }
     }
 }

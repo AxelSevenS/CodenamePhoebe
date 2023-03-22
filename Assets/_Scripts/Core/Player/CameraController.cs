@@ -35,13 +35,11 @@ namespace SeleneGame.Core {
         [SerializeField] private float verticalSmoothTime = 0.04f;
 
 
+        [SerializeField] private float verticalTime = 0f;
 
-        private CameraType cameraType => PlayerEntityController.current?.entity?.state?.cameraType ?? CameraType.ThirdPerson;
 
 
-        
-        private void UpdateCamera(){
-        }
+        private CameraType cameraType => PlayerEntityController.current?.entity?.behaviour?.cameraType ?? CameraType.ThirdPerson;
 
 
 
@@ -53,6 +51,9 @@ namespace SeleneGame.Core {
         private void Awake() {
             camera = Camera.main;
             cameraData ??= camera.GetComponent<UniversalAdditionalCameraData>();
+        }
+        private void Start() {
+            verticalTime = horizontalSmoothTime;
         }
 
 
@@ -70,10 +71,14 @@ namespace SeleneGame.Core {
 
 
 
-            float verticalSpeed = verticalSmoothTime;
+            // The camera's vertical movement gets faster as the player keeps moving vertically
 
-            if ( cameraType != CameraType.ThirdPersonGrounded )
-                verticalSpeed = horizontalSmoothTime;
+            // The camera's new vertical speed is based on the camera's current vertical velocity
+            float targetTime = Mathf.Lerp( verticalSmoothTime, horizontalSmoothTime, Mathf.Clamp01(verticalVelocity.sqrMagnitude) );
+            // Accelerate faster than decelerate
+            float transitionSpeed = targetTime > verticalTime ? 1.5f : 0.5f;
+            verticalTime = Mathf.Lerp( verticalTime, targetTime, transitionSpeed * GameUtility.timeDelta );
+
 
 
             Vector3 followPosition = PlayerEntityController.current.entity["head"].transform.position + cameraOriginPosition;
@@ -85,7 +90,7 @@ namespace SeleneGame.Core {
 
             Vector3 camVerticalPos = followPosition - camHorizontalPos;
             if ( delayedVerticalPosition != camVerticalPos)
-                delayedVerticalPosition = Vector3.SmoothDamp( delayedVerticalPosition, camVerticalPos, ref verticalVelocity, verticalSpeed );
+                delayedVerticalPosition = Vector3.SmoothDamp( delayedVerticalPosition, camVerticalPos, ref verticalVelocity, cameraType != CameraType.ThirdPersonGrounded ? horizontalSmoothTime : verticalTime );
 
             Vector3 delayedPosition = delayedHorizontalPosition + delayedVerticalPosition;
             // Vector3 delayedPosition = followPosition;
@@ -115,7 +120,6 @@ namespace SeleneGame.Core {
             Vector3 finalPos = delayedPosition + camPosition.normalized * cameraDistance;
             
             transform.position = finalPos;
-
         }
 
 

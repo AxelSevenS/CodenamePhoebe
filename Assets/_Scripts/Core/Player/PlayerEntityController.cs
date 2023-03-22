@@ -60,6 +60,10 @@ namespace SeleneGame.Core {
 
         private IInteractable GetInteractionCandidate(Collider[] buffer){
 
+            if ( entity.behaviour is SittingBehaviour sittingBehaviour && sittingBehaviour.seat.IsInteractable ) {
+                return sittingBehaviour.seat;
+            }
+
             if ( talking ) return null;
 
             const float interactionDistance = 7.5f;
@@ -150,7 +154,7 @@ namespace SeleneGame.Core {
             entity.HandleInput(this);
 
             Entity targetEntity = entity;
-            if (targetEntity.state is Sitting sittingState && sittingState.seat.seatEntity != null) {
+            if (targetEntity.behaviour is SittingBehaviour sittingState && sittingState.seat.seatEntity != null) {
                 targetEntity = sittingState.seat.seatEntity;
             }
 

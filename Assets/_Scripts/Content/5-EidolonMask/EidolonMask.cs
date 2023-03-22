@@ -17,7 +17,7 @@ namespace SeleneGame.Content {
 
         private const int maxGrabbables = 4;
 
-        public Stack<GrabbableObject> _grabbables = null;
+        public SerializableStack<GrabbableObject> _grabbables = null;
         private static readonly Vector3[] grabbedObjectPositions = new Vector3[maxGrabbables]{
             new Vector3(3.5f, 1.5f, 3f), 
             new Vector3(-3.5f, 1.5f, 3f), 
@@ -28,10 +28,9 @@ namespace SeleneGame.Content {
         private Quaternion _grabbedObjectRotation = Quaternion.identity;
 
 
-
-        public Stack<GrabbableObject> grabbables {
+        public SerializableStack<GrabbableObject> grabbables {
             get {
-                _grabbables ??= new Stack<GrabbableObject>(maxGrabbables);
+                _grabbables ??= new SerializableStack<GrabbableObject>(maxGrabbables);
                 return _grabbables;
             }
         }
@@ -117,6 +116,15 @@ namespace SeleneGame.Content {
 
 
         public override void Update() {
+            base.Update();
+
+            data?.MaskUpdate(this);
+
+            model?.Update();
+        }
+
+        public override void LateUpdate() {
+            base.LateUpdate();
 
             int index = 0;
             foreach (GrabbableObject grabbableObject in grabbables) {
@@ -128,20 +136,17 @@ namespace SeleneGame.Content {
                 grabbableObject.grabbable.grabTransform.position = Vector3.Lerp(grabbableObject.grabbable.grabTransform.position, targetPosition, 10f* GameUtility.timeDelta);
 
             }
-
-            data?.MaskUpdate(this);
-            base.Update();
-        }
-
-        public override void LateUpdate() {
                 
             data?.MaskUpdate(this);
+
             model?.LateUpdate();
         }
 
         public override void FixedUpdate() {
+            base.FixedUpdate();
 
             data?.MaskFixedUpdate(this);
+
             model?.FixedUpdate();
         }
 

@@ -34,6 +34,7 @@ namespace SeleneGame.Core {
             selectedData = EditorGUI.ObjectField(dataRect, selectedData, typeof(TData), false) as TData;
 
             if ( EditorGUI.EndChangeCheck() ) {
+                Undo.RecordObject(property.serializedObject.targetObject, "Change Costumable Data");
                 SetValue(property, selectedData);
             }
 
@@ -43,7 +44,7 @@ namespace SeleneGame.Core {
             if (targetCostumable != null) {
 
                 foldout = EditorGUI.Foldout(rectType, foldout, label, true);
-                if ( foldout) {
+                if (foldout) {
                     
                     EditorGUI.indentLevel++;
                     rectType.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
@@ -55,6 +56,7 @@ namespace SeleneGame.Core {
                     selectedCostume = EditorGUI.ObjectField(rectType, new GUIContent("Costume"), selectedCostume, typeof(TCostume), false) as TCostume;
 
                     if ( EditorGUI.EndChangeCheck() ) {
+                        Undo.RecordObject(property.serializedObject.targetObject, "Change Costumable Costume");
                         targetCostumable.SetCostume( selectedCostume ?? targetCostumable.data.baseCostume);
                     }
 

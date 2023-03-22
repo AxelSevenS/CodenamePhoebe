@@ -25,11 +25,11 @@ namespace SeleneGame.Content {
 
         public override float weight {
             get {
-                return character.data.weight * (weapons?.current?.data.weight ?? 1f);
+                return (character?.data?.weight ?? 1f) * (weapons?.current?.data.weight ?? 1f);
             }
         }
 
-        public override Type defaultState => typeof(Grounded);
+        public override Type defaultState => typeof(GroundedBehaviour);
 
 
         public override void HandleInput(PlayerEntityController controller) {
@@ -59,6 +59,9 @@ namespace SeleneGame.Content {
         protected override void EntityReset(){
             base.EntityReset();
             SetMask( null );
+        }
+
+        private void Awake() {
         }
 
         protected override void Update(){

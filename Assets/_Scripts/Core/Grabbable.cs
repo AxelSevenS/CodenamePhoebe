@@ -34,7 +34,7 @@ namespace SeleneGame.Core {
         }
         public void Throw(Vector3 direction) {
             Throw();
-            rb.AddForce(direction, ForceMode.Impulse);
+            rb.AddForce(direction, ForceMode.VelocityChange);
         }
 
 

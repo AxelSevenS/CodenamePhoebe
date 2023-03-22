@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6d90a471824d3649a8e28c15136d85d, type: 3}
   m_Name: Erebus_Base
   m_EditorClassIdentifier: 
-  _accessibleInGame: 1
+  accessibleInGame: 0
   portrait: {fileID: 0}
   displayName: Default Costume Name
   description: Default Costume Description
@@ -23,4 +23,4 @@ MonoBehaviour:
   disgustedPortrait: {fileID: 0}
   sadPortrait: {fileID: 0}
   happyPortrait: {fileID: 0}
-  model: {fileID: 919132149155446097, guid: 1b34dbce9c220834ea0acc399d122296, type: 3}
+  model: {fileID: 5074332062407804862, guid: 2ae8fe6e6b55ebf4bae00e625493cf50, type: 3}

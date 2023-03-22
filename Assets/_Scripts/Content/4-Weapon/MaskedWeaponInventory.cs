@@ -2,12 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-using SeleneGame.Core;
-
 using SevenGame.Utility;
 using System;
 
-namespace SeleneGame.Content {
+namespace SeleneGame.Core {
 
     [System.Serializable]
     public class MaskedWeaponInventory : WeaponInventory {
@@ -45,7 +43,7 @@ namespace SeleneGame.Content {
             Switch((int)WeaponIndex.primary);
         }
 
-        public override void Set(int index, WeaponData data, WeaponCostume costume = null){
+        public override void Set(int index, WeaponData data, Core.WeaponCostume costume = null){
             // weapon = Weapon.Initialize(weapon, entity, costume);
             // try {
                 switch (index) {
@@ -65,7 +63,7 @@ namespace SeleneGame.Content {
             //     Debug.LogError($"Error setting weapon at index {index} in WeaponInventory : {e.GetType()} : {e.Message}.");
             // }
 
-            void SetWeapon(ref Weapon weapon, WeaponIndex index, WeaponData data, WeaponCostume costume = null) {
+            void SetWeapon(ref Weapon weapon, WeaponIndex index, WeaponData data, Core.WeaponCostume costume = null) {
                 if (weapon == null)
                     defaultWeapon?.Hide();
                 else

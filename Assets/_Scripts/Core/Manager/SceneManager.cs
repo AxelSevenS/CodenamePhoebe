@@ -16,11 +16,10 @@ namespace SeleneGame.Core {
         private static Scene currentScene;
 
         private void Awake() {
-            // LoadScene("SampleScene");
+            LoadScene("SampleScene");
         }
 
         public static void LoadScene(string sceneName) {
-            Debug.Log(currentScene);
             if ( currentScene.IsValid() && currentScene.isLoaded )
                 UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync(currentScene);
 

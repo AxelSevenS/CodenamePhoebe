@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using SevenGame.Utility;
-using UnityEngine.ResourceManagement.AsyncOperations;
-using UnityEngine.AddressableAssets;
+
 using UnityEditor;
 
 namespace SeleneGame.Core {
@@ -78,15 +77,9 @@ namespace SeleneGame.Core {
         }
 
 
-        public virtual void Update() {
-            _model?.Update();
-        }
-        public virtual void LateUpdate() {
-            _model?.LateUpdate();
-        }
-        public virtual void FixedUpdate() {
-            _model?.FixedUpdate();
-        }
+        public virtual void Update() {;}
+        public virtual void LateUpdate() {;}
+        public virtual void FixedUpdate() {;}
     }
     
 }

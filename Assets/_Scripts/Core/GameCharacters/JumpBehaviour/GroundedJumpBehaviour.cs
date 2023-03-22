@@ -15,16 +15,18 @@ namespace SeleneGame.Core {
 
         public int jumpCount = 1;
 
-        private float fallInertia = 0f;
+        [SerializeField] private float fallInertia = 0f;
 
 
 
         public override bool canJump => base.canJump && entity.onGround.falseTimer < 0.2f && jumpCount > 0;
 
 
+        public GroundedJumpBehaviour(Entity entity) : base(entity) {;}
+
 
         protected internal override void HandleInput(PlayerEntityController contoller) {
-            fallGravityMultiplier = contoller.jumpInput ? 0.75f : 1f;
+            fallGravityMultiplier = contoller.jumpInput ? 0f : 1f;
         } 
 
 
@@ -35,7 +37,7 @@ namespace SeleneGame.Core {
             jumpCount--;
         }
 
-        private void LateUpdate() {
+        public override void Update() {
 
             if (entity.onGround) {
                 jumpCount = 1;
@@ -43,14 +45,17 @@ namespace SeleneGame.Core {
                 return;
             }
 
-            const float fallingMultiplier = 20f;
+
+            const float fallingMultiplier = 0.01f;
+            const float maxInertia = 25f;
+
+
+            fallInertia = Mathf.Lerp( fallInertia, entity.fallVelocity >= 0f ? 0f : fallingMultiplier * fallGravityMultiplier, 7f * GameUtility.timeDelta );
             
-            float floatingMultiplier = fallGravityMultiplier * entity.gravityMultiplier;
-            fallInertia = Mathf.Lerp( fallInertia, floatingMultiplier * entity.fallVelocity >= 0f ? 0f : fallingMultiplier, 3f * GameUtility.timeDelta );
+            // Add down inertia to the entity, only if it doesn't make it go faster than maxInertia.
+            float addedInertiaA = Mathf.Min( -entity.fallVelocity + (fallInertia * entity.gravityMultiplier), maxInertia ) - Mathf.Min( -entity.fallVelocity, maxInertia );
 
-            entity.Displace( fallInertia * entity.gravityDown );
-
-            // entity.rigidbody.AddForce( fallInertia * entity.gravityDown, ForceMode.Acceleration );
+            entity.inertia += addedInertiaA * entity.gravityDown;
         }
     }
 }

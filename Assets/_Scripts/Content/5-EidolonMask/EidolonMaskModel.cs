@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using SeleneGame.Core;
+
 using SevenGame.Utility;
 
 namespace SeleneGame.Content {

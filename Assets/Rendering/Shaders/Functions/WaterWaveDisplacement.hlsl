@@ -5,6 +5,8 @@ uniform float3 _WindDirection;
 
 static const half PI_CONST = 3.14159265359;
 
+#pragma target 5.0
+
 
 uniform StructuredBuffer<float4> _GerstnerWaves;
 
@@ -30,16 +32,6 @@ float3 GerstnerWave(float3 Position, float4 waveData, float Time) {
 }
 
 float3 WaveDisplacement(float3 Position, float Time){
-
-    // float4 waveA = float4(-1, 1, 0.15, 15);
-    // float4 waveB = float4(1, 1, 0.075, 30);
-    // float4 waveC = float4(-1, 0, 0.1, 20);
-    // float4 waveD = float4(1, 0, 0.05, 40);
-
-    // float3 displacement = GerstnerWave(Position, waveA, Time);
-    // displacement += GerstnerWave(Position, waveB, Time);
-    // displacement += GerstnerWave(Position, waveC, Time);
-    // displacement += GerstnerWave(Position, waveD, Time);
 
     float3 displacement = float3(0, 0, 0);
     for (int i = 0; i < (int)_GerstnerWaves.Length; i++){
@@ -89,24 +81,11 @@ float3 WaveDisplacement(float3 Position, float Time, out float3 tangent, out flo
     tangent = float3(1, 0, 0);
     binormal = float3(0, 0, 1);
 
-    // float4 waveA = float4(-1, 1, 0.15, 15);
-    // float4 waveB = float4(1, 1, 0.075, 30);
-    // float4 waveC = float4(-1, 0, 0.1, 20);
-    // float4 waveD = float4(1, 0, 0.05, 40);
-
-    // float3 displacement = GerstnerWave(Position, waveA, Time, tangent, binormal);
-    // displacement += GerstnerWave(Position, waveB, Time, tangent, binormal);
-    // displacement += GerstnerWave(Position, waveC, Time, tangent, binormal);
-    // displacement += GerstnerWave(Position, waveD, Time, tangent, binormal);
-
     float3 displacement = float3(0, 0, 0);
     for (int i = 0; i < (int)_GerstnerWaves.Length; i++){
         float4 waveData = _GerstnerWaves[i];
         displacement += GerstnerWave(Position, waveData, Time, tangent, binormal);
     }
-
-    // tangent = normalize(tangent);
-    // binormal = normalize(binormal);
 
     normal = normalize(cross(binormal, tangent));
 

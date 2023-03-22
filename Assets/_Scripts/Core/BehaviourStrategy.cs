@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,22 +6,43 @@ using UnityEngine;
 namespace SeleneGame.Core {
 
     [System.Serializable]
-    public abstract class BehaviourStrategy : MonoBehaviour {
+    public abstract class BehaviourStrategy : IDisposable {
+
+        private bool disposedValue;
 
 
-        private Entity _entity;
+        [SerializeField] protected Entity _entity;
 
+        public Entity entity => _entity;
 
-        public Entity entity {
-            get {
-                if (_entity == null)
-                    _entity = GetComponent<Entity>();
-                return _entity;
-            }
-            private set => _entity = value;
+        public BehaviourStrategy(Entity entity) {
+            _entity = entity;
         }
 
         protected internal abstract void HandleInput(PlayerEntityController contoller);
+
+
+        public virtual void Update() {;}
+        public virtual void LateUpdate() {;}
+        public virtual void FixedUpdate() {;}
         
+
+        protected void Dispose(bool disposing) {
+
+            if (!disposedValue) {
+                if (disposing)
+                    DisposeBehavior();
+
+                disposedValue = true;
+            }
+        }
+
+        protected virtual void DisposeBehavior() {
+        }
+
+        public void Dispose() {
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
     }
 }

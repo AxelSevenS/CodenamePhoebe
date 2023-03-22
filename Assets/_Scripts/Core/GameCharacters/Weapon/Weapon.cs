@@ -55,16 +55,25 @@ namespace SeleneGame.Core {
 
 
         public override void Update() {
-            data?.WeaponUpdate(this);
             base.Update();
+
+            data?.WeaponUpdate(this);
+
+            model?.Update();
         }
         public override void LateUpdate() {
+            base.LateUpdate();
+
             data?.WeaponLateUpdate(this);
-            base.Update();
+
+            model?.LateUpdate();
         }
         public override void FixedUpdate() {
+            base.FixedUpdate();
+
             data?.WeaponFixedUpdate(this);
-            base.Update();
+
+            model?.FixedUpdate();
         }
 
 

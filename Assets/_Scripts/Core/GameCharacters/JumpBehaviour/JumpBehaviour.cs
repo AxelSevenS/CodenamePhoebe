@@ -28,6 +28,8 @@ namespace SeleneGame.Core {
         }
 
 
+        public JumpBehaviour(Entity entity) : base(entity) {;}
+
 
         protected internal override void HandleInput(PlayerEntityController contoller) {;}
 
@@ -38,13 +40,12 @@ namespace SeleneGame.Core {
                 jumpState.Stop();
             };
 
-            Vector3 newVelocity = Vector3.ProjectOnPlane(entity.rigidbody.velocity, direction);
             float jumpHeight = entity.character.data.jumpHeight * entity.jumpMultiplier;
 
             Debug.Log($"Entity {entity.name} jumped with force : {jumpHeight}");
 
 
-            entity.rigidbody.velocity = newVelocity + (jumpHeight * direction);
+            entity.inertia = Vector3.ProjectOnPlane(entity.inertia, direction) + (jumpHeight * direction);
             cooldownTimer.SetDuration(0.4f);
 
         }

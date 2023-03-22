@@ -28,8 +28,8 @@ namespace SeleneGame.Core {
 
         public WeaponInventory(ArmedEntity entity) {
             _entity = entity;
-            _defaultWeapon = AddressablesUtils.GetDefaultAsset<WeaponData>().GetWeapon(entity);
-            _defaultWeapon.Display();
+            // _defaultWeapon = AddressablesUtils.GetDefaultAsset<WeaponData>().GetWeapon(entity);
+            _defaultWeapon?.Display();
         }
 
 

@@ -76,6 +76,18 @@ namespace SeleneGame.Core {
             );
         }
 
+        public static void GetAssets<T>(Action<T> callback, string key) {
+
+            AsyncOperationHandle<IList<T>> opHandle = Addressables.LoadAssetsAsync<T>(
+                key,
+                (asset) => {
+
+                    callback?.Invoke( asset );
+
+                }
+            );
+        }
+
     }
 
 }

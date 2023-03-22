@@ -7,12 +7,12 @@ EditorBuildSettings:
   m_Scenes:
   - enabled: 1
     path: Assets/Scenes/Persistent Scene.unity
-    guid: 34c00014b36024f41850d4a6fe4ebb23
+    guid: c7a1da71dd915b840b9cdb7d9542d398
+  - enabled: 1
+    path: Assets/Scenes/Test.unity
+    guid: 13b0681926bbf2d4d94601cca30c4949
   - enabled: 1
     path: Assets/Scenes/SampleScene.unity
-    guid: 18035afdae60eb644a5031b5190dbb50
+    guid: fa5196a0d9a87934dbef07d8063c779a
   m_configObjects:
-    com.unity.addressableassets: {fileID: 11400000, guid: 30963ce4b3d51cd4591f7ad544e480f6,
-      type: 2}
-    com.unity.input.settings: {fileID: 11400000, guid: a41c95f6bb2616247907994b28ca8ed1,
-      type: 2}
+    com.unity.addressableassets: {fileID: 11400000, guid: 53960a76ac43d9542a3a724372bf87b3, type: 2}
