@@ -78,10 +78,11 @@ namespace SeleneGame.Core.UI {
 
         private void GetEquippableCostumes() {
 
-            foreach ( CharacterCostumeCase costume in characterCostumes ) {
-                GameUtility.SafeDestroy(costume.gameObject);
+            if (characterCostumes == null) {
+                characterCostumes = new List<CharacterCostumeCase>();
+            } else if (characterCostumes.Count > 0) {
+                return;
             }
-            characterCostumes = new();
 
             // Get the Default Costume (corresponds to an empty slot, should be in the first space)
             CreateCharacterCostumeCase( currentCharacter.data.baseCostume );

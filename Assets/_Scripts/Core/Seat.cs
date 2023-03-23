@@ -91,6 +91,8 @@ namespace SeleneGame.Core {
             seatOccupant = entity;
             
             // Find the closest sitting pose
+            if (_sittingPoses.Count > 0)
+                currentSittingPose = _sittingPoses[0];
             foreach (SittingPose pose in _sittingPoses) {
                 float distanceToOldPosition = Vector3.Distance(transform.TransformPoint(currentSittingPose.position), seatOccupant.transform.position);
                 float distanceToCurrentPosition = Vector3.Distance(transform.TransformPoint(pose.position), seatOccupant.transform.position);

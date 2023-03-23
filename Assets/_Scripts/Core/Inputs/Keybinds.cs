@@ -31,9 +31,9 @@ namespace SeleneGame.Core {
 
         public static readonly InputActionMap playerMap = inputControls.Player.Get();
         public static readonly InputActionMap uiMap = inputControls.UI.Get();
-        #if UNITY_EDITOR
+        // #if UNITY_EDITOR
             public static readonly InputActionMap debugMap = inputControls.Debug.Get();
-        #endif
+        // #endif
 
 
         static Keybinds() {
@@ -142,16 +142,16 @@ namespace SeleneGame.Core {
         public static void EnableControls(){
             playerMap.Enable();
             uiMap.Enable();
-            #if UNITY_EDITOR
+            // #if UNITY_EDITOR
                 debugMap.Enable();
-            #endif
+            // #endif
         }
         public static void DisableControls(){
             playerMap.Disable();
             uiMap.Disable();
-            #if UNITY_EDITOR
+            // #if UNITY_EDITOR
                 debugMap.Disable();
-            #endif
+            // #endif
         }
 
 

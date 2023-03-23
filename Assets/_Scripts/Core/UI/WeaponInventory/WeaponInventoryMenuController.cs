@@ -54,11 +54,10 @@ namespace SeleneGame.Core.UI {
 
 
         private void GetEntityWeapons(){
-            weapons = new List<WeaponSlot>();
-            int childCount = weaponInventoryContainer.transform.childCount;
-            for (int i = 0; i < childCount; i++) {
-                Transform child = weaponInventoryContainer.transform.GetChild(0);
-                GameUtility.SafeDestroy(child.gameObject);
+            weapons?.Clear();
+            // Destroy all objects in the container
+            foreach (Transform child in weaponInventoryContainer.transform) {
+                Destroy(child.gameObject);
             }
 
             // if (PlayerEntityController.current.entity is ArmedEntity armed){

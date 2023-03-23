@@ -79,10 +79,11 @@ namespace SeleneGame.Core.UI {
 
         private void GetCharacters() {
 
-            foreach ( CharacterCase costume in characters ) {
-                GameUtility.SafeDestroy(costume.gameObject);
+            if (characters == null) {
+                characters = new List<CharacterCase>();
+            } else if (characters.Count > 0) {
+                return;
             }
-            characters = new();
 
             
             CreateCharacterCase(AddressablesUtils.GetDefaultAsset<CharacterData>());

@@ -80,7 +80,7 @@ namespace SeleneGame.Core.UI {
         }
 
         private void GetEntityWeapons(ArmedEntity armedEntity) {
-            equippedWeapons = new();
+            equippedWeapons.Clear();
             
             foreach ( Weapon weapon in armedEntity.weapons) {
                 equippedWeapons.Add(weapon);
@@ -89,10 +89,11 @@ namespace SeleneGame.Core.UI {
 
         private void GetAllAvailableWeapons() {
 
-            foreach ( WeaponCase weapon in weapons ) {
-                GameUtility.SafeDestroy(weapon.gameObject);
+            if (weapons == null) {
+                weapons = new List<WeaponCase>();
+            } else if (weapons.Count > 0) {
+                return;
             }
-            weapons = new();
 
             
             CreateWeaponCase(null);
