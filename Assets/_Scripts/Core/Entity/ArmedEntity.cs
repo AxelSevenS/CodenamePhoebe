@@ -20,7 +20,7 @@ namespace SeleneGame.Core {
 
 
 
-        public override float weight => weight * (weapons?.current?.data.weight ?? 1f); 
+        public override float weight => base.weight * (weapons?.current?.data.weight ?? 1f); 
 
         public WeaponInventory weapons {
             get {

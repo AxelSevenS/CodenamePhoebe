@@ -10,14 +10,12 @@ namespace SeleneGame.Content {
     [System.Serializable]
     public class VehicleBehaviour : EntityBehaviour {
 
-        private float _gravityMultiplier = 1f;
-
         private float moveSpeed;
         private Vector3 inputDirection;
 
 
 
-        public override float gravityMultiplier => _gravityMultiplier;
+        public override float gravityMultiplier => 1f;
         public override CameraController.CameraType cameraType => CameraController.CameraType.ThirdPersonGrounded;
 
         public override Vector3 direction => inputDirection;
@@ -52,9 +50,6 @@ namespace SeleneGame.Content {
 
             if (controller.jumpInput)
                 Jump();
-            
-            // If Jump input is pressed, slow down the fall.
-            _gravityMultiplier = controller.jumpInput ? 0.75f : 1f;
         }
 
 
@@ -108,11 +103,6 @@ namespace SeleneGame.Content {
 
 
             inputDirection = Vector3.zero;
-
-
-            if ( entity.onGround ) {
-                entity.rigidbody.velocity *= 0.995f;
-            }
 
             entity.Displace( moveSpeed * entity.absoluteForward );
 

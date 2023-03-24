@@ -96,11 +96,6 @@ namespace SeleneGame.Core {
             if ( controller.jumpInput )
                 Jump();
 
-
-            // if (controller.focusInput.trueTimer > Keybinds.HOLD_TIME){
-            //     entity.gravityDown = Vector3.down;
-            // }
-
         }
 
 
@@ -159,23 +154,11 @@ namespace SeleneGame.Core {
         }
         
 
-        private bool WaterHoverCheck() {
-            // foreach (RaycastHit collision in entity.rigidbody.SweepTestAll(entity.gravityDown, 0.2f, QueryTriggerInteraction.Ignore)) {
-
-            //     if (collision.collider.gameObject.layer == Global.WaterMask) {
-
-            //         entity.groundHit = collision;
-            //         entity.onGround.SetVal(true);
-            //         entity.rigidbody.velocity = entity.rigidbody.velocity.NullifyInDirection(entity.gravityDown);
-            //         return true;
-
-            //     }
-            // }
+        private bool WaterHover() {
 
             if ( entity.character.model.ColliderCast( Vector3.zero, entity.gravityDown, out RaycastHit hit, out _, 0.15f, Global.WaterMask ) ) {
                 entity.groundHit = hit;
                 entity.onGround.SetVal(true);
-                entity.rigidbody.velocity = entity.rigidbody.velocity.NullifyInDirection(entity.gravityDown);
                 return true;
             }
 
@@ -193,7 +176,7 @@ namespace SeleneGame.Core {
             
             // Hover over water as long as the entity is moving
             bool canWaterHover = entity.weightCategory == Entity.WeightCategory.Light && moveDirection.zeroTimer < 0.6f;
-            bool waterHover = canWaterHover && WaterHoverCheck();
+            bool waterHover = canWaterHover && WaterHover();
 
 
             bool canSwim = !waterHover && entity.weightCategory != Entity.WeightCategory.Heavy;
@@ -208,9 +191,9 @@ namespace SeleneGame.Core {
                 entity.absoluteForward = Vector3.Lerp( entity.absoluteForward, moveDirection, 100f * GameUtility.timeDelta);
 
                 
-            if ( entity.onGround ) {
-                entity.rigidbody.velocity *= 0.995f;
-            }
+            // if ( entity.onGround ) {
+            //     entity.rigidbody.velocity *= 0.995f;
+            // }
 
 
             if ( !_evadeBehaviour.state ){
@@ -236,6 +219,8 @@ namespace SeleneGame.Core {
             entity.Displace(entity.absoluteForward * moveSpeed);
 
             Animation();
+
+            moveDirection.SetVal(Vector3.zero);
             
         }
 

@@ -13,23 +13,10 @@ namespace SeleneGame.Content {
 
         [Header("Mask")]
         
-        [SerializeReference] /* [ReadOnly]  */protected EidolonMask _mask;
-
-        public bool focusing;
-
-        // private SpeedlinesEffect speedlines;
-        public float shiftEnergy = 0f;
+        [SerializeReference] protected EidolonMask _mask;
 
 
         public EidolonMask mask => _mask;
-
-        public override float weight {
-            get {
-                return (character?.data?.weight ?? 1f) * (weapons?.current?.data.weight ?? 1f);
-            }
-        }
-
-        public override Type defaultState => typeof(GroundedBehaviour);
 
 
         public override void HandleInput(PlayerEntityController controller) {

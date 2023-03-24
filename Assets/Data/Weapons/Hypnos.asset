@@ -18,3 +18,5 @@ MonoBehaviour:
   _weaponType: 12
   _weight: 0.5
   inputEvents: []
+  lightAttackEvents: []
+  heavyAttackEvents: []

@@ -6,7 +6,7 @@ using SevenGame.Utility;
 
 namespace SeleneGame.Core {
     
-    public class Seat : ObjectFollower, IInteractable{
+    public class Seat : ObjectFollower, IInteractable {
 
         protected const string SEAT_INTERACT_DESCRIPTION = "Sit Down";
 
@@ -17,13 +17,9 @@ namespace SeleneGame.Core {
         private Entity _seatEntity;
         public Entity seatOccupant;
 
-        [SerializeField] protected bool _affectCamera = false;
-
         [Space(15)]
         
         [SerializeField] private List<SittingPose> _sittingPoses = new List<SittingPose>();
-        
-        public SittingPose currentSittingPose { get; private set; }
 
 
 
@@ -38,25 +34,6 @@ namespace SeleneGame.Core {
             set => _seatEntity = value;
         }
 
-        public Vector3 sitPosition { 
-            get {
-                Vector3 seatOccupantUp = seatOccupant?.modelTransform.up ?? transform.up;
-                float seatOccupantSize = seatOccupant?.character.data.size.y/2f ?? 1.67f;
-
-                Transform seatTransform = seatEntity?.modelTransform ?? transform;
-
-                return seatTransform.TransformPoint(currentSittingPose.position) + (seatOccupantUp * seatOccupantSize);
-            }
-        }
-
-        public Quaternion sitRotation {
-            get {
-                Transform seatTransform = seatEntity?.modelTransform ?? transform;
-                return seatTransform.rotation * currentSittingPose.rotation;
-            }
-        }
-
-        public bool affectCamera => _affectCamera;
 
         protected virtual string seatedInteractionText => "";
 
@@ -66,11 +43,6 @@ namespace SeleneGame.Core {
 
         public virtual bool IsInteractable => !isSeated;
 
-
-
-        public void SetSittingPoses( IEnumerable<SittingPose> newPoses ) {
-            _sittingPoses = new List<SittingPose>(newPoses);
-        }
         
 
         public void Interact(Entity entity){
@@ -83,27 +55,48 @@ namespace SeleneGame.Core {
 
         protected virtual void SeatedInteract(Entity entity){;}
 
-    
-        private void StartSitting(Entity entity){
-            
-            StopSitting();
 
-            seatOccupant = entity;
-            
-            // Find the closest sitting pose
-            if (_sittingPoses.Count > 0)
-                currentSittingPose = _sittingPoses[0];
+        public void SetSittingPoses( IEnumerable<SittingPose> newPoses ) {
+            _sittingPoses = new List<SittingPose>(newPoses);
+        }
+
+        private SittingPose GetClosestPose(Entity entity) {
+
+            if (_sittingPoses.Count == 0)
+                return new SittingPose();
+
+            SittingPose currentSittingPose = _sittingPoses[0];
             foreach (SittingPose pose in _sittingPoses) {
-                float distanceToOldPosition = Vector3.Distance(transform.TransformPoint(currentSittingPose.position), seatOccupant.transform.position);
-                float distanceToCurrentPosition = Vector3.Distance(transform.TransformPoint(pose.position), seatOccupant.transform.position);
-                if (distanceToCurrentPosition < distanceToOldPosition){
+
+                if (currentSittingPose == pose)
+                    continue;
+
+                Transform referencePoint = seatEntity?.modelTransform ?? transform;
+
+                float currentDistance = Vector3.Distance(referencePoint.TransformPoint(currentSittingPose.position), entity.transform.position);
+                float newDistance = Vector3.Distance(referencePoint.TransformPoint(pose.position), entity.transform.position);
+                if (newDistance < currentDistance) {
                     currentSittingPose = pose;
                 }
             }
-            
+
+            return currentSittingPose;
+        }
+    
+
+        private void StartSitting(Entity entity) {
+
+            StopSitting();
+
+            seatOccupant = entity;
+
+            SittingPose pose = GetClosestPose(entity);
+
+
             SittingBehaviourBuilder builder = new SittingBehaviourBuilder();
             builder.SetSeat(this);
-            
+            builder.SetPose(pose);
+
             entity.SetState(builder);
         }
 
@@ -121,30 +114,42 @@ namespace SeleneGame.Core {
             FollowObject();
         }
 
-        private void OnDrawGizmosSelected(){
-            Gizmos.color = Color.blue;
-            Gizmos.DrawSphere(sitPosition, 0.3f);
-            Gizmos.DrawLine(transform.position, sitPosition);
-        }
-
-
 
         [System.Serializable]
         public struct SittingPose {
 
             public Vector3 position;
             public Quaternion rotation;
+            public bool affectCamera;
 
             public AnimationClip startAnimation;
             public AnimationClip loopAnimation;
             public AnimationClip endAnimation;
 
-            public SittingPose(Vector3 position, Quaternion rotation, AnimationClip startAnimation, AnimationClip loopAnimation, AnimationClip endAnimation){
+            public SittingPose(Vector3 position, Quaternion rotation, bool affectCamera, AnimationClip startAnimation, AnimationClip loopAnimation, AnimationClip endAnimation){
                 this.position = position;
                 this.rotation = rotation;
+                this.affectCamera = affectCamera;
                 this.startAnimation = startAnimation;
                 this.loopAnimation = loopAnimation;
                 this.endAnimation = endAnimation;
+            }
+
+            public static bool operator==(SittingPose pose1, SittingPose pose2){
+                return pose1.position == pose2.position && pose1.rotation == pose2.rotation && pose1.affectCamera == pose2.affectCamera;
+            }
+            public static bool operator!=(SittingPose pose1, SittingPose pose2){
+                return !(pose1 == pose2);
+            }
+            public override bool Equals(object obj){
+                if (obj == null || GetType() != obj.GetType())
+                    return false;
+
+                SittingPose pose = (SittingPose)obj;
+                return this == pose;
+            }
+            public override int GetHashCode(){
+                return base.GetHashCode();
             }
         }
 

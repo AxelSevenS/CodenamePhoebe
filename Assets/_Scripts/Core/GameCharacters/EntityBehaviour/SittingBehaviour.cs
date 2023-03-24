@@ -8,6 +8,7 @@ namespace SeleneGame.Core {
     public sealed class SittingBehaviour : EntityBehaviour {
 
         [SerializeField] private Seat _seat;
+        [SerializeField] private Seat.SittingPose _sittingPose;
         
 
         public Seat seat {
@@ -27,7 +28,7 @@ namespace SeleneGame.Core {
 
 
 
-        public SittingBehaviour(Entity entity, EntityBehaviour previousBehaviour, Seat seat) : base(entity, previousBehaviour) {
+        public SittingBehaviour(Entity entity, EntityBehaviour previousBehaviour, Seat seat, Seat.SittingPose sittingPose) : base(entity, previousBehaviour) {
 
             if (seat == null)
                 throw new System.ArgumentNullException("Seat cannot be null!");
@@ -35,6 +36,7 @@ namespace SeleneGame.Core {
             seat.StopSitting();
             _seat = seat;
             seat.seatOccupant = entity;
+            _sittingPose = sittingPose;
 
             entity.rigidbody.detectCollisions = false;
         }
@@ -53,8 +55,7 @@ namespace SeleneGame.Core {
             if ( controller.crouchInput.started )
                 seat.StopSitting();
 
-            if (seat.seatEntity != null)
-                seat.seatEntity.behaviour.HandleInput(controller);
+            seat?.seatEntity?.behaviour?.HandleInput(controller);
         }
 
 
@@ -70,14 +71,23 @@ namespace SeleneGame.Core {
 
         public override void LateUpdate(){
 
+            // TODO : Find a way to make sure the seat has moved before this is called.
+            // This is sometimes called before the seat has actually moved, causing jitter when sitting on a moving object.
+            // e.g. VehicleEntities. 
+
             base.LateUpdate();
+
+            Transform seatTransform = seat.seatEntity?.modelTransform ?? seat.transform;
+
+            Vector3 sitPosition = seatTransform.TransformPoint(_sittingPose.position) + (entity.modelTransform.up * entity.character.data.size.y/2f);
+            Quaternion sitRotation = seatTransform.rotation * _sittingPose.rotation;
             
-            if (seat.affectCamera) {
-                entity.transform.SetPositionAndRotation(seat.sitPosition, seat.sitRotation);
+            if (_sittingPose.affectCamera) {
+                entity.transform.SetPositionAndRotation(sitPosition, sitRotation);
             } else {
-                entity.transform.position = seat.sitPosition;
+                entity.transform.position = sitPosition;
             }
-            entity.character.model.RotateTowards(seat.sitRotation, Mathf.Infinity);
+            entity.character.model.RotateTowards(sitRotation, Mathf.Infinity);
             entity.absoluteForward = entity.transform.forward;
         }
     }

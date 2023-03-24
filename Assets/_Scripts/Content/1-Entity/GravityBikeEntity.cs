@@ -14,7 +14,6 @@ namespace SeleneGame.Content {
 
 
 
-        public override Type defaultState => typeof(VehicleBehaviour);
         public Seat seat {
             get {
                 if (_seat == null) {
@@ -38,7 +37,11 @@ namespace SeleneGame.Content {
                 seat.SetSittingPoses(vehicle.sittingPoses);
             }
         }
-        
+
+        public override void ResetState() {
+            VehicleBehaviourBuilder builder = new VehicleBehaviourBuilder();
+            SetState(builder);
+        }
 
         public override void SetStyle(int style){;}
 

@@ -194,14 +194,6 @@ namespace SeleneGame.Core {
             }
         }
 
-        /// <summary>
-        /// The default state Type of the entity.
-        /// </summary>
-        /// <remarks>
-        /// The Entity state is set to this when it is first created, or when using <see cref="ResetState"/>.
-        /// </remarks>
-        public virtual System.Type defaultState => typeof(GroundedBehaviour); 
-
 
         /// <summary>
         /// The forward direction in absolute space of the Entity.
@@ -627,7 +619,9 @@ namespace SeleneGame.Core {
             transform.rotation = Quaternion.identity;
             absoluteForward = transform.forward;
             rigidbody.useGravity = false;
+            rigidbody.isKinematic = true;
             rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
+            rigidbody.interpolation = RigidbodyInterpolation.None;
 
             if (character == null) {
                 Debug.LogError($"Entity {name} has no Character assigned!", this);
