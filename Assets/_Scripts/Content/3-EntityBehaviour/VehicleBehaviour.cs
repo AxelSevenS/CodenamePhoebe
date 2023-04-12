@@ -64,9 +64,6 @@ namespace SeleneGame.Content {
         protected override void Evade(Vector3 direction) {
             base.Evade(direction);
         }
-        protected override void Parry() {
-            base.Parry();
-        }
         protected override void LightAttack() {
             base.LightAttack();
         }
@@ -78,9 +75,6 @@ namespace SeleneGame.Content {
         }
 
 
-        protected override void ParryAction() {
-            base.ParryAction();
-        }
         protected override void LightAttackAction() {
             base.LightAttackAction();
         }
@@ -101,9 +95,6 @@ namespace SeleneGame.Content {
             if (inputDirection.sqrMagnitude != 0f)
                 entity.absoluteForward = Vector3.Slerp(entity.absoluteForward, inputDirection, GameUtility.timeDelta * 3f).normalized;
 
-
-            inputDirection = Vector3.zero;
-
             entity.Displace( moveSpeed * entity.absoluteForward );
 
             
@@ -115,6 +106,9 @@ namespace SeleneGame.Content {
             Vector3 finalForward = Vector3.Cross(finalUp, rightDir);
 
             entity.character.model.RotateTowards(finalForward, finalUp);
+
+
+            inputDirection = Vector3.zero;
 
         }
     }

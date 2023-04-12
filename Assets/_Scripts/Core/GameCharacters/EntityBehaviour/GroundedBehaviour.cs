@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using SeleneGame.Core.UI;
 
+using Animancer;
+
 using SevenGame.Utility;
+using System;
 
 namespace SeleneGame.Core {
     
@@ -50,15 +53,27 @@ namespace SeleneGame.Core {
             _evadeBehaviour = new GroundedEvadeBehaviour(entity);
             _jumpBehaviour = new GroundedJumpBehaviour(entity);
 
+            AnimationInitialize();
+
             IdleAnimation();
 
             if (previousBehaviour == null) return;
 
             Move(previousBehaviour.direction);
             moveSpeed = previousBehaviour.speed;
-        }
-        
 
+            entity.onSetCharacter += OnSetCharacter;
+        }
+
+        protected override void DisposeBehavior() {
+            base.DisposeBehavior();
+            
+            entity.onSetCharacter -= OnSetCharacter;
+        }
+
+        private void OnSetCharacter(Character character) {
+            AnimationInitialize();
+        }
 
         protected internal override void HandleInput(PlayerEntityController controller){
 
@@ -90,8 +105,9 @@ namespace SeleneGame.Core {
             if ( controller.evadeInput.Tapped() )
                 Evade(evadeDirection);
 
-            if ( KeyInputData.SimultaneousTap( controller.lightAttackInput, controller.heavyAttackInput ) )
-                Parry();
+            // if ( KeyInputData.SimultaneousTap( controller.lightAttackInput, controller.heavyAttackInput ) ){
+            //     // parry
+            // }
                 
             if ( controller.jumpInput )
                 Jump();
@@ -107,9 +123,6 @@ namespace SeleneGame.Core {
         }
         protected internal override void Evade(Vector3 direction) {
             base.Evade(direction);
-        }
-        protected internal override void Parry() {
-            base.Parry();
         }
         protected internal override void LightAttack() {
             base.LightAttack();
@@ -133,13 +146,6 @@ namespace SeleneGame.Core {
             movementSpeed = speed;
         }
 
-        protected override void ParryAction() {
-            base.ParryAction();
-
-            // if ( entity is ArmedEntity armed ) {
-            //     armed.Parry();
-            // }
-        }
         protected override void LightAttackAction() {
             base.LightAttackAction();
             if ( entity is ArmedEntity armed ) {
@@ -183,12 +189,12 @@ namespace SeleneGame.Core {
             float distanceToWaterSurface = entity.physicsComponent.totalWaterHeight - entity.transform.position.y;
             
             if ( entity.inWater && canSwim && distanceToWaterSurface > 0f ) {
-                entity.SetState( new SwimmingBehaviourBuilder() );
+                entity.SetBehaviour( SwimmingBehaviourBuilder.Default );
             }
 
 
             if ( moveDirection.sqrMagnitude != 0f )
-                entity.absoluteForward = Vector3.Lerp( entity.absoluteForward, moveDirection, 100f * GameUtility.timeDelta);
+                entity.absoluteForward = Vector3.Lerp( entity.absoluteForward, moveDirection, 100f * GameUtility.timeDelta).normalized;
 
                 
             // if ( entity.onGround ) {
@@ -216,9 +222,9 @@ namespace SeleneGame.Core {
             // Evade movement restricts the Walking movement.
             moveSpeed *= Mathf.Max(1 - _evadeBehaviour.Speed, 0.05f);
 
-            entity.Displace(entity.absoluteForward * moveSpeed);
-
             Animation();
+
+            entity.Displace(entity.absoluteForward * moveSpeed);
 
             moveDirection.SetVal(Vector3.zero);
             

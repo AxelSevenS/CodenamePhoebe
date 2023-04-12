@@ -8,6 +8,7 @@ using SevenGame.Utility;
 
 namespace SeleneGame.Core {
     
+    [DefaultExecutionOrder(-1000)]
     public class SceneManager : Singleton<SceneManager> {
         private void OnEnable() {
             SetCurrent();

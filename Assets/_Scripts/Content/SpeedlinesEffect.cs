@@ -19,7 +19,6 @@ namespace SeleneGame {
             followedObject = newTarget;
             if ( newTarget.TryGetComponent<Entity>(out Entity entityComponent) ){
                 entity = entityComponent;
-                name = entity.name + name.Replace("(Clone)", "");
             }
         }
 

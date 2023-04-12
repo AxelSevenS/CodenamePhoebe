@@ -6,6 +6,7 @@ using UnityEngine;
 namespace SeleneGame.Core {
 
     [ExecuteAlways]
+    [DefaultExecutionOrder(-1000)]
     public class WaterManager : Singleton<WaterManager> {
         
         private static List<IWaterDisplaceable> waterDisplaceables = new List<IWaterDisplaceable>();

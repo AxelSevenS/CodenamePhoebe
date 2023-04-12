@@ -7,6 +7,7 @@ using SevenGame.Utility;
 
 namespace SeleneGame.Core {
 
+    [DefaultExecutionOrder(-1000)]
     public class EntityManager : Singleton<EntityManager> {
 
         public AnimationCurve evadeCurve;

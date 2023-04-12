@@ -6,25 +6,14 @@ using SeleneGame.Core;
 
 namespace SeleneGame.Content {
 
+    // Default Order Execution is used to ensure the vehicle updates its position before any seated entity
+    // preventing jitter while moving.
+    [DefaultExecutionOrder(-10)]
     [RequireComponent(typeof(Seat))]
     public sealed class GravityBikeEntity : Entity {
 
 
-        [SerializeField]private Seat _seat;
-
-
-
-        public Seat seat {
-            get {
-                if (_seat == null) {
-                    _seat = GetComponent<Seat>();
-
-                    seat.seatEntity = this;
-                    SetSittingPoses();
-                }
-                return _seat;
-            }
-        }
+        [SerializeField] private Seat _seat;
 
 
         public override void SetCharacter(CharacterData characterData, CharacterCostume costume = null) {
@@ -34,21 +23,26 @@ namespace SeleneGame.Content {
 
         private void SetSittingPoses() {
             if (character is VehicleCharacter vehicle) {
-                seat.SetSittingPoses(vehicle.sittingPoses);
+                _seat.SetSittingPoses(vehicle.sittingPoses);
             }
         }
 
-        public override void ResetState() {
-            VehicleBehaviourBuilder builder = new VehicleBehaviourBuilder();
-            SetState(builder);
+        public override void ResetBehaviour() {
+            SetBehaviour(VehicleBehaviourBuilder.Default);
         }
 
         public override void SetStyle(int style){;}
 
 
+        private void Awake() {
+            _seat = GetComponent<Seat>();
+
+            _seat.seatEntity = this;
+            SetSittingPoses();
+        }
+
         protected override void Start() {
             base.Start();
-            // rigidbody.constraints = RigidbodyConstraints.None;
         }
     }
 }

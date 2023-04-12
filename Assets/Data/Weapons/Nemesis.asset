@@ -37,7 +37,6 @@ MonoBehaviour:
       damageZoneScale: {x: 1, y: 1, z: 1}
       parentToEntity: 1
       evadeDirection: {x: 0, y: 0, z: 0}
-      stateName: 
   heavyAttackEvents:
   - conditions:
       condition:
@@ -55,4 +54,3 @@ MonoBehaviour:
       damageZoneScale: {x: 1, y: 1, z: 1}
       parentToEntity: 0
       evadeDirection: {x: 0, y: 0, z: 0}
-      stateName: 

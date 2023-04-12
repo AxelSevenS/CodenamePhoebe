@@ -14,25 +14,12 @@ namespace SeleneGame.Core {
 
         [Space(15)]
 
-        private Entity _seatEntity;
         public Entity seatOccupant;
+        public Entity seatEntity;
 
         [Space(15)]
         
         [SerializeField] private List<SittingPose> _sittingPoses = new List<SittingPose>();
-
-
-
-
-        public Entity seatEntity {
-            get {
-                if (_seatEntity == null) {
-                    _seatEntity = GetComponent<Entity>();
-                }
-                return _seatEntity;
-            }
-            set => _seatEntity = value;
-        }
 
 
         protected virtual string seatedInteractionText => "";
@@ -97,20 +84,22 @@ namespace SeleneGame.Core {
             builder.SetSeat(this);
             builder.SetPose(pose);
 
-            entity.SetState(builder);
+            entity.SetBehaviour(builder);
         }
 
         public void StopSitting(){
 
             if (!isSeated) return;
 
-            seatOccupant.ResetState();
+            seatOccupant.ResetBehaviour();
         }
 
 
+        private void Awake() {
+            seatEntity = GetComponent<Entity>();
+        }
 
-
-        private void Update(){
+        private void Update() {
             FollowObject();
         }
 

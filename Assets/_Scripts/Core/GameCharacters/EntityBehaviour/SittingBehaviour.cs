@@ -62,18 +62,13 @@ namespace SeleneGame.Core {
         protected internal override void Move(Vector3 direction) {;}
         protected internal override void Jump() {;}
         protected internal override void Evade(Vector3 direction) {;}
-        protected internal override void Parry() {;}
         protected internal override void LightAttack() {;}
         protected internal override void HeavyAttack() {;}
         protected internal override void SetSpeed(Entity.MovementSpeed speed) {;}
         
 
 
-        public override void LateUpdate(){
-
-            // TODO : Find a way to make sure the seat has moved before this is called.
-            // This is sometimes called before the seat has actually moved, causing jitter when sitting on a moving object.
-            // e.g. VehicleEntities. 
+        public override void LateUpdate() {
 
             base.LateUpdate();
 

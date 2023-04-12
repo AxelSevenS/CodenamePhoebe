@@ -33,5 +33,9 @@ namespace SeleneGame.Core {
                 weaponEvent.Invoke(weapon);
             }
         }
+
+        public override Weapon GetWeapon(ArmedEntity entity, WeaponCostume costume = null) {
+            return new Weapon(entity, this, costume);
+        }
     }
 }

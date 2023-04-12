@@ -12,12 +12,7 @@ namespace SeleneGame.Content {
 
     public class EidolonMask : Costumable<EidolonMaskData, EidolonMaskCostume, EidolonMaskModel> {
 
-
-        [SerializeField] [ReadOnly] private MaskedEntity _maskedEntity;
-
         private const int maxGrabbables = 4;
-
-        public SerializableStack<GrabbableObject> _grabbables = null;
         private static readonly Vector3[] grabbedObjectPositions = new Vector3[maxGrabbables]{
             new Vector3(3.5f, 1.5f, 3f), 
             new Vector3(-3.5f, 1.5f, 3f), 
@@ -25,15 +20,13 @@ namespace SeleneGame.Content {
             new Vector3(-2.5f, 2.5f, 3f)
         };
 
+
+        [SerializeField] [ReadOnly] private MaskedEntity _maskedEntity;
+
+        public SerializableStack<GrabbableObject> _grabbables = null;
+
         private Quaternion _grabbedObjectRotation = Quaternion.identity;
 
-
-        public SerializableStack<GrabbableObject> grabbables {
-            get {
-                _grabbables ??= new SerializableStack<GrabbableObject>(maxGrabbables);
-                return _grabbables;
-            }
-        }
         public MaskedEntity maskedEntity => _maskedEntity;
 
 
@@ -42,6 +35,8 @@ namespace SeleneGame.Content {
             _maskedEntity = maskedEntity;
             displayed = true;
             SetCostume(costume);
+            
+            _grabbables = new SerializableStack<GrabbableObject>(maxGrabbables);
         }
 
 
@@ -81,11 +76,11 @@ namespace SeleneGame.Content {
                 Throw();
             }
 
-            if ( grabbables.Count < maxGrabbables && controller.focusInput.trueTimer > 0.25f ) {
+            if ( _grabbables.Count < maxGrabbables && controller.focusInput.trueTimer > 0.25f ) {
 
                 Collider[] colliders = Physics.OverlapSphere(_maskedEntity.transform.position, 10f, LayerMask.GetMask("EntityObject"));
                 foreach (Collider collider in colliders) {
-                    if ( grabbables.Count >= maxGrabbables ) break;
+                    if ( _grabbables.Count >= maxGrabbables ) break;
 
                     if ( collider.TryGetComponent(out IGrabbable grabbable) ) {
                         Grab( new GrabbableObject(grabbable) );
@@ -97,20 +92,20 @@ namespace SeleneGame.Content {
         
         
         public void Grab(GrabbableObject grabbableObject){
-            if (grabbables.Count >= maxGrabbables) return;
+            if (_grabbables.Count >= maxGrabbables) return;
             
             grabbableObject.grabbable.Grab();
-            grabbables.Push(grabbableObject);
+            _grabbables.Push(grabbableObject);
             
         }
 
         public void Throw(){
 
-            if ( !grabbables.TryPeek(out GrabbableObject grabbableObject) ) return;
+            if ( !_grabbables.TryPeek(out GrabbableObject grabbableObject) ) return;
 
             Vector3 direction = _grabbedObjectRotation * Vector3.forward;
             grabbableObject.grabbable.Throw( direction * 75f );
-            grabbables.Pop();
+            _grabbables.Pop();
         }
 
 
@@ -127,7 +122,7 @@ namespace SeleneGame.Content {
             base.LateUpdate();
 
             int index = 0;
-            foreach (GrabbableObject grabbableObject in grabbables) {
+            foreach (GrabbableObject grabbableObject in _grabbables) {
 
                 Quaternion newRotation = grabbableObject.grabbable.grabTransform.rotation * grabbableObject.randomSpin;
                 grabbableObject.grabbable.grabTransform.rotation = Quaternion.Slerp(grabbableObject.grabbable.grabTransform.rotation, newRotation, 3f * GameUtility.timeDelta) ;

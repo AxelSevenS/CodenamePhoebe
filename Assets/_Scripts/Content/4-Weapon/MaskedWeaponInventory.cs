@@ -123,6 +123,25 @@ namespace SeleneGame.Core {
         }
 
 
+        public override void Update() {
+            primaryWeapon?.Update();
+            secondaryWeapon?.Update();
+            tertiaryWeapon?.Update();
+        }
+
+        public override void LateUpdate() {
+            primaryWeapon?.LateUpdate();
+            secondaryWeapon?.LateUpdate();
+            tertiaryWeapon?.LateUpdate();
+        }
+
+        public override void FixedUpdate() {
+            primaryWeapon?.FixedUpdate();
+            secondaryWeapon?.FixedUpdate();
+            tertiaryWeapon?.FixedUpdate();
+        }
+
+
         private enum WeaponIndex { primary = 0, secondary = 1, tertiary = 2 }
     }
 }

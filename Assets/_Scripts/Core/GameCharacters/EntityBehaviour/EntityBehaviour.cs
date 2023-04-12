@@ -65,16 +65,11 @@ namespace SeleneGame.Core {
             if (true)
                 HeavyAttackAction();
         }
-        protected internal virtual void Parry() {
-            if (canParry)
-                ParryAction();
-        }
         protected internal abstract void SetSpeed(Entity.MovementSpeed speed);
 
 
         protected virtual void LightAttackAction() {;}
         protected virtual void HeavyAttackAction() {;}
-        protected virtual void ParryAction() {;}
 
 
         public override void Update() {

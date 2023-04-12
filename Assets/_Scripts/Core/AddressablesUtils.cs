@@ -22,6 +22,7 @@ namespace SeleneGame.Core {
             return GetDefaultAsset<T>();
 
         }
+    
         public static T GetDefaultAsset<T>() {
 
             AsyncOperationHandle<T> opHandle = Addressables.LoadAssetAsync<T>( "default" );

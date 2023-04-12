@@ -9,6 +9,7 @@ using SevenGame.Utility;
 
 namespace SeleneGame.Core {
     
+    [DefaultExecutionOrder(50)]
     public class CameraController : Singleton<CameraController>{
 
         public new Camera camera;
@@ -85,15 +86,16 @@ namespace SeleneGame.Core {
 
             // Make The Camera Movement slower on the Y axis than on the X axis
             Vector3 camHorizontalPos = Vector3.ProjectOnPlane( followPosition, PlayerEntityController.current.entity.gravityDown );
+            // delayedHorizontalPosition = camHorizontalPos;
             if ( delayedHorizontalPosition != camHorizontalPos)
-                delayedHorizontalPosition = Vector3.SmoothDamp( delayedHorizontalPosition, camHorizontalPos, ref horizontalVelocity, horizontalSmoothTime );
+                delayedHorizontalPosition = Vector3.SmoothDamp( delayedHorizontalPosition, camHorizontalPos, ref horizontalVelocity, horizontalSmoothTime, Mathf.Infinity, Time.deltaTime );
 
             Vector3 camVerticalPos = followPosition - camHorizontalPos;
+            // delayedVerticalPosition = camVerticalPos;
             if ( delayedVerticalPosition != camVerticalPos)
                 delayedVerticalPosition = Vector3.SmoothDamp( delayedVerticalPosition, camVerticalPos, ref verticalVelocity, cameraType != CameraType.ThirdPersonGrounded ? horizontalSmoothTime : verticalTime );
 
             Vector3 delayedPosition = delayedHorizontalPosition + delayedVerticalPosition;
-            // Vector3 delayedPosition = followPosition;
 
 
 

@@ -82,12 +82,14 @@ namespace SeleneGame.Content {
 
 
             relativePos = Vector3.Lerp(relativePos, onRight ? rightPosition : leftPosition, 3f * GameUtility.timeDelta);
+            // relativePos = onRight ? rightPosition : leftPosition;
 
             if (!onFace && (positionBlocked(relativePos)))
                 onRight = !onRight;
 
 
             hoveringPosition = Vector3.Lerp(hoveringPosition, mask.maskedEntity.modelTransform.position + relativePos, 15f * Time.deltaTime);
+            // hoveringPosition = mask.maskedEntity.modelTransform.position + relativePos;
             
             maskPosT = Mathf.MoveTowards(maskPosT, (onFace ? 1f : 0f), 4f * GameUtility.timeDelta);
 

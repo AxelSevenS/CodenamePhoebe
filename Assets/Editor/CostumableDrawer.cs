@@ -14,6 +14,8 @@ namespace SeleneGame.Core {
         private bool foldout = false;
         protected TCostumable targetCostumable;
 
+        protected virtual bool nullSensitive => false;
+
 
             
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {
@@ -32,6 +34,10 @@ namespace SeleneGame.Core {
 
             TData selectedData = targetCostumable?.data ?? null;
             selectedData = EditorGUI.ObjectField(dataRect, selectedData, typeof(TData), false) as TData;
+
+            if ( nullSensitive && selectedData == null ) {
+                EditorGUILayout.HelpBox(message: $"No {typeof(TData).Name} selected. This might break things.", MessageType.Error);
+            }
 
             if ( EditorGUI.EndChangeCheck() ) {
                 Undo.RecordObject(property.serializedObject.targetObject, "Change Costumable Data");

@@ -39,14 +39,20 @@ namespace SeleneGame.Core {
                     Quaternion rotation = weapon.armedEntity.modelTransform.rotation * damageZoneRotation;
                     Vector3 scale = damageZoneScale;
                     Transform parent = parentToEntity ? weapon.armedEntity.transform : null;
-                    DamageZone.Create(weapon.armedEntity, attackName, position, rotation, scale, parent);
+                    Action<DamageZone> modifier = (zone) => {
+                        zone.transform.SetParent(parent);
+                        zone.transform.position = position;
+                        zone.transform.rotation = rotation;
+                        zone.transform.localScale = Vector3.Scale(zone.transform.localScale, scale);
+                    };
+                    DamageZone.Create(weapon.armedEntity, attackName, modifier);
                     break;
                 case WeaponActionType.PlayAnimation:
                     break;
                 case WeaponActionType.PlaySound:
                     break;
                 case WeaponActionType.ResetState:
-                    weapon.armedEntity.ResetState();
+                    weapon.armedEntity.ResetBehaviour();
                     break;
                 // case WeaponActionType.SetState:
                 //     try {

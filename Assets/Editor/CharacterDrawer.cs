@@ -7,6 +7,10 @@ namespace SeleneGame.Core {
     [CustomPropertyDrawer(typeof(Character), true)]
     public class CharacterDrawer : CostumableDrawer<Character, CharacterData, CharacterCostume, CharacterModel> {
 
+        protected override bool nullSensitive => true;
+
+        
+
         public override void SetValue(SerializedProperty property, CharacterData data) {
 
             ((Character)property.managedReferenceValue)?.Dispose();

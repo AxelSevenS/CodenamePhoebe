@@ -48,9 +48,6 @@ namespace SeleneGame.Content {
             SetMask( null );
         }
 
-        private void Awake() {
-        }
-
         protected override void Update(){
             base.Update();
 

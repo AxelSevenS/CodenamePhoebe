@@ -76,6 +76,8 @@ namespace SeleneGame.Core {
         public event Action<float, DamageType> onDamaged;
         public event Action onDeath;
 
+        public event Action<Character> onSetCharacter;
+
 
     
         [Header("Gravity")]
@@ -89,7 +91,8 @@ namespace SeleneGame.Core {
         public BoolData onGround;
 
         public RaycastHit groundHit;
-        
+        private Transform anchorTransform;
+
         public event Action<Vector3> onJump;
         public event Action<Vector3> onEvade;
         public event Action onParry;
@@ -152,7 +155,7 @@ namespace SeleneGame.Core {
                 try { 
                     return character.model.costumeData.bones[key]; 
                 } catch { 
-                    return character.model.mainTransform.gameObject; 
+                    return character?.model?.mainTransform?.gameObject ?? gameObject; 
                 } 
             }
         }
@@ -183,12 +186,12 @@ namespace SeleneGame.Core {
         /// The current state (Behaviour) of the Entity.
         /// </summary>
         /// <remarks>
-        /// You can change the State using <see cref="SetState"/>.
+        /// You can change the State using <see cref="SetBehaviour"/>.
         /// </remarks>
         public EntityBehaviour behaviour {
             get {
                 if ( _behaviour == null )
-                    ResetState();
+                    ResetBehaviour();
 
                 return _behaviour;
             }
@@ -346,57 +349,7 @@ namespace SeleneGame.Core {
         }
 
 
-        // /// <summary>
-        // /// Set the current state of the Entity
-        // /// </summary>
-        // /// <param name="newState">The state to set the Entity to</param>
-        // public void SetState<TState>() where TState : EntityBehaviour => SetState(typeof(TState));
-
-        // /// <summary>
-        // /// Set the current state of the Entity
-        // /// </summary>
-        // /// <param name="newState">The state to set the Entity to</param>
-        // public void SetState(Type stateType) {
-
-        //     if ( stateType == null || !typeof(EntityBehaviour).IsAssignableFrom(stateType) )
-        //         throw new System.ArgumentException($"Cannot set state to {stateType?.Name ?? "null"}: stateType must be a subclass of State");
-
-        //     if (stateType == _state?.GetType())
-        //         return;
-
-        //     // Vector3 transitionDirection = Vector3.zero;
-        //     // float transitionSpeed = 0;
-        //     // _state?.GetTransitionData(out transitionDirection, out transitionSpeed);
-
-        //     // GameUtility.SafeDestroy(_state);
-        //     // _state = (EntityBehaviour)gameObject.AddComponent(stateType);
-
-        //     // _state?.Transition(transitionDirection, transitionSpeed);
-
-        //     // Get Constructor
-        //     ConstructorInfo constructor = stateType.GetConstructor(new Type[] { typeof(Entity), typeof(EntityBehaviour) });
-        //     if ( constructor == null )
-        //         throw new System.Exception($"Cannot set state to {stateType.Name}: stateType must have a constructor with the signature {stateType.Name}(Entity, EntityBehaviour)");
-
-        //     // Create new state
-        //     EntityBehaviour newState = (EntityBehaviour)constructor.Invoke(new object[] { this, _state });
-        //     _state?.Dispose();
-        //     _state = newState;
-
-
-        //     Debug.Log($"{name} switched state to {stateType.Name}");
-        // }
-
-        // /// <summary>
-        // /// Set the current state of the Entity
-        // /// </summary>
-        // /// <param name="stateName">The name of the state to set the Entity to</param>
-        // public void SetState(string stateName) {
-        //     Type stateType = System.Type.GetType(stateName, false, false);
-        //     SetState(stateType);
-        // }
-
-        public void SetState<T>(EntityBehaviourBuilder<T> stateBuilder) where T : EntityBehaviour {
+        public void SetBehaviour<T>(EntityBehaviourBuilder<T> stateBuilder) where T : EntityBehaviour {
             if ( stateBuilder == null )
                 throw new System.ArgumentNullException(nameof(stateBuilder));
 
@@ -408,8 +361,8 @@ namespace SeleneGame.Core {
             _behaviour = newState;
         }
 
-        public virtual void ResetState() {
-            SetState(new GroundedBehaviourBuilder());
+        public virtual void ResetBehaviour() {
+            SetBehaviour( GroundedBehaviourBuilder.Default );
         }
 
 
@@ -421,12 +374,12 @@ namespace SeleneGame.Core {
         public virtual void SetCharacter(CharacterData characterData, CharacterCostume costume = null) {
 
             _character?.Dispose();
-            _character = null;
-
             _character = characterData?.GetCharacter(this, costume) ?? null;
 
             _health = _character?.data?.maxHealth ?? 1f;
             _damagedHealth = health;
+
+            onSetCharacter?.Invoke(_character);
         }
 
         /// <summary>
@@ -467,9 +420,6 @@ namespace SeleneGame.Core {
         }
         public virtual void Evade(Vector3 direction) {
             behaviour?.Evade(direction);
-        }
-        public virtual void Parry() {
-            behaviour?.Parry();
         }
         public virtual void LightAttack() {
             behaviour?.LightAttack();
@@ -604,6 +554,16 @@ namespace SeleneGame.Core {
 
             bool castHit = character.model.ColliderCast(Vector3.zero, totalDisplacement.normalized * (totalDisplacement.magnitude + 0.15f), out RaycastHit walkHit, out Collider castOrigin, 0.15f, Global.GroundMask);
 
+            // if (castHit) {
+            //     Vector3 toCollision = walkHit.point - transform.position;
+            //     float angleToDirection = Vector3.Angle(toCollision.normalized, totalDisplacement.normalized);
+            //     float collisionDistance = Mathf.Cos(angleToDirection * Mathf.Deg2Rad) * toCollision.magnitude;
+            //     Vector3 newDisplacement = totalDisplacement.normalized * collisionDistance;
+            //     Debug.DrawLine(transform.position, transform.position + newDisplacement, Color.red);
+            //     Debug.DrawLine(transform.position, transform.position + toCollision, Color.green);
+            //     totalDisplacement = totalDisplacement.normalized * Mathf.Min(totalDisplacement.magnitude * collisionDistance);
+            // }
+
             transform.position += totalDisplacement;
                 
             if ( castHit && Physics.ComputePenetration(castOrigin, castOrigin.transform.position, castOrigin.transform.rotation, walkHit.collider, walkHit.collider.transform.position, walkHit.collider.transform.rotation, out Vector3 direction, out float distance) ) {
@@ -679,6 +639,25 @@ namespace SeleneGame.Core {
 
             behaviour?.FixedUpdate();
             character?.FixedUpdate();
+        }
+
+        protected virtual void OnTriggerEnter(Collider collider) {
+            if (collider.isTrigger && collider.gameObject.layer == LayerMask.NameToLayer("Anchor")) {
+                anchorTransform = collider.transform;
+                transform.SetParent(this.anchorTransform);
+            }
+        }
+
+        protected virtual void OnTriggerStay(Collider collider) {
+            if (!anchorTransform) 
+                OnTriggerEnter(collider);
+        }
+
+        protected virtual void OnTriggerExit(Collider collider) {
+            if (collider.transform == anchorTransform) {
+                transform.SetParent(null);
+                anchorTransform = null;
+            }
         }
 
         

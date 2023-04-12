@@ -2,11 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-using SeleneGame.Core;
+namespace SeleneGame.Core {
 
-namespace SeleneGame {
-
-    public class VehiculeAnchor : MonoBehaviour {
+    public class VehicleAnchor : MonoBehaviour {
 
         [SerializeField] private GameObject followedObject;
         [SerializeField] private Vector3 relativePlacement = new Vector3(0,0,0);
@@ -20,7 +18,7 @@ namespace SeleneGame {
         }
 
         private void Start(){
-            gameObject.layer = 6;
+            gameObject.layer = LayerMask.NameToLayer("Anchor");
         }
 
         private void Update(){

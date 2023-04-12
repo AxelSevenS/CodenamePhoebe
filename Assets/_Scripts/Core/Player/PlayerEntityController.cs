@@ -4,6 +4,7 @@ using SevenGame.Utility;
 
 namespace SeleneGame.Core {
     
+    [DefaultExecutionOrder(-100)]
     public class PlayerEntityController : EntityController {
 
         private static PlayerEntityController _current;
@@ -30,10 +31,6 @@ namespace SeleneGame.Core {
                 Debug.Log(_current);
             }
         }
-
-
-        public bool talking;
-        public bool nearInteractable;
 
 
         public static Vector3 defaultCameraPosition = new Vector3(1f, 0f, -3.5f);
@@ -63,8 +60,6 @@ namespace SeleneGame.Core {
             if ( entity.behaviour is SittingBehaviour sittingBehaviour && sittingBehaviour.seat.IsInteractable ) {
                 return sittingBehaviour.seat;
             }
-
-            if ( talking ) return null;
 
             const float interactionDistance = 7.5f;
             const float interactionAngle = 0.5f;

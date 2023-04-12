@@ -80,16 +80,13 @@ namespace SeleneGame.Core {
 
             entity.transform.position = entity.transform.position + (Vector3.up * (Mathf.Max(distanceToWaterSurface + swimTreshold/2f, 0f))); 
 
-            entity.ResetState();
-            if (!entity.behaviour.jumpBehaviour.canJump)
-                entity.behaviour.jumpBehaviour.Jump(jumpDirection * 1.1f);
+            entity.ResetBehaviour();
+            
+            entity.behaviour.jumpBehaviour.Jump(jumpDirection * 1.1f);
         }
 
         protected internal override void Evade(Vector3 direction) {
             base.Evade(direction);
-        }
-        protected internal override void Parry() {
-            base.Parry();
         }
         protected internal override void LightAttack() {
             base.LightAttack();
@@ -102,9 +99,6 @@ namespace SeleneGame.Core {
         }
 
 
-        protected override void ParryAction() {
-            base.ParryAction();
-        }
         protected override void LightAttackAction() {
             base.LightAttackAction();
         }
@@ -120,7 +114,7 @@ namespace SeleneGame.Core {
 
             bool canSwim = entity.weightCategory != Entity.WeightCategory.Heavy;
             if ( !entity.inWater || !canSwim )
-                entity.ResetState();
+                entity.ResetBehaviour();
 
             if (moveDirection.sqrMagnitude != 0f){
                 entity.absoluteForward = Vector3.Lerp( entity.absoluteForward, moveDirection, 20f * GameUtility.timeDelta);

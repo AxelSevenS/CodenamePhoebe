@@ -6,6 +6,7 @@ using SevenGame.Utility;
 
 namespace SeleneGame.Core {
     
+    [DefaultExecutionOrder(-1000)]
     public class WeatherManager : Singleton<WeatherManager> {
         
         [SerializeField] private GameObject rainEffects;

@@ -7,7 +7,7 @@
       "dependencies": {
         "com.seven.utility": "0.0.1"
       },
-      "hash": "58f9d4878e712689e30d7b3b2a0b0068beecffe0"
+      "hash": "a50b506acf9bf4d7ad325f4fd962d6405b8e731d"
     },
     "com.seven.saving-system": {
       "version": "https://github.com/AxelSevenS/SaveSystem.git",
@@ -23,14 +23,14 @@
       "dependencies": {
         "com.seven.utility": "0.0.1"
       },
-      "hash": "56d0aadd4a87c1efc295b2fcada5c95f5b4577a1"
+      "hash": "fd3c22aba8acd90c796153f8039857a32df0535f"
     },
     "com.seven.utility": {
       "version": "https://github.com/AxelSevenS/Utility-Package.git",
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "7f140cb78e3a5632c96324d8d10d2b2f8a25eab4"
+      "hash": "23b69244b1168b2d87dc37345d93c087469c3877"
     },
     "com.unity.addressables": {
       "version": "1.19.19",

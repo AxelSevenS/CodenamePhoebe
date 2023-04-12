@@ -52,7 +52,7 @@ namespace SeleneGame.Content {
                 this.maskedEntity = maskedEntity;
             } else {
                 Debug.LogError("MaskedBehaviour requires a MaskedEntity");
-                entity.ResetState();
+                entity.ResetBehaviour();
                 return;
             }
 
@@ -76,9 +76,6 @@ namespace SeleneGame.Content {
             
             if ( controller.evadeInput.started )
                 Evade(evadeDirection);
-
-            if ( KeyInputData.SimultaneousTap( controller.lightAttackInput, controller.heavyAttackInput ) )
-                Parry();
 
             SetSpeed( controller.jumpInput ? Entity.MovementSpeed.Normal : Entity.MovementSpeed.Slow );
 
@@ -142,9 +139,6 @@ namespace SeleneGame.Content {
         protected override void Jump() {
             
         }
-        protected override void Parry() {
-            base.Parry();
-        }
         protected override void LightAttack() {
             base.LightAttack();
         }
@@ -156,9 +150,6 @@ namespace SeleneGame.Content {
         }
 
 
-        protected override void ParryAction() {
-            base.ParryAction();
-        }
         protected override void LightAttackAction() {
             base.LightAttackAction();
         }
@@ -195,13 +186,13 @@ namespace SeleneGame.Content {
             // Gravity Shifting Movement
             if ( maskedEntity.inWater ){
                 maskedEntity.gravityDown = Vector3.down;
-                maskedEntity.ResetState();
+                maskedEntity.ResetBehaviour();
                 return;
             }
 
             if ( maskedEntity.onGround && shiftFalling ) {
                 maskedEntity.gravityDown = fallDirection;
-                maskedEntity.ResetState();
+                maskedEntity.ResetBehaviour();
                 return;
             }
 

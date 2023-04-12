@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -9,6 +10,9 @@ namespace SeleneGame.Core {
 
         public Entity owner;
             
+        public bool isParry = false;
+        public bool isParryable = true;
+
         public float damage = 1f;
         public DamageType damageType = DamageType.Physical;
         public Vector3 knockback = Vector3.zero;
@@ -28,22 +32,14 @@ namespace SeleneGame.Core {
             }
         }
 
-        public enum DamageOperation {
-            Add,
-            Multiply
-        }
-
-        public static DamageZone Create(Entity owner, string address, Vector3 position, Quaternion rotation, Vector3 scale, Transform parent = null, float damageModifier = 0f, DamageOperation damageOperation = DamageOperation.Add) {
+        public static DamageZone Create(Entity owner, string address, Action<DamageZone> modifier = null) {
             GameObject damageObject = AddressablesUtils.GetAsset<GameObject>( Path.Combine("Attacks/", address) );
-            damageObject = GameObject.Instantiate(damageObject, position, rotation, parent);
-            damageObject.transform.localScale = Vector3.Scale(damageObject.transform.localScale, scale);
+            damageObject = GameObject.Instantiate(damageObject);
 
             DamageZone damageZoneComponent = damageObject.GetComponentInChildren<DamageZone>();
             damageZoneComponent.owner = owner;
-            if (damageOperation == DamageOperation.Add)
-                damageZoneComponent.damage += damageModifier;
-            else if (damageOperation == DamageOperation.Multiply)
-                damageZoneComponent.damage *= damageModifier;
+            
+            modifier?.Invoke(damageZoneComponent);
 
             return damageZoneComponent;
         }
