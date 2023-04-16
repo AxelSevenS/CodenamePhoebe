@@ -166,7 +166,7 @@ namespace SeleneGame.Content {
                 return;
             }
             
-            bool hitGround = Physics.Raycast(maskedEntity.transform.position, fallDirection.normalized, out RaycastHit fallCursorHit, 200f, Global.GroundMask);
+            bool hitGround = Physics.Raycast(maskedEntity.transform.position, fallDirection.normalized, out RaycastHit fallCursorHit, 200f, Core.Collision.GroundMask);
             bool inLineOfSight = Vector3.Dot(maskedEntity.transform.forward, fallDirection) > 0;
 
             if ( !(hitGround && inLineOfSight) ) {

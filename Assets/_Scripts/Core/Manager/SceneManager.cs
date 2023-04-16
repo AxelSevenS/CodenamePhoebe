@@ -1,8 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 
-using UnityEngine.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+#if UNITY_EDITOR
+    using UnityEditor.SceneManagement;
+#endif
 
 using SevenGame.Utility;
 
@@ -17,18 +20,30 @@ namespace SeleneGame.Core {
         private static Scene currentScene;
 
         private void Awake() {
-            LoadScene("SampleScene");
+            #if UNITY_EDITOR
+            
+            #else
+                LoadScene("SampleScene");
+            #endif
         }
 
         public static void LoadScene(string sceneName) {
             if ( currentScene.IsValid() && currentScene.isLoaded )
                 UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync(currentScene);
 
-            AsyncOperation asyncOperation = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
-            asyncOperation.completed += (operation) => {
-                currentScene = UnityEngine.SceneManagement.SceneManager.GetSceneByName(sceneName);
+            currentScene = UnityEngine.SceneManagement.SceneManager.GetSceneByName(sceneName);
+            
+            // check if the scene is already in the hierarchy
+            if ( !currentScene.IsValid() || !currentScene.isLoaded ) {
+                AsyncOperation asyncOperation = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+                asyncOperation.completed += (operation) => SetCurrent();
+            } else {
+                SetCurrent();
+            }
+
+            void SetCurrent() {
                 UnityEngine.SceneManagement.SceneManager.SetActiveScene(currentScene);
-            };
+            }
         }
     }
 }

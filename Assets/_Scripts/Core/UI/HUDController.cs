@@ -11,6 +11,7 @@ using SevenGame.Utility;
 
 namespace SeleneGame.Core.UI {
     
+    [DefaultExecutionOrder(100)]
     public class HUDController : Singleton<HUDController> {
 
         private const float SCREENMARGIN = 25f;
@@ -83,7 +84,7 @@ namespace SeleneGame.Core.UI {
             Keybinds.onControllerTypeChange -= UpdateControllerType;
         }
 
-        private void Update() {
+        private void LateUpdate() {
 
             if ( PlayerEntityController.current == null ) return;
             

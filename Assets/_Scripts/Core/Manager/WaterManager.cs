@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using SevenGame.Utility;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace SeleneGame.Core {
 
@@ -15,7 +16,7 @@ namespace SeleneGame.Core {
         private ComputeBuffer samplePositionBuffer;
         private ComputeBuffer waveHeightBuffer;
         private Vector3[] samplePositions = new Vector3[0];
-        private float[] waveHeights = new float[0];
+        // private float[] waveHeights = new float[0];
 
         [SerializeField] private ComputeShader waterDisplacementShader;
         [SerializeField] private Vector4[] waves = new Vector4[0];
@@ -33,7 +34,6 @@ namespace SeleneGame.Core {
             waveHeightBuffer = new ComputeBuffer(count, sizeof(float));
 
             samplePositions = new Vector3[count];
-            waveHeights = new float[count];
         }
 
         private void ReleaseWaveHeightSampleBuffers() {
@@ -75,12 +75,11 @@ namespace SeleneGame.Core {
         }
 
         private void CalculateWaveHeight() {
-            int count = waterDisplaceables.Count;
 
-            if (count == 0) return;
+            if (waterDisplaceables.Count == 0) return;
 
 
-            for (int i = 0; i < count; i++) {
+            for (int i = 0; i < waterDisplaceables.Count; i++) {
                 samplePositions[i] = waterDisplaceables[i].position;
             }
 
@@ -90,14 +89,50 @@ namespace SeleneGame.Core {
             waterDisplacementShader.SetBuffer(0, "samplePositions", samplePositionBuffer);
             waterDisplacementShader.SetBuffer(0, "waveHeights", waveHeightBuffer);
 
-            waterDisplacementShader.Dispatch(0, count, 1, 1);
+            waterDisplacementShader.Dispatch(0, waterDisplaceables.Count, 1, 1);
 
+
+            if (waveHeightBuffer == null) return;
+
+            // TODO: USE THIS FOR HIGHER END DEVICES/HIGH QUALITY SETTINGS
+            // Wait for the wave height data to be available on the CPU
+            // This causes CPU to wait, lowering framerate but is synchronous with visuals
+            /* float[] waveHeights = new float[waterDisplaceables.Count];
             waveHeightBuffer.GetData(waveHeights);
 
             for (int i = 0; i < count; i++) {
                 IWaterDisplaceable waterDisplaceable = waterDisplaceables[i];
+                Debug.Log($"{waterDisplaceable} wave height: {waveHeights[i]}");
                 waterDisplaceable.waveHeight = waveHeights[i];
-            }
+            } */
+
+
+
+            // TODO: USE THIS FOR LOWER END DEVICES/LOW QUALITY SETTINGS
+            // Request the wave height data from the GPU and don't wait for it to finish
+            // This causes slight delay with visuals but is asynchronous with CPU
+            IWaterDisplaceable[] bufferDisplaceables = new IWaterDisplaceable[waterDisplaceables.Count];
+            waterDisplaceables.CopyTo(bufferDisplaceables);
+
+            AsyncGPUReadback.Request(waveHeightBuffer, 
+                (request) => {
+                    
+                    if (!Application.isPlaying) return;
+
+                    if (request.hasError) {
+                        Debug.LogError("Error reading back wave height buffer");
+                        return;
+                    }
+
+                    float[] waveHeights = request.GetData<float>().ToArray();
+                    for (int i = 0; i < bufferDisplaceables.Length; i++) {
+                        IWaterDisplaceable waterDisplaceable = bufferDisplaceables[i];
+                        if (waterDisplaceable != null)
+                            waterDisplaceable.waveHeight = waveHeights[i];
+                    }
+                        
+                }
+            );
         }
 
         private void OnEnable() {
@@ -133,12 +168,9 @@ namespace SeleneGame.Core {
         [ContextMenu("Randomize Waves")]
         private void RandomizeWaves() {
             for (int i = 0; i < waves.Length; i++) {
-                Vector2 direction = Random.insideUnitSphere.normalized;
-                waves[i] = new Vector4(direction.x, direction.y, Random.value * 0.075f, Random.value * 40f + 2f/* 30f + 5f */);
+                Vector2 direction = Random.insideUnitCircle.normalized;
+                waves[i] = new Vector4(direction.x, direction.y, Random.value * 0.075f, Random.value * 40f + 2f);
             }
-        }
-
-        private void OnValidate() {
         }
     }
 }

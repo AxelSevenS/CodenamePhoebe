@@ -28,7 +28,6 @@ namespace SeleneGame.Core {
                 }
 
                 _current = value;
-                Debug.Log(_current);
             }
         }
 
@@ -64,7 +63,7 @@ namespace SeleneGame.Core {
             const float interactionDistance = 7.5f;
             const float interactionAngle = 0.5f;
 
-            Physics.OverlapSphereNonAlloc(entity.transform.position, interactionDistance, buffer, Global.EntityObjectMask);
+            Physics.OverlapSphereNonAlloc(entity.transform.position, interactionDistance, buffer, Collision.EntityObjectMask);
 
             IInteractable candidate = null;
             float closestDistance = float.MaxValue;
@@ -177,6 +176,10 @@ namespace SeleneGame.Core {
         public override void RawInputToCameraRelativeMovement(out Quaternion camRotation, out Vector3 cameraRelativeMovement){
             camRotation = worldCameraRotation;
             cameraRelativeMovement = camRotation * new Vector3(moveInput.x, 0, moveInput.y);
+        }
+
+        private void OnDrawGizmos() {
+            // Gizmos.DrawIcon(transform.position, "bruh.jpg", true);
         }
 
 

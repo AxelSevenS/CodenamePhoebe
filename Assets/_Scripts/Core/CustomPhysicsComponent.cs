@@ -57,7 +57,7 @@ namespace SeleneGame.Core {
             waterController = null;
 
             _colliderBuffer[0] = null;
-            Physics.OverlapSphereNonAlloc(transform.position, 5f, _colliderBuffer, Global.WaterMask);
+            Physics.OverlapSphereNonAlloc(transform.position, 5f, _colliderBuffer, Collision.WaterMask);
             foreach (Collider waterCollider in _colliderBuffer) {
                 if (waterCollider != null && waterCollider.TryGetComponent<WaterController>(out WaterController waterController)){
                     this.waterCollider = waterCollider;

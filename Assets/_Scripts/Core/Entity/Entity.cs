@@ -73,7 +73,7 @@ namespace SeleneGame.Core {
         public event Action<float, DamageType> onDamage;
 
         public event Action<float> onHealed;
-        public event Action<float, DamageType> onDamaged;
+        public event Action<DamageData> onDamaged;
         public event Action onDeath;
 
         public event Action<Character> onSetCharacter;
@@ -248,10 +248,12 @@ namespace SeleneGame.Core {
                 if (value == _health)
                     return;
                 
-                if ( value < _health )
-                    Damage( _health - value );
-                else if ( value > _health )
+                if ( value < _health ) {
+                    DamageData damage = new DamageData( null, _health - value, DamageType.Critical, DamageKnockback.None, Vector3.zero );
+                    Damage( damage );
+                } else if ( value > _health ) {
                     Heal( value - _health );
+                }
             }
         }
 
@@ -351,9 +353,9 @@ namespace SeleneGame.Core {
 
         public void SetBehaviour<T>(EntityBehaviourBuilder<T> stateBuilder) where T : EntityBehaviour {
             if ( stateBuilder == null )
-                throw new System.ArgumentNullException(nameof(stateBuilder));
+                throw new System.ArgumentNullException( nameof(stateBuilder) );
 
-            if ( typeof(T) == _behaviour?.GetType() )
+            if ( _behaviour is T )
                 return;
 
             EntityBehaviour newState = stateBuilder.Build(this, _behaviour);
@@ -437,30 +439,30 @@ namespace SeleneGame.Core {
         /// </summary>
         /// <param name="amount">The amount of damage done to the Entity</param>
         /// <param name="knockback">The direction of Knockback applied through the damage</param>
-        public void Damage(float amount, DamageType damageType = DamageType.Physical, Vector3 knockback = default, Entity owner = null) {
+        public void Damage(DamageData damageData) {
 
-            if (owner == this) return;
+            if (damageData.owner == this) return;
 
             if (isPlayer) {
-                EntityManager.current?.PlayerHitStop(amount);
-            } else if (owner.isPlayer) {
-                EntityManager.current?.EnemyHitStop(amount);
+                EntityManager.current?.PlayerHitStop(damageData.amount);
+            } else if (damageData.owner.isPlayer) {
+                EntityManager.current?.EnemyHitStop(damageData.amount);
             }
 
-            owner?.AwardDamage(amount, damageType);
+            damageData.owner?.AwardDamage(damageData.amount, damageData.damageType);
 
             const float damagedHealthDuration = 1.25f;
 
-            _health = Mathf.Max(_health - amount, 0f);
+            _health = Mathf.Max(_health - damageData.amount, 0f);
             _damagedHealthTimer.SetDuration(damagedHealthDuration);
 
             if (_health == 0f)
                 Kill();
 
             // TODO: Add actual knockback animations
-            rigidbody.AddForce(knockback, ForceMode.Impulse);
+            
 
-            onDamaged?.Invoke(amount, damageType);
+            onDamaged?.Invoke(damageData);
         }
 
         /// <summary>
@@ -477,6 +479,8 @@ namespace SeleneGame.Core {
         public void AwardDamage(float amount, DamageType damageType) {
             onDamage?.Invoke(amount, damageType);
         }
+
+        public void AwardParry(DamageData damageData) {;}
 
         /// <summary>
         /// Initiate the Entity's death sequence.
@@ -552,24 +556,20 @@ namespace SeleneGame.Core {
 
             if (totalDisplacement.sqrMagnitude == 0f) return;
 
-            bool castHit = character.model.ColliderCast(Vector3.zero, totalDisplacement.normalized * (totalDisplacement.magnitude + 0.15f), out RaycastHit walkHit, out Collider castOrigin, 0.15f, Global.GroundMask);
+            bool castHit = character.model.ColliderCast(Vector3.zero, totalDisplacement.normalized * (totalDisplacement.magnitude + 0.15f), out RaycastHit walkHit, out Collider castOrigin, 0.15f, Collision.GroundMask);
 
-            // if (castHit) {
-            //     Vector3 toCollision = walkHit.point - transform.position;
-            //     float angleToDirection = Vector3.Angle(toCollision.normalized, totalDisplacement.normalized);
-            //     float collisionDistance = Mathf.Cos(angleToDirection * Mathf.Deg2Rad) * toCollision.magnitude;
-            //     Vector3 newDisplacement = totalDisplacement.normalized * collisionDistance;
-            //     Debug.DrawLine(transform.position, transform.position + newDisplacement, Color.red);
-            //     Debug.DrawLine(transform.position, transform.position + toCollision, Color.green);
-            //     totalDisplacement = totalDisplacement.normalized * Mathf.Min(totalDisplacement.magnitude * collisionDistance);
-            // }
+            if (castHit) {
+                totalDisplacement = totalDisplacement.normalized * Mathf.Min(totalDisplacement.magnitude, walkHit.distance);
+            }
 
             transform.position += totalDisplacement;
                 
             if ( castHit && Physics.ComputePenetration(castOrigin, castOrigin.transform.position, castOrigin.transform.rotation, walkHit.collider, walkHit.collider.transform.position, walkHit.collider.transform.rotation, out Vector3 direction, out float distance) ) {
-                transform.position += (direction * distance);
+                // transform.position += Vector3.Project(direction * distance, totalDisplacement.normalized);
+                transform.position += direction * distance;
             }
 
+            Physics.SyncTransforms();
             
             _totalMovement = Vector3.zero;
         }
@@ -613,7 +613,7 @@ namespace SeleneGame.Core {
         protected virtual void OnDestroy(){;}
 
         protected virtual void Update(){
-            onGround.SetVal( character?.model?.ColliderCast(Vector3.zero, gravityDown.normalized * 0.1f, out groundHit, out _, 0.15f, Global.GroundMask) ?? false );
+            onGround.SetVal( character?.model?.ColliderCast(Vector3.zero, gravityDown.normalized * 0.1f, out groundHit, out _, 0.15f, Collision.GroundMask) ?? false );
             if ( _damagedHealthTimer.isDone )
                 _damagedHealth = Mathf.SmoothDamp(_damagedHealth, _health, ref _damagedHealthVelocity, 0.2f);
             else {
@@ -642,7 +642,7 @@ namespace SeleneGame.Core {
         }
 
         protected virtual void OnTriggerEnter(Collider collider) {
-            if (collider.isTrigger && collider.gameObject.layer == LayerMask.NameToLayer("Anchor")) {
+            if (collider.gameObject.tag == "Anchor") {
                 anchorTransform = collider.transform;
                 transform.SetParent(this.anchorTransform);
             }

@@ -162,7 +162,7 @@ namespace SeleneGame.Core {
 
         private bool WaterHover() {
 
-            if ( entity.character.model.ColliderCast( Vector3.zero, entity.gravityDown, out RaycastHit hit, out _, 0.15f, Global.WaterMask ) ) {
+            if ( entity.character.model.ColliderCast( Vector3.zero, entity.gravityDown, out RaycastHit hit, out _, 0.15f, Collision.WaterMask ) ) {
                 entity.groundHit = hit;
                 entity.onGround.SetVal(true);
                 return true;

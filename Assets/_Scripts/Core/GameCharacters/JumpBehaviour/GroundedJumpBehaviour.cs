@@ -26,7 +26,7 @@ namespace SeleneGame.Core {
 
 
         protected internal override void HandleInput(PlayerEntityController contoller) {
-            fallGravityMultiplier = contoller.jumpInput ? 0f : 1f;
+            fallGravityMultiplier = contoller.jumpInput ? 0.1f : 1f;
         } 
 
 
@@ -46,16 +46,15 @@ namespace SeleneGame.Core {
             }
 
 
-            const float fallingMultiplier = 0.01f;
             const float maxInertia = 25f;
 
-
-            fallInertia = Mathf.Lerp( fallInertia, entity.fallVelocity >= 0f ? 0f : fallingMultiplier * fallGravityMultiplier, 7f * GameUtility.timeDelta );
+            float targetInertia = fallGravityMultiplier * entity.gravityMultiplier;
+            fallInertia = Mathf.MoveTowards( fallInertia, entity.fallVelocity >= 1f ? 0f : targetInertia, 1f * GameUtility.timeDelta );
             
             // Add down inertia to the entity, only if it doesn't make it go faster than maxInertia.
-            float addedInertiaA = Mathf.Min( -entity.fallVelocity + (fallInertia * entity.gravityMultiplier), maxInertia ) - Mathf.Min( -entity.fallVelocity, maxInertia );
+            float addedInertia = Mathf.Min( -entity.fallVelocity + fallInertia, maxInertia ) - Mathf.Min( -entity.fallVelocity, maxInertia );
 
-            entity.inertia += addedInertiaA * entity.gravityDown;
+            entity.inertia += addedInertia * entity.gravityDown;
         }
     }
 }

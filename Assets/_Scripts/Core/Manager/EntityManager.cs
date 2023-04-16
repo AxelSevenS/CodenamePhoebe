@@ -42,9 +42,9 @@ namespace SeleneGame.Core {
         }
 
         private IEnumerator HitStop(float damage) {
-            Time.timeScale = 0.1f;
+            Time.timeScale = 0f;
             float time = Mathf.Pow(damage, 0.3f) * 0.5f;
-            yield return new WaitForSecondsRealtime(0.05f * time);
+            yield return new WaitForSecondsRealtime(0.1f * time);
             Time.timeScale = 1f;
         }
     }

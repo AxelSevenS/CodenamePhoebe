@@ -56,7 +56,7 @@ namespace SeleneGame.Content {
 
 
         private bool positionBlocked(Vector3 position) {
-            return Physics.SphereCast(mask.maskedEntity.modelTransform.position, 0.35f, position, out _, position.magnitude, Global.GroundMask);
+            return Physics.SphereCast(mask.maskedEntity.modelTransform.position, 0.35f, position, out _, position.magnitude, Core.Collision.GroundMask);
         }
 
 

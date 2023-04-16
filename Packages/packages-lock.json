@@ -7,7 +7,7 @@
       "dependencies": {
         "com.seven.utility": "0.0.1"
       },
-      "hash": "a50b506acf9bf4d7ad325f4fd962d6405b8e731d"
+      "hash": "fe24b2e4e9e8575d2bb4ed12bf0d3191f8d56c2a"
     },
     "com.seven.saving-system": {
       "version": "https://github.com/AxelSevenS/SaveSystem.git",
@@ -31,6 +31,15 @@
       "source": "git",
       "dependencies": {},
       "hash": "23b69244b1168b2d87dc37345d93c087469c3877"
+    },
+    "com.unity.adaptiveperformance": {
+      "version": "5.0.0",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.profiling.core": "1.0.2"
+      },
+      "url": "https://packages.unity.com"
     },
     "com.unity.addressables": {
       "version": "1.19.19",
@@ -137,6 +146,13 @@
         "com.unity.modules.physics": "1.0.0",
         "com.unity.modules.imgui": "1.0.0"
       },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.profiling.core": {
+      "version": "1.0.2",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {},
       "url": "https://packages.unity.com"
     },
     "com.unity.render-pipelines.core": {
