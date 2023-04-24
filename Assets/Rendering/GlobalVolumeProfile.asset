@@ -130,6 +130,31 @@ MonoBehaviour:
   texture:
     m_OverrideState: 1
     m_Value: {fileID: 0}
+--- !u!114 &-1510989918754959598
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 339a848c08464e641be74e45e6cdae60, type: 3}
+  m_Name: TestVolumeComponent
+  m_EditorClassIdentifier: 
+  active: 1
+  outlineColor:
+    m_OverrideState: 0
+    m_Value: {r: 0, g: 0, b: 0, a: 1}
+  outlineWidth:
+    m_OverrideState: 0
+    m_Value: 0.1
+  noiseScale:
+    m_OverrideState: 0
+    m_Value: 0.1
+  noiseIntensity:
+    m_OverrideState: 0
+    m_Value: 0.1
 --- !u!114 &-1016694868962581565
 MonoBehaviour:
   m_ObjectHideFlags: 3

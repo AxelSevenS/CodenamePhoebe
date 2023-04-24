@@ -15,10 +15,6 @@ namespace SeleneGame.Core {
         [SerializeReference] protected WeaponInventory _weapons = null;
 
 
-        [Header("Parrying")]
-        public TimeInterval parryTimer;
-
-
 
         public override float weight => base.weight * (weapons?.current?.data.weight ?? 1f); 
 
@@ -42,13 +38,6 @@ namespace SeleneGame.Core {
         public override void SetStyle(int newStyle) {
             weapons.Switch(newStyle);
         }
-
-        // protected internal override void LoadModel() {
-        //     base.LoadModel();
-        //     // foreach(Weapon weapon in weapons) {
-        //     //     weapon.LoadModel();
-        //     // }
-        // }
 
 
 

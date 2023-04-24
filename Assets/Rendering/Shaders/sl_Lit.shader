@@ -1,7 +1,7 @@
 Shader "Selene/Lit" {
     
     Properties {
-        [NoScaleOffset] _BaseMap ("Main Texture", 2D) = "white" {}
+        [NoScaleOffset] _MainTex ("Main Texture", 2D) = "white" {}
 
         [NoScaleOffset] _NormalMap ("Normal Map", 2D) = "bump" {}
         _NormalIntensity ("Normal Intensity", Range(0,1)) = 0
@@ -30,8 +30,8 @@ Shader "Selene/Lit" {
 
             CBUFFER_START(UnityPerMaterial)
 
-                sampler2D _BaseMap;
-                float4 _BaseMap_ST;
+                sampler2D _MainTex;
+                float4 _MainTex_ST;
 
                 sampler2D _NormalMap;
                 float _NormalIntensity;
@@ -52,12 +52,16 @@ Shader "Selene/Lit" {
                 // output.positionWS += output.normalWS * 0.1;
             }
 
+            bool ProximityClipping( in VertexOutput input ) {
+                if ( _ProximityDither == 1 )
+                    return ProximityDither(input.positionWS, input.positionSS);
+
+                return false;
+            }
+
             void SimpleFragment( inout SurfaceData surfaceData, inout InputData inputData, VertexOutput input ) {
 
-                if ( _ProximityDither == 1 )
-                    ProximityDither(input.positionWS, input.positionSS);
-
-                half4 baseColor = tex2D(_BaseMap, input.uv);
+                half4 baseColor = tex2D(_MainTex, input.uv);
                 surfaceData.albedo = baseColor.rgb;
                 surfaceData.alpha = baseColor.a;
                 surfaceData.specular = tex2D(_SpecularMap, input.uv);
@@ -73,9 +77,8 @@ Shader "Selene/Lit" {
             }
 
             #define CustomVertexDisplacement(output) SimpleVertexDisplacement(output)
+            #define CustomClipping(output) ProximityClipping(output)
             #define CustomFragment(surfaceData, inputData, input) SimpleFragment(surfaceData, inputData, input)
-
-            #include "Functions/Lit/LitSubShader.hlsl"
 
         ENDHLSL
         
@@ -91,6 +94,7 @@ Shader "Selene/Lit" {
 
             HLSLPROGRAM
 
+                #include "Functions/Lit/LitSubShader.hlsl"
                 #include "Functions/Lit/LitForwardPass.hlsl"
 
             ENDHLSL
@@ -108,7 +112,40 @@ Shader "Selene/Lit" {
 
             HLSLPROGRAM
 
+                #include "Functions/Lit/LitSubShader.hlsl"
                 #include "Functions/Lit/LitGBufferPass.hlsl"
+
+            ENDHLSL
+        }
+
+        Pass
+        {
+            Name "DepthOnly"
+            Tags{"LightMode" = "DepthOnly"}
+
+            ZWrite On
+            ColorMask 0
+
+            HLSLPROGRAM
+
+                #include "Functions/Lit/LitSubShader.hlsl"
+                #include "Functions/Lit/LitDepthOnlyPass.hlsl"
+
+            ENDHLSL
+        }
+
+        // This pass is used when drawing to a _CameraNormalsTexture texture
+        Pass
+        {
+            Name "DepthNormals"
+            Tags{"LightMode" = "DepthNormals"}
+
+            ZWrite On
+
+            HLSLPROGRAM
+
+                #include "Functions/Lit/LitSubShader.hlsl"
+                #include "Functions/Lit/LitDepthNormalsPass.hlsl"
 
             ENDHLSL
         }
@@ -120,6 +157,7 @@ Shader "Selene/Lit" {
         
             HLSLPROGRAM
             
+                #include "Functions/Lit/LitSubShader.hlsl"
                 #include "Functions/Lit/LitShadowCasterPass.hlsl"
         
             ENDHLSL
@@ -138,7 +176,7 @@ Shader "Selene/Lit" {
 
                 void SimpleGIContribution( MetaVaryings varyings, inout half4 albedo, inout half4 specularColor) {
                     
-                    albedo = tex2D(_BaseMap, varyings.uv);
+                    albedo = tex2D(_MainTex, varyings.uv);
                     specularColor = tex2D(_SpecularMap, varyings.uv);
 
                 }

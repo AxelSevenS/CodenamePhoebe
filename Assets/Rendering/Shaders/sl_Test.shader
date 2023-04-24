@@ -1,7 +1,7 @@
 Shader "Selene/Test" {
     
     Properties {
-        [NoScaleOffset] _BaseMap ("Main Texture", 2D) = "white" {}
+        [NoScaleOffset] _MainTex ("Main Texture", 2D) = "white" {}
 
         [NoScaleOffset] _NormalMap ("Normal Map", 2D) = "bump" {}
         _NormalIntensity ("Normal Intensity", Range(0,1)) = 0
@@ -97,7 +97,7 @@ Shader "Selene/Test" {
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 
             CBUFFER_START(UnityPerMaterial)
-                float4 _BaseMap_ST;
+                float4 _MainTex_ST;
                 float4 _NormalMap_ST;
                 half _NormalIntensity;
                 int _ProximityDither;
@@ -107,7 +107,7 @@ Shader "Selene/Test" {
                 float4 _EmissionMap_ST;
             CBUFFER_END
 
-            TEXTURE2D(_BaseMap);        SAMPLER(sampler_BaseMap);
+            TEXTURE2D(_MainTex);        SAMPLER(sampler_MainTex);
             TEXTURE2D(_NormalMap);        SAMPLER(sampler_NormalMap);
             TEXTURE2D(_EmissionMap);        SAMPLER(sampler_EmissionMap);
 
@@ -172,7 +172,7 @@ Shader "Selene/Test" {
             //     fogFactor = ComputeFogFactor(output.positionCS.z);
             // #endif
 
-            //     output.uv = TRANSFORM_TEX(input.texcoord, _BaseMap);
+            //     output.uv = TRANSFORM_TEX(input.texcoord, _MainTex);
 
             // #if defined(REQUIRES_TANGENT_SPACE_VIEW_DIR_INTERPOLATOR)
             //     output.viewDirWS = GetWorldSpaceNormalizeViewDir(output.positionWS);
@@ -218,7 +218,7 @@ Shader "Selene/Test" {
 
             //     SurfaceData surfaceData;
 
-            //     half4 albedo = (SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.uv));
+            //     half4 albedo = (SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, input.uv));
             //     surfaceData.albedo = albedo.rgb;
             //     surfaceData.alpha = albedo.a;
 
@@ -305,7 +305,7 @@ Shader "Selene/Test" {
             //     inputData.vertexSH = input.vertexSH;
             // #endif
             // #endif
-            //     SETUP_DEBUG_TEXTURE_DATA(inputData, input.uv, _BaseMap);
+            //     SETUP_DEBUG_TEXTURE_DATA(inputData, input.uv, _MainTex);
 
             // #ifdef _DBUFFER
             //     ApplyDecalToSurfaceData(input.positionCS, surfaceData, inputData);
@@ -395,7 +395,7 @@ Shader "Selene/Test" {
         //     #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 
         //     CBUFFER_START(UnityPerMaterial)
-        //         float4 _BaseMap_ST;
+        //         float4 _MainTex_ST;
         //         float4 _NormalMap_ST;
         //         half _NormalIntensity;
         //         int _ProximityDither;
@@ -405,7 +405,7 @@ Shader "Selene/Test" {
         //         float4 _EmissionMap_ST;
         //     CBUFFER_END
 
-        //     TEXTURE2D(_BaseMap);        SAMPLER(sampler_BaseMap);
+        //     TEXTURE2D(_MainTex);        SAMPLER(sampler_MainTex);
         //     TEXTURE2D(_NormalMap);        SAMPLER(sampler_NormalMap);
         //     TEXTURE2D(_EmissionMap);        SAMPLER(sampler_EmissionMap);
 
@@ -470,7 +470,7 @@ Shader "Selene/Test" {
         //         fogFactor = ComputeFogFactor(output.positionCS.z);
         //     #endif
 
-        //         output.uv = TRANSFORM_TEX(input.texcoord, _BaseMap);
+        //         output.uv = TRANSFORM_TEX(input.texcoord, _MainTex);
 
         //     #if defined(REQUIRES_TANGENT_SPACE_VIEW_DIR_INTERPOLATOR)
         //         output.viewDirWS = GetWorldSpaceNormalizeViewDir(output.positionWS);
@@ -517,7 +517,7 @@ Shader "Selene/Test" {
 
         //         SurfaceData surfaceData;
 
-        //         half4 albedo = (SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.uv));
+        //         half4 albedo = (SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, input.uv));
         //         surfaceData.albedo = albedo.rgb;
         //         surfaceData.alpha = albedo.a;
 
@@ -604,7 +604,7 @@ Shader "Selene/Test" {
         //         inputData.vertexSH = input.vertexSH;
         //     #endif
         //     #endif
-        //         SETUP_DEBUG_TEXTURE_DATA(inputData, input.uv, _BaseMap);
+        //         SETUP_DEBUG_TEXTURE_DATA(inputData, input.uv, _MainTex);
 
         //     #ifdef _DBUFFER
         //         ApplyDecalToSurfaceData(input.positionCS, surfaceData, inputData);

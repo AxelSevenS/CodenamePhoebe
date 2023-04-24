@@ -54,7 +54,7 @@ namespace SeleneGame.Content {
         }
 
 
-        protected internal virtual void HandleInput(PlayerEntityController controller) {
+        protected internal virtual void HandleInput(Player controller) {
             if ( controller.entity != _maskedEntity ) return;
 
             // if (controller.focusInput.Tapped()) {

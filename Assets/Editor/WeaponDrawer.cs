@@ -15,7 +15,7 @@ namespace SeleneGame.Core {
             ((Weapon)property.managedReferenceValue)?.Dispose();
 
 
-            // If the weapon has a reference to an ArmedEntity, use that; (This should always be the case as long as the weapon is not null)
+            // If the weapon has a reference to an ArmedEntity, use that; (This should always be the case as long as the weapon != null)
             ArmedEntity entityRef = (targetCostumable as Weapon)?.armedEntity;
             WeaponInventory inventory = entityRef?.weapons ??(WeaponInventory)GetParent(property);
             

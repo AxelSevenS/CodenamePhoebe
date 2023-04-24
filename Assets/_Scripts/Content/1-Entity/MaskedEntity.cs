@@ -19,7 +19,7 @@ namespace SeleneGame.Content {
         public EidolonMask mask => _mask;
 
 
-        public override void HandleInput(PlayerEntityController controller) {
+        public override void HandleInput(Player controller) {
             base.HandleInput(controller);
             mask?.HandleInput(controller);
         }

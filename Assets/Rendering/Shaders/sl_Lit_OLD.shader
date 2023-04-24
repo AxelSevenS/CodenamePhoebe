@@ -1,7 +1,7 @@
 Shader "Selene/Lit_OLD" {
     
     Properties {
-        [NoScaleOffset] _BaseMap ("Main Texture", 2D) = "white" {}
+        [NoScaleOffset] _MainTex ("Main Texture", 2D) = "white" {}
 
         [NoScaleOffset] _NormalMap ("Normal Map", 2D) = "bump" {}
         _NormalIntensity ("Normal Intensity", Range(0,1)) = 0
@@ -30,8 +30,8 @@ Shader "Selene/Lit_OLD" {
 
             CBUFFER_START(UnityPerMaterial)
 
-                sampler2D _BaseMap;
-                float4 _BaseMap_ST;
+                sampler2D _MainTex;
+                float4 _MainTex_ST;
 
                 sampler2D _NormalMap;
                 float _NormalIntensity;
@@ -105,7 +105,7 @@ Shader "Selene/Lit_OLD" {
                 if ( _ProximityDither == 1 )
                     ProximityDither(input.positionWS, input.positionSS);
 
-                half4 baseColor = tex2D(_BaseMap, input.uv);
+                half4 baseColor = tex2D(_MainTex, input.uv);
                 surfaceData.albedo = baseColor.rgb;
                 surfaceData.alpha = baseColor.a;
                 surfaceData.specular = tex2D(_SpecularMap, input.uv);
@@ -485,13 +485,13 @@ Shader "Selene/Lit_OLD" {
                 UNITY_SETUP_INSTANCE_ID(input);
                 // UNITY_INITIALIZE_OUTPUT(Varyings, output);
 
-                // output.uv = TRANSFORM_TEX(input.texcoord, _BaseMap);
+                // output.uv = TRANSFORM_TEX(input.texcoord, _MainTex);
                 output.positionCS = GetShadowPositionHClip(input);
                 return output;
             }
 
             half4 ShadowPassFragment(Varyings input) : SV_TARGET {
-                // Alpha(SampleAlbedoAlpha(input.uv, TEXTURE2D_ARGS(_BaseMap, sampler_BaseMap)).a, _BaseColor, _Cutoff);
+                // Alpha(SampleAlbedoAlpha(input.uv, TEXTURE2D_ARGS(_MainTex, sampler_MainTex)).a, _BaseColor, _Cutoff);
 
                 #ifdef LOD_FADE_CROSSFADE
                     LODFadeCrossFade(input.positionCS);
@@ -551,12 +551,12 @@ Shader "Selene/Lit_OLD" {
             Varyings UniversalVertexMeta(Attributes input) {
                 Varyings output = (Varyings)0;
                 output.positionCS = UnityMetaVertexPosition(input.positionOS.xyz, input.uv1, input.uv2);
-                output.uv = TRANSFORM_TEX(input.uv0, _BaseMap);
+                output.uv = TRANSFORM_TEX(input.uv0, _MainTex);
                 return output;
             }
 
             half4 UniversalFragmentMetaLit(Varyings input) : SV_Target {
-                half4 baseColor = tex2D(_BaseMap, input.uv);
+                half4 baseColor = tex2D(_MainTex, input.uv);
                 half4 specularColor = tex2D(_SpecularMap, input.uv);
                 half3 diffuse = baseColor.rgb * (1.0.xxx - specularColor);
 

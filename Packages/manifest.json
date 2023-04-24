@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.cratesmith.assetui": "https://github.com/Cratesmith/Cratesmith.AssetUI.git",
     "com.seven.easysplines": "https://github.com/AxelSevenS/EasySplines.git",
     "com.seven.saving-system": "https://github.com/AxelSevenS/SaveSystem.git",
     "com.seven.scribe": "https://github.com/AxelSevenS/Scribe.git",

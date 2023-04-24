@@ -10,11 +10,12 @@ using SevenGame.SavingSystem;
 
 namespace SeleneGame.Core.UI {
 
-    public abstract class SaveMenuController : UIPausedMenu<SaveMenuController> {
+    public abstract class SaveMenuController : UIMenu<SaveMenuController>, IUIPausedMenu {
 
     }
 
     public abstract class SaveMenuController<TData> : SaveMenuController where TData : SaveData, new() {
+        
         [SerializeField] private GameObject saveMenu;
         
         [SerializeField] private SaveSlot<TData> saveSlot1;

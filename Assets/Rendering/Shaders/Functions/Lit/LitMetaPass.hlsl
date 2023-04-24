@@ -20,6 +20,8 @@
 
 
 #include "LitMetaInput.hlsl"
+#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/MetaInput.hlsl"
+
 
 #ifndef CustomGIContribution
     // Default GI Contribution for Lit shader 
@@ -37,7 +39,7 @@
 MetaVaryings UniversalVertexMeta(MetaAttributes input) {
     MetaVaryings output = (MetaVaryings)0;
     output.positionCS = UnityMetaVertexPosition(input.positionOS.xyz, input.uv1, input.uv2);
-    output.uv = TRANSFORM_TEX(input.uv0, _BaseMap);
+    output.uv = TRANSFORM_TEX(input.uv0, _MainTex);
     return output;
 }
 

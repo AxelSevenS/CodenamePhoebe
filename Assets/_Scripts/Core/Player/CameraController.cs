@@ -40,7 +40,7 @@ namespace SeleneGame.Core {
 
 
 
-        private CameraType cameraType => PlayerEntityController.current?.entity?.behaviour?.cameraType ?? CameraType.ThirdPerson;
+        private CameraType cameraType => Player.current?.entity?.behaviour?.cameraType ?? CameraType.ThirdPerson;
 
 
 
@@ -59,7 +59,7 @@ namespace SeleneGame.Core {
 
 
         private void LateUpdate() {
-            if (PlayerEntityController.current?.entity == null) return;
+            if (Player.current?.entity == null) return;
             
             
 
@@ -68,7 +68,7 @@ namespace SeleneGame.Core {
 
             cameraVector = Vector3.Slerp(cameraVector, cameraTargetVector, 3f * GameUtility.timeUnscaledDelta);
             
-            transform.rotation = PlayerEntityController.current.worldCameraRotation;
+            transform.rotation = Player.current.worldCameraRotation;
 
 
 
@@ -82,10 +82,10 @@ namespace SeleneGame.Core {
 
 
 
-            Vector3 followPosition = PlayerEntityController.current.entity["head"].transform.position + cameraOriginPosition;
+            Vector3 followPosition = Player.current.entity["head"].transform.position + cameraOriginPosition;
 
             // Make The Camera Movement slower on the Y axis than on the X axis
-            Vector3 camHorizontalPos = Vector3.ProjectOnPlane( followPosition, PlayerEntityController.current.entity.gravityDown );
+            Vector3 camHorizontalPos = Vector3.ProjectOnPlane( followPosition, Player.current.entity.gravityDown );
             // delayedHorizontalPosition = camHorizontalPos;
             if ( delayedHorizontalPosition != camHorizontalPos)
                 delayedHorizontalPosition = Vector3.SmoothDamp( delayedHorizontalPosition, camHorizontalPos, ref horizontalVelocity, horizontalSmoothTime, Mathf.Infinity, Time.deltaTime );

@@ -16,6 +16,14 @@
     #define CustomVertexDisplacement(output) DefaultVertexDisplacement(output)
 #endif
 
+#ifndef CustomClipping
+    bool DefaultClipping( in VertexOutput input ) {
+        return false;
+    }
+
+    #define CustomClipping(input) DefaultClipping(input)
+#endif
+
 #ifndef CustomFragment
     // Default fragment shader for Lit shader 
 

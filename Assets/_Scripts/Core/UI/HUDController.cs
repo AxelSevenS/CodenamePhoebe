@@ -86,10 +86,10 @@ namespace SeleneGame.Core.UI {
 
         private void LateUpdate() {
 
-            if ( PlayerEntityController.current == null ) return;
+            if ( Player.current == null ) return;
             
-            IInteractable interactCandidate = PlayerEntityController.current.interactionCandidate;
-            bool playerCanInteract = PlayerEntityController.current.canInteract && interactCandidate != null && interactCandidate.InteractDescription != String.Empty;
+            IInteractable interactCandidate = Player.current.interactionCandidate;
+            bool playerCanInteract = Player.current.canInteract && interactCandidate != null && interactCandidate.InteractDescription != String.Empty;
 
             interactCursor.gameObject.SetActive(playerCanInteract);
 

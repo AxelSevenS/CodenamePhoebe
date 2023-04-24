@@ -24,16 +24,16 @@ namespace SeleneGame.Core.UI {
             dialogueIndicator.enabled = !isTyping;
 
 
-            if (PlayerEntityController.current == null) return;
+            if (Player.current == null) return;
 
             // End the Dialogue if the player is too far away
-            if (dialogueObject != null && Vector3.SqrMagnitude(PlayerEntityController.current.entity.transform.position - dialogueObject.transform.position) > 100f)
+            if (dialogueObject != null && Vector3.SqrMagnitude(Player.current.entity.transform.position - dialogueObject.transform.position) > 100f)
                 InterruptDialogue();
 
             if (
-                PlayerEntityController.current.lightAttackInput.started || 
-                PlayerEntityController.current.heavyAttackInput.started || 
-                PlayerEntityController.current.jumpInput.started
+                Player.current.lightAttackInput.started || 
+                Player.current.heavyAttackInput.started || 
+                Player.current.jumpInput.started
             )
                 SkipLine();
 

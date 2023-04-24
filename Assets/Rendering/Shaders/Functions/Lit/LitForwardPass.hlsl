@@ -61,6 +61,8 @@ VertexOutput ForwardPassVertex(VertexInput input) {
 
 float4 ForwardPassFragment(VertexOutput input) : SV_Target {
 
+    CustomClipping(input);
+
     SurfaceData surfaceData = (SurfaceData)0;
     InputData inputData = (InputData)0;
     InitializeLightingData( surfaceData, inputData, input );

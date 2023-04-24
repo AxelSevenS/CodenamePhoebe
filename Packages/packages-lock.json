@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.cratesmith.assetui": {
+      "version": "https://github.com/Cratesmith/Cratesmith.AssetUI.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "cfcde2d6cc694e631290a7110c9bf26ce2452f66"
+    },
     "com.seven.easysplines": {
       "version": "https://github.com/AxelSevenS/EasySplines.git",
       "depth": 0,
@@ -30,7 +37,7 @@
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "23b69244b1168b2d87dc37345d93c087469c3877"
+      "hash": "f364b32fdda3cf7dc761d74c789d598d7d524576"
     },
     "com.unity.adaptiveperformance": {
       "version": "5.0.0",

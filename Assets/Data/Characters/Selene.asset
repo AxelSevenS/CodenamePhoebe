@@ -19,10 +19,10 @@ MonoBehaviour:
   size: {x: 0.5, y: 2, z: 0.5}
   stepHeight: 0.5
   weight: 40
-  jumpHeight: 19
-  baseSpeed: 10
-  acceleration: 100
-  sprintMultiplier: 1.5
+  jumpHeight: 20
+  baseSpeed: 11
+  acceleration: 125
+  sprintMultiplier: 1.35
   slowMultiplier: 0.5
   swimMultiplier: 0.85
   evadeSpeed: 40

@@ -19,7 +19,7 @@ namespace SeleneGame.Core {
             _entity = entity;
         }
 
-        protected internal abstract void HandleInput(PlayerEntityController contoller);
+        protected internal abstract void HandleInput(Player contoller);
 
 
         public virtual void Update() {;}

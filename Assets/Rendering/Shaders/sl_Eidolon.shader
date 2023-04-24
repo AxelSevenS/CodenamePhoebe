@@ -1,7 +1,7 @@
 Shader "Selene/Eidolon" {
     
     Properties {
-        [NoScaleOffset]_BaseMap ("Main Texture", 2D) = "white" {}
+        [NoScaleOffset]_MainTex ("Main Texture", 2D) = "white" {}
         [NoScaleOffset]_FlowMap ("Flow Texture", 2D) = "blue" {}
         [NoScaleOffset]_HuskMap ("Husk Texture", 2D) = "black" {}
 
@@ -21,8 +21,8 @@ Shader "Selene/Eidolon" {
 
             CBUFFER_START(UnityPerMaterial)
 
-            sampler2D _BaseMap;
-            float4 _BaseMap_ST;
+            sampler2D _MainTex;
+            float4 _MainTex_ST;
 
             sampler2D _FlowMap;
             float4 _FlowMap_ST;
@@ -34,16 +34,21 @@ Shader "Selene/Eidolon" {
             float _Scale = 1;
 
             CBUFFER_END
+
+            half4 baseColor;
             
             void StandardVertexDisplacement( inout VertexOutput output ) {
             }
 
-            void StandardFragment( inout SurfaceData surfaceData, inout InputData inputData, VertexOutput input ) {
-
-                half4 baseColor = FlowMap(_BaseMap, _FlowMap, input.uv, _Time[0] * 2, 0.5);
+            bool StandardClipping( in VertexOutput input ) {
+                baseColor = FlowMap(_MainTex, _FlowMap, input.uv, _Time[0] * 2, 0.5);
                 clip (baseColor.a <= 0.5 ? -1 : 0);
 
-                    
+                return false;
+            }
+
+            void StandardFragment( inout SurfaceData surfaceData, inout InputData inputData, VertexOutput input ) {
+
                 surfaceData.albedo = baseColor.rgb;
                 surfaceData.alpha = baseColor.a;
                 surfaceData.specular = 0;
@@ -56,9 +61,8 @@ Shader "Selene/Eidolon" {
                 output.positionWS += output.normalWS * _HuskDistance;
             }
 
-            void HuskFragment( inout SurfaceData surfaceData, inout InputData inputData, VertexOutput input ) {
-
-                half4 baseColor = tex2D(_HuskMap, input.uv);
+            bool HuskClipping( in VertexOutput input ) {
+                baseColor = tex2D(_HuskMap, input.uv);
                     
                 if (baseColor.a > 0.5) {
                     float waveScale = 5 * _Scale;
@@ -75,6 +79,11 @@ Shader "Selene/Eidolon" {
                 } else {
                     clip(-1);
                 }
+
+                return false;
+            }
+
+            void HuskFragment( inout SurfaceData surfaceData, inout InputData inputData, VertexOutput input ) {
 
                 surfaceData.albedo = baseColor.rgb;
                 surfaceData.alpha = baseColor.a;
@@ -96,6 +105,7 @@ Shader "Selene/Eidolon" {
             HLSLPROGRAM
 
                 #define CustomVertexDisplacement(output) StandardVertexDisplacement(output)
+                #define CustomClipping(output) StandardClipping(output)
                 #define CustomFragment(surfaceData, inputData, input) StandardFragment(surfaceData, inputData, input)
 
                 #include "Functions/Lit/LitSubShader.hlsl"
@@ -113,6 +123,7 @@ Shader "Selene/Eidolon" {
             HLSLPROGRAM
 
                 #define CustomVertexDisplacement(output) StandardVertexDisplacement(output)
+                #define CustomClipping(output) StandardClipping(output)
                 #define CustomFragment(surfaceData, inputData, input) StandardFragment(surfaceData, inputData, input)
 
                 #include "Functions/Lit/LitSubShader.hlsl"
@@ -130,10 +141,45 @@ Shader "Selene/Eidolon" {
             HLSLPROGRAM
 
                 #define CustomVertexDisplacement(output) HuskVertexDisplacement(output)
+                #define CustomClipping(output) HuskClipping(output)
                 #define CustomFragment(surfaceData, inputData, input) HuskFragment(surfaceData, inputData, input)
 
                 #include "Functions/Lit/LitSubShader.hlsl"
                 #include "Functions/Lit/LitForwardPass.hlsl"
+
+            ENDHLSL
+        }
+
+        Pass {
+            Name "DepthOnly"
+            Tags{"LightMode" = "DepthOnly"}
+
+            ZWrite On
+            ColorMask 0
+
+            HLSLPROGRAM
+
+                #define CustomClipping(output) StandardClipping(output)
+
+                #include "Functions/Lit/LitSubShader.hlsl"
+                #include "Functions/Lit/LitDepthOnlyPass.hlsl"
+
+            ENDHLSL
+        }
+
+        // This pass is used when drawing to a _CameraNormalsTexture texture
+        Pass {
+            Name "DepthNormals"
+            Tags{"LightMode" = "DepthNormals"}
+
+            ZWrite On
+
+            HLSLPROGRAM
+
+                #define CustomClipping(output) StandardClipping(output)
+
+                #include "Functions/Lit/LitSubShader.hlsl"
+                #include "Functions/Lit/LitDepthNormalsPass.hlsl"
 
             ENDHLSL
         }
@@ -145,6 +191,7 @@ Shader "Selene/Eidolon" {
         
             HLSLPROGRAM
             
+                #define CustomClipping(output) StandardClipping(output)
                 #define CustomVertexDisplacement(output) StandardVertexDisplacement(output)
 
                 #include "Functions/Lit/LitSubShader.hlsl"
@@ -166,7 +213,7 @@ Shader "Selene/Eidolon" {
 
                 void SimpleGIContribution( MetaVaryings varyings, inout half4 albedo, inout half4 specularColor) {
                     
-                    albedo = tex2D(_BaseMap, varyings.uv);
+                    albedo = tex2D(_MainTex, varyings.uv);
                     specularColor = 0.0.xxxx;
 
                 }

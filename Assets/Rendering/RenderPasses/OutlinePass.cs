@@ -8,20 +8,13 @@ namespace SeleneGame.Core {
 
     public class OutlinePass : ScriptableRenderPass {
 
-        private RenderTargetHandle _temporaryBuffer;
+        [SerializeField] private RenderTargetHandle _temporaryBuffer;
         [SerializeField] private OutlinePassSettings _settings;
-        [SerializeField] private Material _material;
 
         public OutlinePass(OutlinePassSettings settings) {
             _settings = settings;
 
-            _material = new Material(settings.outlineShader);
-
-            _material.SetColor("_OutlineColor", settings.outlineColor);
-            _material.SetFloat("_OutlineWidth", settings.outlineWidth);
-            _material.SetFloat("_NoiseScale", settings.noiseScale);
-            _material.SetFloat("_NoiseIntensity", settings.noiseIntensity);
-            
+            // _settings.outlineShader ??= Shader.Find("Hidden/Outline");
         }
 
         public override void Configure(CommandBuffer cmd, RenderTextureDescriptor cameraTextureDescriptor) {
@@ -30,18 +23,17 @@ namespace SeleneGame.Core {
 
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData) {
 
-            if (_material == null) {
-                Debug.LogError("Missing Shader. OutlinePass will not execute. Check for missing reference in the renderer resources.");
-                return;
-            }
+
 
             CommandBuffer cmd = CommandBufferPool.Get("OutlinePass");
+
+            RenderTargetIdentifier source = renderingData.cameraData.renderer.cameraColorTarget;
 
             using (new ProfilingScope(cmd, new ProfilingSampler("OutlinePass"))) {
                 context.ExecuteCommandBuffer(cmd);
                 cmd.Clear();
-                cmd.Blit(renderingData.cameraData.renderer.cameraColorTarget, _temporaryBuffer.Identifier(), _material);
-                cmd.Blit(_temporaryBuffer.Identifier(), renderingData.cameraData.renderer.cameraColorTarget);
+                cmd.Blit(source, _temporaryBuffer.Identifier(), _settings.outlineMaterial);
+                cmd.Blit(_temporaryBuffer.Identifier(), source);
             }
             
 
@@ -57,12 +49,25 @@ namespace SeleneGame.Core {
 
     [System.Serializable]
     public class OutlinePassSettings {
-        public Shader outlineShader;
+        // [SerializeField] private Shader _outlineShader;
+        // public Shader outlineShader {
+        //     get {
+        //         _outlineShader ??= Shader.Find("Hidden/Outline");
 
-        public Color outlineColor = Color.white;
-        public float outlineWidth = 0.1f;
+        //         return _outlineShader;
+        //     }
+        // }
 
-        public float noiseScale = 0.1f;
-        public float noiseIntensity = 0.1f;
+        // public Color outlineColor = Color.black;
+        // public float outlineWidthNormal = 0.1f;
+        // public float outlineCutoffNormal = 0.3f;
+
+        // public float outlineWidthDepth = 0.1f;
+        // public float outlineCutoffDepth = 0.3f;
+
+        // public float noiseScale = 0.1f;
+        // public float noiseIntensity = 0.1f;
+
+        public Material outlineMaterial;
     }
 }

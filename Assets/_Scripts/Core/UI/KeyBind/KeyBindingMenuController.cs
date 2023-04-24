@@ -12,7 +12,7 @@ using SevenGame.Utility;
 
 namespace SeleneGame.Core.UI {
     
-    public class KeyBindingMenuController : UIPausedMenu<KeyBindingMenuController> {
+    public class KeyBindingMenuController : UIMenu<KeyBindingMenuController>, IUIPausedMenu {
 
         [SerializeField] private GameObject keyBindingMenu;
         [SerializeField] private GameObject keyBindingContainer;

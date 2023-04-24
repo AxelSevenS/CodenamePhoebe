@@ -40,7 +40,7 @@ namespace SeleneGame.Content {
             moveSpeed = previousBehaviour.speed;
         }
 
-        protected override void HandleInput(PlayerEntityController controller){
+        protected override void HandleInput(Player controller){
 
             base.HandleInput(controller);
 

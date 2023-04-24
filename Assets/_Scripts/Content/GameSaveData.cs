@@ -26,7 +26,7 @@ namespace SeleneGame.Content {
 
             controls.Save();
 
-            playerData.Save(PlayerEntityController.current.entity);
+            playerData.Save(Player.current.entity);
 
             flags = ScribeFlags.flags;
         }
@@ -37,7 +37,7 @@ namespace SeleneGame.Content {
                 
             controls.Load();
 
-            playerData.Load(PlayerEntityController.current.entity);
+            playerData.Load(Player.current.entity);
 
             ScribeFlags.flags = flags;
         }

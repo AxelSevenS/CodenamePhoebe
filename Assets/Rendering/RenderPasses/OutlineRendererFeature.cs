@@ -7,20 +7,20 @@ namespace SeleneGame.Core {
 
     public class OutlineRendererFeature : ScriptableRendererFeature {
             
-        [SerializeField] private ViewSpaceNormalsPass _viewSpaceNormalsPass;
+        // [SerializeField] private ViewSpaceNormalsPass _viewSpaceNormalsPass;
         [SerializeField] private OutlinePass _outlinePass;
 
-        [SerializeField] private OutlinePassSettings _outlinePassSettings;
+        [SerializeField] private OutlinePassSettings _outlinePassSettings = new OutlinePassSettings(); 
 
         public override void Create() {
-            _viewSpaceNormalsPass = new ViewSpaceNormalsPass();
-            _viewSpaceNormalsPass.renderPassEvent = RenderPassEvent.AfterRenderingSkybox;
+            // _viewSpaceNormalsPass = new ViewSpaceNormalsPass();
+            // _viewSpaceNormalsPass.renderPassEvent = RenderPassEvent.AfterRenderingSkybox;
             _outlinePass = new OutlinePass(_outlinePassSettings);
             _outlinePass.renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing;
         }
 
         public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData) {
-            renderer.EnqueuePass(_viewSpaceNormalsPass);
+            // renderer.EnqueuePass(_viewSpaceNormalsPass);
             renderer.EnqueuePass(_outlinePass);
         }
     }

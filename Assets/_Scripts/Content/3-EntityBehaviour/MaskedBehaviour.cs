@@ -70,7 +70,7 @@ namespace SeleneGame.Content {
         }
 
 
-        protected override void HandleInput(PlayerEntityController controller){
+        protected override void HandleInput(Player controller){
 
             base.HandleInput(controller);
             

@@ -16,7 +16,6 @@ namespace SeleneGame.Core {
 
 
 
-
         public bool inWater => waterCollider != null;
         
         public float waterHeight => inWater ? waterCollider.ClosestPoint(transform.position + new Vector3(0, waterCollider.bounds.size.y, 0)).y : 0f;
@@ -41,12 +40,12 @@ namespace SeleneGame.Core {
             
         }
 
-        private void OnDrawGizmos() {
-            Gizmos.color = Color.red;
-            Vector3 waterPosition = transform.position;
-            waterPosition.y = totalWaterHeight;
-            Gizmos.DrawWireSphere(waterPosition, 0.1f);
-        }
+        // private void OnDrawGizmos() {
+        //     Gizmos.color = Color.red;
+        //     Vector3 waterPosition = transform.position;
+        //     waterPosition.y = totalWaterHeight;
+        //     Gizmos.DrawWireSphere(waterPosition, 0.1f);
+        // }
 
         private void OnEnable() => WaterManager.AddWaterDisplaceable(this);
         private void OnDisable() => WaterManager.RemoveWaterDisplaceable(this);

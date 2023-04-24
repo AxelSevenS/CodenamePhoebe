@@ -61,6 +61,8 @@ VertexOutput GBufferPassVertex(VertexInput input) {
 
 FragmentOutput GBufferPassFragment(VertexOutput input) : SV_Target {
 
+    CustomClipping(input);
+
     SurfaceData surfaceData = (SurfaceData)0;
     InputData inputData = (InputData)0;
     InitializeLightingData( surfaceData, inputData, input );

@@ -1,9 +1,6 @@
 #ifndef LIT_META_INPUT_INCLUDED
 #define LIT_META_INPUT_INCLUDED
 
-
-#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/MetaInput.hlsl"
-
 struct MetaAttributes {
     float4 positionOS   : POSITION;
     float3 normalOS     : NORMAL;
