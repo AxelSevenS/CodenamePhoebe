@@ -22,6 +22,7 @@ namespace SeleneGame.Core {
 
         public float objectLifeTime = 2f;
         public float damageLifeTime = 0.5f;
+        public float damageStartTime = 0f;
 
 
         public DamageData data => new DamageData(owner, damage, damageType, knockback, transform.forward);
@@ -65,6 +66,10 @@ namespace SeleneGame.Core {
                 owner?.Damage(parryData);
             } else {
                 // Send Projectile back
+            }
+
+            if (otherZone.owner == Player.current.entity) {
+                EntityManager.current.HardHitStop();
             }
             
             otherZone.owner?.AwardParry(otherZone.data);

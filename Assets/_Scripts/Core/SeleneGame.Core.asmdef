@@ -11,7 +11,8 @@
         "Seven.Utility",
         "Seven.Scribe",
         "Seven.EasySplines",
-        "Seven.Saving-System"
+        "Seven.Saving-System",
+        "Unity.Burst"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

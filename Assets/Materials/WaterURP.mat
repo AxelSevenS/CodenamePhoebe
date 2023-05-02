@@ -8,26 +8,22 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: WaterURP
-  m_Shader: {fileID: -6465566751694194690, guid: 50121865f07527f42971781a28c70af5,
-    type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 50121865f07527f42971781a28c70af5, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords:
-  - CEL_SPECULAR_ON
-  - SPECULARGRADIENT_ON
-  - _ADD_PRECOMPUTED_VELOCITY
-  - _DOUBLESIDED_ON
-  - _ENABLE_FOG_ON_TRANSPARENT
   - _SURFACE_TYPE_TRANSPARENT
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 1
-  m_CustomRenderQueue: 3000
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
   stringTagMap:
     MotionVector: User
   disabledShaderPasses:
   - RayTracingPrepass
   - TransparentDepthPostpass
   - TransparentBackface
+  - DepthOnly
+  - SHADOWCASTER
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -239,10 +235,8 @@ Material:
     - _ZWrite: 0
     - _ZWriteControl: 0
     m_Colors:
-    - Color_213be8c364f242cdbabe6ef25c0efbd9: {r: 0.13456745, g: 0.21295974, b: 0.4528302,
-        a: 1}
-    - Color_8b23519dc989478fa19369d8efda52f6: {r: 0.56136525, g: 0.75757015, b: 0.8207547,
-        a: 1}
+    - Color_213be8c364f242cdbabe6ef25c0efbd9: {r: 0.13456745, g: 0.21295974, b: 0.4528302, a: 1}
+    - Color_8b23519dc989478fa19369d8efda52f6: {r: 0.56136525, g: 0.75757015, b: 0.8207547, a: 1}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}

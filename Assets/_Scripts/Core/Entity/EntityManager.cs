@@ -27,25 +27,28 @@ namespace SeleneGame.Core {
             SetCurrent();
         }
 
-        public void PlayerHitStop(float damage) {
+        public void HardHitStop() {
             if (hitStopCoroutine != null)
                 StopCoroutine(hitStopCoroutine);
 
-            hitStopCoroutine = StartCoroutine(HitStop(damage * 5f));
+            hitStopCoroutine = StartCoroutine(HitStop(0.2f));
         }
 
-        public void EnemyHitStop(float damage) {
+        public void SoftHitStop() {
             if (hitStopCoroutine != null)
                 StopCoroutine(hitStopCoroutine);
 
-            hitStopCoroutine = StartCoroutine(HitStop(damage));
+            hitStopCoroutine = StartCoroutine(HitStop(0.1f));
         }
 
-        private IEnumerator HitStop(float damage) {
+        private IEnumerator HitStop(float time) {
+            float oldTimeScale = Time.timeScale > 0f ? Time.timeScale : 1f;
             Time.timeScale = 0f;
-            float time = Mathf.Pow(damage, 0.3f) * 0.5f;
-            yield return new WaitForSecondsRealtime(0.1f * time);
-            Time.timeScale = 1f;
+            yield return new WaitForSecondsRealtime(time);
+            
+            if (Time.timeScale == 0f){
+                Time.timeScale = oldTimeScale;
+            }
         }
     }
 }

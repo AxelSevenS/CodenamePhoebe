@@ -35,7 +35,7 @@ namespace SeleneGame.Core {
         public static Vector3 defaultCameraPosition = new Vector3(1f, 0f, -3.5f);
 
 
-        Collider[] _colliderBuffer = new Collider[5];
+        Collider[] _colliderBuffer = new Collider[15];
     
         public IInteractable interactionCandidate;
         
@@ -62,8 +62,8 @@ namespace SeleneGame.Core {
             }
 
 
-            const float interactionDistanceSqrt = 7.5f;
-            const float interactionDistance = interactionDistanceSqrt * interactionDistanceSqrt;
+            const float interactionDistance = 7.5f;
+            const float sqrInteractionDistance = interactionDistance * interactionDistance;
             const float interactionAngle = 0.5f;
 
             Physics.OverlapSphereNonAlloc(entity.transform.position, interactionDistance, buffer, Collision.EntityObjectMask);
@@ -80,15 +80,16 @@ namespace SeleneGame.Core {
 
                 if ( collisionTransform == entity.transform ) continue;
 
-                float distance = (collisionTransform.position - entity.transform.position).sqrMagnitude;
+                float sqrDistance = (collisionTransform.position - entity.transform.position).sqrMagnitude;
                 float angle = Vector3.Dot( (collisionTransform.position - entity.transform.position).normalized, entity.absoluteForward );
 
-                if ( distance > interactionDistance || angle < interactionAngle ) continue;
-                if ( distance > closestDistance || angle < closestAngle ) continue;
+                if ( sqrDistance > sqrInteractionDistance || angle < interactionAngle ) continue;
+                if ( sqrDistance > closestDistance || angle < closestAngle ) continue;
+                
 
-                if ( collisionTransform.TryGetComponent<IInteractable>(out var interactionComponent) && interactionComponent.IsInteractable ) {
+                if ( collisionTransform.TryGetComponent<IInteractable>(out IInteractable interactionComponent) && interactionComponent.IsInteractable ) {
                     candidate = interactionComponent;
-                    closestDistance = distance;
+                    closestDistance = sqrDistance;
                     closestAngle = angle;
                 }
                 

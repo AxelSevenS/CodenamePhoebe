@@ -13,10 +13,10 @@ namespace SeleneGame.Core {
         public float weight = 12f;
         public float jumpHeight = 16f;
 
-        public float baseSpeed = 10f;
+        public float baseSpeed = 8f;
+        public float sprintSpeed = 13f;
+        public float slowSpeed = 5f;
         public float acceleration = 100f;
-        public float sprintMultiplier = 1.5f;
-        public float slowMultiplier = 0.5f;
         public float swimMultiplier = 0.85f;
 
         public float evadeSpeed = 27f;

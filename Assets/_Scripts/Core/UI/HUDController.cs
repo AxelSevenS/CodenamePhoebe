@@ -89,14 +89,14 @@ namespace SeleneGame.Core.UI {
             if ( Player.current == null ) return;
             
             IInteractable interactCandidate = Player.current.interactionCandidate;
-            bool playerCanInteract = Player.current.canInteract && interactCandidate != null && interactCandidate.InteractDescription != String.Empty;
+            bool playerCanInteract = Player.current.canInteract && interactCandidate.InteractDescription != String.Empty;
 
             interactCursor.gameObject.SetActive(playerCanInteract);
 
             // Move the Interaction Prompt out of the screen if the player is not able to interact with the object
             float interactGUIXPos = playerCanInteract ? interactGUI.rect.width/2f + SCREENMARGIN : -interactGUI.rect.width; 
             float XPosLerp = Mathf.Lerp(interactGUI.anchoredPosition.x, interactGUIXPos, 15f * GameUtility.timeDelta);
-            interactGUI.anchoredPosition = new Vector2(XPosLerp, interactGUI.anchoredPosition.y); 
+            interactGUI.anchoredPosition = new Vector2(XPosLerp, interactGUI.anchoredPosition.y);
 
             if ( !playerCanInteract ) return;
 

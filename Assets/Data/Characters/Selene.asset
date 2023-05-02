@@ -17,13 +17,13 @@ MonoBehaviour:
   _baseCostume: {fileID: 11400000, guid: 993c489841ef0fd4d974e79a4d014409, type: 2}
   maxHealth: 100
   size: {x: 0.5, y: 2, z: 0.5}
-  stepHeight: 0.5
+  stepHeight: 1
   weight: 40
   jumpHeight: 20
-  baseSpeed: 11
-  acceleration: 125
-  sprintMultiplier: 1.35
-  slowMultiplier: 0.5
+  baseSpeed: 7.5
+  sprintSpeed: 13
+  slowSpeed: 5
+  acceleration: 85
   swimMultiplier: 0.85
   evadeSpeed: 40
   evadeDuration: 0.3

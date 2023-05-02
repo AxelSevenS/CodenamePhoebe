@@ -159,7 +159,7 @@ namespace SeleneGame.Core {
             //     displacement.y = Mathf.Max(displacement.y, entity.physicsComponent.totalWaterHeight + swimTreshold/2f - entity.transform.position.y);
             // }
 
-            entity.Displace( displacement, false, deltaTime: 1f );
+            entity.Displace( displacement, deltaTime: 1f );
 
 
 

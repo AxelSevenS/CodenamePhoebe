@@ -64,18 +64,49 @@ Shader "Selene/Outline" {
                 uniform sampler2D _ViewSpaceNormals;
 
 
-                static float2 sobelSamplePoints[5] = {
-                     /* float2(-1, 1), */ float2(0, 1), /* float2(1, 1), */
-                           float2(-1, 0), float2(0, 0), float2(1, 1),
-                    /* float2(-1, -1), */ float2(0, -1), /* float2(1, -1), */
+                // 5-point Sobel filter
+
+                static float2 samplePoints[5] = {
+                                   float2(0, 1),
+                    float2(-1, 0), float2(0, 0), float2(1, 1),
+                                   float2(0, -1),
                 };
 
-                // Weights for the y component
-                static float2 sobelMatrix[5] = {
-                     /* float2(1, 1),  */float2(0, 2), /* float2(-1, 1), */
-                           float2(2, 0), float2(0, 0), float2(-2, 0),
-                    /* float2(1, -1),  */float2(0, -2)/* , float2(-1, -1) */
+                static float2 convolutionMatrix[5] = {
+                                  float2(0, 2),
+                    float2(2, 0), float2(0, 0), float2(-2, 0),
+                                  float2(0, -2)
                 };
+
+
+                // 9-point Sobel filter
+
+                // static float2 samplePoints[9] = {
+                //     float2(-1, 1), float2(0, 1), float2(1, 1),
+                //     float2(-1, 0), float2(0, 0), float2(1, 1),
+                //     float2(-1, -1), float2(0, -1), float2(1, -1),
+                // };
+
+                // static float2 convolutionMatrix[9] = {
+                //     float2(1, 1), float2(0, 2), float2(-1, 1),
+                //     float2(2, 0), float2(0, 0), float2(-2, 0),
+                //     float2(1, -1), float2(0, -2), float2(-1, -1)
+                // };
+
+
+                // Laplacian filter
+
+                // static float2 samplePoints[9] = {
+                //     float2(-1, 1), float2(0, 1), float2(1, 1),
+                //     float2(-1, 0), float2(0, 0), float2(1, 1),
+                //     float2(-1, -1), float2(0, -1), float2(1, -1),
+                // };
+
+                // static float2 convolutionMatrix[9] = {
+                //     float2(-1, 0), float2(-1, 0), float2(-1, 0),
+                //     float2(-1, 0), float2(8, 0), float2(-1, 0),
+                //     float2(-1, 0), float2(-1, 0), float2(-1, 0)
+                // };
 
 
                 float4 SobelSampleNormal(float2 uv) {
@@ -86,13 +117,13 @@ Shader "Selene/Outline" {
                     
                     [unroll] for (int i = 0; i < 5; i++) {
 
-                        float2 uvOffset = sobelSamplePoints[i];
+                        float2 uvOffset = samplePoints[i];
                         uvOffset.x /= _ScreenParams.x;
                         uvOffset.y /= _ScreenParams.y;
                         
                         float3 normal = tex2D(_ViewSpaceNormals, uv + uvOffset * _NormalOutlineWidth);
                         
-                        float2 kernel = sobelMatrix[i];
+                        float2 kernel = convolutionMatrix[i];
                         // Accumulate samples for each coordinate
                         sobelX += normal.x * kernel;
                         sobelY += normal.y * kernel;
@@ -109,12 +140,12 @@ Shader "Selene/Outline" {
                     
                     [unroll] for (int i = 0; i < 5; i++) {
 
-                        float2 uvOffset = sobelSamplePoints[i];
+                        float2 uvOffset = samplePoints[i];
                         uvOffset.x /= _ScreenParams.x;
                         uvOffset.y /= _ScreenParams.y;
 
                         float depth = SampleSceneDepth(uv + uvOffset * _DepthOutlineWidth);
-                        sobel += depth * sobelMatrix[i];
+                        sobel += depth * convolutionMatrix[i];
                     }
                     // Get the final sobel value
                     return length(sobel);

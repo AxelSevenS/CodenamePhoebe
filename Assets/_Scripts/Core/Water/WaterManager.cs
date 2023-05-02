@@ -23,15 +23,19 @@ namespace SeleneGame.Core {
 
         [SerializeField] private ComputeShader waterDisplacementShader;
         [SerializeField] private WaterProfile _waterProfile;
-        [SerializeField] private List<Vector4> waves = new List<Vector4>();
+        [SerializeField] private List<Vector4> _waves = new List<Vector4>();
         
 
         public WaterProfile waterProfile {
             get => _waterProfile;
-            set {
-                TransitionToWaterProfile(value);
-            }
         }
+
+        public List<Vector4> waves {
+            get => _waves;
+        }
+
+
+        
 
         public void TransitionToWaterProfile(WaterProfile waterProfile) {
             
@@ -65,12 +69,12 @@ namespace SeleneGame.Core {
         private void UpdateWaveDataBuffer() {
             ReleaseWaveDataBuffer();
 
-            int count = waves.Count;
+            int count = _waves.Count;
             if (count == 0) return;
 
             gerstnerWavesBuffer = new GraphicsBuffer(GraphicsBuffer.Target.Structured, count, sizeof(float) * 4);
 
-            gerstnerWavesBuffer?.SetData(waves);
+            gerstnerWavesBuffer?.SetData(_waves);
             Shader.SetGlobalBuffer("_GerstnerWaves", gerstnerWavesBuffer);
         }
 
@@ -93,34 +97,34 @@ namespace SeleneGame.Core {
 
         private void WaterProfileFadeIn() {
             
-            int sharedCount = Math.Min(waves.Count, waterProfile.waves.Length);
-            int maxCount = Math.Max(waves.Count, waterProfile.waves.Length);
+            int sharedCount = Math.Min(_waves.Count, waterProfile.waves.Length);
+            int maxCount = Math.Max(_waves.Count, waterProfile.waves.Length);
 
-            int difference = waves.Count - waterProfile.waves.Length;
+            int difference = _waves.Count - waterProfile.waves.Length;
 
             // Add to current waves if there are more in the new profile
-            while (waves.Count < waterProfile.waves.Length) {
-                Vector4 addedWave = waterProfile.waves[waves.Count];
+            while (_waves.Count < waterProfile.waves.Length) {
+                Vector4 addedWave = waterProfile.waves[_waves.Count];
                 addedWave.z = 0f;
-                waves.Add(addedWave);
+                _waves.Add(addedWave);
             }
 
             // Update the waves
-            for ( int i = 0; i < waves.Count; i++ ) {
+            for ( int i = 0; i < _waves.Count; i++ ) {
                 if (i < sharedCount) {
-                    Vector4 updatedWave = Vector4.MoveTowards(waves[i], waterProfile.waves[i], 0.1f * GameUtility.timeDelta);
-                    waves[i] = updatedWave;
+                    Vector4 updatedWave = Vector4.MoveTowards(_waves[i], waterProfile.waves[i], 0.1f * GameUtility.timeDelta);
+                    _waves[i] = updatedWave;
                 } else {
-                    Vector4 updatedWave = waves[i];
+                    Vector4 updatedWave = _waves[i];
                     updatedWave.z = Mathf.MoveTowards(updatedWave.z, 0f, 0.1f * GameUtility.timeDelta);
-                    waves[i] = updatedWave;
+                    _waves[i] = updatedWave;
                 }
             }
 
             // Remove from current waves if there are less in the new profile AND the last wave in the current profile is zero
-            for (int i = waterProfile.waves.Length; i < waves.Count; i++) {
-                if (waves[i].z == 0f) {
-                    waves.RemoveAt(i);
+            for (int i = waterProfile.waves.Length; i < _waves.Count; i++) {
+                if (_waves[i].z == 0f) {
+                    _waves.RemoveAt(i);
                     i--;
                 }
             }
@@ -219,10 +223,10 @@ namespace SeleneGame.Core {
         }
 
         private void OnValidate() {
-            if (waves.ToArray() != waterProfile.waves) {
+            if (_waves.ToArray() != waterProfile.waves) {
                 if (!Application.isPlaying) {
-                    waves.Clear();
-                    waves.AddRange(waterProfile.waves);
+                    _waves.Clear();
+                    _waves.AddRange(waterProfile.waves);
                 } else {
                     TransitionToWaterProfile(waterProfile);
                 }

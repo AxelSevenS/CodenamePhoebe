@@ -171,6 +171,30 @@ namespace SeleneGame.Core {
             return false;
         }
 
+        private bool HandleStep() {
+
+            // Check for valid walk
+            Vector3 displacement = entity.absoluteForward * moveSpeed * GameUtility.timeDelta;
+            if ( !entity.onGround || !entity.character.model.ColliderCast(Vector3.zero, displacement.normalized * (displacement.magnitude + 0.15f), out RaycastHit walkHit, out _, 0.15f, Collision.GroundMask))
+                return false;
+
+
+            // Check for valid step
+            Vector3 checkOffset = entity.gravityDown * entity.character.data.stepHeight;
+            if (!entity.character.model.ColliderCast(displacement - checkOffset, checkOffset, out RaycastHit stepHit, out Collider castOrigin, 0f, Collision.GroundMask))
+                return false;
+
+            // Check if the step is low enough
+            Vector3 stepDisplacement = Vector3.Project(stepHit.point - entity.groundHit.point, entity.gravityDown);
+            if (stepDisplacement.sqrMagnitude > entity.character.data.stepHeight * entity.character.data.stepHeight)
+                return false;
+                
+
+            entity.transform.position += displacement + stepDisplacement;
+            return true;
+                
+        }
+
 
         public override void Update(){
 
@@ -220,9 +244,24 @@ namespace SeleneGame.Core {
             entity.character.model.RotateTowards(rotationForward, -entity.gravityDown);
 
 
-            float newSpeed = moveDirection.sqrMagnitude == 0f ? 0f : entity.character.data.baseSpeed;
-            if (movementSpeed != Entity.MovementSpeed.Normal) 
-                newSpeed *= movementSpeed == Entity.MovementSpeed.Fast ? entity.character.data.sprintMultiplier : entity.character.data.slowMultiplier;
+            // float newSpeed = moveDirection.sqrMagnitude == 0f ? 0f : entity.character.data.baseSpeed;
+            // if (movementSpeed != Entity.MovementSpeed.Normal) 
+            //     newSpeed *= movementSpeed == Entity.MovementSpeed.Fast ? entity.character.data.sprintMultiplier : entity.character.data.slowMultiplier;
+
+            float newSpeed = 0f;
+            if (moveDirection.sqrMagnitude != 0f) {
+                switch (movementSpeed) {
+                    case Entity.MovementSpeed.Slow:
+                        newSpeed = entity.character.data.slowSpeed;
+                        break;
+                    case Entity.MovementSpeed.Normal:
+                        newSpeed = entity.character.data.baseSpeed;
+                        break;
+                    case Entity.MovementSpeed.Fast:
+                        newSpeed = entity.character.data.sprintSpeed;
+                        break;
+                }
+            }
 
             // Acceleration is quicker than Deceleration 
             float speedDelta = newSpeed > moveSpeed ? 1f : 0.45f;
@@ -233,7 +272,9 @@ namespace SeleneGame.Core {
 
             Animation();
 
-            entity.Displace(entity.absoluteForward * moveSpeed);
+            if (!HandleStep()) {
+                entity.Displace(entity.absoluteForward * moveSpeed);
+            }
             
         }
 

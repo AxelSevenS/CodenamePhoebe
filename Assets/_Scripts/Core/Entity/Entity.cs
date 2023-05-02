@@ -330,6 +330,8 @@ namespace SeleneGame.Core {
 
             _health.maxAmount = _character?.data?.maxHealth ?? 1f;
 
+            _physicsComponent.size = _character?.data?.size ?? Vector3.one;
+
             onSetCharacter?.Invoke(_character);
         }
 
@@ -392,10 +394,12 @@ namespace SeleneGame.Core {
 
             if (damageData.owner == this) return;
 
-            if (isPlayer) {
-                EntityManager.current?.PlayerHitStop(damageData.amount);
-            } else if (damageData.owner.isPlayer) {
-                EntityManager.current?.EnemyHitStop(damageData.amount);
+            if (isPlayer || damageData.owner.isPlayer) {
+
+                if (damageData.damageType == DamageType.Critical)
+                    EntityManager.current.HardHitStop();
+                else
+                    EntityManager.current.SoftHitStop();
             }
 
             damageData.owner?.AwardDamage(damageData.amount, damageData.damageType);
@@ -451,7 +455,7 @@ namespace SeleneGame.Core {
         /// </remarks>
         /// <param name="direction">The direction to move in</param>
         /// <param name="canStep">If the Entity can move up or down stair steps, like on a slope.</param>
-        public void Displace(Vector3 direction, bool canStep = false, float deltaTime = -1f) {
+        public void Displace(Vector3 direction, float deltaTime = -1f) {
             if (direction.sqrMagnitude == 0f) return;
 
             if (deltaTime < 0f) deltaTime = GameUtility.timeDelta;
@@ -460,8 +464,38 @@ namespace SeleneGame.Core {
 
         }
 
-        public void DisplaceTo(Vector3 position, bool canStep = false, float deltaTime = -1f) {
-            Displace(position - transform.position, canStep, deltaTime);
+        public void DisplaceImmediate(Vector3 displacement, bool fixClipping = true/* , bool fixPenetration = true */) {
+            if (displacement.sqrMagnitude == 0f) return;
+
+
+            // stop the character from clipping into obstacles
+            RaycastHit walkHit = default;
+            Collider castOrigin = default;
+            bool castHit = fixClipping && character.model.ColliderCast(Vector3.zero, displacement.normalized * (displacement.magnitude + 0.15f), out walkHit, out castOrigin, 0.15f, Collision.GroundMask);
+
+            if (castHit) {
+                displacement = displacement.normalized * Mathf.Min(displacement.magnitude, walkHit.distance);
+            }
+
+
+            transform.position += displacement;
+
+
+            // move the character out of the object it's clipping into
+            Vector3 direction = default;
+            float distance = default;
+            bool penetrationHit = /* fixPenetration &&  */castHit && Physics.ComputePenetration(castOrigin, castOrigin.transform.position, castOrigin.transform.rotation, walkHit.collider, walkHit.collider.transform.position, walkHit.collider.transform.rotation, out direction, out distance);
+
+            if (penetrationHit) {
+                transform.position += direction * distance;
+            }
+
+
+            Physics.SyncTransforms();
+        }
+
+        public void DisplaceTo(Vector3 position, float deltaTime = -1f) {
+            Displace(position - transform.position, deltaTime);
         }
 
 
@@ -496,20 +530,7 @@ namespace SeleneGame.Core {
 
             Vector3 totalDisplacement = _totalMovement + (inertia * GameUtility.timeDelta);
 
-            if (totalDisplacement.sqrMagnitude == 0f) return;
-
-            bool castHit = character.model.ColliderCast(Vector3.zero, totalDisplacement.normalized * (totalDisplacement.magnitude + 0.15f), out RaycastHit walkHit, out Collider castOrigin, 0.15f, Collision.GroundMask);
-
-            if (castHit) {
-                totalDisplacement = totalDisplacement.normalized * Mathf.Min(totalDisplacement.magnitude, walkHit.distance);
-            }
-
-            transform.position += totalDisplacement;
-                
-            if ( castHit && Physics.ComputePenetration(castOrigin, castOrigin.transform.position, castOrigin.transform.rotation, walkHit.collider, walkHit.collider.transform.position, walkHit.collider.transform.rotation, out Vector3 direction, out float distance) ) {
-                // transform.position += Vector3.Project(direction * distance, totalDisplacement.normalized);
-                transform.position += direction * distance;
-            }
+            DisplaceImmediate(totalDisplacement);
 
             Physics.SyncTransforms();
             
@@ -523,6 +544,7 @@ namespace SeleneGame.Core {
             rigidbody.isKinematic = true;
             rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
             rigidbody.interpolation = RigidbodyInterpolation.None;
+            
 
             if (character == null) {
                 Debug.LogError($"Entity {name} has no Character assigned!", this);

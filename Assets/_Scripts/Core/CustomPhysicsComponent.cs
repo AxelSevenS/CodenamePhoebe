@@ -15,6 +15,9 @@ namespace SeleneGame.Core {
         [SerializeField] private float _waveHeight;
 
 
+        public Vector3 size = Vector3.one;
+
+
 
         public bool inWater => waterCollider != null;
         
@@ -56,7 +59,7 @@ namespace SeleneGame.Core {
             waterController = null;
 
             _colliderBuffer[0] = null;
-            Physics.OverlapSphereNonAlloc(transform.position, 5f, _colliderBuffer, Collision.WaterMask);
+            Physics.OverlapBoxNonAlloc(transform.position, size, _colliderBuffer, transform.rotation, Collision.WaterMask);
             foreach (Collider waterCollider in _colliderBuffer) {
                 if (waterCollider != null && waterCollider.TryGetComponent<WaterController>(out WaterController waterController)){
                     this.waterCollider = waterCollider;
