@@ -44,7 +44,6 @@ VertexOutput DepthNormalsVertex(VertexInput input) {
     InitializeVertexOutput(output, input);
 
 
-    // Dunno what this does, but it's in the URP default lit depth normals pass and it works so sure.
     VertexPositionInputs vertexInput = GetVertexPositionInputs(input.positionOS.xyz);
     VertexNormalInputs normalInput = GetVertexNormalInputs(input.normalOS, input.tangentOS);
 
@@ -71,11 +70,7 @@ VertexOutput DepthNormalsVertex(VertexInput input) {
 half4 DepthNormalsFragment(VertexOutput input) : SV_TARGET {
     UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
 
-    if (CustomClipping(input))
-        clip(-1);
 
-
-    // neither do I know what this does, but eh, it works
     #if defined(_GBUFFER_NORMALS_OCT)
         float3 normalWS = normalize(input.normalWS);
         float2 octNormalWS = PackNormalOctQuadEncode(normalWS);           // values between [-1, +1], must use fp32 on some platforms

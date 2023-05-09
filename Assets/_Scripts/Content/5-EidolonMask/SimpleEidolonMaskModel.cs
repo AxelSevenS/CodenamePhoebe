@@ -49,14 +49,13 @@ namespace SeleneGame.Content {
 
                 _costumeData = _model.GetComponent<ModelProperties>();
 
-                _animator = _model.GetComponent<Animator>();
                 _animator ??= _model.AddComponent<Animator>();
             }
         }
 
 
         private bool positionBlocked(Vector3 position) {
-            return Physics.SphereCast(mask.maskedEntity.modelTransform.position, 0.35f, position, out _, position.magnitude, Core.Collision.GroundMask);
+            return Physics.SphereCast(mask.maskedEntity.modelTransform.position, 0.35f, position, out _, position.magnitude, CollisionUtils.EntityCollisionMask);
         }
 
 

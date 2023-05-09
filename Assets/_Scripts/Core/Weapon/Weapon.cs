@@ -21,8 +21,8 @@ namespace SeleneGame.Core {
             SetCostume(costume);
         }
 
-        public virtual void HandleInput(EntityController controller) {
-            data?.HandleInput(this, controller);
+        public virtual void HandleInput(Player playerController) {
+            data?.HandleInput(this, playerController);
         }
 
         public virtual void LightAttack() {

@@ -32,8 +32,6 @@
     half4 DepthOnlyFragment(VertexOutput input) : SV_TARGET {
         UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
 
-        if (CustomClipping(input))
-            clip(-1);
         return 0;
     }
 

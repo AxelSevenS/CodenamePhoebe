@@ -112,6 +112,10 @@ namespace SeleneGame.Core {
             /// <see cref="LateUpdate"/>
 
             if ( other.TryGetComponent(out IDamageable damageable) || (other?.attachedRigidbody?.TryGetComponent(out damageable) ?? false) ) {
+                
+                if (owner == (System.Object)damageable)
+                    return;
+
                 _damagedEntities.Add(damageable);
             }
         }

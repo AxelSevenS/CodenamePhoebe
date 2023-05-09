@@ -90,7 +90,7 @@ Shader "Selene/Eidolon" {
                 surfaceData.specular = 0;
                 surfaceData.metallic = 0;
                 surfaceData.smoothness = 0;
-                surfaceData.emission = half3(0, 0, 0);
+                surfaceData.emission = surfaceData.albedo;
             }
 
 
@@ -145,7 +145,13 @@ Shader "Selene/Eidolon" {
                 #define CustomFragment(surfaceData, inputData, input) HuskFragment(surfaceData, inputData, input)
 
                 #include "Functions/Lit/LitSubShader.hlsl"
-                #include "Functions/Lit/LitForwardPass.hlsl"
+
+                // include the corresponding rendering path pass : forward, deferred
+                #ifdef GBUFFER
+                    // #include "Functions/Lit/LitGBufferPass.hlsl"
+                #else
+                    #include "Functions/Lit/LitForwardPass.hlsl"
+                #endif
 
             ENDHLSL
         }

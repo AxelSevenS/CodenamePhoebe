@@ -43,6 +43,10 @@ namespace SeleneGame.Core {
             _evadeBehaviour?.HandleInput(controller);
         }
 
+        protected internal virtual void HandleAI(AIController controller) {
+            
+        }
+
 
         protected internal abstract void Move(Vector3 direction);
         protected internal virtual void Jump() {

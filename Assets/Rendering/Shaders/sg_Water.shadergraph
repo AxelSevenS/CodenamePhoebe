@@ -6088,7 +6088,7 @@
     "m_AlphaClip": false,
     "m_CastShadows": false,
     "m_ReceiveShadows": true,
-    "m_CustomEditorGUI": "Needle.MarkdownShaderGUI",
+    "m_CustomEditorGUI": "",
     "m_SupportVFX": false
 }
 

@@ -19,15 +19,14 @@ MonoBehaviour:
   _baseCostume: {fileID: 11400000, guid: 88d05d19418b5cb4eb2b9561a0f90b20, type: 2}
   _weaponType: 4
   _weight: 1.25
-  inputEvents: []
-  lightAttackEvents:
+  inputEvents:
   - conditions:
       condition:
-        binaryModifier: 2
-        flagType: 0
-        flagName: 
-        operationType: 0
-        flagValue: 0
+        binaryModifier: 0
+        inputKey: 0
+        inputType: 1
+        holdTime: 0
+        doubleTapKey: 0
       subConditions: []
     actions:
     - eventType: 0
@@ -37,14 +36,14 @@ MonoBehaviour:
       damageZoneScale: {x: 1, y: 1, z: 1}
       parentToEntity: 1
       evadeDirection: {x: 0, y: 0, z: 0}
-  heavyAttackEvents:
+    name: SimpleSlash
   - conditions:
       condition:
-        binaryModifier: 2
-        flagType: 0
-        flagName: 
-        operationType: 0
-        flagValue: 0
+        binaryModifier: 0
+        inputKey: 1
+        inputType: 1
+        holdTime: 0
+        doubleTapKey: 0
       subConditions: []
     actions:
     - eventType: 0
@@ -54,3 +53,15 @@ MonoBehaviour:
       damageZoneScale: {x: 1, y: 1, z: 1}
       parentToEntity: 0
       evadeDirection: {x: 0, y: 0, z: 0}
+    name: SpinAttack
+  lightAttackEvents: []
+  heavyAttackEvents:
+  - conditions:
+      condition:
+        binaryModifier: 2
+        flagType: 0
+        flagName: 
+        operationType: 0
+        flagValue: 0
+      subConditions: []
+    actions: []

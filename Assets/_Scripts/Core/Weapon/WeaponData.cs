@@ -18,7 +18,7 @@ namespace SeleneGame.Core {
         public float weight => _weight;
 
 
-        public abstract void HandleInput(Weapon weapon, EntityController controller);
+        public abstract void HandleInput(Weapon weapon, Player playerController);
 
         public abstract void LightAttack(Weapon weapon);
 

@@ -36,6 +36,11 @@ namespace SeleneGame.Core {
         }
 
 
+        private void Awake() {
+            _amount = _maxAmount;
+            _damagedHealth = _amount;
+        }
+
         private void Update() {
 
             if ( _damagedHealthTimer.isDone )
@@ -44,11 +49,6 @@ namespace SeleneGame.Core {
                 _damagedHealthVelocity = 0f;
             }
         
-        }
-
-        private void Awake() {
-            _amount = _maxAmount;
-            _damagedHealth = _amount;
         }
     }
 }

@@ -35,12 +35,37 @@ namespace SeleneGame.Core {
         public static Vector3 defaultCameraPosition = new Vector3(1f, 0f, -3.5f);
 
 
-        Collider[] _colliderBuffer = new Collider[15];
-    
-        public IInteractable interactionCandidate;
+
+        [Header("Input")]
+
+        public KeyInputData lightAttackInput;
+        public KeyInputData heavyAttackInput;
+        public KeyInputData interactInput;
+        public KeyInputData jumpInput;
+        public KeyInputData evadeInput;
+        public KeyInputData walkInput;
+        public KeyInputData crouchInput;
+        public KeyInputData focusInput;
+        // public KeyInputData shiftInput;
+        public Vector2Data moveInput;
+        public Vector2Data lookInput;
+
+        public KeyInputData switchStyle1Input;
+        public KeyInputData switchStyle2Input;
+        public KeyInputData switchStyle3Input;
+        
+        #if UNITY_EDITOR
+            public KeyInputData debugInput;
+        #endif
         
 
         private Vector2 mousePos;
+
+
+
+        Collider[] _colliderBuffer = new Collider[15];
+    
+        public IInteractable interactionCandidate;
 
         public Quaternion softEntityRotation;
         public QuaternionData localCameraRotation;
@@ -54,6 +79,18 @@ namespace SeleneGame.Core {
 
 
 
+        public void RawInputToGroundedMovement(out Quaternion camRotation, out Vector3 groundedMovement){
+            Vector3 camRight = worldCameraRotation * Vector3.right;
+            Vector3 camUp = entity.transform.rotation * Vector3.up;
+            Vector3 camForward = Vector3.Cross(camRight, camUp).normalized;
+            camRotation = Quaternion.LookRotation(camForward, camUp);
+            groundedMovement = camRotation * new Vector3(moveInput.x, 0, moveInput.y).normalized;
+        }
+        public void RawInputToCameraRelativeMovement(out Quaternion camRotation, out Vector3 cameraRelativeMovement){
+            camRotation = worldCameraRotation;
+            cameraRelativeMovement = camRotation * new Vector3(moveInput.x, 0, moveInput.y);
+        }
+
         private IInteractable GetInteractionCandidate(Collider[] buffer){
 
             // if the entity is sitting, it can only interact with the seat
@@ -66,7 +103,7 @@ namespace SeleneGame.Core {
             const float sqrInteractionDistance = interactionDistance * interactionDistance;
             const float interactionAngle = 0.5f;
 
-            Physics.OverlapSphereNonAlloc(entity.transform.position, interactionDistance, buffer, Collision.EntityObjectMask);
+            Physics.OverlapSphereNonAlloc(entity.transform.position, interactionDistance, buffer, CollisionUtils.EntityObjectMask);
 
             IInteractable candidate = null;
             float closestDistance = float.PositiveInfinity;
@@ -169,22 +206,13 @@ namespace SeleneGame.Core {
             localCameraRotation.SetVal( Quaternion.LookRotation( Quaternion.Inverse(entity.transform.rotation) * direction, entity.transform.rotation * Vector3.up ) );
         }
 
-        public override void RawInputToGroundedMovement(out Quaternion camRotation, out Vector3 groundedMovement){
-            Vector3 camRight = worldCameraRotation * Vector3.right;
-            Vector3 camUp = entity.transform.rotation * Vector3.up;
-            Vector3 camForward = Vector3.Cross(camRight, camUp).normalized;
-            camRotation = Quaternion.LookRotation(camForward, camUp);
-            groundedMovement = camRotation * new Vector3(moveInput.x, 0, moveInput.y).normalized;
-        }
-        public override void RawInputToCameraRelativeMovement(out Quaternion camRotation, out Vector3 cameraRelativeMovement){
-            camRotation = worldCameraRotation;
-            cameraRelativeMovement = camRotation * new Vector3(moveInput.x, 0, moveInput.y);
-        }
-
         private void OnDrawGizmos() {
             // Gizmos.DrawIcon(transform.position, "bruh.jpg", true);
         }
 
+        private void Start() {
+            Reset();
+        }
 
         private void Update() {
 

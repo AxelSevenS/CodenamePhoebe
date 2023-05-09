@@ -22,8 +22,6 @@ Material:
   - RayTracingPrepass
   - TransparentDepthPostpass
   - TransparentBackface
-  - DepthOnly
-  - SHADOWCASTER
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -144,7 +142,7 @@ Material:
     - Vector1_45a27133fb8b4113a0746c0d1954c57b: 0.02
     - Vector1_4da6e98cbfa5408fb6352b485aa76d05: 0.08
     - Vector1_57cb41fdb69545e8b53a796761acb08d: 0
-    - Vector1_5be3734798f64a63b2827794b79391c3: 0.45
+    - Vector1_5be3734798f64a63b2827794b79391c3: 0.185
     - Vector1_612f9485f34849e0b56ae94c53f2bb8b: 1
     - Vector1_74ca7ed5c14b4ed087580befb16c5b2a: 0.47
     - Vector1_76a8f3bdc13d493dbc42eca7e6de6c4e: 0
@@ -153,7 +151,7 @@ Material:
     - Vector1_b266d7e71de2489ea084cb27060cacca: 0.5
     - Vector1_ba885a3188cc490b9d04d880f79cd1b0: 0.1
     - Vector1_bf79c34252fe4364976a552df388436c: 0.05
-    - Vector1_cc6e37850778480781084b62719d58c3: 0.45
+    - Vector1_cc6e37850778480781084b62719d58c3: 0.15
     - Vector1_d09cc377b0524610970658ffdacd497f: 0.3
     - Vector1_f133b62c64f14525895d4b7d5afdd79f: 0.3
     - Vector1_f586ab191e3e497491345288306a18c0: 0
@@ -242,7 +240,7 @@ Material:
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
-    - _Specular: {r: 1, g: 1, b: 1, a: 0}
+    - _Specular: {r: 4, g: 4, b: 4, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &2195735683574082861
 MonoBehaviour:

@@ -7,6 +7,8 @@ Shader "Selene/Outline" {
         _NotmalOutlineCutoff ("Normal Outline Cutoff", Range(0,1)) = 0.9999
         _DepthOutlineWidth ("Depth Outline Width", Float) = 0.5
         _DepthOutlineCutoff ("Depth Outline Cutoff", Range(0,1)) = 0.005
+        _MaskOutlineWidth ("Mask Outline Width", Float) = 1
+        _MaskOutlineCutoff ("Mask Outline Cutoff", Range(0,1)) = 0.1
         _NoiseScale ("Noise Scale", Range(0,1)) = 0
         _NoiseIntensity ("Noise Intensity", Range(0,1)) = 0
     }
@@ -31,6 +33,8 @@ Shader "Selene/Outline" {
                 float _NotmalOutlineCutoff;
                 float _DepthOutlineWidth;
                 float _DepthOutlineCutoff;
+                float _MaskOutlineWidth;
+                float _MaskOutlineCutoff;
                 float _NoiseScale;
                 float _NoiseIntensity;
 
@@ -62,6 +66,7 @@ Shader "Selene/Outline" {
                 #pragma fragment ForwardPassFragment
                 
                 uniform sampler2D _ViewSpaceNormals;
+                uniform sampler2D _OutlineMask;
 
 
                 // 5-point Sobel filter
@@ -151,6 +156,23 @@ Shader "Selene/Outline" {
                     return length(sobel);
                 }
 
+                float SobelSampleMask(float2 uv) {
+
+                    float2 sobel = 0;
+                    
+                    [unroll] for (int i = 0; i < 5; i++) {
+
+                        float2 uvOffset = samplePoints[i];
+                        uvOffset.x /= _ScreenParams.x;
+                        uvOffset.y /= _ScreenParams.y;
+
+                        float depth = tex2D(_OutlineMask, uv + uvOffset * 1).r;
+                        sobel += depth * convolutionMatrix[i];
+                    }
+                    // Get the final sobel value
+                    return length(sobel);
+                }
+
                 VertexOutput ForwardPassVertex(VertexInput input) {
                     
                     VertexOutput output = (VertexOutput)0;
@@ -164,6 +186,7 @@ Shader "Selene/Outline" {
                 float4 ForwardPassFragment(VertexOutput input) : SV_Target {
 
                     float3 sceneColor = tex2D(_MainTex, input.uv).rgb;
+                    // return tex2D(_OutlineMask, input.uv).r;
                     float3 outlineColor = lerp(sceneColor, _OutlineColor.rgb, _OutlineColor.a);
 
                     float sobelNormalIntensity = 0;
@@ -178,8 +201,14 @@ Shader "Selene/Outline" {
                         sobelDepthIntensity = SobelSampleDepth(input.uv);
                         sobelDepthIntensity = sobelDepthIntensity > _DepthOutlineCutoff ? 1 : 0;
                     }
+
+                    float sobelMaskIntensity = 0;
+                    if (_MaskOutlineWidth > 0 && _MaskOutlineCutoff < 1) {
+                        sobelMaskIntensity = SobelSampleMask(input.uv);
+                        sobelMaskIntensity = sobelMaskIntensity > _MaskOutlineCutoff ? 1 : 0;
+                    }
                     
-                    float sobelIntensity = saturate(max(sobelNormalIntensity, sobelDepthIntensity));
+                    float sobelIntensity = saturate(max(sobelNormalIntensity, max(sobelDepthIntensity, sobelMaskIntensity)));
                     
 
                     float3 finalColor = lerp(sceneColor, outlineColor, sobelIntensity);

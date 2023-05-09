@@ -27,9 +27,9 @@ namespace SeleneGame.Core {
 
 
 
-        public bool Evaluate(EntityController entityController) {
+        public bool Evaluate(Player playerController) {
 
-            KeyInputData keyInputData = GetInputData(entityController, inputKey);
+            KeyInputData keyInputData = GetInputData(playerController, inputKey);
 
             switch (inputType) {
                 default:
@@ -44,12 +44,12 @@ namespace SeleneGame.Core {
                 case InputConditionType.Held:
                     return keyInputData.Held(holdTime);
                 case InputConditionType.DoubleTapped:
-                    KeyInputData doubleTapKeyInputData = GetInputData(entityController, doubleTapKey);
+                    KeyInputData doubleTapKeyInputData = GetInputData(playerController, doubleTapKey);
                     return keyInputData.SimultaneousTap(doubleTapKeyInputData, holdTime);
             }
         }
 
-        private KeyInputData GetInputData(EntityController entityController, InputKey key) {
+        private KeyInputData GetInputData(Player entityController, InputKey key) {
             
             KeyInputData keyInputData;
             switch (key) {

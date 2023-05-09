@@ -30,8 +30,6 @@ namespace SeleneGame.Core {
             RenderTargetIdentifier source = renderingData.cameraData.renderer.cameraColorTarget;
 
             using (new ProfilingScope(cmd, new ProfilingSampler("OutlinePass"))) {
-                context.ExecuteCommandBuffer(cmd);
-                cmd.Clear();
                 cmd.Blit(source, _temporaryBuffer.Identifier(), _settings.outlineMaterial);
                 cmd.Blit(_temporaryBuffer.Identifier(), source);
             }

@@ -59,8 +59,8 @@ namespace SeleneGame.Core {
 
 
         private void LateUpdate() {
-            if (Player.current?.entity == null) return;
             
+            if (Player.current?.entity == null) return;
             
 
             Vector3 cameraRelativePosition = new Vector3(1f, 0f, -3.5f);
@@ -105,7 +105,7 @@ namespace SeleneGame.Core {
 
             // Check for collision with the camera
             const float distanceToWall = 0.4f;
-            if ( Physics.Raycast( delayedPosition, camPosition, out RaycastHit cameraCollisionHit, camPosition.magnitude + distanceToWall, Collision.GroundMask ) ){
+            if ( Physics.Raycast( delayedPosition, camPosition, out RaycastHit cameraCollisionHit, camPosition.magnitude + distanceToWall, CollisionUtils.EntityCollisionMask ) ){
 
                 Vector3 collisionToPlayer = delayedPosition - cameraCollisionHit.point;
                 Vector3 collisionTangent = Vector3.up;

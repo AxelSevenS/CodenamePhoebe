@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using SevenGame.Utility;
+using System;
+using System.Linq;
 
 namespace SeleneGame.Core {
     
@@ -51,9 +53,11 @@ namespace SeleneGame.Core {
         public Collider[] ColliderOverlap( float skinThickness, LayerMask layerMask ) {
             foreach (Collider collider in costumeData.colliders){
                 Collider[] hits = collider.ColliderOverlap( collider.transform.position, skinThickness, layerMask );
-                if ( hits.Length > 0 ) return hits;
+                
+                if ( hits.Length > 0 ) 
+                    return hits.Where( hit => !costumeData.colliders.Contains(hit) ).ToArray();
             }
-            return new Collider[0];
+            return Array.Empty<Collider>();
         }
 
 

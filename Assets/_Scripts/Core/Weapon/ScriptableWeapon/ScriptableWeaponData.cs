@@ -14,9 +14,9 @@ namespace SeleneGame.Core {
 
 
 
-        public override void HandleInput(Weapon weapon, EntityController controller) {
+        public override void HandleInput(Weapon weapon, Player playerController) {
             foreach (WeaponInputEvent inputEvent in inputEvents) {
-                if (inputEvent.Evaluate(controller)) {
+                if (inputEvent.Evaluate(playerController)) {
                     inputEvent.Invoke(weapon);
                 }
             }

@@ -107,6 +107,8 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
+    - _MaskOutlineCutoff: 0.1
+    - _MaskOutlineWidth: 0
     - _Metallic: 0
     - _NoiseIntensity: 0
     - _NoiseScale: 0

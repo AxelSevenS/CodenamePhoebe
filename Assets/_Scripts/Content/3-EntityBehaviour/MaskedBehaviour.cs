@@ -26,16 +26,6 @@ namespace SeleneGame.Content {
 
 
         public override float gravityMultiplier => 0f;
-        // public override Vector3 cameraPosition {
-        //     get {
-        //         float additionalCameraDistance = 0f; //(maskedEntity.focusing ? -0.7f : 0f) + (maskedEntity.walkSpeed == Entity.WalkSpeed.sprint ? 0.4f : 0f);
-        //         if (shiftFalling) {
-        //             return new Vector3(0f, 1f, -4f) - new Vector3(0,0,additionalCameraDistance);
-        //         } else {
-        //             return new Vector3(0.7f, 0.8f, -2.5f) - new Vector3(0,0,additionalCameraDistance);
-        //         }
-        //     }
-        // }
 
         public override Vector3 direction => shiftFalling ? fallDirection : flyDirection;
         public override float speed => entity.rigidbody.velocity.magnitude;
@@ -47,15 +37,7 @@ namespace SeleneGame.Content {
         protected override bool canParry => base.canParry;
 
 
-        public MaskedBehaviour(Entity entity, EntityBehaviour previousBehaviour) : base(entity, previousBehaviour) {
-            if (entity is MaskedEntity maskedEntity) {
-                this.maskedEntity = maskedEntity;
-            } else {
-                Debug.LogError("MaskedBehaviour requires a MaskedEntity");
-                entity.ResetBehaviour();
-                return;
-            }
-
+        public MaskedBehaviour(MaskedEntity entity, EntityBehaviour previousBehaviour) : base(entity, previousBehaviour) {
             _evadeBehaviour = new EvadeBehaviour(maskedEntity);
 
             if (previousBehaviour == null) return;
@@ -166,7 +148,7 @@ namespace SeleneGame.Content {
                 return;
             }
             
-            bool hitGround = Physics.Raycast(maskedEntity.transform.position, fallDirection.normalized, out RaycastHit fallCursorHit, 200f, Core.Collision.GroundMask);
+            bool hitGround = Physics.Raycast(maskedEntity.transform.position, fallDirection.normalized, out RaycastHit fallCursorHit, 200f, CollisionUtils.GroundMask);
             bool inLineOfSight = Vector3.Dot(maskedEntity.transform.forward, fallDirection) > 0;
 
             if ( !(hitGround && inLineOfSight) ) {

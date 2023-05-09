@@ -33,8 +33,8 @@ namespace SeleneGame.Core {
         }
 
 
-        public virtual void HandleInput(EntityController controller) {
-            current?.HandleInput(controller);
+        public virtual void HandleInput(Player playerController) {
+            current?.HandleInput(playerController);
         }
 
         public virtual void LightAttack() {

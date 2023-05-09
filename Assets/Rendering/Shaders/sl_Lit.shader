@@ -11,6 +11,7 @@ Shader "Selene/Lit" {
 
 
         [MaterialToggle] _ProximityDither ("Proximity Dither", Float) = 0
+        [MaterialToggle] _Outline ("Outline", Float) = 1
 
         _EmissionIntensity ("Emission Intensity", Float) = 1
 
@@ -40,6 +41,7 @@ Shader "Selene/Lit" {
                 float _Smoothness;
 
                 float _ProximityDither;
+                float _Outline;
 
                 float _EmissionIntensity;
 
@@ -114,6 +116,45 @@ Shader "Selene/Lit" {
 
                 #include "Functions/Lit/LitSubShader.hlsl"
                 #include "Functions/Lit/LitGBufferPass.hlsl"
+
+            ENDHLSL
+        }
+
+        Pass
+        {
+            Name "OutlineMask"
+            Tags{"LightMode" = "Outline"}
+
+            HLSLPROGRAM
+            
+                #pragma vertex vert
+                #pragma fragment frag
+
+                
+                struct appdata {
+                    float4 vertex : POSITION;
+                    float2 uv : TEXCOORD0;
+                };
+
+                struct v2f {                
+                    float4 vertex : SV_POSITION;
+                    float2 uv : TEXCOORD0;
+                };
+
+                v2f vert(appdata v) {
+                    v2f o;
+                    o.vertex = mul(UNITY_MATRIX_MVP, v.vertex);
+                    o.uv = v.uv;
+                    return o;
+                }
+
+                half4 frag(v2f i) : SV_Target {
+                    if (_Outline > 0) {
+                        return 1;
+                    }
+                    clip(-1);
+                    return 0;
+                }
 
             ENDHLSL
         }

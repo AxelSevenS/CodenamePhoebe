@@ -21,6 +21,7 @@ namespace SeleneGame.Core {
 
         public const float LIGHTWEIGHT_THRESHOLD = 20f;
         public const float HEAVYWEIGHT_THRESHOLD = 50f;
+
         
     
         [Tooltip("The entity's current Animator.")]
@@ -363,6 +364,9 @@ namespace SeleneGame.Core {
         public virtual void HandleInput(Player controller) {
             behaviour?.HandleInput(controller);
         }
+        public virtual void HandleAI(AIController controller) {
+            behaviour?.HandleAI(controller);
+        }
 
 
         public virtual void Move(Vector3 direction) {
@@ -464,6 +468,33 @@ namespace SeleneGame.Core {
 
         }
 
+        public bool DisplaceStep(Vector3 direction, float deltaTime = -1f) {
+            if (direction.sqrMagnitude == 0f) return false;
+
+            if (deltaTime < 0f) deltaTime = GameUtility.timeDelta;
+
+            // Check for valid walk
+            Vector3 displacement = direction * deltaTime;
+            if ( !onGround || !character.model.ColliderCast(Vector3.zero, displacement.normalized * (displacement.magnitude + 0.15f), out RaycastHit walkHit, out _, 0.15f, CollisionUtils.EntityCollisionMask))
+                return false;
+
+
+            // Check for valid step
+            Vector3 checkOffset = gravityDown * character.data.stepHeight;
+            if (!character.model.ColliderCast(displacement - checkOffset, checkOffset, out RaycastHit stepHit, out Collider castOrigin, 0f, CollisionUtils.EntityCollisionMask))
+                return false;
+
+            // Check if the step is low enough
+            Vector3 stepDisplacement = Vector3.Project(stepHit.point - groundHit.point, gravityDown);
+            if (stepDisplacement.sqrMagnitude > character.data.stepHeight * character.data.stepHeight)
+                return false;
+
+
+            transform.position += displacement + stepDisplacement;
+            return true;
+
+        }
+        
         public void DisplaceImmediate(Vector3 displacement, bool fixClipping = true/* , bool fixPenetration = true */) {
             if (displacement.sqrMagnitude == 0f) return;
 
@@ -471,7 +502,7 @@ namespace SeleneGame.Core {
             // stop the character from clipping into obstacles
             RaycastHit walkHit = default;
             Collider castOrigin = default;
-            bool castHit = fixClipping && character.model.ColliderCast(Vector3.zero, displacement.normalized * (displacement.magnitude + 0.15f), out walkHit, out castOrigin, 0.15f, Collision.GroundMask);
+            bool castHit = fixClipping && character.model.ColliderCast(Vector3.zero, displacement.normalized * (displacement.magnitude + 0.15f), out walkHit, out castOrigin, 0.15f, CollisionUtils.EntityCollisionMask);
 
             if (castHit) {
                 displacement = displacement.normalized * Mathf.Min(displacement.magnitude, walkHit.distance);
@@ -537,6 +568,21 @@ namespace SeleneGame.Core {
             _totalMovement = Vector3.zero;
         }
 
+        private void EntityCollision() {
+                
+            if (character.model == null) return;
+
+            Collider[] overlaps = character.model.ColliderOverlap(0f, CollisionUtils.EntityObjectMask);
+
+            foreach (Collider overlap in overlaps) {
+                
+                Vector3 displacement = Vector3.ProjectOnPlane((transform.position - overlap.transform.position), gravityDown);
+
+                _totalMovement += displacement * GameUtility.timeDelta;
+            }
+    
+        }
+
         protected virtual void Start(){
             transform.rotation = Quaternion.identity;
             absoluteForward = transform.forward;
@@ -544,6 +590,8 @@ namespace SeleneGame.Core {
             rigidbody.isKinematic = true;
             rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
             rigidbody.interpolation = RigidbodyInterpolation.None;
+            
+            GameUtility.SetLayerRecursively(gameObject, LayerMask.NameToLayer("EntityObject"));
             
 
             if (character == null) {
@@ -579,9 +627,9 @@ namespace SeleneGame.Core {
         protected virtual void Update(){
 
             bool closeToGround = false;
-            bool castHit = character.model.ColliderCast(Vector3.zero, gravityDown.normalized * 0.35f, out groundHit, out Collider castOrigin, 0.15f, Collision.GroundMask);
+            bool castHit = character.model.ColliderCast(Vector3.zero, gravityDown.normalized * 0.35f, out groundHit, out Collider castOrigin, 0.15f, CollisionUtils.EntityCollisionMask);
             if (castHit) {
-                closeToGround = castOrigin.ColliderCast(castOrigin.transform.position, gravityDown.normalized * 0.1f, out _, 0.15f, Collision.GroundMask);
+                closeToGround = castOrigin.ColliderCast(castOrigin.transform.position, gravityDown.normalized * 0.1f, out _, 0.15f, CollisionUtils.EntityCollisionMask);
             }
             groundDetected.SetVal( castHit );
             onGround.SetVal( closeToGround );
@@ -599,6 +647,7 @@ namespace SeleneGame.Core {
             character?.LateUpdate();
 
             Gravity();
+            EntityCollision();
             ExecuteMovement();
         }
 
@@ -618,10 +667,11 @@ namespace SeleneGame.Core {
         }
 
         protected virtual void OnTriggerEnter(Collider collider) {
-            if (collider.gameObject.tag == "Anchor") {
-                anchorTransform = collider.transform;
-                transform.SetParent(this.anchorTransform);
-            }
+            if (collider.gameObject.tag != "Anchor")
+                return;
+
+            anchorTransform = collider.transform;
+            transform.SetParent(this.anchorTransform);
         }
 
         protected virtual void OnTriggerStay(Collider collider) {
