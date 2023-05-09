@@ -20,17 +20,11 @@ namespace SeleneGame.Core.UI {
         [SerializeField] private Text bindText;
 
 
-
-        public override void OnSelect(BaseEventData eventData) {
-            base.OnSelect(eventData);
-        }
-        public override void OnDeselect(BaseEventData eventData) {
-            base.OnDeselect(eventData);
-        }
-        public override void OnPointerClick(PointerEventData eventData) {
-            base.OnPointerClick(eventData);
+        public override void OnSubmit(BaseEventData eventData) {
+            base.OnSubmit(eventData);
             StartAssignment();
         }
+        
 
         public void StartAssignment() {
 
@@ -75,10 +69,12 @@ namespace SeleneGame.Core.UI {
 
         
         
-        private void OnEnable() {
+        protected override void OnEnable() {
+            base.OnEnable();
             Keybinds.onUpdateKeybind += UpdateKeybind;
         }
-        private void OnDisable() {
+        protected override void OnDisable() {
+            base.OnDisable();
             Keybinds.onUpdateKeybind -= UpdateKeybind;
         }
 

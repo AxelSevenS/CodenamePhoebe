@@ -40,10 +40,10 @@ namespace SeleneGame.Core.UI {
 
 
 
-        public override void OnPointerClick(PointerEventData eventData) {
-            base.OnPointerClick(eventData);
+        public override void OnSubmit(BaseEventData eventData) {
+            base.OnSubmit(eventData);
             Debug.Log($"Weapon case {nameText} clicked");
-            WeaponCostumeSelectionMenuController.current.OnSelectWeaponCostume(_weaponCostume);
+            WeaponCostumeSelectionMenuController.current.onWeaponCostumeSelected(_weaponCostume);
         }
     }
     

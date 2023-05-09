@@ -30,13 +30,11 @@ namespace SeleneGame.Core.UI {
 
             base.Enable();
 
-            GetEntityWeapons();
-
             weaponInventoryMenu.SetActive( true );
 
-            ResetGamePadSelection();
-
             UIController.current.UpdateMenuState();
+
+            GetEntityWeapons();
         }
 
         [ContextMenu("Disable")]
@@ -49,7 +47,7 @@ namespace SeleneGame.Core.UI {
         }
 
         public override void ResetGamePadSelection(){
-            EventSystem.current.SetSelectedGameObject(weapons[0].gameObject);
+            SetSelected(weapons[0].gameObject);
         }
 
 
@@ -64,6 +62,9 @@ namespace SeleneGame.Core.UI {
 
             for (int i = 0; i < selectedEntity.weapons.Count; i++) {
                 CreateWeaponSlot(i, selectedEntity);
+
+                if (i == 0) 
+                    ResetGamePadSelection();
             }
 
             // } else {
@@ -83,18 +84,13 @@ namespace SeleneGame.Core.UI {
 
             weaponSlot.SetDisplayWeapon(selectedEntity.weapons[index]);
             weaponSlot.primaryAction = () => {
-                WeaponSelectionMenuController.current.ReplaceWeapon(index, selectedEntity);
+                WeaponSelectionMenuController.current.OpenSetEntityWeaponMenu(index, selectedEntity);
             };
             weaponSlot.secondaryAction = () => {
-                WeaponCostumeSelectionMenuController.current.ReplaceWeaponCostume(index, selectedEntity);
+                WeaponCostumeSelectionMenuController.current.OpenSetWeaponCostumeMenu(index, selectedEntity);
             };
             
             weapons.Add( weaponSlot );
-            if (weapons.Count > 1) {
-                WeaponSlot previousSlot = weapons[weapons.Count - 2];
-                previousSlot.elementDown = weaponSlot;
-                weaponSlot.elementUp = previousSlot;
-            }
 
         }
 

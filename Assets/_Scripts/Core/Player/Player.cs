@@ -210,7 +210,7 @@ namespace SeleneGame.Core {
             // Gizmos.DrawIcon(transform.position, "bruh.jpg", true);
         }
 
-        private void Start() {
+        private void OnEnable() {
             Reset();
         }
 

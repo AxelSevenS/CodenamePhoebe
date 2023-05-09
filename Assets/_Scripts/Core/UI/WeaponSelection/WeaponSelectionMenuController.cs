@@ -18,15 +18,15 @@ namespace SeleneGame.Core.UI {
         public const int WEAPON_CASES_PER_ROW = 5;
 
         
+        [SerializeField] [HideInInspector] private ArmedEntity currentEntity;
 
         [SerializeField] private GameObject weaponSelectionMenu;
         [SerializeField] private GameObject weaponSelectionContainer;
         [SerializeField] private GameObject weaponCaseTemplate;
         
-        [SerializeField] private List<Weapon> equippedWeapons = new List<Weapon>();
         [SerializeField] private List<WeaponCase> weapons = new List<WeaponCase>();
 
-        private Action<WeaponData> onWeaponDataSelected;
+        public Action<WeaponData> onWeaponDataSelected { get; private set; }
 
 
         // private static void 
@@ -52,52 +52,46 @@ namespace SeleneGame.Core.UI {
         }
 
         public override void ResetGamePadSelection(){
-            EventSystem.current.SetSelectedGameObject(weapons[0].gameObject);
+            SetSelected(weapons[0].gameObject);
         }
 
         public override void OnCancel() {
-            WeaponInventoryMenuController.current.Enable();
+            WeaponInventoryMenuController.current.OpenInventory(currentEntity);
         }
         
 
-        public void ReplaceWeapon(int index, ArmedEntity armedEntity) {
+        public void OpenSetEntityWeaponMenu(int index, ArmedEntity armedEntity) {
 
-            onWeaponDataSelected = (selectedWeapon) => {
-                armedEntity.weapons.Set(index, selectedWeapon);
-                OnCancel();
-            };
+            currentEntity = armedEntity;
 
-            GetEntityWeapons(armedEntity);
-            GetAllAvailableWeapons();
+            onWeaponDataSelected = (selectedWeapon) => SetEntityWeapon(selectedWeapon, index, armedEntity);
 
             Enable();
+
+            GetAllAvailableWeapons();
         }
 
 
-        public void OnSelectWeapon(WeaponData weapon) {
-            if ( !Enabled ) return;
-            onWeaponDataSelected?.Invoke( weapon );
+        private void SetEntityWeapon(WeaponData selectedWeapon, int index, ArmedEntity armedEntity) {
+            if (!Enabled)
+                return;
+
+            armedEntity.weapons.Set(index, selectedWeapon);
+            OnCancel();
         }
 
-        private void GetEntityWeapons(ArmedEntity armedEntity) {
-            equippedWeapons.Clear();
-            
-            foreach ( Weapon weapon in armedEntity.weapons) {
-                equippedWeapons.Add(weapon);
-            }
-        }
 
         private void GetAllAvailableWeapons() {
 
             if (weapons == null) {
                 weapons = new List<WeaponCase>();
             } else if (weapons.Count > 0) {
+                ResetGamePadSelection();
                 return;
             }
 
             
             CreateWeaponCase(null);
-            ResetGamePadSelection();
 
             AddressablesUtils.GetAssets<WeaponData>((data) => {
 
@@ -108,6 +102,7 @@ namespace SeleneGame.Core.UI {
                 }
 
             );
+            ResetGamePadSelection();
 
 
         }
@@ -117,20 +112,7 @@ namespace SeleneGame.Core.UI {
             var weaponCase = caseObject.GetComponentInChildren<WeaponCase>();
 
             weaponCase.SetDisplayWeapon(weapon);
-            
             weapons.Add( weaponCase );
-            if (weapons.Count > 1) {
-                WeaponCase previousCase = weapons[weapons.Count - 2];
-                previousCase.elementRight = weaponCase;
-                weaponCase.elementLeft = previousCase;
-            }
-
-            if (weapons.Count > WEAPON_CASES_PER_ROW) {
-                WeaponCase aboveCase = weapons[weapons.Count - (WEAPON_CASES_PER_ROW + 1)];
-                aboveCase.elementDown = weaponCase;
-                weaponCase.elementUp = aboveCase;
-            }
-
         }
 
 

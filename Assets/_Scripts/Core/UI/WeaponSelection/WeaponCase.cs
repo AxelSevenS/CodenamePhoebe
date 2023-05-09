@@ -42,10 +42,10 @@ namespace SeleneGame.Core.UI {
 
 
 
-        public override void OnPointerClick(PointerEventData eventData) {
-            base.OnPointerClick(eventData);
-            Debug.Log($"Weapon case {weaponName.text} clicked");
-            WeaponSelectionMenuController.current.OnSelectWeapon(_weaponData);
+        public override void OnSubmit(BaseEventData eventData) {
+            base.OnSubmit(eventData);
+            Debug.Log($"Weapon case {weaponName.text} submitted");
+            WeaponSelectionMenuController.current.onWeaponDataSelected?.Invoke(_weaponData);
         }
     }
     

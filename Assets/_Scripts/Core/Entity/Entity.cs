@@ -578,7 +578,7 @@ namespace SeleneGame.Core {
                 
                 Vector3 displacement = Vector3.ProjectOnPlane((transform.position - overlap.transform.position), gravityDown);
 
-                _totalMovement += displacement * GameUtility.timeDelta;
+                _totalMovement += displacement * GameUtility.timeDelta * 2f;
             }
     
         }
@@ -591,7 +591,7 @@ namespace SeleneGame.Core {
             rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
             rigidbody.interpolation = RigidbodyInterpolation.None;
             
-            GameUtility.SetLayerRecursively(gameObject, LayerMask.NameToLayer("EntityObject"));
+            GameUtility.SetLayerRecursively(gameObject, CollisionUtils.EntityObjectLayer);
             
 
             if (character == null) {

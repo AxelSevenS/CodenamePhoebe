@@ -49,7 +49,7 @@ namespace SeleneGame.Core.UI {
         }
 
         public override void ResetGamePadSelection(){
-            EventSystem.current.SetSelectedGameObject(characterCostumes[0].gameObject);
+            SetSelected(characterCostumes[0].gameObject);
         }
 
         public override void OnCancel() {
@@ -81,6 +81,7 @@ namespace SeleneGame.Core.UI {
             if (characterCostumes == null) {
                 characterCostumes = new List<CharacterCostumeCase>();
             } else if (characterCostumes.Count > 0) {
+                ResetGamePadSelection();
                 return;
             }
 
@@ -111,19 +112,6 @@ namespace SeleneGame.Core.UI {
             var costumeCase = caseObject.GetComponentInChildren<CharacterCostumeCase>();
             costumeCase.characterCostume = costume;
             characterCostumes.Add( costumeCase );
-
-            if (characterCostumes.Count > 1) {
-                CharacterCostumeCase previousCase = characterCostumes[characterCostumes.Count - 2];
-                previousCase.elementRight = costumeCase;
-                costumeCase.elementLeft = previousCase;
-            }
-
-            if (characterCostumes.Count > CHARACTER_COSTUME_CASES_PER_ROW) {
-                CharacterCostumeCase aboveCase = characterCostumes[characterCostumes.Count - (CHARACTER_COSTUME_CASES_PER_ROW + 1)];
-                aboveCase.elementDown = costumeCase;
-                costumeCase.elementUp = aboveCase;
-            }
-
         }
 
 

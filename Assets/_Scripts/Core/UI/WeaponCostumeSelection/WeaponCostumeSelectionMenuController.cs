@@ -24,7 +24,7 @@ namespace SeleneGame.Core.UI {
         
         [SerializeField] private List<WeaponCostumeCase> weaponCostumes = new List<WeaponCostumeCase>();
 
-        private Action<WeaponCostume> onWeaponCostumeSelected;
+        public Action<WeaponCostume> onWeaponCostumeSelected { get; private set; }
 
 
 
@@ -47,7 +47,7 @@ namespace SeleneGame.Core.UI {
         }
 
         public override void ResetGamePadSelection(){
-            EventSystem.current.SetSelectedGameObject(weaponCostumes[0].gameObject);
+            SetSelected(weaponCostumes[0].gameObject);
         }
 
         public override void OnCancel() {
@@ -55,26 +55,24 @@ namespace SeleneGame.Core.UI {
         }
         
 
-        public void ReplaceWeaponCostume(int weaponIndex, ArmedEntity armedEntity) {
+        public void OpenSetWeaponCostumeMenu(int weaponIndex, ArmedEntity armedEntity) {
 
             Weapon weapon = armedEntity.weapons[weaponIndex];
 
             if (weapon == null) return;
 
-            onWeaponCostumeSelected = (selectedCostume) => {
-                weapon.SetCostume((selectedCostume));
-                OnCancel();
-            };
-
-            GetEquippableCostumes(weapon);
+            onWeaponCostumeSelected = (selectedCostume) => SetWeaponCostume(weapon, selectedCostume);
 
             Enable();
-        }
+            
+            GetEquippableCostumes(weapon);
 
+            void SetWeaponCostume(Weapon weapon, WeaponCostume selectedCostume) {
+                if ( !Enabled ) return;
 
-        public void OnSelectWeaponCostume(WeaponCostume weaponCostume) {
-            if ( !Enabled ) return;
-            onWeaponCostumeSelected?.Invoke( weaponCostume );
+                weapon.SetCostume((selectedCostume));
+                OnCancel();
+            }
         }
 
         private void GetEquippableCostumes(Weapon weapon) {
@@ -82,6 +80,7 @@ namespace SeleneGame.Core.UI {
             if (weaponCostumes == null) {
                 weaponCostumes = new List<WeaponCostumeCase>();
             } else if (weaponCostumes.Count > 0) {
+                ResetGamePadSelection();
                 return;
             }
 
@@ -119,18 +118,6 @@ namespace SeleneGame.Core.UI {
             costumeCase.SetDisplayWeaponCostume(costume);
             
             weaponCostumes.Add( costumeCase );
-            if (weaponCostumes.Count > 1) {
-                WeaponCostumeCase previousCase = weaponCostumes[weaponCostumes.Count - 2];
-                previousCase.elementRight = costumeCase;
-                costumeCase.elementLeft = previousCase;
-            }
-
-            if (weaponCostumes.Count > WEAPON_COSTUME_CASES_PER_ROW) {
-                WeaponCostumeCase aboveCase = weaponCostumes[weaponCostumes.Count - (WEAPON_COSTUME_CASES_PER_ROW + 1)];
-                aboveCase.elementDown = costumeCase;
-                costumeCase.elementUp = aboveCase;
-            }
-
         }
 
 

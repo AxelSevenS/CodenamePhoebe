@@ -1012,7 +1012,7 @@ MonoBehaviour:
   m_ScrollWheelAction: {fileID: 1978378197}
   m_TrackedDevicePositionAction: {fileID: -7089100801827702431, guid: 3019d57beb68f57449f8ec4a83fb2618, type: 3}
   m_TrackedDeviceOrientationAction: {fileID: -3538435371787290898, guid: 3019d57beb68f57449f8ec4a83fb2618, type: 3}
-  m_DeselectOnBackgroundClick: 1
+  m_DeselectOnBackgroundClick: 0
   m_PointerBehavior: 0
   m_CursorLockBehavior: 0
 --- !u!114 &320558100
@@ -22850,6 +22850,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec90a1bdef5db16499f158d7102554e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentEntity: {fileID: 0}
   weaponSelectionMenu: {fileID: 1288624594}
   weaponSelectionContainer: {fileID: 12983477}
   weaponCaseTemplate: {fileID: 1789115363032000194, guid: b0d613bf327a53d40993a7bb2ca765b0, type: 3}

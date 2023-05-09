@@ -50,7 +50,7 @@ namespace SeleneGame.Core.UI {
         }
 
         public override void ResetGamePadSelection(){
-            EventSystem.current.SetSelectedGameObject(characters[0].gameObject);
+            SetSelected(characters[0].gameObject);
         }
 
         public override void OnCancel() {
@@ -66,9 +66,9 @@ namespace SeleneGame.Core.UI {
                 OnCancel();
             };
 
-            GetCharacters();
-
             Enable();
+
+            GetCharacters();
         }
 
 
@@ -82,6 +82,7 @@ namespace SeleneGame.Core.UI {
             if (characters == null) {
                 characters = new List<CharacterCase>();
             } else if (characters.Count > 0) {
+                ResetGamePadSelection();
                 return;
             }
 
@@ -107,19 +108,6 @@ namespace SeleneGame.Core.UI {
             var characterCase = caseObject.GetComponentInChildren<CharacterCase>();
             characterCase.characterData = data;
             characters.Add( characterCase );
-
-            if (characters.Count > 1) {
-                CharacterCase previousCase = characters[characters.Count - 2];
-                previousCase.elementRight = characterCase;
-                characterCase.elementLeft = previousCase;
-            }
-
-            if (characters.Count > CHARACTER_CASES_PER_ROW) {
-                CharacterCase aboveCase = characters[characters.Count - (CHARACTER_CASES_PER_ROW + 1)];
-                aboveCase.elementDown = characterCase;
-                characterCase.elementUp = aboveCase;
-            }
-
         }
 
 

@@ -43,14 +43,15 @@ namespace SeleneGame.Core.UI {
             nameText = weapon.data?.displayName ?? "None";
         }
 
-        public override void OnPointerClick(PointerEventData eventData) {
-            base.OnPointerClick(eventData);
-            Debug.Log($"Weapon slot {nameText} clicked");
-            if (eventData.button == PointerEventData.InputButton.Left) {
+        public override void OnSubmit(BaseEventData eventData) {
+            base.OnSubmit(eventData);
+            
+            // TODO
+            // if (eventData.button == PointerEventData.InputButton.Left) {
                 primaryAction?.Invoke();
-            } else if (eventData.button == PointerEventData.InputButton.Right) {
-                secondaryAction?.Invoke();
-            }
+            // } else if (eventData.button == PointerEventData.InputButton.Right) {
+            //     secondaryAction?.Invoke();
+            // }
         }
     }
     

@@ -120,15 +120,6 @@ namespace SeleneGame.Core
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""TFSDF"",
-                    ""type"": ""PassThrough"",
-                    ""id"": ""8827df5f-e731-4a02-b8b0-86769aff0dee"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
                     ""name"": ""PrimaryWeapon"",
                     ""type"": ""PassThrough"",
                     ""id"": ""4b556614-4b9f-4e3b-a050-1686ef048def"",
@@ -1358,94 +1349,6 @@ namespace SeleneGame.Core
                 },
                 {
                     ""name"": """",
-                    ""id"": ""8f050083-8eb5-4216-918a-a2eaad97b23e"",
-                    ""path"": ""<Keyboard>/q"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""TFSDF"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""c16ed4db-c7b8-49c1-a2ef-bdac891b7ea2"",
-                    ""path"": ""<Gamepad>/leftTrigger"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Gamepad"",
-                    ""action"": ""TFSDF"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""4321cacc-59d1-493e-973f-2a3f6c4ad387"",
-                    ""path"": ""<DualShockGamepad>/leftTrigger"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Gamepad"",
-                    ""action"": ""TFSDF"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""fb74a126-9558-4131-a531-e103fa83d0c4"",
-                    ""path"": ""<XInputController>/leftTrigger"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Gamepad"",
-                    ""action"": ""TFSDF"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""6fc4aca8-4da0-46c5-a605-18698c3e396e"",
-                    ""path"": ""<SwitchProControllerHID>/leftTrigger"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Gamepad"",
-                    ""action"": ""TFSDF"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""94719a14-7b5c-4941-957f-bcbf658422ef"",
-                    ""path"": ""<WebGLGamepad>/leftTrigger"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Gamepad"",
-                    ""action"": ""TFSDF"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""dd929e0b-4c24-481d-8b9d-8fd89f5a973b"",
-                    ""path"": ""<AndroidGamepad>/leftTrigger"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Gamepad"",
-                    ""action"": ""TFSDF"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""98ce0d8c-c795-4e53-9028-6c89e9376fbc"",
-                    ""path"": ""<AndroidGamepadXboxController>/leftTrigger"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Gamepad"",
-                    ""action"": ""TFSDF"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""24780315-dfa9-4522-ae9d-fd8dccdb192c"",
                     ""path"": ""<Keyboard>/leftAlt"",
                     ""interactions"": """",
@@ -2465,7 +2368,6 @@ namespace SeleneGame.Core
             m_Player_Evade = m_Player.FindAction("Evade", throwIfNotFound: true);
             m_Player_Crouch = m_Player.FindAction("Crouch", throwIfNotFound: true);
             m_Player_Walk = m_Player.FindAction("Walk", throwIfNotFound: true);
-            m_Player_TFSDF = m_Player.FindAction("TFSDF", throwIfNotFound: true);
             m_Player_PrimaryWeapon = m_Player.FindAction("PrimaryWeapon", throwIfNotFound: true);
             m_Player_SecondaryWeapon = m_Player.FindAction("SecondaryWeapon", throwIfNotFound: true);
             m_Player_TertiaryWeapon = m_Player.FindAction("TertiaryWeapon", throwIfNotFound: true);
@@ -2556,7 +2458,6 @@ namespace SeleneGame.Core
         private readonly InputAction m_Player_Evade;
         private readonly InputAction m_Player_Crouch;
         private readonly InputAction m_Player_Walk;
-        private readonly InputAction m_Player_TFSDF;
         private readonly InputAction m_Player_PrimaryWeapon;
         private readonly InputAction m_Player_SecondaryWeapon;
         private readonly InputAction m_Player_TertiaryWeapon;
@@ -2574,7 +2475,6 @@ namespace SeleneGame.Core
             public InputAction @Evade => m_Wrapper.m_Player_Evade;
             public InputAction @Crouch => m_Wrapper.m_Player_Crouch;
             public InputAction @Walk => m_Wrapper.m_Player_Walk;
-            public InputAction @TFSDF => m_Wrapper.m_Player_TFSDF;
             public InputAction @PrimaryWeapon => m_Wrapper.m_Player_PrimaryWeapon;
             public InputAction @SecondaryWeapon => m_Wrapper.m_Player_SecondaryWeapon;
             public InputAction @TertiaryWeapon => m_Wrapper.m_Player_TertiaryWeapon;
@@ -2617,9 +2517,6 @@ namespace SeleneGame.Core
                     @Walk.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnWalk;
                     @Walk.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnWalk;
                     @Walk.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnWalk;
-                    @TFSDF.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTFSDF;
-                    @TFSDF.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTFSDF;
-                    @TFSDF.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTFSDF;
                     @PrimaryWeapon.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPrimaryWeapon;
                     @PrimaryWeapon.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPrimaryWeapon;
                     @PrimaryWeapon.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPrimaryWeapon;
@@ -2663,9 +2560,6 @@ namespace SeleneGame.Core
                     @Walk.started += instance.OnWalk;
                     @Walk.performed += instance.OnWalk;
                     @Walk.canceled += instance.OnWalk;
-                    @TFSDF.started += instance.OnTFSDF;
-                    @TFSDF.performed += instance.OnTFSDF;
-                    @TFSDF.canceled += instance.OnTFSDF;
                     @PrimaryWeapon.started += instance.OnPrimaryWeapon;
                     @PrimaryWeapon.performed += instance.OnPrimaryWeapon;
                     @PrimaryWeapon.canceled += instance.OnPrimaryWeapon;
@@ -2898,7 +2792,6 @@ namespace SeleneGame.Core
             void OnEvade(InputAction.CallbackContext context);
             void OnCrouch(InputAction.CallbackContext context);
             void OnWalk(InputAction.CallbackContext context);
-            void OnTFSDF(InputAction.CallbackContext context);
             void OnPrimaryWeapon(InputAction.CallbackContext context);
             void OnSecondaryWeapon(InputAction.CallbackContext context);
             void OnTertiaryWeapon(InputAction.CallbackContext context);

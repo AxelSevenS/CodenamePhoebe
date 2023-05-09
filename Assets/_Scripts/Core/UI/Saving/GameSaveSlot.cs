@@ -4,7 +4,7 @@ using UnityEngine;
 
 using SeleneGame.Core.UI;
 
-namespace SeleneGame.Content {
+namespace SeleneGame.Core {
 
     public sealed class GameSaveSlot : SaveSlot<GameSaveData> {
     }

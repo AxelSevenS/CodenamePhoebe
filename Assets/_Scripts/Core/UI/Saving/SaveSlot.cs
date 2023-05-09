@@ -13,10 +13,6 @@ namespace SeleneGame.Core.UI {
 
     public abstract class SaveSlot<TData> : CustomButton where TData : SaveData, new() {
 
-        [SerializeField] private Sprite bgEmptyUnselected;
-        [SerializeField] private Sprite bgEmptySelected;
-        [SerializeField] private Sprite bgEmptyClicked;
-
         [SerializeField] uint slotNumber = 1;
 
         [SerializeField] private GameObject saveInfo;
@@ -35,53 +31,30 @@ namespace SeleneGame.Core.UI {
                 saveInfo.SetActive(true);
                 playTime.text = saveData.GetTotalPlaytime().ToString();
                 saveDateTime.text = saveData.GetTimeOfLastSave().ToString();
-
-                SetBackground( bgUnselected );
             }else {
                 saveInfo.SetActive(false);
                 playTime.text = "";
                 saveDateTime.text = "";
-
-                SetBackground( bgEmptyUnselected );
             }
         }
 
-        public override void OnSelect(BaseEventData eventData) {
-            if (saveData == null)
-                SetBackground( bgEmptySelected );
-            else
-                SetBackground( bgSelected );
+        protected override void OnEnable() {
+            base.OnEnable();
+            LoadPreviewData();
         }
 
-        public override void OnDeselect(BaseEventData eventData) {
-            if (saveData == null)
-                SetBackground( bgEmptyUnselected );
-            else
-                SetBackground( bgUnselected );
-        }
+        public override void OnSubmit(BaseEventData eventData) {
+            base.OnSubmit(eventData);
 
-        public override void OnPointerDown(PointerEventData eventData) {
-            if (saveData == null)
-                SetBackground( bgEmptyClicked );
-            else
-                SetBackground( bgClicked );
-        }
+            SaveMenuController<TData>.current.onSaveSlotSelected?.Invoke(slotNumber);
 
-        public override void OnPointerUp(PointerEventData eventData) {
-            if (saveData == null)
-                SetBackground( bgEmptySelected );
-            else
-                SetBackground( bgSelected );
-        }
-
-        public override void OnPointerClick(PointerEventData eventData) {
-
-            if (eventData.button == PointerEventData.InputButton.Left) {
-                SavingSystem<TData>.SaveData(slotNumber);
-                LoadPreviewData();
-            } else if (eventData.button == PointerEventData.InputButton.Right && saveData != null) {
-                SavingSystem<TData>.LoadData(slotNumber);
-            }
+            // if (eventData.button == PointerEventData.InputButton.Left) {
+            //     SavingSystem<TData>.SaveData(slotNumber);
+            //     LoadPreviewData();
+            // } else if (eventData.button == PointerEventData.InputButton.Right && saveData != null) {
+            //     SavingSystem<TData>.LoadData(slotNumber);
+            // }
+            LoadPreviewData();
 
             SaveMenuController<TData>.current.Disable();
         }

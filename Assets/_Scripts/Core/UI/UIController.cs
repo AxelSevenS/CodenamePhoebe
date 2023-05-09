@@ -42,7 +42,7 @@ namespace SeleneGame.Core.UI {
                 Cursor.lockState = CursorLockMode.Locked;
             }
 
-            bool gameInterrupted = menuUI && currentMenu is IUIPausedMenu;
+            bool gameInterrupted = menuUI && currentMenu is IPausedMenu;
 
             if ( gameInterrupted ){
                 Time.timeScale = 0;
@@ -53,8 +53,8 @@ namespace SeleneGame.Core.UI {
 
 
         private void OnControllerTypeChange(Keybinds.ControllerType controllerType) {
-            if ( controllerType != Keybinds.ControllerType.MouseKeyboard )
-                currentMenu?.ResetGamePadSelection();
+            // if ( controllerType != Keybinds.ControllerType.MouseKeyboard )
+            //     currentMenu?.ResetGamePadSelection();
         }
 
 
@@ -73,7 +73,7 @@ namespace SeleneGame.Core.UI {
 
             cancelInput.SetVal( Keybinds.uiMap.IsBindPressed("Cancel") ) ;
 
-            if (cancelInput.started) {
+            if ( cancelInput.started ) {
                 currentMenu?.OnCancel();
                 onCancel?.Invoke();
             }
@@ -85,7 +85,7 @@ namespace SeleneGame.Core.UI {
 
             saveMenuInput.SetVal( Keybinds.debugMap.IsBindPressed("DebugSaveMenu") );
             if (saveMenuInput.started)
-                SaveMenuController.current.Toggle();
+                SaveMenuController<GameSaveData>.current.Toggle();
         // #endif
         }
 

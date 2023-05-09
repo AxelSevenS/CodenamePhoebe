@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 using SeleneGame.Core;
 
 using SevenGame.Utility;
+using System.Threading.Tasks;
 
 namespace SeleneGame.Core.UI {
     
@@ -33,6 +34,12 @@ namespace SeleneGame.Core.UI {
 
             Debug.Log("Disabled " + this.name);
             base.Disable();
+        }
+
+        public /* async */ void SetSelected(GameObject gameObject) {
+            // await Task.Delay(1);
+            EventSystem.current.SetSelectedGameObject(gameObject);
+            Debug.Log(EventSystem.current.currentSelectedGameObject.name);
         }
 
         public virtual void OnCancel() {

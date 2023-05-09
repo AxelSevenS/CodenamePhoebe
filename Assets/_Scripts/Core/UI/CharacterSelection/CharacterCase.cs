@@ -29,8 +29,8 @@ namespace SeleneGame.Core.UI {
 
 
 
-        public override void OnPointerClick(PointerEventData eventData) {
-            base.OnPointerClick(eventData);
+        public override void OnSubmit(BaseEventData eventData) {
+            base.OnSubmit(eventData);
             Debug.Log($"Character case {_characterData.displayName} clicked");
             CharacterSelectionMenuController.current.OnSelectCharacter(_characterData);
         }

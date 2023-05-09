@@ -78,7 +78,7 @@ namespace SeleneGame.Content {
 
             if ( _grabbables.Count < maxGrabbables && controller.focusInput.trueTimer > 0.25f ) {
 
-                Collider[] colliders = Physics.OverlapSphere(_maskedEntity.transform.position, 10f, LayerMask.GetMask("EntityObject"));
+                Collider[] colliders = Physics.OverlapSphere(_maskedEntity.transform.position, 10f, CollisionUtils.EntityObjectMask);
                 foreach (Collider collider in colliders) {
                     if ( _grabbables.Count >= maxGrabbables ) break;
 

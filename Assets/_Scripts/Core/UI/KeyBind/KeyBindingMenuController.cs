@@ -12,7 +12,7 @@ using SevenGame.Utility;
 
 namespace SeleneGame.Core.UI {
     
-    public class KeyBindingMenuController : UIMenu<KeyBindingMenuController>, IUIPausedMenu {
+    public class KeyBindingMenuController : UIMenu<KeyBindingMenuController>, IPausedMenu {
 
         [SerializeField] private GameObject keyBindingMenu;
         [SerializeField] private GameObject keyBindingContainer;
@@ -26,9 +26,9 @@ namespace SeleneGame.Core.UI {
 
             base.Enable();
 
-            keyBindingMenu.SetActive( true );
-
             InitializeKeybindings();
+
+            keyBindingMenu.SetActive( true );
 
             UIController.current.UpdateMenuState();
         }
@@ -42,7 +42,7 @@ namespace SeleneGame.Core.UI {
         }
 
         public override void ResetGamePadSelection() {
-            EventSystem.current.SetSelectedGameObject(rebinds[0].gameObject);
+            SetSelected(rebinds[0].gameObject);
         }
 
 
@@ -54,7 +54,8 @@ namespace SeleneGame.Core.UI {
                 GameUtility.SafeDestroy(child.gameObject);
             }
 
-            foreach (var action in Keybinds.playerMap.actions){
+            for (int i = 0; i < Keybinds.playerMap.actions.Count; i++){
+                InputAction action = Keybinds.playerMap.actions[i];
                 if (action.name == "Move"){
                     CreateRebindButton(action, 1, "Forward");
                     CreateRebindButton(action, 2, "Left");
@@ -64,8 +65,10 @@ namespace SeleneGame.Core.UI {
                     CreateRebindButton(action, 0);
                 }
 
+                if (i == 0)
+                    ResetGamePadSelection();
+
             }
-            ResetGamePadSelection();
 
             // RebindButton lastButton = rebinds[rebinds.Count - 1];
             // lastButton.elementDown = returnButton;
@@ -88,11 +91,6 @@ namespace SeleneGame.Core.UI {
             button.SetBindingText( $"{action.name}{buttonText}".Nicify() );
             
             rebinds.Add( button );
-            if (rebinds.Count > 1) {
-                RebindButton previousButton = rebinds[rebinds.Count - 2];
-                previousButton.elementDown = button;
-                button.elementUp = previousButton;
-            }
 
         }
     }

@@ -15,7 +15,7 @@ namespace SeleneGame.Core {
 
 
         public static float mouseSpeed = 1f;
-        public static float stickSpeed = 5f;
+        public static float stickSpeed = 12.5f;
 
         public static float cameraSpeed = 0.1f;
 
@@ -119,15 +119,20 @@ namespace SeleneGame.Core {
                 controllerType = ControllerType.MouseKeyboard;
                 
             } else if ( context.control.device is Gamepad gamepad ){
-
-                if ( gamepad is DualShockGamepad ) {
-                    controllerType = ControllerType.Dualshock;
-                } else if ( gamepad is XInputController ) {
-                    controllerType = ControllerType.Xbox;
-                } else if ( gamepad is SwitchProControllerHID ) {
-                    controllerType = ControllerType.Switch;
-                } else {
-                    controllerType = ControllerType.Gamepad;
+                
+                switch ( gamepad.GetType() ) {
+                    case Type _ when gamepad is DualShockGamepad:
+                        newControllerType = ControllerType.Dualshock;
+                        break;
+                    case Type _ when gamepad is XInputController:
+                        newControllerType = ControllerType.Xbox;
+                        break;
+                    case Type _ when gamepad is SwitchProControllerHID:
+                        newControllerType = ControllerType.Switch;
+                        break;
+                    default:
+                        newControllerType = ControllerType.Gamepad;
+                        break;
                 }
 
             }

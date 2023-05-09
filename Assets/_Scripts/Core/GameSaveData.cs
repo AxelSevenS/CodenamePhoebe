@@ -4,7 +4,7 @@ using SeleneGame.Core;
 using SevenGame.SavingSystem;
 using Scribe;
 
-namespace SeleneGame.Content {
+namespace SeleneGame.Core {
 
     [System.Serializable]
     public class GameSaveData : SaveData {
