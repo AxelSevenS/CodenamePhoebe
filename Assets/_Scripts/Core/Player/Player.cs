@@ -1,6 +1,7 @@
 using UnityEngine;
 
 using SevenGame.Utility;
+using SeleneGame.Core.UI;
 
 namespace SeleneGame.Core {
     
@@ -53,6 +54,8 @@ namespace SeleneGame.Core {
         public KeyInputData switchStyle1Input;
         public KeyInputData switchStyle2Input;
         public KeyInputData switchStyle3Input;
+
+        private KeyInputData cancelInput;
         
         #if UNITY_EDITOR
             public KeyInputData debugInput;
@@ -174,6 +177,7 @@ namespace SeleneGame.Core {
 
         private void PlayerInput() {
             interactInput.SetVal(Keybinds.playerMap.IsBindPressed("Interact"));
+            cancelInput.SetVal(Keybinds.uiMap.IsBindPressed("Cancel"));
             switchStyle1Input.SetVal(Keybinds.playerMap.IsBindPressed("PrimaryWeapon"));
             switchStyle2Input.SetVal(Keybinds.playerMap.IsBindPressed("SecondaryWeapon"));
             switchStyle3Input.SetVal(Keybinds.playerMap.IsBindPressed("TertiaryWeapon"));
@@ -181,6 +185,10 @@ namespace SeleneGame.Core {
             #if UNITY_EDITOR
                 debugInput.SetVal( Keybinds.debugMap.IsBindPressed("Debug1") );
             #endif
+
+            if ( cancelInput.started ) {
+                UIController.current.Cancel();
+            }
 
             if (interactInput.started && canInteract)
                 interactionCandidate.Interact(entity);

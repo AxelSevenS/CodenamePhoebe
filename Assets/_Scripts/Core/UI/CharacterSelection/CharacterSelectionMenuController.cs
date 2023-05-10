@@ -36,8 +36,6 @@ namespace SeleneGame.Core.UI {
             base.Enable();
 
             characterSelectionMenu.SetActive( true );
-
-            UIController.current.UpdateMenuState();
         }
 
         public override void Disable() {
@@ -45,12 +43,10 @@ namespace SeleneGame.Core.UI {
             base.Disable();
 
             characterSelectionMenu.SetActive( false );
-
-            UIController.current.UpdateMenuState();
         }
 
         public override void ResetGamePadSelection(){
-            SetSelected(characters[0].gameObject);
+            EventSystem.current.SetSelectedGameObject(characters[0].gameObject);
         }
 
         public override void OnCancel() {

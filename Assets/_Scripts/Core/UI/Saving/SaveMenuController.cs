@@ -51,8 +51,6 @@ namespace SeleneGame.Core.UI {
 
             saveMenu.SetActive( true );
 
-            UIController.current.UpdateMenuState();
-
             ResetGamePadSelection();
         }
 
@@ -60,12 +58,10 @@ namespace SeleneGame.Core.UI {
             base.Disable();
 
             saveMenu.SetActive( false );
-            
-            UIController.current.UpdateMenuState();
         }
 
         public override void ResetGamePadSelection(){
-            SetSelected(saveSlot1.gameObject);
+            EventSystem.current.SetSelectedGameObject(saveSlot1.gameObject);
         }
 
     }

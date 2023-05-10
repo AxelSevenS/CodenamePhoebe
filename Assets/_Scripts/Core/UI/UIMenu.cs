@@ -22,24 +22,29 @@ namespace SeleneGame.Core.UI {
         }
 
         public override void Enable() {
+
+            UIController.current.onGaySex += OnCancel;
+
             UIController.currentMenu?.Disable();
             UIController.currentMenu = this;
+            
+
+            UIController.current.UpdateMenuState();
 
             base.Enable();
 
         }
 
         public override void Disable() {
-            UIController.currentMenu = null;
 
-            Debug.Log("Disabled " + this.name);
+            UIController.current.onGaySex -= OnCancel;
+
+            if ( (Object)UIController.currentMenu == this)
+                UIController.currentMenu = null;
+            
+            UIController.current.UpdateMenuState();
+
             base.Disable();
-        }
-
-        public /* async */ void SetSelected(GameObject gameObject) {
-            // await Task.Delay(1);
-            EventSystem.current.SetSelectedGameObject(gameObject);
-            Debug.Log(EventSystem.current.currentSelectedGameObject.name);
         }
 
         public virtual void OnCancel() {

@@ -29,20 +29,16 @@ namespace SeleneGame.Core.UI {
             InitializeKeybindings();
 
             keyBindingMenu.SetActive( true );
-
-            UIController.current.UpdateMenuState();
         }
 
         public override void Disable() {
             base.Disable();
 
             keyBindingMenu.SetActive( false );
-
-            UIController.current.UpdateMenuState();
         }
 
         public override void ResetGamePadSelection() {
-            SetSelected(rebinds[0].gameObject);
+            EventSystem.current.SetSelectedGameObject(rebinds[0].gameObject);
         }
 
 

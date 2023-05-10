@@ -576,7 +576,7 @@ namespace SeleneGame.Core {
 
             foreach (Collider overlap in overlaps) {
                 
-                Vector3 displacement = Vector3.ProjectOnPlane((transform.position - overlap.transform.position), gravityDown);
+                Vector3 displacement = Vector3.ProjectOnPlane((transform.position - overlap.transform.position), groundHit.normal);
 
                 _totalMovement += displacement * GameUtility.timeDelta * 2f;
             }

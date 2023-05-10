@@ -15,11 +15,10 @@ namespace SeleneGame.Core.UI {
         public static IUIMenu currentMenu;
         public static IDialogueReader currentDialogueReader;
 
-
-        private static KeyInputData cancelInput;
-        public static event Action onCancel;
-
         public static bool IsMenuOpen => currentMenu != null;
+
+
+        public event Action onGaySex;
 
         
 
@@ -27,6 +26,10 @@ namespace SeleneGame.Core.UI {
         private BoolData saveMenuInput;
 
 
+
+        public void Cancel() {
+            onGaySex?.Invoke();
+        }
 
         public void UpdateMenuState(){
 
@@ -70,13 +73,6 @@ namespace SeleneGame.Core.UI {
         }
 
         private void Update() {
-
-            cancelInput.SetVal( Keybinds.uiMap.IsBindPressed("Cancel") ) ;
-
-            if ( cancelInput.started ) {
-                currentMenu?.OnCancel();
-                onCancel?.Invoke();
-            }
            
         // #if UNITY_EDITOR 
             keyBindMenuInput.SetVal( Keybinds.debugMap.IsBindPressed("DebugKeyBindMenu") );

@@ -33,8 +33,6 @@ namespace SeleneGame.Core.UI {
             base.Enable();
 
             weaponSelectionMenu.SetActive( true );
-
-            UIController.current.UpdateMenuState();
         }
 
         public override void Disable() {
@@ -42,12 +40,10 @@ namespace SeleneGame.Core.UI {
             base.Disable();
 
             weaponSelectionMenu.SetActive( false );
-
-            UIController.current.UpdateMenuState();
         }
 
         public override void ResetGamePadSelection(){
-            SetSelected(weaponCostumes[0].gameObject);
+            EventSystem.current.SetSelectedGameObject(weaponCostumes[0].gameObject);
         }
 
         public override void OnCancel() {

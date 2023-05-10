@@ -32,8 +32,6 @@ namespace SeleneGame.Core.UI {
 
             weaponInventoryMenu.SetActive( true );
 
-            UIController.current.UpdateMenuState();
-
             GetEntityWeapons();
         }
 
@@ -42,12 +40,10 @@ namespace SeleneGame.Core.UI {
             base.Disable();
 
             weaponInventoryMenu.SetActive( false );
-
-            UIController.current.UpdateMenuState();
         }
 
         public override void ResetGamePadSelection(){
-            SetSelected(weapons[0].gameObject);
+            EventSystem.current.SetSelectedGameObject(weapons[0].gameObject);
         }
 
 
