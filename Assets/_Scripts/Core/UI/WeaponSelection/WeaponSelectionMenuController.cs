@@ -13,12 +13,10 @@ using System.Reflection;
 
 namespace SeleneGame.Core.UI {
     
-    public class WeaponSelectionMenuController : UIMenu<WeaponSelectionMenuController> {
+    public class WeaponSelectionMenuController : UIModal<WeaponSelectionMenuController> {
 
         public const int WEAPON_CASES_PER_ROW = 5;
 
-        
-        [SerializeField] [HideInInspector] private ArmedEntity currentEntity;
 
         [SerializeField] private GameObject weaponSelectionMenu;
         [SerializeField] private GameObject weaponSelectionContainer;
@@ -28,9 +26,66 @@ namespace SeleneGame.Core.UI {
 
         public Action<WeaponData> onWeaponDataSelected { get; private set; }
 
+        
 
-        // private static void 
+        public void OpenSetEntityWeaponMenu(int index, ArmedEntity armedEntity) {
 
+            if (armedEntity == null) {
+                Debug.LogError("Armed Entity is null!");
+                return;
+            }
+
+
+            onWeaponDataSelected = (selectedWeapon) => OnSetEntityWeapon(selectedWeapon, index, armedEntity);
+
+            Enable();
+
+            GetAllAvailableWeapons();
+
+
+            void OnSetEntityWeapon(WeaponData selectedWeapon, int index, ArmedEntity armedEntity) {
+                if (!Enabled)
+                    return;
+
+                armedEntity.weapons.Set(index, selectedWeapon);
+                OnCancel();
+            }
+        }
+
+
+        private void GetAllAvailableWeapons() {
+
+            if (weapons == null) {
+                weapons = new List<WeaponCase>();
+            } else if (weapons.Count > 0) {
+                ResetGamePadSelection();
+                return;
+            }
+
+            
+            CreateWeaponCase(null);
+            ResetGamePadSelection();
+
+            AddressablesUtils.GetAssets<WeaponData>((data) => {
+
+                    if (weapons.Exists( (c) => c.weaponData == data ))
+                        return;
+
+                    CreateWeaponCase(data);
+                }
+
+            );
+
+
+        }
+
+        private void CreateWeaponCase(WeaponData weapon, int equippedIndex = -1){
+            var caseObject = Instantiate(weaponCaseTemplate, weaponSelectionContainer.transform);
+            var weaponCase = caseObject.GetComponentInChildren<WeaponCase>();
+
+            weaponCase.SetDisplayWeapon(weapon);
+            weapons.Add( weaponCase );
+        }
 
 
         public override void Enable() {
@@ -47,69 +102,16 @@ namespace SeleneGame.Core.UI {
             weaponSelectionMenu.SetActive( false );
         }
 
+        public override void Refresh() {
+            GetAllAvailableWeapons();
+        }
+
         public override void ResetGamePadSelection(){
             EventSystem.current.SetSelectedGameObject(weapons[0].gameObject);
         }
 
         public override void OnCancel() {
-            // base.OnCancel();
-            WeaponInventoryMenuController.current.OpenInventory(currentEntity);
-        }
-        
-
-        public void OpenSetEntityWeaponMenu(int index, ArmedEntity armedEntity) {
-
-            currentEntity = armedEntity;
-
-            onWeaponDataSelected = (selectedWeapon) => SetEntityWeapon(selectedWeapon, index, armedEntity);
-
-            Enable();
-
-            GetAllAvailableWeapons();
-        }
-
-
-        private void SetEntityWeapon(WeaponData selectedWeapon, int index, ArmedEntity armedEntity) {
-            if (!Enabled)
-                return;
-
-            armedEntity.weapons.Set(index, selectedWeapon);
-            OnCancel();
-        }
-
-
-        private void GetAllAvailableWeapons() {
-
-            if (weapons == null) {
-                weapons = new List<WeaponCase>();
-            } else if (weapons.Count > 0) {
-                ResetGamePadSelection();
-                return;
-            }
-
-            
-            CreateWeaponCase(null);
-
-            AddressablesUtils.GetAssets<WeaponData>((data) => {
-
-                    if (weapons.Exists( (c) => c.weaponData == data ))
-                        return;
-
-                    CreateWeaponCase(data);
-                }
-
-            );
-            ResetGamePadSelection();
-
-
-        }
-
-        private void CreateWeaponCase(WeaponData weapon, int equippedIndex = -1){
-            var caseObject = Instantiate(weaponCaseTemplate, weaponSelectionContainer.transform);
-            var weaponCase = caseObject.GetComponentInChildren<WeaponCase>();
-
-            weaponCase.SetDisplayWeapon(weapon);
-            weapons.Add( weaponCase );
+            Disable();
         }
 
 

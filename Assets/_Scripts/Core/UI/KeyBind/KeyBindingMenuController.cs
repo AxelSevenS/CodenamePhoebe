@@ -12,7 +12,7 @@ using SevenGame.Utility;
 
 namespace SeleneGame.Core.UI {
     
-    public class KeyBindingMenuController : UIMenu<KeyBindingMenuController>, IPausedMenu {
+    public class KeyBindingMenuController : UIModal<KeyBindingMenuController>, IPausedMenu {
 
         [SerializeField] private GameObject keyBindingMenu;
         [SerializeField] private GameObject keyBindingContainer;
@@ -20,26 +20,6 @@ namespace SeleneGame.Core.UI {
         
         [SerializeField] private List<RebindButton> rebinds = new List<RebindButton>();
 
-
-
-        public override void Enable() {
-
-            base.Enable();
-
-            InitializeKeybindings();
-
-            keyBindingMenu.SetActive( true );
-        }
-
-        public override void Disable() {
-            base.Disable();
-
-            keyBindingMenu.SetActive( false );
-        }
-
-        public override void ResetGamePadSelection() {
-            EventSystem.current.SetSelectedGameObject(rebinds[0].gameObject);
-        }
 
 
         private void InitializeKeybindings() {
@@ -88,6 +68,31 @@ namespace SeleneGame.Core.UI {
             
             rebinds.Add( button );
 
+        }
+
+
+
+        public override void Enable() {
+
+            base.Enable();
+
+            InitializeKeybindings();
+
+            keyBindingMenu.SetActive( true );
+        }
+
+        public override void Disable() {
+            base.Disable();
+
+            keyBindingMenu.SetActive( false );
+        }
+
+        public override void Refresh(){
+            ResetGamePadSelection();
+        }
+
+        public override void ResetGamePadSelection() {
+            EventSystem.current.SetSelectedGameObject(rebinds[0].gameObject);
         }
     }
 }

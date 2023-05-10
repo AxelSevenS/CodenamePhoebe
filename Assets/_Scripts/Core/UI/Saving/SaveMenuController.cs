@@ -12,7 +12,7 @@ using System;
 namespace SeleneGame.Core.UI {
 
 
-    public abstract class SaveMenuController<TData> : UIMenu<SaveMenuController<TData>>, IPausedMenu where TData : SaveData, new() {
+    public abstract class SaveMenuController<TData> : UIModal<SaveMenuController<TData>> where TData : SaveData, new() {
         
         [SerializeField] private GameObject saveMenu;
         
@@ -58,6 +58,10 @@ namespace SeleneGame.Core.UI {
             base.Disable();
 
             saveMenu.SetActive( false );
+        }
+
+        public override void Refresh(){
+            ResetGamePadSelection();
         }
 
         public override void ResetGamePadSelection(){

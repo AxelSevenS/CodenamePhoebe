@@ -10,15 +10,17 @@ using SevenGame.Utility;
 
 namespace SeleneGame.Core.UI {
 
+    [DefaultExecutionOrder(-100)]
     public class UIController : Singleton<UIController> {
 
-        public static IUIMenu currentMenu;
+        // public static IUIMenu currentMenu;
+        public static IUIMenu modalLeaf;
         public static IDialogueReader currentDialogueReader;
 
-        public static bool IsMenuOpen => currentMenu != null;
+        // public static bool IsMenuOpen => currentMenu != null;
 
 
-        public event Action onGaySex;
+        // public event Action onCancel;
 
         
 
@@ -26,12 +28,33 @@ namespace SeleneGame.Core.UI {
         private BoolData saveMenuInput;
 
 
+        public static void DisableModalTree() {
+            IUIMenu branch = modalLeaf;
+            while ( branch is IUIModal modalBranch && modalBranch.previousModal != null) {
+                branch = modalBranch.previousModal;
+                branch.Disable();
+            }
+            branch.Disable();
+            modalLeaf = null;
+        }
+
+        public IUIMenu GetBaseMenu() {
+            IUIMenu branch = modalLeaf;
+            while ( branch is IUIModal modalBranch && modalBranch.previousModal != null) {
+                branch = modalBranch.previousModal;
+            }
+            return branch;
+        }
+
 
         public void Cancel() {
-            onGaySex?.Invoke();
+            // onCancel?.Invoke();
+            modalLeaf?.OnCancel();
         }
 
         public void UpdateMenuState(){
+
+            IUIMenu currentMenu = GetBaseMenu();
 
             bool menuUI = currentMenu != null;
 

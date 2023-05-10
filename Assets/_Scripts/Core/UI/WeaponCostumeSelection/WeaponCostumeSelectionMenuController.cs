@@ -12,7 +12,7 @@ using SevenGame.Utility;
 
 namespace SeleneGame.Core.UI {
     
-    public class WeaponCostumeSelectionMenuController : UIMenu<WeaponCostumeSelectionMenuController> {
+    public class WeaponCostumeSelectionMenuController : UIModal<WeaponCostumeSelectionMenuController> {
 
         public const int WEAPON_COSTUME_CASES_PER_ROW = 5;
 
@@ -27,51 +27,39 @@ namespace SeleneGame.Core.UI {
         public Action<WeaponCostume> onWeaponCostumeSelected { get; private set; }
 
 
+        [SerializeField] private Weapon weapon;
 
-        public override void Enable() {
-
-            base.Enable();
-
-            weaponSelectionMenu.SetActive( true );
-        }
-
-        public override void Disable() {
-
-            base.Disable();
-
-            weaponSelectionMenu.SetActive( false );
-        }
-
-        public override void ResetGamePadSelection(){
-            EventSystem.current.SetSelectedGameObject(weaponCostumes[0].gameObject);
-        }
-
-        public override void OnCancel() {
-            WeaponInventoryMenuController.current.Enable();
-        }
         
 
         public void OpenSetWeaponCostumeMenu(int weaponIndex, ArmedEntity armedEntity) {
 
-            Weapon weapon = armedEntity.weapons[weaponIndex];
+            if (armedEntity == null) {
+                Debug.LogError("Armed Entity is null!");
+                return;
+            }
+
+            weapon = armedEntity.weapons[weaponIndex];
 
             if (weapon == null) return;
 
-            onWeaponCostumeSelected = (selectedCostume) => SetWeaponCostume(weapon, selectedCostume);
+
+            onWeaponCostumeSelected = (selectedCostume) => OnSetWeaponCostume(weapon, selectedCostume);
 
             Enable();
             
-            GetEquippableCostumes(weapon);
+            GetEquippableCostumes();
+            
 
-            void SetWeaponCostume(Weapon weapon, WeaponCostume selectedCostume) {
-                if ( !Enabled ) return;
+            void OnSetWeaponCostume(Weapon weapon, WeaponCostume selectedCostume) {
+                if ( !Enabled ) 
+                    return;
 
                 weapon.SetCostume((selectedCostume));
                 OnCancel();
             }
         }
 
-        private void GetEquippableCostumes(Weapon weapon) {
+        private void GetEquippableCostumes() {
 
             if (weaponCostumes == null) {
                 weaponCostumes = new List<WeaponCostumeCase>();
@@ -114,6 +102,33 @@ namespace SeleneGame.Core.UI {
             costumeCase.SetDisplayWeaponCostume(costume);
             
             weaponCostumes.Add( costumeCase );
+        }
+
+
+        public override void Enable() {
+
+            base.Enable();
+
+            weaponSelectionMenu.SetActive( true );
+        }
+
+        public override void Disable() {
+
+            base.Disable();
+
+            weaponSelectionMenu.SetActive( false );
+        }
+
+        public override void Refresh() {
+            GetEquippableCostumes();
+        }
+
+        public override void ResetGamePadSelection(){
+            EventSystem.current.SetSelectedGameObject(weaponCostumes[0].gameObject);
+        }
+
+        public override void OnCancel() {
+            WeaponInventoryMenuController.current.Enable();
         }
 
 

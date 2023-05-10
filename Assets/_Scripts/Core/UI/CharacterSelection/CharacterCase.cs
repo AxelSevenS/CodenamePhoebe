@@ -32,7 +32,7 @@ namespace SeleneGame.Core.UI {
         public override void OnSubmit(BaseEventData eventData) {
             base.OnSubmit(eventData);
             Debug.Log($"Character case {_characterData.displayName} clicked");
-            CharacterSelectionMenuController.current.OnSelectCharacter(_characterData);
+            CharacterSelectionMenuController.current.SelectCharacter(_characterData);
         }
     }
     

@@ -13,40 +13,6 @@ namespace SeleneGame.Core.UI {
     
     public abstract class UIMenu<T> : UI<T>, IUIMenu where T : UIMenu<T> {
 
-        
-        public virtual void Toggle() {
-            if (Enabled)
-                Disable();
-            else
-                Enable();
-        }
-
-        public override void Enable() {
-
-            UIController.current.onGaySex += OnCancel;
-
-            UIController.currentMenu?.Disable();
-            UIController.currentMenu = this;
-            
-
-            UIController.current.UpdateMenuState();
-
-            base.Enable();
-
-        }
-
-        public override void Disable() {
-
-            UIController.current.onGaySex -= OnCancel;
-
-            if ( (Object)UIController.currentMenu == this)
-                UIController.currentMenu = null;
-            
-            UIController.current.UpdateMenuState();
-
-            base.Disable();
-        }
-
         public virtual void OnCancel() {
             Disable();
         }
@@ -55,8 +21,21 @@ namespace SeleneGame.Core.UI {
             ResetGamePadSelection();
         }
 
+        public abstract void Refresh();
+
         public abstract void ResetGamePadSelection();
 
+
+        protected override void OnEnable() {
+            base.OnEnable();
+            // UIController.current.onCancel += OnCancel;
+        }
+
+
+        protected override void OnDisable() {
+            base.OnDisable();
+            // UIController.current.onCancel -= OnCancel;
+        }
     }
 
 }

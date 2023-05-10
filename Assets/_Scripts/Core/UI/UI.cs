@@ -27,11 +27,21 @@ namespace SeleneGame.Core.UI {
         public virtual void Enable() {
             if (Enabled) return;
             Enabled = true;
+            UIController.current?.UpdateMenuState();
         }
 
         public virtual void Disable() {
             if (!Enabled) return;
             Enabled = false;
+            UIController.current?.UpdateMenuState();
+        }
+
+        
+        public virtual void Toggle() {
+            if (Enabled)
+                Disable();
+            else
+                Enable();
         }
 
 

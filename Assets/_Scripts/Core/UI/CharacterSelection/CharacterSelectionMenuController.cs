@@ -13,7 +13,7 @@ using System.Reflection;
 
 namespace SeleneGame.Core.UI {
     
-    public class CharacterSelectionMenuController : UIMenu<CharacterSelectionMenuController> {
+    public class CharacterSelectionMenuController : UIModal<CharacterSelectionMenuController> {
 
         public const int CHARACTER_CASES_PER_ROW = 5;
 
@@ -25,50 +25,30 @@ namespace SeleneGame.Core.UI {
         
         [SerializeField] private List<CharacterCase> characters = new List<CharacterCase>();
 
-        private Entity currentEntity;
-
         private Action<CharacterData> onCharacterDataSelected;
 
 
 
-        public override void Enable() {
-
-            base.Enable();
-
-            characterSelectionMenu.SetActive( true );
-        }
-
-        public override void Disable() {
-
-            base.Disable();
-
-            characterSelectionMenu.SetActive( false );
-        }
-
-        public override void ResetGamePadSelection(){
-            EventSystem.current.SetSelectedGameObject(characters[0].gameObject);
-        }
-
-        public override void OnCancel() {
-            Disable();
-        }
-        
-
         public void ReplaceCharacter(Entity entity) {
-            currentEntity = entity;
 
-            onCharacterDataSelected = (selectedCharacterData) => {
-                currentEntity.SetCharacter(selectedCharacterData);
-                OnCancel();
-            };
+            onCharacterDataSelected = (selectedCharacterData) => OnSelectCharacter(selectedCharacterData, entity);
 
             Enable();
 
             GetCharacters();
+
+
+            void OnSelectCharacter(CharacterData characterData, Entity entity) {
+                if (!Enabled)
+                    return;
+
+                entity.SetCharacter(characterData);
+                OnCancel();
+            }
         }
 
 
-        public void OnSelectCharacter(CharacterData data) {
+        public void SelectCharacter(CharacterData data) {
             if ( !Enabled ) return;
             onCharacterDataSelected?.Invoke( data );
         }
@@ -107,7 +87,34 @@ namespace SeleneGame.Core.UI {
         }
 
 
+        public override void Enable() {
 
+            base.Enable();
+
+            characterSelectionMenu.SetActive( true );
+        }
+
+        public override void Disable() {
+
+            base.Disable();
+
+            characterSelectionMenu.SetActive( false );
+        }
+
+        public override void Refresh() {
+            GetCharacters();
+        }
+
+        public override void ResetGamePadSelection(){
+            EventSystem.current.SetSelectedGameObject(characters[0].gameObject);
+        }
+
+        public override void OnCancel() {
+            Disable();
+        }
+        
+
+        
         private void Awake() {
             characterSelectionContainer.GetComponent<GridLayoutGroup>().constraintCount = CHARACTER_CASES_PER_ROW;
         }

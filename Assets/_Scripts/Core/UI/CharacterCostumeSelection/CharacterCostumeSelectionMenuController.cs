@@ -12,7 +12,7 @@ using SevenGame.Utility;
 
 namespace SeleneGame.Core.UI {
     
-    public class CharacterCostumeSelectionMenuController : UIMenu<CharacterCostumeSelectionMenuController> {
+    public class CharacterCostumeSelectionMenuController : UIModal<CharacterCostumeSelectionMenuController> {
 
         public const int CHARACTER_COSTUME_CASES_PER_ROW = 5;
 
@@ -24,50 +24,39 @@ namespace SeleneGame.Core.UI {
         
         [SerializeField] private List<CharacterCostumeCase> characterCostumes = new List<CharacterCostumeCase>();
 
-        private Character currentCharacter;
-
         private Action<CharacterCostume> onCharacterCostumeSelected;
 
+        [SerializeField] private Character character;
 
-
-        public override void Enable() {
-
-            base.Enable();
-
-            characterSelectionMenu.SetActive( true );
-        }
-
-        public override void Disable() {
-
-            base.Disable();
-
-            characterSelectionMenu.SetActive( false );
-        }
-
-        public override void ResetGamePadSelection(){
-            EventSystem.current.SetSelectedGameObject(characterCostumes[0].gameObject);
-        }
-
-        public override void OnCancel() {
-            Disable();
-        }
-        
 
         public void ReplaceCharacterCostume(Character character) {
-            currentCharacter = character;
 
-            onCharacterCostumeSelected = (selectedCostume) => {
-                currentCharacter.SetCostume(selectedCostume);
-                OnCancel();
-            };
+            if (character == null) {
+                Debug.LogError("Character is null!");
+                return;
+            }
+
+            this.character = character;
+
+
+            onCharacterCostumeSelected = (selectedCostume) => OnSelectCharacterCostume(selectedCostume, this.character);
+
+            Enable();
 
             GetEquippableCostumes();
 
-            Enable();
+
+            void OnSelectCharacterCostume(CharacterCostume selectedCostume, Character character) {
+                if (!Enabled)
+                    return;
+
+                character.SetCostume(selectedCostume);
+                OnCancel();
+            }
         }
 
 
-        public void OnSelectCharacterCostume(CharacterCostume characterCostume) {
+        public void SelectCharacterCostume(CharacterCostume characterCostume) {
             if ( !Enabled ) return;
             onCharacterCostumeSelected?.Invoke( characterCostume );
         }
@@ -82,7 +71,7 @@ namespace SeleneGame.Core.UI {
             }
 
             // Get the Default Costume (corresponds to an empty slot, should be in the first space)
-            CreateCharacterCostumeCase( currentCharacter.data.baseCostume );
+            CreateCharacterCostumeCase( character.data.baseCostume );
             ResetGamePadSelection();
 
             // and then get all the other costumes.
@@ -90,7 +79,7 @@ namespace SeleneGame.Core.UI {
 
                     if ( !costume.accessibleInGame ) return;
 
-                    if ( !costume.name.Contains(currentCharacter.data.name) && costume.name.Contains("_Base") )
+                    if ( !costume.name.Contains(character.data.name) && costume.name.Contains("_Base") )
                         return;
 
                     if ( characterCostumes.Exists( (obj) => { return obj.characterCostume == costume; }) ) 
@@ -110,6 +99,32 @@ namespace SeleneGame.Core.UI {
             characterCostumes.Add( costumeCase );
         }
 
+
+        public override void Enable() {
+
+            base.Enable();
+
+            characterSelectionMenu.SetActive( true );
+        }
+
+        public override void Disable() {
+
+            base.Disable();
+
+            characterSelectionMenu.SetActive( false );
+        }
+
+        public override void Refresh() {
+            GetEquippableCostumes();
+        }
+
+        public override void ResetGamePadSelection(){
+            EventSystem.current.SetSelectedGameObject(characterCostumes[0].gameObject);
+        }
+
+        public override void OnCancel() {
+            Disable();
+        }
 
 
         private void Awake() {

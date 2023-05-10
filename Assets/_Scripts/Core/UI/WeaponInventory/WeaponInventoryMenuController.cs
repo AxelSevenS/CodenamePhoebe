@@ -10,7 +10,7 @@ using SevenGame.Utility;
 
 namespace SeleneGame.Core.UI {
     
-    public class WeaponInventoryMenuController : UIMenu<WeaponInventoryMenuController> {
+    public class WeaponInventoryMenuController : UIModal<WeaponInventoryMenuController> {
 
         [SerializeField] private GameObject weaponInventoryMenu;
         [SerializeField] private GameObject weaponInventoryContainer;
@@ -18,59 +18,46 @@ namespace SeleneGame.Core.UI {
         
         [SerializeField] private List<WeaponSlot> weapons = new List<WeaponSlot>();
 
-        private ArmedEntity selectedEntity;
+        [SerializeField] private ArmedEntity armedEntity;
+        
+
 
         public void OpenInventory(ArmedEntity armedEntity) {
-            selectedEntity = armedEntity;
+
+            if (armedEntity == null) {
+                Debug.LogError("ArmedEntity is null");
+                return;
+            }
+
+            this.armedEntity = armedEntity;
+
+
             Enable();
-        }
-
-        [ContextMenu("Enable")]
-        public override void Enable() {
-
-            base.Enable();
-
-            weaponInventoryMenu.SetActive( true );
 
             GetEntityWeapons();
         }
 
-        [ContextMenu("Disable")]
-        public override void Disable() {
-            base.Disable();
-
-            weaponInventoryMenu.SetActive( false );
-        }
-
-        public override void ResetGamePadSelection(){
-            EventSystem.current.SetSelectedGameObject(weapons[0].gameObject);
-        }
-
 
         private void GetEntityWeapons(){
+
+            if (armedEntity == null) {
+                Debug.LogError("ArmedEntity is null");
+                return;
+            }
+
             weapons?.Clear();
             // Destroy all objects in the container
             foreach (Transform child in weaponInventoryContainer.transform) {
                 Destroy(child.gameObject);
             }
 
-            // if (PlayerEntityController.current.entity is ArmedEntity armed){
 
-            for (int i = 0; i < selectedEntity.weapons.Count; i++) {
-                CreateWeaponSlot(i, selectedEntity);
+            for (int i = 0; i < armedEntity.weapons.Count; i++) {
+                CreateWeaponSlot(i, armedEntity);
 
-                if (i == 0) 
-                    ResetGamePadSelection();
+                if (i != 0) continue;
+                ResetGamePadSelection();
             }
-
-            // } else {
-            //     Disable();
-            //     return;
-            // }
-
-            // WeaponSlot lastButton = weapons[weapons.Count - 1];
-            // lastButton.elementDown = returnButton;
-            // returnButton.elementUp = lastButton;
 
         }
 
@@ -88,6 +75,30 @@ namespace SeleneGame.Core.UI {
             
             weapons.Add( weaponSlot );
 
+        }
+
+        [ContextMenu("Enable")]
+        public override void Enable() {
+
+            base.Enable();
+
+            weaponInventoryMenu.SetActive( true );
+        }
+
+        [ContextMenu("Disable")]
+        public override void Disable() {
+            base.Disable();
+
+            weaponInventoryMenu.SetActive( false );
+        }
+
+        public override void Refresh() {
+            Debug.Log("Refreshing Weapon Inventory Menu");
+            GetEntityWeapons();
+        }
+
+        public override void ResetGamePadSelection(){
+            EventSystem.current.SetSelectedGameObject(weapons[0].gameObject);
         }
 
     }
