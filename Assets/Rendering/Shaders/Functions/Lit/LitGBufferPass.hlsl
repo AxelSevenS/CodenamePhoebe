@@ -1,6 +1,8 @@
 #ifndef LIT_GBUFFER_PASS_INCLUDED
 #define LIT_GBUFFER_PASS_INCLUDED
 
+#include "LitInput.hlsl"
+
 // -------------------------------------
 // Material Keywords
 #pragma shader_feature_local _NORMALMAP
@@ -59,15 +61,16 @@ VertexOutput GBufferPassVertex(VertexInput input) {
     return output;
 }
 
-FragmentOutput GBufferPassFragment(VertexOutput input) : SV_Target {
+FragmentOutput GBufferPassFragment(VertexOutput input, half facing : VFACE) : SV_Target {
 
-    CustomClipping(input);
+    CustomClipping(input, facing);
 
     SurfaceData surfaceData = (SurfaceData)0;
     InputData inputData = (InputData)0;
     InitializeLightingData( surfaceData, inputData, input );
 
-    CustomFragment( surfaceData, inputData, input );
+    CustomFragment( surfaceData, inputData, input, facing );
+
 
     return SurfaceDataToGbuffer( surfaceData, inputData, inputData.bakedGI * surfaceData.albedo, 0 ); 
 }

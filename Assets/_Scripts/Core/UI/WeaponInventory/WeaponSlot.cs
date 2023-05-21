@@ -9,7 +9,7 @@ using TMPro;
 
 namespace SeleneGame.Core.UI {
 
-    public class WeaponSlot : CustomButton {
+    public sealed class WeaponSlot : CustomButton {
 
         public Action primaryAction;
         public Action secondaryAction;
@@ -44,6 +44,8 @@ namespace SeleneGame.Core.UI {
         }
 
         public override void OnSubmit(BaseEventData eventData) {
+            if (!interactable) return;
+
             base.OnSubmit(eventData);
             
             // TODO

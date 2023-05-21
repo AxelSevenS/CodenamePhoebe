@@ -34,15 +34,12 @@ namespace SeleneGame.Content {
         public override void SetStyle(int style){;}
 
 
-        private void Awake() {
+        protected override void Awake() {
+            base.Awake();
             _seat = GetComponent<Seat>();
 
             _seat.seatEntity = this;
             SetSittingPoses();
-        }
-
-        protected override void Start() {
-            base.Start();
         }
     }
 }

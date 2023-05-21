@@ -25,7 +25,7 @@ namespace SeleneGame.Core {
             if (entity != null && costume?.model != null) {
                 model = GameObject.Instantiate(costume.model, entity.transform, false);
                 _costumeData = model.GetComponent<ModelProperties>();
-                entity.animator.Rebind();
+                entity.animator?.Rebind();
             }
         }
 

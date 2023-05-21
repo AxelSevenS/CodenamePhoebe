@@ -10,7 +10,7 @@ Shader "Selene/Eidolon" {
     }
     SubShader {
 
-        Tags { "RenderType"="Transparent" }
+        Tags { "RenderType"="Opaque" }
         LOD 100
 
         HLSLINCLUDE
@@ -40,14 +40,14 @@ Shader "Selene/Eidolon" {
             void StandardVertexDisplacement( inout VertexOutput output ) {
             }
 
-            bool StandardClipping( in VertexOutput input ) {
+            bool StandardClipping( in VertexOutput input, half facing ) {
                 baseColor = FlowMap(_MainTex, _FlowMap, input.uv, _Time[0] * 2, 0.5);
                 clip (baseColor.a <= 0.5 ? -1 : 0);
 
                 return false;
             }
 
-            void StandardFragment( inout SurfaceData surfaceData, inout InputData inputData, VertexOutput input ) {
+            void StandardFragment( inout SurfaceData surfaceData, inout InputData inputData, VertexOutput input, half facing ) {
 
                 surfaceData.albedo = baseColor.rgb;
                 surfaceData.alpha = baseColor.a;
@@ -61,7 +61,7 @@ Shader "Selene/Eidolon" {
                 output.positionWS += output.normalWS * _HuskDistance;
             }
 
-            bool HuskClipping( in VertexOutput input ) {
+            bool HuskClipping( in VertexOutput input, half facing ) {
                 baseColor = tex2D(_HuskMap, input.uv);
                     
                 if (baseColor.a > 0.5) {
@@ -83,7 +83,7 @@ Shader "Selene/Eidolon" {
                 return false;
             }
 
-            void HuskFragment( inout SurfaceData surfaceData, inout InputData inputData, VertexOutput input ) {
+            void HuskFragment( inout SurfaceData surfaceData, inout InputData inputData, VertexOutput input, half facing ) {
 
                 surfaceData.albedo = baseColor.rgb;
                 surfaceData.alpha = baseColor.a;
@@ -105,8 +105,8 @@ Shader "Selene/Eidolon" {
             HLSLPROGRAM
 
                 #define CustomVertexDisplacement(output) StandardVertexDisplacement(output)
-                #define CustomClipping(output) StandardClipping(output)
-                #define CustomFragment(surfaceData, inputData, input) StandardFragment(surfaceData, inputData, input)
+                #define CustomClipping(output, facing) StandardClipping(output, facing)
+                #define CustomFragment(surfaceData, inputData, input, facing) StandardFragment(surfaceData, inputData, input, facing)
 
                 #include "Functions/Lit/LitSubShader.hlsl"
                 #include "Functions/Lit/LitForwardPass.hlsl"
@@ -123,8 +123,8 @@ Shader "Selene/Eidolon" {
             HLSLPROGRAM
 
                 #define CustomVertexDisplacement(output) StandardVertexDisplacement(output)
-                #define CustomClipping(output) StandardClipping(output)
-                #define CustomFragment(surfaceData, inputData, input) StandardFragment(surfaceData, inputData, input)
+                #define CustomClipping(output, facing) StandardClipping(output, facing)
+                #define CustomFragment(surfaceData, inputData, input, facing) StandardFragment(surfaceData, inputData, input, facing)
 
                 #include "Functions/Lit/LitSubShader.hlsl"
                 #include "Functions/Lit/LitGBufferPass.hlsl"
@@ -141,8 +141,8 @@ Shader "Selene/Eidolon" {
             HLSLPROGRAM
 
                 #define CustomVertexDisplacement(output) HuskVertexDisplacement(output)
-                #define CustomClipping(output) HuskClipping(output)
-                #define CustomFragment(surfaceData, inputData, input) HuskFragment(surfaceData, inputData, input)
+                #define CustomClipping(output, facing) HuskClipping(output, facing)
+                #define CustomFragment(surfaceData, inputData, input, facing) HuskFragment(surfaceData, inputData, input, facing)
 
                 #include "Functions/Lit/LitSubShader.hlsl"
 
@@ -165,7 +165,7 @@ Shader "Selene/Eidolon" {
 
             HLSLPROGRAM
 
-                #define CustomClipping(output) StandardClipping(output)
+                #define CustomClipping(output, facing) StandardClipping(output, facing)
 
                 #include "Functions/Lit/LitSubShader.hlsl"
                 #include "Functions/Lit/LitDepthOnlyPass.hlsl"
@@ -182,7 +182,7 @@ Shader "Selene/Eidolon" {
 
             HLSLPROGRAM
 
-                #define CustomClipping(output) StandardClipping(output)
+                #define CustomClipping(output, facing) StandardClipping(output, facing)
 
                 #include "Functions/Lit/LitSubShader.hlsl"
                 #include "Functions/Lit/LitDepthNormalsPass.hlsl"
@@ -197,7 +197,7 @@ Shader "Selene/Eidolon" {
         
             HLSLPROGRAM
             
-                #define CustomClipping(output) StandardClipping(output)
+                #define CustomClipping(output, facing) StandardClipping(output, facing)
                 #define CustomVertexDisplacement(output) StandardVertexDisplacement(output)
 
                 #include "Functions/Lit/LitSubShader.hlsl"

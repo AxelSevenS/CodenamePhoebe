@@ -123,6 +123,18 @@ namespace SeleneGame.Core.UI {
             GetEquippableCostumes();
         }
 
+        public override void EnableInteraction() {
+            foreach (WeaponCostumeCase weapons in weaponCostumes) {
+                weapons.EnableInteraction();
+            }
+        }
+
+        public override void DisableInteraction() {
+            foreach (WeaponCostumeCase weapons in weaponCostumes) {
+                weapons.DisableInteraction();
+            }
+        }
+
         public override void ResetGamePadSelection(){
             EventSystem.current.SetSelectedGameObject(weaponCostumes[0].gameObject);
         }

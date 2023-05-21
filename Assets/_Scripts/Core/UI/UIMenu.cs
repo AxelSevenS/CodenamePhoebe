@@ -26,16 +26,31 @@ namespace SeleneGame.Core.UI {
         public abstract void ResetGamePadSelection();
 
 
-        protected override void OnEnable() {
-            base.OnEnable();
-            // UIController.current.onCancel += OnCancel;
+        public override void Enable() {
+
+            if ( UIController.modalRoot == null ) {
+                UIController.modalRoot = this;
+            }
+
+            transform.SetSiblingIndex( UIController.current.transform.childCount - 1 );
+
+            base.Enable();
         }
 
 
-        protected override void OnDisable() {
-            base.OnDisable();
-            // UIController.current.onCancel -= OnCancel;
+        public override void Disable() {
+
+            if ( UIController.modalRoot == (IUIModal)this ) {
+                UIController.DisableModalTree();
+                UIController.modalRoot = null;
+            }
+            
+            base.Disable();
         }
+
+        public abstract void EnableInteraction();
+
+        public abstract void DisableInteraction();
     }
 
 }

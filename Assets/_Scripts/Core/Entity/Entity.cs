@@ -91,8 +91,7 @@ namespace SeleneGame.Core {
         public event Action<Vector3> onJump;
         public event Action<Vector3> onEvade;
         public event Action<DamageData> onParry;
-
-
+        
 
         /// <summary>
         /// The entity's health system.
@@ -261,11 +260,16 @@ namespace SeleneGame.Core {
         /// <param name="rotation">The rotation of the entity</param>
         /// <param name="costume">The costume of the entity, leave empty to use character's default costume</param>
         public static Entity CreateEntity(System.Type entityType, Vector3 position, Quaternion rotation, CharacterData data, CharacterCostume costume = null) {
-            GameObject entityGO = new GameObject("Entity");
-            Entity entity = (Entity)entityGO.AddComponent(entityType);
-            entityGO.AddComponent<EntityController>();
 
+            GameObject entityGO = new GameObject("Entity");
+            entityGO.SetActive(false);
+
+            Entity entity = (Entity)entityGO.AddComponent(entityType);
+            entity.Initialize();
+            entityGO.AddComponent<EntityController>();
             entity.SetCharacter(data, costume);
+
+            entityGO.SetActive(true);
 
             entity.transform.position = position;
             entity.transform.rotation = rotation;
@@ -281,11 +285,16 @@ namespace SeleneGame.Core {
         /// <param name="character">The character of the entity to create</param>
         /// <param name="costume">The costume of the entity, leave empty to use character's default costume</param>
         public static Entity CreatePlayerEntity(System.Type entityType, Vector3 position, Quaternion rotation, CharacterData data, CharacterCostume costume = null) {
-            GameObject entityGO = new GameObject("Entity");
-            Entity entity = (Entity)entityGO.AddComponent(entityType);
-            entityGO.AddComponent<Player>();
 
+            GameObject entityGO = new GameObject("Entity");
+            entityGO.SetActive(false);
+
+            Entity entity = (Entity)entityGO.AddComponent(entityType);
+            entity.Initialize();
+            entityGO.AddComponent<Player>();
             entity.SetCharacter(data, costume);
+
+            entityGO.SetActive(true);
 
             entity.transform.position = position;
             entity.transform.rotation = rotation;
@@ -328,6 +337,10 @@ namespace SeleneGame.Core {
 
             _character?.Dispose();
             _character = characterData?.GetCharacter(this, costume) ?? null;
+
+            Debug.Log(_character);
+            Debug.Log(_health);
+            Debug.Log(_physicsComponent);
 
             _health.maxAmount = _character?.data?.maxHealth ?? 1f;
 
@@ -389,16 +402,24 @@ namespace SeleneGame.Core {
         }
 
 
+        private void OnHealthUpdate(float newHealth) {
+
+            if (newHealth == 0f)
+                Kill();
+
+        }
+
+
         /// <summary>
         /// Deal damage to the Entity.
         /// </summary>
         /// <param name="amount">The amount of damage done to the Entity</param>
         /// <param name="knockback">The direction of Knockback applied through the damage</param>
-        public void Damage(DamageData damageData) {
+        public void Damage(Entity owner, DamageData damageData) {
 
-            if (damageData.owner == this) return;
+            if (owner == this) return;
 
-            if (isPlayer || damageData.owner.isPlayer) {
+            if (isPlayer || owner.isPlayer) {
 
                 if (damageData.damageType == DamageType.Critical)
                     EntityManager.current.HardHitStop();
@@ -406,12 +427,9 @@ namespace SeleneGame.Core {
                     EntityManager.current.SoftHitStop();
             }
 
-            damageData.owner?.AwardDamage(damageData.amount, damageData.damageType);
+            owner?.AwardDamage(damageData.amount, damageData.damageType);
 
             _health.amount -= damageData.amount;
-
-            if (_health.amount == 0f)
-                Kill();
 
             // TODO: Add actual knockback animations
             
@@ -583,16 +601,26 @@ namespace SeleneGame.Core {
     
         }
 
-        protected virtual void Start(){
+        public void Initialize() {
             transform.rotation = Quaternion.identity;
             absoluteForward = transform.forward;
+
+            _animator ??= GetComponent<Animator>();
+            _animancer ??= GetComponent<AnimancerComponent>();
+            _rigidbody ??= GetComponent<Rigidbody>();
+            _physicsComponent ??= GetComponent<CustomPhysicsComponent>();
+            _health ??= GetComponent<Health>();
+
             rigidbody.useGravity = false;
             rigidbody.isKinematic = true;
             rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
             rigidbody.interpolation = RigidbodyInterpolation.None;
-            
+
             GameUtility.SetLayerRecursively(gameObject, CollisionUtils.EntityObjectLayer);
-            
+        }
+
+        protected virtual void Awake() {
+            Initialize();
 
             if (character == null) {
                 Debug.LogError($"Entity {name} has no Character assigned!", this);
@@ -605,11 +633,7 @@ namespace SeleneGame.Core {
         [ContextMenu("Reset")]
         private void ResetEntity() => EntityReset();
         protected virtual void EntityReset(){
-            _animator ??= GetComponent<Animator>();
-            _animancer ??= GetComponent<AnimancerComponent>();
-            _rigidbody ??= GetComponent<Rigidbody>();
-            _physicsComponent ??= GetComponent<CustomPhysicsComponent>();
-            _health ??= GetComponent<Health>();
+            Initialize();
 
             _character?.Dispose();
             _character = null;
@@ -617,9 +641,11 @@ namespace SeleneGame.Core {
 
         protected virtual void OnEnable(){
             EntityManager.current.entityList.Add( this );
+            health.onUpdate += OnHealthUpdate;
         }
         protected virtual void OnDisable(){
             EntityManager.current.entityList.Remove( this );
+            health.onUpdate -= OnHealthUpdate;
         }
         
         protected virtual void OnDestroy(){;}

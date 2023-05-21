@@ -17,17 +17,17 @@
 #endif
 
 #ifndef CustomClipping
-    bool DefaultClipping( in VertexOutput input ) {
+    bool DefaultClipping( in VertexOutput input, half facing ) {
         return false;
     }
 
-    #define CustomClipping(input) DefaultClipping(input)
+    #define CustomClipping(input, facing) DefaultClipping(input, facing)
 #endif
 
 #ifndef CustomFragment
     // Default fragment shader for Lit shader 
 
-    void DefaultFragment( inout SurfaceData surfaceData, inout InputData inputData, VertexOutput input ) {
+    void DefaultFragment( inout SurfaceData surfaceData, inout InputData inputData, VertexOutput input, half facing ) {
 
         surfaceData.albedo = float3(10, 0, 10);
         surfaceData.alpha = 1;
@@ -38,7 +38,7 @@
 
     }
 
-    #define CustomFragment(surfaceData, inputData, input) DefaultFragment(surfaceData, inputData, input)
+    #define CustomFragment(surfaceData, inputData, input, facing) DefaultFragment(surfaceData, inputData, input, facing)
 #endif
 
 

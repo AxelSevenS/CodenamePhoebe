@@ -2185,6 +2185,15 @@ namespace SeleneGame.Core
                     ""initialStateCheck"": false
                 },
                 {
+                    ""name"": ""DebugLoadMenu"",
+                    ""type"": ""Button"",
+                    ""id"": ""e6b6b808-e15c-4fe6-b0e1-6ac1c0ea408d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""Debug1"",
                     ""type"": ""Button"",
                     ""id"": ""57f16f88-832b-4bf2-b7a3-1bc82f9d4bbe"",
@@ -2211,17 +2220,6 @@ namespace SeleneGame.Core
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""DebugKeyBindMenu"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""2997b443-0413-4745-a147-696017f1883e"",
-                    ""path"": ""<Gamepad>/start"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Gamepad"",
                     ""action"": ""DebugKeyBindMenu"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -2267,6 +2265,28 @@ namespace SeleneGame.Core
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
                     ""action"": ""DebugSaveMenu"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0c7c8abb-a06e-4921-86f7-6cf337343f10"",
+                    ""path"": ""<Keyboard>/v"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""DebugLoadMenu"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3dca7710-a30e-4d7f-80e0-8fa0107cd187"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""DebugLoadMenu"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -2387,6 +2407,7 @@ namespace SeleneGame.Core
             m_Debug = asset.FindActionMap("Debug", throwIfNotFound: true);
             m_Debug_DebugKeyBindMenu = m_Debug.FindAction("DebugKeyBindMenu", throwIfNotFound: true);
             m_Debug_DebugSaveMenu = m_Debug.FindAction("DebugSaveMenu", throwIfNotFound: true);
+            m_Debug_DebugLoadMenu = m_Debug.FindAction("DebugLoadMenu", throwIfNotFound: true);
             m_Debug_Debug1 = m_Debug.FindAction("Debug1", throwIfNotFound: true);
             m_Debug_Debug2 = m_Debug.FindAction("Debug2", throwIfNotFound: true);
         }
@@ -2684,6 +2705,7 @@ namespace SeleneGame.Core
         private IDebugActions m_DebugActionsCallbackInterface;
         private readonly InputAction m_Debug_DebugKeyBindMenu;
         private readonly InputAction m_Debug_DebugSaveMenu;
+        private readonly InputAction m_Debug_DebugLoadMenu;
         private readonly InputAction m_Debug_Debug1;
         private readonly InputAction m_Debug_Debug2;
         public struct DebugActions
@@ -2692,6 +2714,7 @@ namespace SeleneGame.Core
             public DebugActions(@InputControls wrapper) { m_Wrapper = wrapper; }
             public InputAction @DebugKeyBindMenu => m_Wrapper.m_Debug_DebugKeyBindMenu;
             public InputAction @DebugSaveMenu => m_Wrapper.m_Debug_DebugSaveMenu;
+            public InputAction @DebugLoadMenu => m_Wrapper.m_Debug_DebugLoadMenu;
             public InputAction @Debug1 => m_Wrapper.m_Debug_Debug1;
             public InputAction @Debug2 => m_Wrapper.m_Debug_Debug2;
             public InputActionMap Get() { return m_Wrapper.m_Debug; }
@@ -2709,6 +2732,9 @@ namespace SeleneGame.Core
                     @DebugSaveMenu.started -= m_Wrapper.m_DebugActionsCallbackInterface.OnDebugSaveMenu;
                     @DebugSaveMenu.performed -= m_Wrapper.m_DebugActionsCallbackInterface.OnDebugSaveMenu;
                     @DebugSaveMenu.canceled -= m_Wrapper.m_DebugActionsCallbackInterface.OnDebugSaveMenu;
+                    @DebugLoadMenu.started -= m_Wrapper.m_DebugActionsCallbackInterface.OnDebugLoadMenu;
+                    @DebugLoadMenu.performed -= m_Wrapper.m_DebugActionsCallbackInterface.OnDebugLoadMenu;
+                    @DebugLoadMenu.canceled -= m_Wrapper.m_DebugActionsCallbackInterface.OnDebugLoadMenu;
                     @Debug1.started -= m_Wrapper.m_DebugActionsCallbackInterface.OnDebug1;
                     @Debug1.performed -= m_Wrapper.m_DebugActionsCallbackInterface.OnDebug1;
                     @Debug1.canceled -= m_Wrapper.m_DebugActionsCallbackInterface.OnDebug1;
@@ -2725,6 +2751,9 @@ namespace SeleneGame.Core
                     @DebugSaveMenu.started += instance.OnDebugSaveMenu;
                     @DebugSaveMenu.performed += instance.OnDebugSaveMenu;
                     @DebugSaveMenu.canceled += instance.OnDebugSaveMenu;
+                    @DebugLoadMenu.started += instance.OnDebugLoadMenu;
+                    @DebugLoadMenu.performed += instance.OnDebugLoadMenu;
+                    @DebugLoadMenu.canceled += instance.OnDebugLoadMenu;
                     @Debug1.started += instance.OnDebug1;
                     @Debug1.performed += instance.OnDebug1;
                     @Debug1.canceled += instance.OnDebug1;
@@ -2813,6 +2842,7 @@ namespace SeleneGame.Core
         {
             void OnDebugKeyBindMenu(InputAction.CallbackContext context);
             void OnDebugSaveMenu(InputAction.CallbackContext context);
+            void OnDebugLoadMenu(InputAction.CallbackContext context);
             void OnDebug1(InputAction.CallbackContext context);
             void OnDebug2(InputAction.CallbackContext context);
         }

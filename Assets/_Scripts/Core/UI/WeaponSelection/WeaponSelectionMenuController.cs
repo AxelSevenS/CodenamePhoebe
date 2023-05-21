@@ -110,6 +110,18 @@ namespace SeleneGame.Core.UI {
             EventSystem.current.SetSelectedGameObject(weapons[0].gameObject);
         }
 
+        public override void EnableInteraction() {
+            foreach (WeaponCase weapon in weapons) {
+                weapon.EnableInteraction();
+            }
+        }
+
+        public override void DisableInteraction() {
+            foreach (WeaponCase weapon in weapons) {
+                weapon.DisableInteraction();
+            }
+        }
+
         public override void OnCancel() {
             Disable();
         }

@@ -8,7 +8,7 @@ using TMPro;
 
 namespace SeleneGame.Core.UI {
 
-    public class WeaponCostumeCase : CustomButton {
+    public sealed class WeaponCostumeCase : CustomButton {
         
         private WeaponCostume _weaponCostume;
 
@@ -41,6 +41,8 @@ namespace SeleneGame.Core.UI {
 
 
         public override void OnSubmit(BaseEventData eventData) {
+            if (!interactable) return;
+            
             base.OnSubmit(eventData);
             Debug.Log($"Weapon case {nameText} clicked");
             WeaponCostumeSelectionMenuController.current.onWeaponCostumeSelected(_weaponCostume);

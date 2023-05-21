@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b25c5c715eb3cff438ee045839c6c210, type: 3}
-  m_Name: new Water Profile
+  m_Name: Peaceful Water
   m_EditorClassIdentifier: 
   waves:
   - {x: -0.022018548, y: -0.9997576, z: 0.049550366, w: 35.828148}

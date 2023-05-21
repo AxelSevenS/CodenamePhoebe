@@ -769,6 +769,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfd211adb21086e4f87fc6df5dc08288, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  titleText: {fileID: 2009563310}
   saveMenu: {fileID: 347477222}
   saveSlot1: {fileID: 929954551}
   saveSlot2: {fileID: 867295405}
@@ -16778,6 +16779,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 383429206}
     m_Modifications:
+    - target: {fileID: 1080874530665410874, guid: 909108e651c6ac940a2372b0d6ab7266, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1080874530665410875, guid: 909108e651c6ac940a2372b0d6ab7266, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -16936,7 +16941,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6532044035215216988, guid: 909108e651c6ac940a2372b0d6ab7266, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 100
+      value: 450
       objectReference: {fileID: 0}
     - target: {fileID: 6532044035215216988, guid: 909108e651c6ac940a2372b0d6ab7266, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -17073,6 +17078,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 383429206}
     m_Modifications:
+    - target: {fileID: 1080874530665410874, guid: 909108e651c6ac940a2372b0d6ab7266, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1080874530665410875, guid: 909108e651c6ac940a2372b0d6ab7266, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -17223,7 +17232,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6532044035215216988, guid: 909108e651c6ac940a2372b0d6ab7266, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 100
+      value: 450
       objectReference: {fileID: 0}
     - target: {fileID: 6532044035215216988, guid: 909108e651c6ac940a2372b0d6ab7266, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -22850,7 +22859,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec90a1bdef5db16499f158d7102554e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentEntity: {fileID: 0}
   weaponSelectionMenu: {fileID: 1288624594}
   weaponSelectionContainer: {fileID: 12983477}
   weaponCaseTemplate: {fileID: 1789115363032000194, guid: b0d613bf327a53d40993a7bb2ca765b0, type: 3}
@@ -28678,6 +28686,7 @@ MonoBehaviour:
   weaponInventoryContainer: {fileID: 1315229694}
   weaponSlotTemplate: {fileID: 7337290067534769353, guid: 95696623611d20244883a57b99535914, type: 3}
   weapons: []
+  armedEntity: {fileID: 0}
 --- !u!114 &1580043405
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29731,24 +29740,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waterDisplacementShader: {fileID: 7200000, guid: e55a859cc948a3a4d81ac2407bb2a1bf, type: 3}
-  _waterProfile: {fileID: 11400000, guid: b6fdc2a2337c29b43a5965267458815f, type: 2}
+  _waterProfile: {fileID: 11400000, guid: a08e30d51b2bcc64b97c0b459adc4eb3, type: 2}
   _waves:
-  - {x: -0.7145096, y: -0.2026298, z: 0.0632345, w: 24.159899}
-  - {x: -0.8479238, y: 0.5293114, z: 0.0029030268, w: 33.98738}
-  - {x: 0.11953777, y: -0.5437735, z: 0.071879394, w: 35.752922}
-  - {x: -0.058577225, y: 0.96705306, z: 0.023205768, w: 41.545364}
-  - {x: -0.648788, y: -0.75914496, z: 0.072529204, w: 38.371483}
-  - {x: 0.6428816, y: -0.23901944, z: 0.009906043, w: 27.934107}
-  - {x: -0.26910493, y: -0.8718594, z: 0.060080055, w: 14.931381}
-  - {x: -0.30885074, y: -0.8700615, z: 0.03776221, w: 33.53208}
-  - {x: 0.9522331, y: -0.20326117, z: 0.056273114, w: 10.9198885}
-  - {x: 0.4568122, y: 0.8712098, z: 0.058653224, w: 15.659564}
-  - {x: 0.6564373, y: -0.6323146, z: 0.048994426, w: 19.903587}
-  - {x: -0.22057223, y: 0.9097752, z: 0.043197267, w: 20.333275}
-  - {x: 0.58886796, y: -0.80815184, z: 0.04442236, w: 41.05413}
-  - {x: -0.5257469, y: -0.65560263, z: 0.023315579, w: 25.898142}
-  - {x: -0.49813256, y: -0.25778273, z: 0.011721908, w: 18.425821}
-  - {x: -0.51349556, y: 0.8247977, z: 0.046145134, w: 9.639304}
+  - {x: -0.022018548, y: -0.9997576, z: 0.049550366, w: 35.828148}
+  - {x: 0.458051, y: 0.8889259, z: 0.00992734, w: 38.706566}
+  - {x: 0.9948794, y: -0.101069026, z: 0.01134452, w: 16.30618}
+  - {x: 0.96568114, y: -0.2597307, z: 0.07410481, w: 21.927437}
+  - {x: -0.44158676, y: -0.8972185, z: 0.04269321, w: 35.56324}
+  - {x: 0.968581, y: -0.24869812, z: 0.050117377, w: 22.994843}
+  - {x: -0.846314, y: 0.53268427, z: 0.03164629, w: 6.4900517}
+  - {x: 0.9935414, y: 0.113470405, z: 0.0032859389, w: 38.93646}
 --- !u!114 &1953257003
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30249,7 +30250,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Save your Game (LMB to Save to slot; RMB to Load from slot)
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -30333,6 +30334,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 383429206}
     m_Modifications:
+    - target: {fileID: 1080874530665410874, guid: 909108e651c6ac940a2372b0d6ab7266, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1080874530665410875, guid: 909108e651c6ac940a2372b0d6ab7266, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -30487,7 +30492,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6532044035215216988, guid: 909108e651c6ac940a2372b0d6ab7266, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 100
+      value: 450
       objectReference: {fileID: 0}
     - target: {fileID: 6532044035215216988, guid: 909108e651c6ac940a2372b0d6ab7266, type: 3}
       propertyPath: m_AnchoredPosition.y

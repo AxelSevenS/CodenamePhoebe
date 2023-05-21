@@ -2161,6 +2161,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "DebugLoadMenu",
+                    "type": "Button",
+                    "id": "e6b6b808-e15c-4fe6-b0e1-6ac1c0ea408d",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Debug1",
                     "type": "Button",
                     "id": "57f16f88-832b-4bf2-b7a3-1bc82f9d4bbe",
@@ -2187,17 +2196,6 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
-                    "action": "DebugKeyBindMenu",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "2997b443-0413-4745-a147-696017f1883e",
-                    "path": "<Gamepad>/start",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Gamepad",
                     "action": "DebugKeyBindMenu",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -2243,6 +2241,28 @@
                     "processors": "",
                     "groups": "Gamepad",
                     "action": "DebugSaveMenu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0c7c8abb-a06e-4921-86f7-6cf337343f10",
+                    "path": "<Keyboard>/v",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "DebugLoadMenu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3dca7710-a30e-4d7f-80e0-8fa0107cd187",
+                    "path": "<Gamepad>/start",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "DebugLoadMenu",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

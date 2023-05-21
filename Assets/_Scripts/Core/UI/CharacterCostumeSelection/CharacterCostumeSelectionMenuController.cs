@@ -118,6 +118,18 @@ namespace SeleneGame.Core.UI {
             GetEquippableCostumes();
         }
 
+        public override void EnableInteraction() {
+            foreach (CharacterCostumeCase characterCostume in characterCostumes) {
+                characterCostume.EnableInteraction();
+            }
+        }
+
+        public override void DisableInteraction() {
+            foreach (CharacterCostumeCase characterCostume in characterCostumes) {
+                characterCostume.DisableInteraction();
+            }
+        }
+
         public override void ResetGamePadSelection(){
             EventSystem.current.SetSelectedGameObject(characterCostumes[0].gameObject);
         }

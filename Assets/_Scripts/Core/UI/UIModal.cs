@@ -7,13 +7,18 @@ namespace SeleneGame.Core.UI {
     public abstract class UIModal<T> : UIMenu<T>, IUIModal where T : UIMenu<T> {
 
         protected IUIMenu _previousModal;
+        protected IUIMenu _nextModal;
 
         public IUIMenu previousModal => _previousModal;
+        public IUIMenu nextModal => _nextModal;
 
         public override void Enable() {
 
-            _previousModal = UIController.modalLeaf;
-            UIController.modalLeaf = this;
+            if ( UIController.modalLeaf != (IUIModal)this) {
+                _previousModal = UIController.modalLeaf;
+                UIController.modalLeaf?.DisableInteraction();
+                UIController.modalLeaf = this;
+            }
 
             base.Enable();
         }
@@ -21,9 +26,14 @@ namespace SeleneGame.Core.UI {
 
         public override void Disable() {
 
+
+            if ( UIController.modalLeaf == (IUIModal)this) {
+                UIController.modalLeaf = _previousModal;
+            }
             _previousModal?.Refresh();
-            UIController.modalLeaf = _previousModal;
+            _previousModal?.EnableInteraction();
             _previousModal = null;
+            
 
             base.Disable();
         }

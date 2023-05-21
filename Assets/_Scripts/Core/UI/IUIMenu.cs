@@ -6,6 +6,9 @@ namespace SeleneGame.Core.UI {
         void OnCancel();
         void Refresh();
         void ResetGamePadSelection();
+
+        void EnableInteraction();
+        void DisableInteraction();
     }
 
 }

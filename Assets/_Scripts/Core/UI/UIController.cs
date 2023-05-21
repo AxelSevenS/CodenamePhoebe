@@ -13,32 +13,29 @@ namespace SeleneGame.Core.UI {
     [DefaultExecutionOrder(-100)]
     public class UIController : Singleton<UIController> {
 
-        // public static IUIMenu currentMenu;
+        public static IUIMenu currentMenu { get; private set; }
         public static IUIMenu modalLeaf;
+        public static IUIMenu modalRoot;
         public static IDialogueReader currentDialogueReader;
-
-        // public static bool IsMenuOpen => currentMenu != null;
-
-
-        // public event Action onCancel;
-
         
 
         private BoolData keyBindMenuInput;
         private BoolData saveMenuInput;
+        private BoolData loadMenuInput;
+
 
 
         public static void DisableModalTree() {
+            // Disable all menus in the modal tree
             IUIMenu branch = modalLeaf;
-            while ( branch is IUIModal modalBranch && modalBranch.previousModal != null) {
-                branch = modalBranch.previousModal;
+            while ( branch is IUIModal branchModal && branch != null ) {
                 branch.Disable();
+                branch = branchModal.previousModal;
             }
-            branch.Disable();
             modalLeaf = null;
         }
 
-        public IUIMenu GetBaseMenu() {
+        public static IUIMenu GetBaseMenu() {
             IUIMenu branch = modalLeaf;
             while ( branch is IUIModal modalBranch && modalBranch.previousModal != null) {
                 branch = modalBranch.previousModal;
@@ -47,14 +44,13 @@ namespace SeleneGame.Core.UI {
         }
 
 
-        public void Cancel() {
-            // onCancel?.Invoke();
+        public static void Cancel() {
             modalLeaf?.OnCancel();
         }
 
-        public void UpdateMenuState(){
+        public static void UpdateMenuState(){
 
-            IUIMenu currentMenu = GetBaseMenu();
+            currentMenu = GetBaseMenu();
 
             bool menuUI = currentMenu != null;
 
@@ -79,8 +75,8 @@ namespace SeleneGame.Core.UI {
 
 
         private void OnControllerTypeChange(Keybinds.ControllerType controllerType) {
-            // if ( controllerType != Keybinds.ControllerType.MouseKeyboard )
-            //     currentMenu?.ResetGamePadSelection();
+            if ( controllerType != Keybinds.ControllerType.MouseKeyboard )
+                modalLeaf?.ResetGamePadSelection();
         }
 
 
@@ -97,15 +93,20 @@ namespace SeleneGame.Core.UI {
 
         private void Update() {
            
-        // #if UNITY_EDITOR 
+        #if UNITY_EDITOR 
             keyBindMenuInput.SetVal( Keybinds.debugMap.IsBindPressed("DebugKeyBindMenu") );
             if (keyBindMenuInput.started)
                 KeyBindingMenuController.current.Toggle();
 
             saveMenuInput.SetVal( Keybinds.debugMap.IsBindPressed("DebugSaveMenu") );
             if (saveMenuInput.started)
-                SaveMenuController<GameSaveData>.current.Toggle();
-        // #endif
+                SaveMenuController<GameSaveData>.current.OpenSaveDataMenu();
+
+            loadMenuInput.SetVal( Keybinds.debugMap.IsBindPressed(bindName: "DebugLoadMenu") );
+            if (loadMenuInput.started)
+                SaveMenuController<GameSaveData>.current.OpenLoadDataMenu();
+        #endif
+
         }
 
     }

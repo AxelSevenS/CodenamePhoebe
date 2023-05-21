@@ -91,6 +91,18 @@ namespace SeleneGame.Core.UI {
             ResetGamePadSelection();
         }
 
+        public override void EnableInteraction() {
+            foreach (RebindButton rebind in rebinds) {
+                rebind.EnableInteraction();
+            }
+        }
+
+        public override void DisableInteraction() {
+            foreach (RebindButton rebind in rebinds) {
+                rebind.DisableInteraction();
+            }
+        }
+
         public override void ResetGamePadSelection() {
             EventSystem.current.SetSelectedGameObject(rebinds[0].gameObject);
         }

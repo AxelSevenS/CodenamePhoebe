@@ -9,7 +9,7 @@ using TMPro;
 
 namespace SeleneGame.Core.UI {
 
-    public class CharacterCostumeCase : CustomButton {
+    public sealed class CharacterCostumeCase : CustomButton {
         
         private CharacterCostume _characterCostume;
 
@@ -30,6 +30,8 @@ namespace SeleneGame.Core.UI {
 
 
         public override void OnSubmit(BaseEventData eventData) {
+            if (!interactable) return;
+
             base.OnSubmit(eventData);
             Debug.Log(message: $"Character case {_characterCostume.name} clicked");
             CharacterCostumeSelectionMenuController.current.SelectCharacterCostume(_characterCostume);

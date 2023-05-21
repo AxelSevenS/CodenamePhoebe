@@ -25,7 +25,7 @@ namespace SeleneGame.Core {
         public float damageStartTime = 0f;
 
 
-        public DamageData data => new DamageData(owner, damage, damageType, knockback, transform.forward);
+        public DamageData data => new DamageData(damage, damageType, knockback);
 
 
 
@@ -41,29 +41,11 @@ namespace SeleneGame.Core {
             return damageZoneComponent;
         }
 
-        // public static DamageZone Create<T>(Entity owner, Vector3 position, Quaternion rotation, float damage, DamageType damageType, DamageKnockback knockback, float objectLifeTime = 2f, float damageLifeTime = 0.5f) where T : Collider {
-        //     GameObject damageZone = new GameObject("DamageZone");
-        //     damageZone.transform.position = position;
-        //     damageZone.transform.rotation = rotation;
-
-        //     T collider = damageZone.AddComponent<T>();
-        //     DamageZone damageZoneComponent = damageZone.AddComponent<DamageZone>();
-        //     damageZoneComponent.owner = owner;
-        //     damageZoneComponent.damage = damage;
-        //     damageZoneComponent.damageType = damageType;
-        //     damageZoneComponent.knockback = knockback;
-        //     damageZoneComponent.objectLifeTime = objectLifeTime;
-        //     damageZoneComponent.damageLifeTime = damageLifeTime;
-
-        //     return damageZoneComponent;
-        // }
-
         public bool GetParriedBy(DamageZone otherZone) {
             if ( otherZone == null || otherZone.owner == owner || !isParryable || !otherZone.isParry ) return false;
 
             if ( isMelee ) {
-                DamageData parryData = new DamageData(owner, 0f, otherZone.damageType, DamageKnockback.Block, otherZone.transform.forward);
-                owner?.Damage(parryData);
+                DamageData parryData = new DamageData(0f, otherZone.damageType, DamageKnockback.Block);
             } else {
                 // Send Projectile back
             }
@@ -96,7 +78,7 @@ namespace SeleneGame.Core {
 
             DamageData damageData = data;
             foreach (IDamageable damageable in _damagedEntities) {
-                damageable?.Damage(damageData);
+                damageable?.Damage(owner, damageData);
             }
             _damagedEntities.Clear();
         }
@@ -113,7 +95,7 @@ namespace SeleneGame.Core {
 
             if ( other.TryGetComponent(out IDamageable damageable) || (other?.attachedRigidbody?.TryGetComponent(out damageable) ?? false) ) {
                 
-                if (owner == (System.Object)damageable)
+                if ( damageable == (IDamageable)owner )
                     return;
 
                 _damagedEntities.Add(damageable);

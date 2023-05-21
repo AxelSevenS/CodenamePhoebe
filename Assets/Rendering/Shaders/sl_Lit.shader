@@ -17,14 +17,14 @@ Shader "Selene/Lit" {
 
         [IntRange] _StencilID ("Stencil ID", Range(0, 255)) = 0
         [Enum(UnityEngine.Rendering.CompareFunction)] _StencilComp ("Stencil Comparison", Int) = 0
-    }
+    } 
     SubShader {
 
         Tags { "RenderType"="Opaque" }
-        LOD 100
+        // LOD 100
 
         HLSLINCLUDE
-
+ 
             #include "Functions/Lit/LitInput.hlsl"
             #include "Packages/com.seven.utility/ShaderLibrary/MathUtility.hlsl"
 
@@ -54,14 +54,14 @@ Shader "Selene/Lit" {
                 // output.positionWS += output.normalWS * 0.1;
             }
 
-            bool ProximityClipping( in VertexOutput input ) {
+            bool ProximityClipping( in VertexOutput input, half facing ) {
                 if ( _ProximityDither == 1 )
                     return ProximityDither(input.positionWS, input.positionSS);
 
                 return false;
             }
 
-            void SimpleFragment( inout SurfaceData surfaceData, inout InputData inputData, VertexOutput input ) {
+            void SimpleFragment( inout SurfaceData surfaceData, inout InputData inputData, VertexOutput input, half facing ) {
 
                 half4 baseColor = tex2D(_MainTex, input.uv);
                 surfaceData.albedo = baseColor.rgb;
@@ -79,8 +79,8 @@ Shader "Selene/Lit" {
             }
 
             #define CustomVertexDisplacement(output) SimpleVertexDisplacement(output)
-            #define CustomClipping(output) ProximityClipping(output)
-            #define CustomFragment(surfaceData, inputData, input) SimpleFragment(surfaceData, inputData, input)
+            #define CustomClipping(output, facing) ProximityClipping(output, facing)
+            #define CustomFragment(surfaceData, inputData, input, facing) SimpleFragment(surfaceData, inputData, input, facing)
 
         ENDHLSL
         
@@ -95,6 +95,30 @@ Shader "Selene/Lit" {
             Tags { "LightMode" = "UniversalForward" }
 
             HLSLPROGRAM
+
+                // #pragma vertex vert
+                // #pragma fragment frag
+
+                // struct appdata {
+                //     float4 vertex : POSITION;
+                //     float2 uv : TEXCOORD0;
+                // };
+
+                // struct v2f {
+                //     float4 vertex : SV_POSITION;
+                //     float2 uv : TEXCOORD0;
+                // };
+
+                // v2f vert(appdata v) {
+                //     v2f o;
+                //     o.vertex = mul(UNITY_MATRIX_MVP, v.vertex);
+                //     o.uv = v.uv;
+                //     return o;
+                // }
+
+                // half4 frag(v2f i) : SV_Target {
+                //     return half4(1,1,0,0);
+                // }
 
                 #include "Functions/Lit/LitSubShader.hlsl"
                 #include "Functions/Lit/LitForwardPass.hlsl"

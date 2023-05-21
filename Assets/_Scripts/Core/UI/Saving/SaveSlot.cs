@@ -27,15 +27,17 @@ namespace SeleneGame.Core.UI {
             slotNumberText.text = $"0{slotNumber}";
             saveData = SavingSystem<TData>.LoadDataFromFile(slotNumber);
 
-            if (saveData != null){
+            if (saveData != null) {
                 saveInfo.SetActive(true);
                 playTime.text = saveData.GetTotalPlaytime().ToString();
                 saveDateTime.text = saveData.GetTimeOfLastSave().ToString();
-            }else {
+            } else {
                 saveInfo.SetActive(false);
                 playTime.text = "";
                 saveDateTime.text = "";
             }
+
+            EnableInteraction();
         }
 
         protected override void OnEnable() {
@@ -44,6 +46,8 @@ namespace SeleneGame.Core.UI {
         }
 
         public override void OnSubmit(BaseEventData eventData) {
+            if (!interactable) return;
+
             base.OnSubmit(eventData);
 
             SaveMenuController<TData>.current.onSaveSlotSelected?.Invoke(slotNumber);
@@ -57,6 +61,14 @@ namespace SeleneGame.Core.UI {
             LoadPreviewData();
 
             SaveMenuController<TData>.current.Disable();
+        }
+
+        public override void EnableInteraction() {
+            interactable = saveData != null;
+        }
+
+        public override void DisableInteraction() {
+            interactable = false;
         }
     }
 }

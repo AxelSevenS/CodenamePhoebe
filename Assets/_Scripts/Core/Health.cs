@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using SevenGame.Utility;
@@ -17,6 +18,11 @@ namespace SeleneGame.Core {
         [SerializeField] private TimeInterval _damagedHealthTimer = new TimeInterval();
         [SerializeField] private float _damagedHealthVelocity = 0f;
 
+
+        public event Action<float> onUpdate;
+
+
+
         public float maxAmount {
             get => _maxAmount;
             set {
@@ -32,6 +38,8 @@ namespace SeleneGame.Core {
 
                 const float damagedHealthDuration = 1.25f;
                 _damagedHealthTimer.SetDuration(damagedHealthDuration);
+
+                onUpdate?.Invoke(_amount);
             }
         }
 

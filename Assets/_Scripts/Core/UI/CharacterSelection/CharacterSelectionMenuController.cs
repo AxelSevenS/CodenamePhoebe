@@ -105,6 +105,18 @@ namespace SeleneGame.Core.UI {
             GetCharacters();
         }
 
+        public override void EnableInteraction() {
+            foreach (CharacterCase character in characters) {
+                character.EnableInteraction();
+            }
+        }
+
+        public override void DisableInteraction() {
+            foreach (CharacterCase character in characters) {
+                character.DisableInteraction();
+            }
+        }
+
         public override void ResetGamePadSelection(){
             EventSystem.current.SetSelectedGameObject(characters[0].gameObject);
         }

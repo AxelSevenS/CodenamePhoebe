@@ -13,6 +13,14 @@ namespace SeleneGame.Core.UI {
         public virtual void OnSubmit(BaseEventData eventData) {
             Debug.Log($"Button {name} submitted");
         }
+
+        public virtual void EnableInteraction() {
+            interactable = true;
+        }
+
+        public virtual void DisableInteraction() {
+            interactable = false;
+        }
     }
 
 }

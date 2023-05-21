@@ -93,8 +93,19 @@ namespace SeleneGame.Core.UI {
         }
 
         public override void Refresh() {
-            Debug.Log("Refreshing Weapon Inventory Menu");
             GetEntityWeapons();
+        }
+
+        public override void EnableInteraction() {
+            foreach (WeaponSlot weapon in weapons) {
+                weapon.EnableInteraction();
+            }
+        }
+
+        public override void DisableInteraction() {
+            foreach (WeaponSlot weapon in weapons) {
+                weapon.DisableInteraction();
+            }
         }
 
         public override void ResetGamePadSelection(){

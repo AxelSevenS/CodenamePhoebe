@@ -13,6 +13,18 @@ uniform StructuredBuffer<float4> _GerstnerWaves;
 
 float3 GerstnerWave(float3 Position, float2 WaveDirection, float WaveStrength, float WaveFrequency, float Time){
 
+    // float waveLength = 2 * PI_CONST / WaveFrequency;
+    // float phaseSpeed = sqrt(9.8 / waveLength);
+
+    // float f = waveLength * (dot(WaveDirection, Position.xz) - phaseSpeed * Time);
+    // float waveHeight = WaveStrength / waveLength;
+
+    // return float3(
+    //     WaveDirection.x * (waveHeight * cos(f)), 
+    //     waveHeight * sin(f), 
+    //     WaveDirection.y * (waveHeight * cos(f))
+    // );
+
     float waveLength = 2 * PI_CONST / WaveFrequency;
     float phaseSpeed = sqrt(9.8 / waveLength);
 
@@ -21,7 +33,7 @@ float3 GerstnerWave(float3 Position, float2 WaveDirection, float WaveStrength, f
 
     return float3(
         WaveDirection.x * (waveHeight * cos(f)), 
-        waveHeight * sin(f), 
+        waveHeight * (sin(f) - 1), 
         WaveDirection.y * (waveHeight * cos(f))
     );
 
@@ -66,7 +78,7 @@ float3 GerstnerWave(float3 Position, float2 WaveDirection, float WaveStrength, f
 
     return float3(
         WaveDirection.x * (waveHeight * cos(f)), 
-        waveHeight * sin(f), 
+        waveHeight * (sin(f) - 1), 
         WaveDirection.y * (waveHeight * cos(f))
     );
 

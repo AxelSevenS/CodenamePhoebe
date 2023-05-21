@@ -18,12 +18,6 @@ namespace SeleneGame.Core.UI {
 
         [SerializeField] private Text bindLabel;
         [SerializeField] private Text bindText;
-
-
-        public override void OnSubmit(BaseEventData eventData) {
-            base.OnSubmit(eventData);
-            StartAssignment();
-        }
         
 
         public void StartAssignment() {
@@ -67,6 +61,14 @@ namespace SeleneGame.Core.UI {
             }
         }
 
+
+
+        public override void OnSubmit(BaseEventData eventData) {
+            if (!interactable) return;
+            
+            base.OnSubmit(eventData);
+            StartAssignment();
+        }
         
         
         protected override void OnEnable() {

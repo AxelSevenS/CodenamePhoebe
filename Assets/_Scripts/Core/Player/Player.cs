@@ -187,7 +187,7 @@ namespace SeleneGame.Core {
             #endif
 
             if ( cancelInput.started ) {
-                UIController.current.Cancel();
+                UIController.Cancel();
             }
 
             if (interactInput.started && canInteract)

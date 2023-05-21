@@ -26,14 +26,9 @@ namespace SeleneGame.Core {
         [SerializeField] private List<Vector4> _waves = new List<Vector4>();
         
 
-        public WaterProfile waterProfile {
-            get => _waterProfile;
-        }
+        public WaterProfile waterProfile => _waterProfile;
 
-        public List<Vector4> waves {
-            get => _waves;
-        }
-
+        public List<Vector4> waves => _waves;
 
         
 
@@ -128,6 +123,13 @@ namespace SeleneGame.Core {
                     i--;
                 }
             }
+        }
+
+        [ContextMenu("Randomize Waves Profile")]
+        private void RandomizeWaves() {
+            waterProfile.RandomizeWaves();
+            _waves.Clear();
+            _waves.AddRange(waterProfile.waves);
         }
 
         private void CalculateWaveHeight() {

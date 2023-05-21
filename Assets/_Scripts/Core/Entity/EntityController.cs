@@ -12,17 +12,14 @@ namespace SeleneGame.Core {
 
 
 
-        public Entity entity {
-            get {
-                if ( !_entity ) {
-                    Reset();
-                }
-                return _entity;
-            }
-        }
+        public Entity entity => _entity;
 
         protected virtual void Reset() {
             _entity = GetComponent<Entity>();
+            if (_entity == null) {
+                Debug.LogError("EntityController requires an Entity component to function.");
+                GameUtility.SafeDestroy(this);
+            }
         }
     }
 }
