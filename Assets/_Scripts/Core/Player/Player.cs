@@ -1,7 +1,7 @@
 using UnityEngine;
 
 using SevenGame.Utility;
-using SeleneGame.Core.UI;
+using SevenGame.UI;
 
 namespace SeleneGame.Core {
     
@@ -186,8 +186,9 @@ namespace SeleneGame.Core {
                 debugInput.SetVal( Keybinds.debugMap.IsBindPressed("Debug1") );
             #endif
 
+            Debug.Log(cancelInput.currentValue);
             if ( cancelInput.started ) {
-                UIController.Cancel();
+                UIManager.Cancel();
             }
 
             if (interactInput.started && canInteract)

@@ -20,8 +20,7 @@ Shader "Selene/Water" {
         HLSLINCLUDE
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
-            // #include "Packages/com.seven.utility/ShaderLibrary/MathUtility.hlsl"
-            #include "Functions/Lit/LitInput.hlsl"
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitInput.hlsl"
             #include "Functions/WaterWaveDisplacement.hlsl"
 
 
@@ -58,8 +57,8 @@ Shader "Selene/Water" {
                 return false;
             }
 
-            float UnpackDepth( float depth, float posW ) {
-                return - depth;
+            float2 NormalUVOffset(float2 position, float2 movement, float noiseSpeed, float noiseScale, float time) {
+                return float2(position.x * noiseScale + time * -movement.x/20 * noiseSpeed, position.y * noiseScale + time * -movement.y/20 * noiseSpeed);
             }
 
             void WaterFragment( inout SurfaceData surfaceData, inout InputData inputData, VertexOutput input, half facing ) {
@@ -97,7 +96,38 @@ Shader "Selene/Water" {
                 surfaceData.emission = half3(0, 0, 0);
 
                 if ( _NormalIntensity != 0) {
-                    surfaceData.normalTS = UnpackNormal(tex2D(_NormalMap, input.uv * _NormalScale));
+
+                    float2 positionX = inputData.positionWS.zy;
+                    float2 windX = _WindDirection.zy;
+                    float2 positionY = inputData.positionWS.xz;
+                    float2 windY = _WindDirection.xz;
+                    float2 positionZ = inputData.positionWS.xy;
+                    float2 windZ = _WindDirection.xy;
+
+                    float2 noiseUVX1 = NormalUVOffset(positionX, windX, _NormalSpeed * 2, _NormalScale, _Time[1]);
+                    float2 noiseUVX2 = NormalUVOffset(positionX, windX, _NormalSpeed * 2 * -0.1, _NormalScale, _Time[1]) * float2(-1, -1);
+                    float2 noiseUVY1 = NormalUVOffset(positionY, windY, _NormalSpeed * 2, _NormalScale, _Time[1]);
+                    float2 noiseUVY2 = NormalUVOffset(positionY, windY, _NormalSpeed * 2 * -0.1, _NormalScale, _Time[1]) * float2(-1, -1);
+                    float2 noiseUVZ1 = NormalUVOffset(positionZ, windZ, _NormalSpeed * 2, _NormalScale, _Time[1]);
+                    float2 noiseUVZ2 = NormalUVOffset(positionZ, windZ, _NormalSpeed * 2 * -0.1, _NormalScale, _Time[1]) * float2(-1, -1);
+
+                    float3 triW = abs(inputData.normalWS);
+                    triW / (triW.x + triW.y + triW.z);
+
+                    float3 normalX1 = UnpackNormal(tex2D(_NormalMap, noiseUVX1));
+                    float3 normalX2 = UnpackNormal(tex2D(_NormalMap, noiseUVX2));
+                    float3 normalX = SafeNormalize( (normalX1 + normalX2) / 2 );
+
+                    float3 normalY1 = UnpackNormal(tex2D(_NormalMap, noiseUVY1));
+                    float3 normalY2 = UnpackNormal(tex2D(_NormalMap, noiseUVY2));
+                    float3 normalY = SafeNormalize( (normalY1 + normalY2) / 2 );
+
+                    float3 normalZ1 = UnpackNormal(tex2D(_NormalMap, noiseUVZ1));
+                    float3 normalZ2 = UnpackNormal(tex2D(_NormalMap, noiseUVZ2));
+                    float3 normalZ = SafeNormalize( (normalZ1 + normalZ2) / 2 );
+
+
+                    surfaceData.normalTS = SafeNormalize( (normalX * triW.x + normalY * triW.y + normalZ * triW.z) );
                     half3 mapNormal = mul( inputData.tangentToWorld, surfaceData.normalTS);
                     inputData.normalWS = lerp(inputData.normalWS, mapNormal, _NormalIntensity);
                 }
@@ -121,8 +151,8 @@ Shader "Selene/Water" {
 
                 #define CustomFragment(surfaceData, inputData, input, facing) WaterFragment(surfaceData, inputData, input, facing)
 
-                #include "Functions/Lit/LitSubShader.hlsl"
-                #include "Functions/Lit/LitForwardPass.hlsl"
+                #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitSubShader.hlsl"
+                #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitForwardPass.hlsl"
 
             ENDHLSL
         }
@@ -140,8 +170,8 @@ Shader "Selene/Water" {
 
                 #define CustomFragment(surfaceData, inputData, input, facing) WaterFragment(surfaceData, inputData, input, facing)
 
-                #include "Functions/Lit/LitSubShader.hlsl"
-                #include "Functions/Lit/LitGBufferPass.hlsl"
+                #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitSubShader.hlsl"
+                #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitGBufferPass.hlsl"
 
             ENDHLSL
         }
@@ -166,8 +196,8 @@ Shader "Selene/Water" {
 
                 #define CustomFragment(surfaceData, inputData, input, facing) UnderWaterMaskFragment(surfaceData, inputData, input, facing)
 
-                #include "Functions/Unlit/UnlitSubShader.hlsl"
-                #include "Functions/Unlit/UnlitForwardPass.hlsl"
+                #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Unlit/UnlitSubShader.hlsl"
+                #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Unlit/UnlitForwardPass.hlsl"
 
             ENDHLSL
         }
@@ -183,8 +213,8 @@ Shader "Selene/Water" {
 
             HLSLPROGRAM
 
-                #include "Functions/Lit/LitSubShader.hlsl"
-                #include "Functions/Lit/LitDepthOnlyPass.hlsl"
+                #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitSubShader.hlsl"
+                #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitDepthOnlyPass.hlsl"
 
             ENDHLSL
         }
@@ -200,8 +230,8 @@ Shader "Selene/Water" {
 
             HLSLPROGRAM
 
-                #include "Functions/Lit/LitSubShader.hlsl"
-                #include "Functions/Lit/LitDepthNormalsPass.hlsl"
+                #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitSubShader.hlsl"
+                #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitDepthNormalsPass.hlsl"
 
             ENDHLSL
         }
@@ -214,8 +244,8 @@ Shader "Selene/Water" {
         
         //     HLSLPROGRAM
             
-        //         #include "Functions/Lit/LitSubShader.hlsl"
-        //         #include "Functions/Lit/LitShadowCasterPass.hlsl"
+        //         #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitSubShader.hlsl"
+        //         #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitShadowCasterPass.hlsl"
         
         //     ENDHLSL
         // }
@@ -228,7 +258,7 @@ Shader "Selene/Water" {
 
         //     HLSLPROGRAM
 
-        //         #include "Functions/Lit/LitMetaInput.hlsl"
+        //         #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitMetaInput.hlsl"
 
         //         void SimpleGIContribution( MetaVaryings varyings, inout half4 albedo, inout half4 specularColor) {
                     
@@ -238,7 +268,7 @@ Shader "Selene/Water" {
         //         }
         //         #define CustomGIContribution(varyings, albedo, specularColor) SimpleGIContribution(varyings, albedo, specularColor)
 
-        //         #include "Functions/Lit/LitMetaPass.hlsl"
+        //         #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitMetaPass.hlsl"
 
         //     ENDHLSL
         // }

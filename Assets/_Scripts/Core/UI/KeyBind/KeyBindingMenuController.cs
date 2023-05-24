@@ -3,12 +3,10 @@ using System.Collections.Generic;
 
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-using SeleneGame.Core;
-
 using SevenGame.Utility;
+using SevenGame.UI;
 
 namespace SeleneGame.Core.UI {
     

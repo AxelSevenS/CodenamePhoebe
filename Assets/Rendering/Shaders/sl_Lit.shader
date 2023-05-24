@@ -25,7 +25,7 @@ Shader "Selene/Lit" {
 
         HLSLINCLUDE
  
-            #include "Functions/Lit/LitInput.hlsl"
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitInput.hlsl"
             #include "Packages/com.seven.utility/ShaderLibrary/MathUtility.hlsl"
 
 
@@ -120,8 +120,8 @@ Shader "Selene/Lit" {
                 //     return half4(1,1,0,0);
                 // }
 
-                #include "Functions/Lit/LitSubShader.hlsl"
-                #include "Functions/Lit/LitForwardPass.hlsl"
+                #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitSubShader.hlsl"
+                #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitForwardPass.hlsl"
 
             ENDHLSL
         }
@@ -138,8 +138,8 @@ Shader "Selene/Lit" {
 
             HLSLPROGRAM
 
-                #include "Functions/Lit/LitSubShader.hlsl"
-                #include "Functions/Lit/LitGBufferPass.hlsl"
+                #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitSubShader.hlsl"
+                #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitGBufferPass.hlsl"
 
             ENDHLSL
         }
@@ -193,8 +193,8 @@ Shader "Selene/Lit" {
 
             HLSLPROGRAM
 
-                #include "Functions/Lit/LitSubShader.hlsl"
-                #include "Functions/Lit/LitDepthOnlyPass.hlsl"
+                #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitSubShader.hlsl"
+                #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitDepthOnlyPass.hlsl"
 
             ENDHLSL
         }
@@ -209,8 +209,8 @@ Shader "Selene/Lit" {
 
             HLSLPROGRAM
 
-                #include "Functions/Lit/LitSubShader.hlsl"
-                #include "Functions/Lit/LitDepthNormalsPass.hlsl"
+                #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitSubShader.hlsl"
+                #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitDepthNormalsPass.hlsl"
 
             ENDHLSL
         }
@@ -222,8 +222,8 @@ Shader "Selene/Lit" {
         
             HLSLPROGRAM
             
-                #include "Functions/Lit/LitSubShader.hlsl"
-                #include "Functions/Lit/LitShadowCasterPass.hlsl"
+                #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitSubShader.hlsl"
+                #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitShadowCasterPass.hlsl"
         
             ENDHLSL
         }
@@ -237,7 +237,7 @@ Shader "Selene/Lit" {
 
             HLSLPROGRAM
 
-                #include "Functions/Lit/LitMetaInput.hlsl"
+                #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitMetaInput.hlsl"
 
                 void SimpleGIContribution( MetaVaryings varyings, inout half4 albedo, inout half4 specularColor) {
                     
@@ -247,7 +247,7 @@ Shader "Selene/Lit" {
                 }
                 #define CustomGIContribution(varyings, albedo, specularColor) SimpleGIContribution(varyings, albedo, specularColor)
 
-                #include "Functions/Lit/LitMetaPass.hlsl"
+                #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitMetaPass.hlsl"
 
             ENDHLSL
         }

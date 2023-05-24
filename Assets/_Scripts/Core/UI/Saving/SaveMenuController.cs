@@ -1,14 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-using SeleneGame.Core;
+using TMPro;
 
 using SevenGame.SavingSystem;
-using System;
-using TMPro;
+using SevenGame.UI;
 
 namespace SeleneGame.Core.UI {
 

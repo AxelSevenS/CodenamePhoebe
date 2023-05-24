@@ -15,7 +15,7 @@ Shader "Selene/Eidolon" {
 
         HLSLINCLUDE
 
-            #include "Functions/Lit/LitInput.hlsl"
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitInput.hlsl"
             #include "Packages/com.seven.utility/ShaderLibrary/MathUtility.hlsl"
 
 
@@ -108,8 +108,8 @@ Shader "Selene/Eidolon" {
                 #define CustomClipping(output, facing) StandardClipping(output, facing)
                 #define CustomFragment(surfaceData, inputData, input, facing) StandardFragment(surfaceData, inputData, input, facing)
 
-                #include "Functions/Lit/LitSubShader.hlsl"
-                #include "Functions/Lit/LitForwardPass.hlsl"
+                #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitSubShader.hlsl"
+                #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitForwardPass.hlsl"
 
             ENDHLSL
         }
@@ -126,8 +126,8 @@ Shader "Selene/Eidolon" {
                 #define CustomClipping(output, facing) StandardClipping(output, facing)
                 #define CustomFragment(surfaceData, inputData, input, facing) StandardFragment(surfaceData, inputData, input, facing)
 
-                #include "Functions/Lit/LitSubShader.hlsl"
-                #include "Functions/Lit/LitGBufferPass.hlsl"
+                #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitSubShader.hlsl"
+                #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitGBufferPass.hlsl"
 
             ENDHLSL
         }
@@ -144,14 +144,8 @@ Shader "Selene/Eidolon" {
                 #define CustomClipping(output, facing) HuskClipping(output, facing)
                 #define CustomFragment(surfaceData, inputData, input, facing) HuskFragment(surfaceData, inputData, input, facing)
 
-                #include "Functions/Lit/LitSubShader.hlsl"
-
-                // include the corresponding rendering path pass : forward, deferred
-                #ifdef GBUFFER
-                    // #include "Functions/Lit/LitGBufferPass.hlsl"
-                #else
-                    #include "Functions/Lit/LitForwardPass.hlsl"
-                #endif
+                #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitSubShader.hlsl"
+                #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitForwardPass.hlsl"
 
             ENDHLSL
         }
@@ -167,8 +161,8 @@ Shader "Selene/Eidolon" {
 
                 #define CustomClipping(output, facing) StandardClipping(output, facing)
 
-                #include "Functions/Lit/LitSubShader.hlsl"
-                #include "Functions/Lit/LitDepthOnlyPass.hlsl"
+                #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitSubShader.hlsl"
+                #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitDepthOnlyPass.hlsl"
 
             ENDHLSL
         }
@@ -184,8 +178,8 @@ Shader "Selene/Eidolon" {
 
                 #define CustomClipping(output, facing) StandardClipping(output, facing)
 
-                #include "Functions/Lit/LitSubShader.hlsl"
-                #include "Functions/Lit/LitDepthNormalsPass.hlsl"
+                #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitSubShader.hlsl"
+                #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitDepthNormalsPass.hlsl"
 
             ENDHLSL
         }
@@ -200,8 +194,8 @@ Shader "Selene/Eidolon" {
                 #define CustomClipping(output, facing) StandardClipping(output, facing)
                 #define CustomVertexDisplacement(output) StandardVertexDisplacement(output)
 
-                #include "Functions/Lit/LitSubShader.hlsl"
-                #include "Functions/Lit/LitShadowCasterPass.hlsl"
+                #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitSubShader.hlsl"
+                #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitShadowCasterPass.hlsl"
         
             ENDHLSL
         }
@@ -215,7 +209,7 @@ Shader "Selene/Eidolon" {
 
             HLSLPROGRAM
 
-                #include "Functions/Lit/LitMetaInput.hlsl"
+                #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitMetaInput.hlsl"
 
                 void SimpleGIContribution( MetaVaryings varyings, inout half4 albedo, inout half4 specularColor) {
                     
@@ -225,7 +219,7 @@ Shader "Selene/Eidolon" {
                 }
                 #define CustomGIContribution(varyings, albedo, specularColor) SimpleGIContribution(varyings, albedo, specularColor)
 
-                #include "Functions/Lit/LitMetaPass.hlsl"
+                #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitMetaPass.hlsl"
 
             ENDHLSL
         }

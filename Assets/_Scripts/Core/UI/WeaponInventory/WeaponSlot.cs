@@ -7,6 +7,8 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
 
+using SevenGame.UI;
+
 namespace SeleneGame.Core.UI {
 
     public sealed class WeaponSlot : CustomButton {

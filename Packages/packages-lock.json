@@ -32,6 +32,15 @@
       },
       "hash": "fd3c22aba8acd90c796153f8039857a32df0535f"
     },
+    "com.seven.ui": {
+      "version": "https://github.com/AxelSevenS/SimpleUI.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.seven.utility": "0.0.1"
+      },
+      "hash": "cfe8e712ea7c840f9f89faf40307f64adf0191df"
+    },
     "com.seven.utility": {
       "version": "https://github.com/AxelSevenS/Utility-Package.git",
       "depth": 0,

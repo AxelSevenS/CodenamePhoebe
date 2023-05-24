@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 using SevenGame.Utility;
+using SevenGame.UI;
 
 namespace SeleneGame.Core.UI {
     

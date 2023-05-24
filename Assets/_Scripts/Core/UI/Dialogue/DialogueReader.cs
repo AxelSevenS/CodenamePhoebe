@@ -1,15 +1,17 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using TMPro;
+
 using UnityEngine;
 using UnityEngine.UI;
 
+using TMPro;
+
+using SevenGame.UI;
+
 namespace SeleneGame.Core.UI {
 
-    public abstract class DialogueReader<T> : UI<DialogueReader<T>>, IDialogueReader where T : DialogueReader<T> {
+    public abstract class DialogueReader<T> : UIObject<DialogueReader<T>>, IDialogueReader where T : DialogueReader<T> {
         
 
         [SerializeField] private GameObject dialogueBox;

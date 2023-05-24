@@ -83,5 +83,5 @@ MonoBehaviour:
   m_Name: UnderwaterRendererFeature
   m_EditorClassIdentifier: 
   m_Active: 1
-  _outlinePassSettings:
+  _underwaterPassSettings:
     underwaterMaterial: {fileID: 2100000, guid: a87aa58916dcc5443838fa3bcc7e8682, type: 2}

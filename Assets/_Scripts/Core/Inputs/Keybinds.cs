@@ -6,7 +6,7 @@ using UnityEngine.InputSystem.DualShock;
 using UnityEngine.InputSystem.XInput;
 using UnityEngine.InputSystem.Switch;
 
-// using SevenGame.Utility;
+using SevenGame.UI;
 
 namespace SeleneGame.Core {
     public static class Keybinds {
@@ -40,10 +40,22 @@ namespace SeleneGame.Core {
             EnableControls();
             playerMap.actionTriggered += ctx => ControllerAction(ctx);
             uiMap.actionTriggered += ctx => ControllerAction(ctx);
+
+            SevenGame.UI.UIManager.OnMenuStateChange -= OnMenuStateChange;
+            SevenGame.UI.UIManager.OnMenuStateChange += OnMenuStateChange;
         }
 
         public static bool IsBindPressed(this InputActionMap controlMap, string bindName) => controlMap[bindName].ReadValue<float>() > 0;
         public static bool IsActuated(this InputAction action) => action.ReadValue<float>() > 0;
+
+
+
+        public static void OnMenuStateChange(SevenGame.UI.UIManager.UIMenuState state) {
+            if (state.menuEnabled)
+                playerMap.Disable();
+            else
+                playerMap.Enable();
+        }
 
 
         public static void UpdateKeybind(Guid keybindId){

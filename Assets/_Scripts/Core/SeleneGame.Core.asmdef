@@ -9,6 +9,7 @@
         "Unity.Addressables",
         "Animancer",
         "Seven.Utility",
+        "Seven.UI",
         "Seven.Scribe",
         "Seven.EasySplines",
         "Seven.Saving-System",
