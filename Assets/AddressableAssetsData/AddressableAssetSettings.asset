@@ -43,6 +43,13 @@ MonoBehaviour:
   m_GroupAssets:
   - {fileID: 11400000, guid: 0fac3504a2f8e1648a5f55216c39802b, type: 2}
   - {fileID: 11400000, guid: 6b4302418b726474bb75a265e65f5584, type: 2}
+  - {fileID: 11400000, guid: 9cab205ca67ae4041bc6dd49d1c60405, type: 2}
+  - {fileID: 11400000, guid: e65ad12931ff80b4796698b4740976a0, type: 2}
+  - {fileID: 11400000, guid: 3bfecff337a44e74c95d23772a5f0ad5, type: 2}
+  - {fileID: 11400000, guid: 3b3d6b0d907cc8a4da02cfbf5beffbea, type: 2}
+  - {fileID: 11400000, guid: 703583c822249d347b8aedb58bf991f9, type: 2}
+  - {fileID: 11400000, guid: 52bcccf98cf0b944abd9d2fa83b6cf7c, type: 2}
+  - {fileID: 11400000, guid: 04233e519f2ca2f48a76781c65c1d77b, type: 2}
   m_BuildSettings:
     m_CompileScriptsInVirtualMode: 0
     m_CleanupStreamingAssetsAfterBuilds: 1
@@ -92,6 +99,11 @@ MonoBehaviour:
     - CharacterData
     - WeaponData
     - EidolonMaskData
+    - AnimancerTransitionAssetBase
+    - Locale
+    - Locale-en
+    - Preload
+    - Locale-fr
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: 7e2d3dcd7396ac54a9d73677a35ebc0e, type: 2}

@@ -37,7 +37,7 @@ namespace SeleneGame.Core.UI {
         public void SetDisplayWeaponCostume(WeaponCostume weaponCostume) {
             _weaponCostume = weaponCostume;
             portraitSprite = weaponCostume?.portrait ?? nullPortrait;
-            nameText = weaponCostume?.displayName ?? "None";
+            nameText = weaponCostume?.displayName.GetLocalizedString();
         }
 
 

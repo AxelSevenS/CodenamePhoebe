@@ -13,7 +13,7 @@ using SeleneGame.Core;
 using SeleneGame.Content;
 
 using SevenGame.Utility;
-
+using Animancer;
 
 namespace SeleneGame.Core {
     
@@ -51,12 +51,13 @@ namespace SeleneGame.Core {
 
             AddressableAssetSettings addressablesSettings = AddressableAssetSettingsDefaultObject.GetSettings(false);
 
-            UpdateAddressableAddress<AnimationClip>(addressablesSettings, "Assets/Animations");
-            UpdateAddressableAddressWithPrefix<GameObject>(addressablesSettings, "Assets/Attacks", "Attacks");
+            UpdateAddressableAddress<AnimationClip>(addressablesSettings, "Assets/Data/Animations");
+            UpdateAddressableAddress<AnimancerTransitionAssetBase>(addressablesSettings, "Assets/Data/Animations");
+            UpdateAddressableAddressWithPrefix<GameObject>(addressablesSettings, "Assets/Data/Attacks", "Attacks");
             
-            UpdateAddressableAddressWithTypeName<CharacterCostume>(addressablesSettings, "Assets/Costumes/Characters");
-            UpdateAddressableAddressWithTypeName<WeaponCostume>(addressablesSettings, "Assets/Costumes/Weapons");
-            UpdateAddressableAddressWithTypeName<EidolonMaskCostume>(addressablesSettings, "Assets/Costumes/Masks");
+            UpdateAddressableAddressWithTypeName<CharacterCostume>(addressablesSettings, "Assets/Data/Costumes/Characters");
+            UpdateAddressableAddressWithTypeName<WeaponCostume>(addressablesSettings, "Assets/Data/Costumes/Weapons");
+            UpdateAddressableAddressWithTypeName<EidolonMaskCostume>(addressablesSettings, "Assets/Data/Costumes/Masks");
             
             UpdateAddressableAddressWithTypeName<CharacterData>(addressablesSettings, "Assets/Data/Characters");
             UpdateAddressableAddressWithTypeName<WeaponData>(addressablesSettings, "Assets/Data/Weapons");
@@ -80,7 +81,11 @@ namespace SeleneGame.Core {
                 AddressableAssetEntry assetEntry = addressablesSettings.CreateOrMoveEntry(assetGUID, addressablesSettings.DefaultGroup);
 
                 string newAddress = assetEntry.AssetPath.Replace(Path.GetExtension(assetEntry.AssetPath), "");
-                newAddress = newAddress.Replace("Assets/", "");
+                newAddress = newAddress.Replace("Assets/", "").Replace("Data/", "");
+                // get the second to last folder name in the path
+                var folders = newAddress.Split('/');
+                // remove the two first folder names
+                newAddress = string.Join("/", folders.Skip(1).ToArray());
                 assetEntry.address = newAddress;
 
                 // add label

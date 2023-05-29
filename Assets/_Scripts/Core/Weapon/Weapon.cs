@@ -6,7 +6,7 @@ using SevenGame.Utility;
 
 namespace SeleneGame.Core {
     
-    public class Weapon : Costumable<WeaponData, WeaponCostume, WeaponModel> {
+    public class Weapon : Costumable<WeaponData, WeaponCostume, WeaponModel>, IDamageDealer {
 
         [SerializeField] [ReadOnly] private ArmedEntity _armedEntity;
 
@@ -20,6 +20,22 @@ namespace SeleneGame.Core {
             _armedEntity = armedEntity;
             SetCostume(costume);
         }
+
+
+        public void AwardDamage(DamageData damageData) {
+            damageData.AddProxy(this);
+            armedEntity?.AwardDamage(damageData);
+        }
+
+        public void AwardParry(DamageData damageData) {
+            damageData.AddProxy(this);
+            armedEntity?.AwardParry(damageData);
+        }
+
+        public bool IsValidTarget(IDamageable target) {
+            return armedEntity.IsValidTarget(target);
+        }
+
 
         public virtual void HandleInput(Player playerController) {
             data?.HandleInput(this, playerController);
@@ -76,16 +92,16 @@ namespace SeleneGame.Core {
             model?.FixedUpdate();
         }
 
-
-
         [Flags]
         public enum WeaponType : byte {
             Sparring = 1 << 0,
             OneHanded = 1 << 1,
             TwoHanded = 1 << 2,
             Polearm = 1 << 3,
-            LightDual = 1 << 4,
-            HeavyDual = 1 << 5
+            Dual = 1 << 4,
+            ShieldAndSword = 1 << 5,
+            // = 1 << 6,
+            // = 1 << 7 /// Do not exceed 8 flags <see cref="byte"/>
         };
 
     }

@@ -38,7 +38,7 @@ namespace SeleneGame.Core {
 
         protected override Vector3 jumpDirection => base.jumpDirection;
 
-        protected override Vector3 evadeDirection => entity.isIdle ? -entity.absoluteForward : base.evadeDirection;
+        protected override Vector3 evadeDirection => moveDirection.sqrMagnitude == 0f ? -entity.absoluteForward : base.evadeDirection;
 
         protected override bool canParry => base.canParry;
 
@@ -122,7 +122,7 @@ namespace SeleneGame.Core {
         }
         protected internal override void SetSpeed(Entity.MovementSpeed speed) {
             
-            if (entity.onGround) {
+            if (entity.onGround && !evadeBehaviour.state) {
                 if (speed == Entity.MovementSpeed.Idle) {
 
                     MovementStopAnimation();
@@ -191,7 +191,7 @@ namespace SeleneGame.Core {
             if ( !_evadeBehaviour.state ) {
                 rotationForward = Vector3.ProjectOnPlane(entity.absoluteForward, -entity.gravityDown).normalized;
             } else if ( moveDirection.sqrMagnitude != 0f ) {
-                _evadeBehaviour.currentDirection = Vector3.Slerp(_evadeBehaviour.currentDirection, entity.absoluteForward, _evadeBehaviour.Time * _evadeBehaviour.Time);
+                _evadeBehaviour.currentDirection = Vector3.Lerp(_evadeBehaviour.currentDirection, entity.absoluteForward, _evadeBehaviour.Time * _evadeBehaviour.Time);
             }
             
             entity.character.model.RotateTowards(rotationForward, -entity.gravityDown);
@@ -221,9 +221,7 @@ namespace SeleneGame.Core {
 
             Animation();
 
-            if ( !entity.DisplaceStep(entity.absoluteForward * moveSpeed) ) {
-                entity.Displace(entity.absoluteForward * moveSpeed);
-            }
+            entity.DisplaceStep(entity.absoluteForward * moveSpeed);
             
         }
 

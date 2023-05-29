@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using Animancer;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.Localization;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace SeleneGame.Core {
@@ -9,10 +11,9 @@ namespace SeleneGame.Core {
     [Serializable]
     public abstract class CostumableData<TCostume> : ScriptableObject where TCostume : Costume {
 
-        public string displayName;
+        public LocalizedString displayName;
 
-        [TextArea(3, 10)]
-        public string description;
+        public LocalizedString description;
 
         [SerializeField] protected TCostume _baseCostume;
 
@@ -24,47 +25,32 @@ namespace SeleneGame.Core {
 
 
         
-        private string GetAnimationPath(string assetName) => @$"Animations/{name}/{assetName}";
-        private string GetDefaultAnimationPath(string assetName) => @$"Animations/Default/{assetName}";
-        
+        public AnimancerTransitionAssetBase GetTransition(string assetName) {
+            return AddressablesUtils.GetOverridableAsset<AnimancerTransitionAssetBase>(name, assetName);
+        }
+        public AnimancerTransitionAssetBase GetDefaultTransition(string assetName) {
+            return AddressablesUtils.GetDefaultOverridableAsset<AnimancerTransitionAssetBase>(assetName);
+        }
+
+        public void GetTransitionAsync(string assetName, Action<AnimancerTransitionAssetBase> callback) {
+            AddressablesUtils.GetOverridableAssetAsync<AnimancerTransitionAssetBase>(name, assetName, callback);
+        }
+        public void GetDefaultTransitionAsync(string assetName, Action<AnimancerTransitionAssetBase> callback) {
+            AddressablesUtils.GetDefaultOverridableAssetAsync<AnimancerTransitionAssetBase>(assetName, callback);
+        }
+
         public AnimationClip GetAnimation(string assetName) {
-            
-            AnimationClip result = null;
-
-            string path = GetAnimationPath(assetName);
-
-            foreach (var locator in Addressables.ResourceLocators) {
-                if (locator.Locate(path, typeof(AnimationClip), out var locations)) {
-                    // Debug.Log($"Getting Animation {path}");
-                    result = Addressables.LoadAssetAsync<AnimationClip>(locations[0]).WaitForCompletion();
-                    break;
-                }
-            }
-
-            // If not found, get Default Asset
-            if (result == null) {
-                // Debug.Log(message: $"Couldn't find Asset {path}");
-                return GetDefaultAnimation(assetName);
-            }
-
-            return result;
+            return AddressablesUtils.GetOverridableAsset<AnimationClip>(name, assetName);
         }
         public AnimationClip GetDefaultAnimation(string assetName) {
+            return AddressablesUtils.GetDefaultOverridableAsset<AnimationClip>(assetName);
+        }
 
-            string path = GetDefaultAnimationPath(assetName);
-
-            // Debug.Log($"Getting Default Animation {path}");
-
-            AnimationClip defaultAnim = null;
-            try {
-                AsyncOperationHandle<AnimationClip> opHandle = Addressables.LoadAssetAsync<AnimationClip>( path );
-                defaultAnim = opHandle.WaitForCompletion();
-            } catch {
-                Debug.LogError($"Error getting default Asset {path}");
-                return null;
-            }
-
-            return defaultAnim;
+        public void GetAnimationAsync(string assetName, Action<AnimationClip> callback) {
+            AddressablesUtils.GetOverridableAssetAsync<AnimationClip>(name, assetName, callback);
+        }
+        public void GetDefaultAnimationAsync(string assetName, Action<AnimationClip> callback) {
+            AddressablesUtils.GetDefaultOverridableAssetAsync<AnimationClip>(assetName, callback);
         }
     }
 }

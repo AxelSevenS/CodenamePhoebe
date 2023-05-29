@@ -23,7 +23,7 @@ namespace SeleneGame.Core.UI {
             set {
                 _characterData = value;
                 characterCostumePortrait.sprite = _characterData.baseCostume.portrait;
-                characterCostumeName.text = _characterData.displayName;
+                characterCostumeName.text = _characterData.displayName.GetLocalizedString();
             }
         }
 

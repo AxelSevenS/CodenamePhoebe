@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: Dialogue Table_en
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: en
+  m_SharedData: {fileID: 11400000, guid: 16a4064b943da394cbd3d5a1382d42d9, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 5222128312320
+    m_Localized: Guillaume is a really beautiful <sprite name="Mouse Left"> bitch!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3550161297408
+    m_Localized: I have nothing else to say, sadly
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5404081414144
+    m_Localized: 'A beautiful bitch, even;
+
+      But back to what this is about...'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5591638106112
+    m_Localized: 'What were we talking about?
+
+      Ah yes...'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5796555022336
+    m_Localized: You're a faggot
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3823399231488
+    m_Localized: Oh, where was I?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6095269158912
+    m_Localized: And that's why I need to say it; and I will do so until I die...
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6245207138304
+    m_Localized: You smell
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

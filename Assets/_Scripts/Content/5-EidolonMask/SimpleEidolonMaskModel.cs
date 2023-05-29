@@ -37,8 +37,8 @@ namespace SeleneGame.Content {
             }
         }
         public bool onFace => faceState || (positionBlocked(leftPosition) && positionBlocked(rightPosition));
-        public Vector3 rightPosition => mask.maskedEntity.modelTransform.rotation * new Vector3(1.2f, 1.3f, -0.8f);
-        public Vector3 leftPosition => mask.maskedEntity.modelTransform.rotation * new Vector3(-1.2f, 1.3f, -0.8f);
+        public Vector3 rightPosition => mask.maskedEntity.modelTransform.rotation * new Vector3(1.2f, 0.3f, -0.2f);
+        public Vector3 leftPosition => mask.maskedEntity.modelTransform.rotation * new Vector3(-1.2f, 0.3f, -0.2f);
 
 
 
@@ -87,7 +87,7 @@ namespace SeleneGame.Content {
                 onRight = !onRight;
 
 
-            hoveringPosition = Vector3.Lerp(hoveringPosition, mask.maskedEntity.modelTransform.position + relativePos, 15f * Time.deltaTime);
+            hoveringPosition = Vector3.Lerp(hoveringPosition, headTransform.position + relativePos, 15f * Time.deltaTime);
             // hoveringPosition = mask.maskedEntity.modelTransform.position + relativePos;
             
             maskPosT = Mathf.MoveTowards(maskPosT, (onFace ? 1f : 0f), 4f * GameUtility.timeDelta);

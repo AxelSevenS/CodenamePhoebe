@@ -3,11 +3,13 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using UnityEngine;
+using UnityEngine.Localization;
 using UnityEngine.UI;
 
 using TMPro;
 
 using SevenGame.UI;
+using Scribe;
 
 namespace SeleneGame.Core.UI {
 
@@ -21,6 +23,7 @@ namespace SeleneGame.Core.UI {
         [SerializeField] private TextMeshProUGUI dialogueName;
         [SerializeField] private TextMeshProUGUI dialogueText;
         [SerializeField] private Image dialoguePortrait;
+        [SerializeField] private string displayText;
 
         // [SerializeField] private float alpha;
         // private Image[] sprites;
@@ -28,68 +31,43 @@ namespace SeleneGame.Core.UI {
         // private Task dialogueOpacityTask;
 
         [Space(15)]
-
-        private CancellationTokenSource cancellationTokenSource;
-        private Task lineTextTask;
-        private string displayedText;
-
         [SerializeField] protected DialogueLine currentLine;
         [SerializeField] protected GameObject dialogueObject;
 
-        private bool lineWasChanged = false;
+        private float timeOfLastCharacter = 0f;
 
 
-        public bool isTyping => displayedText.Length < currentLine.text.Length;
+        public bool isTyping => dialogueText.text.Length < (displayText.Length);
 
 
 
-        public override void Enable(){
-            Reset();
+        public void StartDialogue(DialogueLine newDialogue, GameObject newDialogueObject = null){
 
-            if (Enabled) return;
-            
-            if (UIController.currentDialogueReader != null)
-                UIController.currentDialogueReader.EndDialogue();
-
-            dialogueBox.SetActive( true );
-            Enabled = true;
-            UIController.currentDialogueReader = this;
-        }
-
-        public override void Disable(){
-            Reset();
-
-            if (!Enabled) return;
-
-            UIController.currentDialogueReader = null;
-
-            dialogueBox.SetActive( false );
-            Enabled = false;
-        }
-
-
-        public virtual void StartDialogue(IDialogueSource source, GameObject newDialogueObject = null){
             Enable();
-            dialogueObject = newDialogueObject;
-            currentLine = source.GetDialogue();
 
-            // TODO : create a fade in animation 
-            // dialogueOpacityTask = FadeDialogue(1f);
-            DisplayLineText();
+            dialogueObject = newDialogueObject;
+            currentLine = newDialogue;
+            displayText = currentLine.localizedText.GetLocalizedString();
+
+            foreach (GameEvent gameEvent in currentLine.gameEvents){
+                if (gameEvent.Evaluate())
+                    gameEvent.Invoke(dialogueObject);
+            }
+
+            dialogueName.SetText( currentLine.entity.name );
+            dialoguePortrait.sprite = currentLine.entity.character.model.costume.GetPortrait(currentLine.emotion);
+            dialogueText.SetText(String.Empty);
+            timeOfLastCharacter = Time.unscaledTime;
+
         }
 
         public virtual void EndDialogue(){
-            EndLine();
-
-            // dialogueOpacityTask = FadeDialogue(0);
-            // await dialogueOpacityTask;
             Disable();
         }
 
-        public virtual void SkipToLine(IDialogueSource source) {
-            currentLine = source.GetDialogue();
-            lineWasChanged = true;
-        }
+        // public virtual void SkipToLine(DialogueSource source) {
+        //     currentLine = source?.GetDialogue();
+        // }
 
         // private async Task FadeDialogue(float alpha){
         //     while (this.alpha != alpha){
@@ -105,90 +83,27 @@ namespace SeleneGame.Core.UI {
         // }
 
         public virtual void InterruptDialogue(){
-            foreach (GameEvent interruptionEvent in currentLine.interruptionEvents) {
-                interruptionEvent.Invoke(dialogueObject);
-            }
-            EndDialogue();
-        }
-
-        private void DisplayLineText(){
-            lineWasChanged = false;
-            foreach (GameEvent gameEvent in currentLine.gameEvents){
-                if (gameEvent.Evaluate())
-                    gameEvent.Invoke(dialogueObject);
-
-                if (lineWasChanged) {
-                    lineWasChanged = false;
-                    DisplayLineText();
-                    return;
-                }
-            }
-
-            cancellationTokenSource?.Cancel();
-            cancellationTokenSource = new CancellationTokenSource();
-
-            dialogueName.SetText( currentLine.entity.name );
-            dialoguePortrait.sprite = currentLine.entity.character.model.costume.GetPortrait(currentLine.emotion);
-            displayedText = String.Empty;
-            dialogueText.SetText(displayedText);
+            currentLine.SetFlag(DialogueFlag.Interrupted);
             
-            lineTextTask = Task.Run(() => ProcessDialogueText(currentLine), cancellationTokenSource.Token);
-
-        }
-
-        private async Task ProcessDialogueText(DialogueLine line) {
-            int displayedTextLength = 0;
-            int time = 20;
-            bool writingTag = false;
-
-            try {
-                while (displayedText.Length < line.text.Length) {
-
-                    char nextCharacter = line.text[displayedTextLength];
-
-                    switch (nextCharacter) {
-                        case '<':
-                            writingTag = true;
-                            break;
-                        case '>':
-                            writingTag = false;
-                            break;
-                    }
-
-                    displayedTextLength++;
-
-                    if (writingTag) continue; // Don't Delay or change the displayed text when writing a tag
-                    
-                    // TODO : play character sound effect
-
-                    displayedText = line.text.Substring(0, displayedTextLength);
-                    await Task.Delay(time);
-                }
-            }
-            catch(TaskCanceledException) {
-                // Task was cancelled, don't do anything
-            }
-            finally {
-                EndLine();
-            }
+            EndDialogue();
         }
 
         protected virtual void NextLine(){
             if (!dialogueBox.activeSelf) return;
 
 
-            if (currentLine.nextLine != null) {
+            if (currentLine?.nextLine != null) {
 
-                currentLine = currentLine.nextLine.GetDialogue();
-                DisplayLineText();
+                StartDialogue(currentLine.nextLine.GetDialogue(), dialogueObject);
 
-            } else  {
+            } else {
+                EndLine();
                 EndDialogue();
             }
         }
 
         protected virtual void EndLine(){
-            displayedText = currentLine?.text ?? String.Empty;
+            dialogueText.text = displayText;
         }
 
         protected virtual void SkipLine(){
@@ -201,13 +116,34 @@ namespace SeleneGame.Core.UI {
             }
         }
 
+
+        public override void Enable() {
+            Reset();
+
+            if (Enabled) return;
+
+            base.Enable();
+
+            dialogueBox.SetActive( true );
+            UIController.currentDialogueReader = this;
+        }
+
+        public override void Disable() {
+            Reset();
+
+            if (!Enabled) return;
+
+            base.Disable();
+
+            dialogueBox.SetActive( false );
+            UIController.currentDialogueReader = null;
+        }
+        
+
         protected virtual void Reset() {
-            dialogueBox?.SetActive(false);
             dialogueName?.SetText(String.Empty);
             dialogueText?.SetText(String.Empty);
             dialoguePortrait.sprite = null;
-            displayedText = String.Empty;
-            currentLine = null;
         }
 
 
@@ -226,9 +162,37 @@ namespace SeleneGame.Core.UI {
         }
 
         protected virtual void Update() {
-            if (!Enabled) return;
+            if (!Enabled || currentLine == null) return;
 
-            dialogueText.SetText(displayedText);
+            int displayedTextLength = dialogueText.text.Length;
+            const float textDelta = 20 * 0.001f;
+            bool writingTag = false;
+
+            if (Time.unscaledTime >= timeOfLastCharacter + textDelta && displayedTextLength < displayText.Length) {
+
+                do {
+
+                    char nextCharacter = displayText[displayedTextLength];
+
+                    switch (nextCharacter) {
+                        case '<':
+                            writingTag = true;
+                            break;
+                        case '>':
+                            writingTag = false;
+                            break;
+                    }
+
+                    displayedTextLength++;
+                    
+                } while ( writingTag && displayedTextLength < displayText.Length );
+                
+                // TODO : play character sound effect
+
+                dialogueText.text = displayText.Substring(0, displayedTextLength);
+
+                timeOfLastCharacter += textDelta;
+            }
         }
     }
 }

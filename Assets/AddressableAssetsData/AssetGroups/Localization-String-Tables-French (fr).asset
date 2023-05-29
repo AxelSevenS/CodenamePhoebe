@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Localization-String-Tables-French (fr)
+  m_EditorClassIdentifier: 
+  m_GroupName: Localization-String-Tables-French (fr)
+  m_Data:
+    m_SerializedData: []
+  m_GUID: c18782b95da869243adc4a56e6f4ec9c
+  m_SerializeEntries:
+  - m_GUID: 5abaad4d7744f96409a6b517d79191f3
+    m_Address: Dialogue Table_fr
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-fr
+    - Preload
+  - m_GUID: dcc062ab6580b8b4e908fe7b8feb6c2f
+    m_Address: Mask Table_fr
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-fr
+    - Preload
+  - m_GUID: d7b8c7ec817b93848bc7e8a39603dadf
+    m_Address: Vocabulary_fr
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-fr
+    - Preload
+  - m_GUID: 3b12f6654bcda9e45979d84cd8ad23fc
+    m_Address: Weapon Table_fr
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-fr
+    - Preload
+  - m_GUID: aedd4ea22d3058849ac7a75452a032b2
+    m_Address: Character Table_fr
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-fr
+    - Preload
+  m_ReadOnly: 1
+  m_Settings: {fileID: 11400000, guid: 7258e2e04bac10d46b4f8c1803b38751, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: cfc2bdf8732a160479de33b7d30ec753, type: 2}
+    - {fileID: 11400000, guid: de285e89f5835e34c8da856bb6b1fb9a, type: 2}

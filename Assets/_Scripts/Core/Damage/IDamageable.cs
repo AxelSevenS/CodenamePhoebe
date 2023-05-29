@@ -6,7 +6,7 @@ namespace SeleneGame.Core {
     
     public interface IDamageable {
 
-        void Damage(Entity owner, DamageData damageData);
+        void Damage(IDamageDealer owner, DamageData damageData);
         void Heal(float amount);
         
     }

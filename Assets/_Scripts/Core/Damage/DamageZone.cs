@@ -8,7 +8,7 @@ namespace SeleneGame.Core {
     
     public class DamageZone : MonoBehaviour {
 
-        public Entity owner;
+        public IDamageDealer owner;
 
         private HashSet<IDamageable> _damagedEntities = new HashSet<IDamageable>();
             
@@ -29,7 +29,7 @@ namespace SeleneGame.Core {
 
 
 
-        public static DamageZone Create(Entity owner, string address, Action<DamageZone> modifier = null) {
+        public static DamageZone Create(IDamageDealer owner, string address, Action<DamageZone> modifier = null) {
             GameObject damageObject = AddressablesUtils.GetAsset<GameObject>( Path.Combine("Attacks/", address) );
             damageObject = GameObject.Instantiate(damageObject);
 
@@ -50,12 +50,13 @@ namespace SeleneGame.Core {
                 // Send Projectile back
             }
 
-            if (otherZone.owner == Player.current.entity) {
+            if (otherZone.owner == (IDamageDealer)Player.current.entity) {
                 EntityManager.current.HardHitStop();
             }
             
             otherZone.owner?.AwardParry(otherZone.data);
-            _damagedEntities.Remove(otherZone.owner);
+            if (otherZone.owner is IDamageable otherDamageable)
+                _damagedEntities.Remove(otherDamageable);
 
             owner = otherZone.owner;
                 
@@ -95,7 +96,7 @@ namespace SeleneGame.Core {
 
             if ( other.TryGetComponent(out IDamageable damageable) || (other?.attachedRigidbody?.TryGetComponent(out damageable) ?? false) ) {
                 
-                if ( damageable == (IDamageable)owner )
+                if ( !owner.IsValidTarget(damageable) )
                     return;
 
                 _damagedEntities.Add(damageable);

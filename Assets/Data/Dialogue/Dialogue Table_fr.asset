@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: Dialogue Table_fr
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: fr
+  m_SharedData: {fileID: 11400000, guid: 16a4064b943da394cbd3d5a1382d42d9, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 5222128312320
+    m_Localized: Guillaume est vraiment un belle <sprite name="Mouse Left"> salope!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3550161297408
+    m_Localized: "Je n'ai plus rien \xE0 dire, \xE0 mon plus grand regret..."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5404081414144
+    m_Localized: "Une Magnifique Salope, m\xEAme;\nMais revenons au sujet..."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5591638106112
+    m_Localized: "De quoi parlions-nous, d\xE9j\xE0...?\nAh oui..."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5796555022336
+    m_Localized: T'es un PD
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3823399231488
+    m_Localized: "O\xF9 en \xE9tais-je?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6095269158912
+    m_Localized: "Et c'est pour \xE7a qu'il faut que je le dise; et je le dirais
+      jusqu'\xE0 la fin de ma vie..."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6245207138304
+    m_Localized: Tu pue
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

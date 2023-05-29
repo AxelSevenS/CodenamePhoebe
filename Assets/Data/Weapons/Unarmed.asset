@@ -12,9 +12,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae0fe6850e0713b4ba8fc866bf1faa47, type: 3}
   m_Name: Unarmed
   m_EditorClassIdentifier: 
-  displayName: None
-  description: 
+  displayName:
+    m_TableReference:
+      m_TableCollectionName: GUID:7a1921cdc31e87745abe71471b3c9e6a
+    m_TableEntryReference:
+      m_KeyId: 631533887488
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  description:
+    m_TableReference:
+      m_TableCollectionName: 
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   _baseCostume: {fileID: 11400000, guid: 4fcb14e16ae7e7b4287ef3e8b382de17, type: 2}
   _weaponType: 1
   _weight: 1
   inputEvents: []
+  lightAttackEvents: []
+  heavyAttackEvents: []
+  references:
+    version: 2
+    RefIds: []

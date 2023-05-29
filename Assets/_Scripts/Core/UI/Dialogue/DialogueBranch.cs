@@ -15,19 +15,16 @@ namespace SeleneGame.Core {
 
         public DialogueSource GetHighPrioritySource() {
 
-            int hashCode = GetHashCode(); 
-            int usedFlags = ScribeFlags.GetFlag($"{hashCode}High");
-
             foreach (ConditionalDialogue dialogue in highPriorityDialogues) {
-                int sourceFlag = 1 << highPriorityDialogues.IndexOf(dialogue);
-                
-                
-                if ((usedFlags & sourceFlag) == 1) continue; // Check if DialogueSource has not been used yet (flag was not raised)
-                if (!dialogue.Evaluate()) continue; // Skip if conditions are not met
+
+                // if (dialogue.dialogueSource.GetFlag(DialogueFlag.Spent)) 
+                //     continue; // Skip if DialogueSource has been used already
+                if (!dialogue.Evaluate()) 
+                    continue; // Skip if conditions are not met
 
                 // If DialogueSource is valid, mark it as used (raise flag)
-                ScribeFlags.SetFlag($"{hashCode}High", usedFlags |= sourceFlag);
                 return dialogue.dialogueSource;
+
             }
 
             return null;
@@ -40,29 +37,34 @@ namespace SeleneGame.Core {
 
             System.Random r = new System.Random(); // Randomize the order of the DialogueSources, for replay variety
             foreach (DialogueSource source in lowPriorityDialogues.OrderBy(x => r.Next())) {
-                int sourceFlag = 1 << lowPriorityDialogues.IndexOf(source);
 
-                if ((usedFlags & sourceFlag) == 1) continue; // Check if DialogueSource has not been used yet (flag was not raised)
-                
+                if (source.GetFlag(DialogueFlag.Spent)) 
+                    continue; // Skip if DialogueSource has been used already
+
                 // If DialogueSource is valid, mark it as used (raise flag)
-                ScribeFlags.SetFlag($"{hashCode}Low", usedFlags |= sourceFlag);
                 return source;
+                
             }
 
             return null;
         }
     
         public override DialogueLine GetDialogue() {
+            
+            // // if all high priority dialogue is spent, remove the flags
+            // if (highPriorityDialogues.All(x => x.dialogueSource.GetFlag(DialogueFlag.Spent))) {
+            //     foreach (ConditionalDialogue dialogue in highPriorityDialogues) {
+            //         dialogue.dialogueSource.ClearFlag(DialogueFlag.Spent);
+            //     }
+            // }
 
-            int hashCode = GetHashCode(); 
+            // if all low priority dialogue is spent, remove the flags
+            if (lowPriorityDialogues.All(x => x.GetFlag(DialogueFlag.Spent))) {
+                foreach (DialogueSource dialogue in lowPriorityDialogues) {
+                    dialogue.ClearFlag(DialogueFlag.Spent);
+                }
+            }
 
-            // If all dialogues have been played, reset the dialogue Flags
-            if (ScribeFlags.GetFlag($"{hashCode}High") >= (1 << highPriorityDialogues.Count) - 1)
-                ScribeFlags.SetFlag($"{hashCode}High", 0);
-                
-            if (ScribeFlags.GetFlag($"{hashCode}Low") >= (1 << lowPriorityDialogues.Count) - 1)
-                ScribeFlags.SetFlag($"{hashCode}Low", 0);
-                
 
             DialogueLine candidate = GetHighPrioritySource()?.GetDialogue() ?? null;
             candidate ??= GetLowPrioritySource()?.GetDialogue();

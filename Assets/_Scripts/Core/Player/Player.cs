@@ -2,6 +2,7 @@ using UnityEngine;
 
 using SevenGame.Utility;
 using SevenGame.UI;
+using SeleneGame.Core.UI;
 
 namespace SeleneGame.Core {
     
@@ -75,7 +76,7 @@ namespace SeleneGame.Core {
 
 
 
-        public bool canInteract => interactionCandidate != null;
+        public bool canInteract => interactionCandidate != null && !DialogueController.current.Enabled;
         public bool canLook => true;
         public Quaternion worldCameraRotation => softEntityRotation * localCameraRotation;
 
@@ -186,7 +187,6 @@ namespace SeleneGame.Core {
                 debugInput.SetVal( Keybinds.debugMap.IsBindPressed("Debug1") );
             #endif
 
-            Debug.Log(cancelInput.currentValue);
             if ( cancelInput.started ) {
                 UIManager.Cancel();
             }

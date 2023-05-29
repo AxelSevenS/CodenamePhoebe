@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 
 using UnityEngine;
+using UnityEngine.Localization;
 
 namespace SeleneGame.Core {
 
@@ -8,16 +9,14 @@ namespace SeleneGame.Core {
     public class DialogueLine : DialogueSource {
 
 
-
         [SerializeField] private string characterId;
         public CharacterCostume.Emotion emotion;
 
-        [TextArea] public string text;
-
-        public List<GameEvent> gameEvents;
-        public List<GameEvent> interruptionEvents;
+        public LocalizedString localizedText;
 
         public DialogueSource nextLine;
+
+        public List<GameEvent> gameEvents = new List<GameEvent>();
 
 
 
@@ -26,6 +25,8 @@ namespace SeleneGame.Core {
 
         
         public override DialogueLine GetDialogue() {
+            SetFlag(DialogueFlag.Spent);
+            ClearFlag(DialogueFlag.Interrupted);
             return this;
         }
     }

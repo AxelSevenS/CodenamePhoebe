@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 113d0a6446cb9ff4c9a312ed20f54441, type: 3}
+  m_Name: line_1
+  m_EditorClassIdentifier: SeleneGame.Core:SeleneGame.Core:Dialogue/Line
+  characterId: Player
+  emotion: 6
+  localizedText:
+    m_TableReference:
+      m_TableCollectionName: GUID:16a4064b943da394cbd3d5a1382d42d9
+    m_TableEntryReference:
+      m_KeyId: 5222128312320
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  text: 'Guillaume est vraiment un belle <sprite name="Mouse Left"> salope!
+
+'
+  nextLine: {fileID: 11400000, guid: 63f9cda49497fdb469d2660468534bf5, type: 2}
+  gameEvents: []
+  references:
+    version: 2
+    RefIds: []

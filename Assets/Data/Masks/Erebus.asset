@@ -12,6 +12,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3945214ea8ea05b4f97c2fc80ad1dc38, type: 3}
   m_Name: Erebus
   m_EditorClassIdentifier: 
-  displayName: 
-  description: 
+  displayName:
+    m_TableReference:
+      m_TableCollectionName: GUID:0f4e5d03ff7b63f4caf245e7ec3f1939
+    m_TableEntryReference:
+      m_KeyId: 55693697024
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  description:
+    m_TableReference:
+      m_TableCollectionName: GUID:0f4e5d03ff7b63f4caf245e7ec3f1939
+    m_TableEntryReference:
+      m_KeyId: 203563884544
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   _baseCostume: {fileID: 11400000, guid: d5ec1e9e3d3967c4d94cd9bef418af32, type: 2}
+  references:
+    version: 2
+    RefIds: []

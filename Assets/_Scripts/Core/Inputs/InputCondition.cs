@@ -29,24 +29,36 @@ namespace SeleneGame.Core {
 
         public bool Evaluate(Player playerController) {
 
+            if (binaryModifier == BinaryModifier.Always)
+                return true;
+
             KeyInputData keyInputData = GetInputData(playerController, inputKey);
 
+            bool postOperation = false;
             switch (inputType) {
                 default:
                 case InputConditionType.Actuated:
-                    return keyInputData;
+                    postOperation = keyInputData;
+                    break;
                 case InputConditionType.Started:
-                    return keyInputData.started;
+                    postOperation = keyInputData.started;
+                    break;
                 case InputConditionType.Stopped:
-                    return keyInputData.stopped;
+                    postOperation = keyInputData.stopped;
+                    break;
                 case InputConditionType.Tapped:
-                    return keyInputData.Tapped(holdTime);
+                    postOperation = keyInputData.Tapped(holdTime);
+                    break;
                 case InputConditionType.Held:
-                    return keyInputData.Held(holdTime);
+                    postOperation = keyInputData.Held(holdTime);
+                    break;
                 case InputConditionType.DoubleTapped:
                     KeyInputData doubleTapKeyInputData = GetInputData(playerController, doubleTapKey);
-                    return keyInputData.SimultaneousTap(doubleTapKeyInputData, holdTime);
+                    postOperation = keyInputData.SimultaneousTap(doubleTapKeyInputData, holdTime);
+                    break;
             }
+
+            return binaryModifier == BinaryModifier.If ? postOperation : !postOperation;
         }
 
         private KeyInputData GetInputData(Player entityController, InputKey key) {

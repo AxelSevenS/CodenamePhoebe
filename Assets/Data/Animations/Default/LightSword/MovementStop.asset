@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9eecbb0fea8529488d2151e8932101f, type: 3}
+  m_Name: MovementStop
+  m_EditorClassIdentifier: 
+  _Transition:
+    rid: 985136678094503944
+  references:
+    version: 2
+    RefIds:
+    - rid: 985136678094503944
+      type: {class: LinearMixerTransition, ns: Animancer, asm: Animancer}
+      data:
+        _FadeDuration: 0.25
+        _Events:
+          _NormalizedTimes: []
+          _Callbacks: []
+          _Names: []
+        _Speed: 1
+        _Animations:
+        - {fileID: 7400000, guid: e0c89b0e6668173458aa8d80717285fb, type: 2}
+        - {fileID: 7400000, guid: 0a6db8b75f8060946b1eaeb688ff3ff2, type: 2}
+        - {fileID: 7400000, guid: b22ba98f446069d448dc6f153ac12676, type: 2}
+        _Speeds: []
+        _SynchronizeChildren: 
+        _Thresholds:
+        - 1
+        - 2
+        - 3
+        _DefaultParameter: 0
+        _ExtrapolateSpeed: 1

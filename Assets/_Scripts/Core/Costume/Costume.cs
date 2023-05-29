@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using SevenGame.Utility;
 using UnityEngine;
+using UnityEngine.Localization;
 
 namespace SeleneGame.Core {
 
@@ -14,11 +15,10 @@ namespace SeleneGame.Core {
         public Sprite portrait;
 
         [Tooltip("The Display Name of the Costume, used in menus.")]
-        public string displayName = "Default Costume Name";
+        public LocalizedString displayName;
 
         [Tooltip("The description of the Costume, only appears when it is not the Base Costume.")]
-        [TextArea] 
-        public string description = "Default Costume Description";
+        public LocalizedString description;
 
 
     }

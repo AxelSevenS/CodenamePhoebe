@@ -25,17 +25,9 @@ namespace SeleneGame.Core {
         public LinearMixerState movementStartMixer {
             get {
                 if (_movementStartMixer == null) {
-            
-                    _movementStartMixer?.Destroy();
-                    _movementStartMixer = new LinearMixerState();
-                    _movementStartMixer.Initialize(
-                        entity.character?.data.GetAnimation("MoveSlowStart"),
-                        entity.character?.data.GetAnimation("MoveNormalStart"),
-                        entity.character?.data.GetAnimation("MoveFastStart"),
-                        1f,
-                        2f,
-                        3f
-                    );
+
+                    _movementStartMixer = entity.character?.data.GetTransition("MovementStart").GetTransition().CreateState() as LinearMixerState;
+                    
                     _layer.AddChild(_movementStartMixer);
                     _movementStartMixer.SetDebugName("Movement Start");
                     _movementStartMixer.Stop();
@@ -47,17 +39,9 @@ namespace SeleneGame.Core {
         public LinearMixerState movementMixer {
             get {
                 if (_movementMixer == null) {
-                    
-                    _movementMixer?.Destroy();
-                    _movementMixer = new LinearMixerState();
-                    _movementMixer.Initialize(
-                        entity.character?.data.GetAnimation("MoveSlowCycle"),
-                        entity.character?.data.GetAnimation("MoveNormalCycle"),
-                        entity.character?.data.GetAnimation("MoveFastCycle"),
-                        1f,
-                        2f,
-                        3f
-                    );
+
+                    _movementMixer = entity.character?.data.GetTransition("MovementCycle").GetTransition().CreateState() as LinearMixerState;
+
                     _layer.AddChild(_movementMixer);
                     _movementMixer.SetDebugName("Movement");
                     _movementMixer.Stop();
@@ -69,17 +53,9 @@ namespace SeleneGame.Core {
         public LinearMixerState movementStopMixer {
             get {
                 if (_movementStopMixer == null) {
-                    
-                    _movementStopMixer?.Destroy();
-                    _movementStopMixer = new LinearMixerState();
-                    _movementStopMixer.Initialize(
-                        entity.character?.data.GetAnimation("MoveSlowStop"),
-                        entity.character?.data.GetAnimation("MoveNormalStop"),
-                        entity.character?.data.GetAnimation("MoveFastStop"),
-                        1f,
-                        2f,
-                        3f
-                    );
+
+                    _movementStopMixer = entity.character?.data.GetTransition("MovementStop").GetTransition().CreateState() as LinearMixerState;
+
                     _layer.AddChild(_movementStopMixer);
                     _movementStopMixer.SetDebugName("Movement Stop");
                     _movementStopMixer.Stop();
@@ -106,6 +82,7 @@ namespace SeleneGame.Core {
         private void DefaultAnimationState() {
 
             if (entity.onGround) {
+
                 if (movementSpeed == Entity.MovementSpeed.Idle) {
                     IdleAnimation();
                 } else {
@@ -144,8 +121,6 @@ namespace SeleneGame.Core {
 
             if (movementSpeed == Entity.MovementSpeed.Idle) return;
 
-            // Debug.Log("stop");
-
             movementStopMixer.Parameter = (float)movementSpeed;
             _layer.Play(_movementStopMixer, 0.15f);
 
@@ -156,8 +131,6 @@ namespace SeleneGame.Core {
         }
 
         private void IdleAnimation() {
-
-            // Debug.Log("idle");
 
             _layer.Play(idleState, 0.15f);
         }

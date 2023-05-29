@@ -12,8 +12,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6be9075d6b2262478ae69b654e6ee53, type: 3}
   m_Name: Selene
   m_EditorClassIdentifier: 
-  displayName: Selene
-  description: 
+  displayName:
+    m_TableReference:
+      m_TableCollectionName: GUID:2b377ec0d859dbb448bf7bb6b45c819c
+    m_TableEntryReference:
+      m_KeyId: 59346935808
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  description:
+    m_TableReference:
+      m_TableCollectionName: GUID:2b377ec0d859dbb448bf7bb6b45c819c
+    m_TableEntryReference:
+      m_KeyId: 205149331456
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   _baseCostume: {fileID: 11400000, guid: 993c489841ef0fd4d974e79a4d014409, type: 2}
   maxHealth: 100
   size: {x: 0.5, y: 2, z: 0.5}
@@ -28,3 +44,6 @@ MonoBehaviour:
   evadeSpeed: 40
   evadeDuration: 0.3
   evadeCooldown: 0.01
+  references:
+    version: 2
+    RefIds: []

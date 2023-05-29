@@ -12,11 +12,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae0fe6850e0713b4ba8fc866bf1faa47, type: 3}
   m_Name: Hypnos
   m_EditorClassIdentifier: 
-  displayName: Hypnos
-  description: Bident
+  displayName:
+    m_TableReference:
+      m_TableCollectionName: GUID:7a1921cdc31e87745abe71471b3c9e6a
+    m_TableEntryReference:
+      m_KeyId: 76174483456
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  description:
+    m_TableReference:
+      m_TableCollectionName: GUID:7a1921cdc31e87745abe71471b3c9e6a
+    m_TableEntryReference:
+      m_KeyId: 177928298496
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   _baseCostume: {fileID: 11400000, guid: 01507fe7b51003a4ebc926fba9781970, type: 2}
   _weaponType: 12
   _weight: 0.5
   inputEvents: []
   lightAttackEvents: []
   heavyAttackEvents: []
+  references:
+    version: 2
+    RefIds: []

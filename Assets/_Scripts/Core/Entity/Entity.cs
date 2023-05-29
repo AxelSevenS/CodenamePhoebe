@@ -16,7 +16,7 @@ namespace SeleneGame.Core {
     [RequireComponent(typeof(Health))]
     [DisallowMultipleComponent]
     [SelectionBase]
-    public class Entity : MonoBehaviour, IDamageable {
+    public class Entity : MonoBehaviour, IDamageable, IDamageDealer {
         
 
         public const float LIGHTWEIGHT_THRESHOLD = 20f;
@@ -338,10 +338,6 @@ namespace SeleneGame.Core {
             _character?.Dispose();
             _character = characterData?.GetCharacter(this, costume) ?? null;
 
-            Debug.Log(_character);
-            Debug.Log(_health);
-            Debug.Log(_physicsComponent);
-
             _health.maxAmount = _character?.data?.maxHealth ?? 1f;
 
             _physicsComponent.size = _character?.data?.size ?? Vector3.one;
@@ -409,25 +405,32 @@ namespace SeleneGame.Core {
 
         }
 
+        public void PlayerHitStop(DamageData damageData) {
+            if (!isPlayer)
+                return;
+
+            if (damageData.damageType == DamageType.Critical) {
+                Debug.Log("Hard Hit Stop");
+                EntityManager.current.HardHitStop();
+            } else {
+                Debug.Log("Soft Hit Stop");
+                EntityManager.current.SoftHitStop();
+            }
+        }
+
 
         /// <summary>
         /// Deal damage to the Entity.
         /// </summary>
         /// <param name="amount">The amount of damage done to the Entity</param>
         /// <param name="knockback">The direction of Knockback applied through the damage</param>
-        public void Damage(Entity owner, DamageData damageData) {
+        public void Damage(IDamageDealer owner, DamageData damageData) {
 
-            if (owner == this) return;
+            if (owner == (IDamageDealer)this) return;
 
-            if (isPlayer || owner.isPlayer) {
+            PlayerHitStop(damageData);
 
-                if (damageData.damageType == DamageType.Critical)
-                    EntityManager.current.HardHitStop();
-                else
-                    EntityManager.current.SoftHitStop();
-            }
-
-            owner?.AwardDamage(damageData.amount, damageData.damageType);
+            owner?.AwardDamage(damageData);
 
             _health.amount -= damageData.amount;
 
@@ -448,12 +451,17 @@ namespace SeleneGame.Core {
             onHealed?.Invoke(amount);
         }
 
-        public void AwardDamage(float amount, DamageType damageType) {
-            onDamage?.Invoke(amount, damageType);
+        public void AwardDamage(DamageData damageData) {
+            PlayerHitStop(damageData);
+            onDamage?.Invoke(damageData.amount, damageData.damageType);
         }
 
         public void AwardParry(DamageData damageData) {
             onParry?.Invoke(damageData);
+        }
+
+        public bool IsValidTarget(IDamageable target) {
+            return target != (IDamageable)this;
         }
 
         /// <summary>
@@ -462,6 +470,8 @@ namespace SeleneGame.Core {
         public virtual void Kill(){
             onDeath?.Invoke();
         }
+
+        const float DISPLACEMENT_SKIN_THICKNESS = 0.15f;
 
         /// <summary>
         /// Move in the given direction.
@@ -476,7 +486,6 @@ namespace SeleneGame.Core {
         ///     </para>
         /// </remarks>
         /// <param name="direction">The direction to move in</param>
-        /// <param name="canStep">If the Entity can move up or down stair steps, like on a slope.</param>
         public void Displace(Vector3 direction, float deltaTime = -1f) {
             if (direction.sqrMagnitude == 0f) return;
 
@@ -486,61 +495,84 @@ namespace SeleneGame.Core {
 
         }
 
+        private void DisplacePenetration(Collider entityCollider, Collider worldCollider) {
+
+            // move the character out of the object it's clipping into
+            Vector3 penetrationDirection = default;
+            float penetrationDistance = default;
+            bool penetrationHit = Physics.ComputePenetration(entityCollider, entityCollider.transform.position, entityCollider.transform.rotation, worldCollider, worldCollider.transform.position, worldCollider.transform.rotation, out penetrationDirection, out penetrationDistance);
+
+            if (penetrationHit) {
+                transform.position += penetrationDirection * penetrationDistance;
+            }
+        }
+
         public bool DisplaceStep(Vector3 direction, float deltaTime = -1f) {
-            if (direction.sqrMagnitude == 0f) return false;
-
-            if (deltaTime < 0f) deltaTime = GameUtility.timeDelta;
-
-            // Check for valid walk
-            Vector3 displacement = direction * deltaTime;
-            if ( !onGround || !character.model.ColliderCast(Vector3.zero, displacement.normalized * (displacement.magnitude + 0.15f), out RaycastHit walkHit, out _, 0.15f, CollisionUtils.EntityCollisionMask))
+            if (direction.sqrMagnitude == 0f) 
                 return false;
 
+            // if (!onGround) {
+            //     Displace(direction, deltaTime);
+            //     return false;
+
+            if (deltaTime < 0f) 
+                deltaTime = GameUtility.timeDelta;
+
+            Vector3 displacement = direction * deltaTime;
+            Vector3 checkOffset = gravityDown * character.data.stepHeight;
+            
+
+            // Check for obstacle
+            bool obstacle = character.model.ColliderCast(Vector3.zero, displacement.normalized * (displacement.magnitude + DISPLACEMENT_SKIN_THICKNESS * 100f), out RaycastHit walkHit, out Collider castOrigin, DISPLACEMENT_SKIN_THICKNESS, CollisionUtils.EntityCollisionMask); 
+            if ( !obstacle ) {
+                transform.position += displacement;
+                // Debug.Log("No obstacle");
+                return false;
+            }
 
             // Check for valid step
-            Vector3 checkOffset = gravityDown * character.data.stepHeight;
-            if (!character.model.ColliderCast(displacement - checkOffset, checkOffset, out RaycastHit stepHit, out Collider castOrigin, 0f, CollisionUtils.EntityCollisionMask))
+            bool validStep = character.model.ColliderCast(displacement - checkOffset, checkOffset, out RaycastHit stepHit, out _, 0f, CollisionUtils.EntityCollisionMask);
+            // bool validStep = Physics.Raycast(castOrigin.transform.position + displacement - checkOffset, checkOffset, out RaycastHit stepHit, character.data.stepHeight, CollisionUtils.EntityCollisionMask);
+            if ( !validStep ) {
+                transform.position += displacement;
+                DisplacePenetration(castOrigin, walkHit.collider);
+                // Debug.Log("No valid step");
                 return false;
+            }
 
             // Check if the step is low enough
-            Vector3 stepDisplacement = Vector3.Project(stepHit.point - groundHit.point, gravityDown);
-            if (stepDisplacement.sqrMagnitude > character.data.stepHeight * character.data.stepHeight)
+            Vector3 stepDisplacement = Vector3.Project(stepHit.point - transform.position, gravityDown);
+            bool stepAtCorrectHeight = stepDisplacement.sqrMagnitude <= character.data.stepHeight * character.data.stepHeight;
+            if ( !stepAtCorrectHeight ) {
+                transform.position += displacement;
+                DisplacePenetration(castOrigin, walkHit.collider);
+                // Debug.Log("Step at incorrect height");
                 return false;
-
+            }
 
             transform.position += displacement + stepDisplacement;
+            DisplacePenetration(castOrigin, walkHit.collider);
+            // Debug.Log("Step");
             return true;
 
         }
         
-        public void DisplaceImmediate(Vector3 displacement, bool fixClipping = true/* , bool fixPenetration = true */) {
+        public void DisplaceImmediate(Vector3 displacement) {
             if (displacement.sqrMagnitude == 0f) return;
 
 
             // stop the character from clipping into obstacles
-            RaycastHit walkHit = default;
-            Collider castOrigin = default;
-            bool castHit = fixClipping && character.model.ColliderCast(Vector3.zero, displacement.normalized * (displacement.magnitude + 0.15f), out walkHit, out castOrigin, 0.15f, CollisionUtils.EntityCollisionMask);
+            bool castHit = character.model.ColliderCast(Vector3.zero, displacement.normalized * (displacement.magnitude + DISPLACEMENT_SKIN_THICKNESS * 100f), out RaycastHit walkHit, out Collider castOrigin, DISPLACEMENT_SKIN_THICKNESS, CollisionUtils.EntityCollisionMask);
 
-            if (castHit) {
-                displacement = displacement.normalized * Mathf.Min(displacement.magnitude, walkHit.distance);
+            if ( !castHit ) {
+                transform.position += displacement;
+                return;
             }
 
+            transform.position += displacement.normalized * Mathf.Min(displacement.magnitude, walkHit.distance);
+            DisplacePenetration(castOrigin, walkHit.collider);
 
-            transform.position += displacement;
-
-
-            // move the character out of the object it's clipping into
-            Vector3 direction = default;
-            float distance = default;
-            bool penetrationHit = /* fixPenetration &&  */castHit && Physics.ComputePenetration(castOrigin, castOrigin.transform.position, castOrigin.transform.rotation, walkHit.collider, walkHit.collider.transform.position, walkHit.collider.transform.rotation, out direction, out distance);
-
-            if (penetrationHit) {
-                transform.position += direction * distance;
-            }
-
-
-            Physics.SyncTransforms();
+            // Physics.SyncTransforms();
         }
 
         public void DisplaceTo(Vector3 position, float deltaTime = -1f) {
@@ -581,7 +613,7 @@ namespace SeleneGame.Core {
 
             DisplaceImmediate(totalDisplacement);
 
-            Physics.SyncTransforms();
+            // Physics.SyncTransforms();
             
             _totalMovement = Vector3.zero;
         }
@@ -711,8 +743,6 @@ namespace SeleneGame.Core {
                 anchorTransform = null;
             }
         }
-
-        
 
         public enum WeightCategory {
             Light,

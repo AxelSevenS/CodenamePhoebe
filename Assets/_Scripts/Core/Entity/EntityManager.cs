@@ -38,7 +38,7 @@ namespace SeleneGame.Core {
             if (hitStopCoroutine != null)
                 StopCoroutine(hitStopCoroutine);
 
-            hitStopCoroutine = StartCoroutine(HitStop(0.1f));
+            hitStopCoroutine = StartCoroutine(HitStop(0.125f));
         }
 
         private IEnumerator HitStop(float time) {

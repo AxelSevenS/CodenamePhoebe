@@ -37,12 +37,12 @@ namespace SeleneGame.Core.UI {
             if (weapon == null) {
                 WeaponData defaultData = AddressablesUtils.GetDefaultAsset<WeaponData>();
                 portraitSprite = defaultData?.baseCostume?.portrait;
-                nameText = defaultData?.displayName;
+                nameText = defaultData?.displayName.GetLocalizedString();
                 return;
             }
 
             portraitSprite = weapon.model?.costume?.portrait ?? nullPortrait;
-            nameText = weapon.data?.displayName ?? "None";
+            nameText = weapon.data?.displayName.GetLocalizedString() ?? "None";
         }
 
         public override void OnSubmit(BaseEventData eventData) {

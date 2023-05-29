@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Localization-Assets-Shared
+  m_EditorClassIdentifier: 
+  m_GroupName: Localization-Assets-Shared
+  m_Data:
+    m_SerializedData: []
+  m_GUID: fbb7a4a20743efe498798a03f2b4014d
+  m_SerializeEntries:
+  - m_GUID: 16a4064b943da394cbd3d5a1382d42d9
+    m_Address: Assets/Resources/Dialogue/Dialogue Table Shared Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+  - m_GUID: 0f4e5d03ff7b63f4caf245e7ec3f1939
+    m_Address: Assets/Data/Masks/Mask Table Shared Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+  - m_GUID: b2d7d830905942c47b008681c281275d
+    m_Address: Assets/Data/Vocabulary Shared Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+  - m_GUID: 7a1921cdc31e87745abe71471b3c9e6a
+    m_Address: Assets/Data/Weapons/Weapon Table Shared Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+  - m_GUID: 2b377ec0d859dbb448bf7bb6b45c819c
+    m_Address: Assets/Data/Characters/Character Table Shared Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+  m_ReadOnly: 1
+  m_Settings: {fileID: 11400000, guid: 7258e2e04bac10d46b4f8c1803b38751, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 3687b4f8e9ef25f468cae592aab76597, type: 2}
+    - {fileID: 11400000, guid: 1b196e88ce13ea440940ab0a7e098a82, type: 2}

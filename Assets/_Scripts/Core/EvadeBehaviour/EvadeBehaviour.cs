@@ -28,12 +28,14 @@ namespace SeleneGame.Core {
         protected CartesianMixerState evadeMixer {
             get {
                 if (_evadeMixer == null) {
-                    _evadeMixer = new CartesianMixerState();
-                    _evadeMixer.Initialize(4);
-                    _evadeMixer.CreateChild(0, entity.character.data.GetAnimation("EvadeFront"), new Vector2(0, 1));
-                    _evadeMixer.CreateChild(1, entity.character.data.GetAnimation("EvadeBack"), new Vector2(0, -1));
-                    _evadeMixer.CreateChild(2, entity.character.data.GetAnimation("EvadeRight"), new Vector2(1, 0));
-                    _evadeMixer.CreateChild(3, entity.character.data.GetAnimation("EvadeLeft"), new Vector2(-1, 0));
+                    // _evadeMixer = new CartesianMixerState();
+                    // _evadeMixer.Initialize(4);
+                    // _evadeMixer.CreateChild(0, entity.character.data.GetAnimation("EvadeFront"), new Vector2(0, 1));
+                    // _evadeMixer.CreateChild(1, entity.character.data.GetAnimation("EvadeBack"), new Vector2(0, -1));
+                    // _evadeMixer.CreateChild(2, entity.character.data.GetAnimation("EvadeRight"), new Vector2(1, 0));
+                    // _evadeMixer.CreateChild(3, entity.character.data.GetAnimation("EvadeLeft"), new Vector2(-1, 0));
+
+                    _evadeMixer = entity.character?.data.GetTransition("EvadeGrounded")?.CreateState() as CartesianMixerState;
 
                     entity.animancer.Layers[0].AddChild(_evadeMixer);
                     _evadeMixer.SetDebugName("Evade");

@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: Weapon Table_fr
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: fr
+  m_SharedData: {fileID: 11400000, guid: 7a1921cdc31e87745abe71471b3c9e6a, type: 2}
+  m_Metadata:
+    m_Items:
+    - rid: 985136688878059535
+  m_TableData:
+  - m_Id: 76174483456
+    m_Localized: Hypnos
+    m_Metadata:
+      m_Items: []
+  - m_Id: 389304442880
+    m_Localized: "N\xE9m\xE9sis"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 631533887488
+    m_Localized: Vide
+    m_Metadata:
+      m_Items: []
+  - m_Id: 901303132160
+    m_Localized: '{name} {default_label}'
+    m_Metadata:
+      m_Items:
+      - rid: 985136688878059535
+  - m_Id: 1733071364096
+    m_Localized: '{name} {default_label}'
+    m_Metadata:
+      m_Items:
+      - rid: 985136688878059535
+  - m_Id: 3351493894144
+    m_Localized: '{name} {default_label}'
+    m_Metadata:
+      m_Items:
+      - rid: 985136688878059535
+  references:
+    version: 2
+    RefIds:
+    - rid: 985136688878059535
+      type: {class: SmartFormatTag, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_Entries: 00601a83930100000060dad9d100000000609a540c030000

@@ -13,7 +13,8 @@
         "Seven.Scribe",
         "Seven.EasySplines",
         "Seven.Saving-System",
-        "Unity.Burst"
+        "Unity.Burst",
+        "Unity.Localization"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

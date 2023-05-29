@@ -1,0 +1,73 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6d90a471824d3649a8e28c15136d85d, type: 3}
+  m_Name: Erebus_Base
+  m_EditorClassIdentifier: 
+  accessibleInGame: 0
+  portrait: {fileID: 0}
+  displayName:
+    m_TableReference:
+      m_TableCollectionName: GUID:0f4e5d03ff7b63f4caf245e7ec3f1939
+    m_TableEntryReference:
+      m_KeyId: 290616664064
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables:
+    - name: name
+      variable:
+        rid: 985136688878059555
+    - name: default_label
+      variable:
+        rid: 985136688878059556
+  description:
+    m_TableReference:
+      m_TableCollectionName: 
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  neutralPortrait: {fileID: 0}
+  determinedPortrait: {fileID: 0}
+  hesitantPortrait: {fileID: 0}
+  shockedPortrait: {fileID: 0}
+  disgustedPortrait: {fileID: 0}
+  sadPortrait: {fileID: 0}
+  happyPortrait: {fileID: 0}
+  model: {fileID: 5074332062407804862, guid: 2ae8fe6e6b55ebf4bae00e625493cf50, type: 3}
+  references:
+    version: 2
+    RefIds:
+    - rid: 985136688878059555
+      type: {class: LocalizedString, ns: UnityEngine.Localization, asm: Unity.Localization}
+      data:
+        m_TableReference:
+          m_TableCollectionName: GUID:0f4e5d03ff7b63f4caf245e7ec3f1939
+        m_TableEntryReference:
+          m_KeyId: 55693697024
+          m_Key: 
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+        m_LocalVariables: []
+    - rid: 985136688878059556
+      type: {class: LocalizedString, ns: UnityEngine.Localization, asm: Unity.Localization}
+      data:
+        m_TableReference:
+          m_TableCollectionName: GUID:b2d7d830905942c47b008681c281275d
+        m_TableEntryReference:
+          m_KeyId: 6691643392
+          m_Key: 
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+        m_LocalVariables: []

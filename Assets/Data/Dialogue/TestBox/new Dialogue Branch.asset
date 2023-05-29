@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13963d19f572ec441afa6bfc89441e5f, type: 3}
+  m_Name: new Dialogue Branch
+  m_EditorClassIdentifier: 
+  highPriorityDialogues:
+  - conditions:
+      condition:
+        binaryModifier: 0
+        conditionType: 1
+        flagCondition:
+          binaryModifier: 0
+          flagType: 0
+          flagName: 
+          operationType: 0
+          flagValue: 0
+        dialogueSource: {fileID: 11400000, guid: 6338b6e54df1b994ba8b3faa99babeb4, type: 2}
+        dialogueFlag: -2147483648
+      subConditions: []
+    dialogueSource: {fileID: 11400000, guid: 820e2d01fdb01df41bb6275c6b1490b7, type: 2}
+  - conditions:
+      condition:
+        binaryModifier: 0
+        conditionType: 1
+        flagCondition:
+          binaryModifier: 0
+          flagType: 0
+          flagName: 
+          operationType: 0
+          flagValue: 0
+        dialogueSource: {fileID: 11400000, guid: 63f9cda49497fdb469d2660468534bf5, type: 2}
+        dialogueFlag: 1073741824
+      subConditions: []
+    dialogueSource: {fileID: 11400000, guid: bd703221ec02b40449172dc31613bb6d, type: 2}
+  - conditions:
+      condition:
+        binaryModifier: 0
+        conditionType: 1
+        flagCondition:
+          binaryModifier: 0
+          flagType: 0
+          flagName: 
+          operationType: 0
+          flagValue: 0
+        dialogueSource: {fileID: 11400000, guid: b69c4b9a1e3cdf0418c752525968e529, type: 2}
+        dialogueFlag: 1073741824
+      subConditions: []
+    dialogueSource: {fileID: 11400000, guid: e3a2b30ab32ef5141b4008581e5f8228, type: 2}
+  lowPriorityDialogues:
+  - {fileID: 11400000, guid: 2a16f0e84f9a51642b2a811e23f3714f, type: 2}

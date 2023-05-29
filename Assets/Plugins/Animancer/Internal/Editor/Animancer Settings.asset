@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 18bd840b706853d4a934ec3199f63a41, type: 3}
+  m_Script: {fileID: 11500000, guid: 75f834ce26318e34ebb0981e0a67877c, type: 3}
   m_Name: Animancer Settings
   m_EditorClassIdentifier: 
   _TransitionPreviewWindow:

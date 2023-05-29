@@ -11,6 +11,9 @@ Shader "Selene/Water" {
 
         _AlphaStrength ("Alpha Strength", Range(0,1)) = 0
         _DepthStrength ("Depth Strength", Range(0,1)) = 0
+
+        _ShallowColor ("Shallow Color", Color) = (0, 0, 0.5)
+        _DeepColor ("Deep Color", Color) = (0, 0, 1)
     }
     SubShader {
 
@@ -36,6 +39,9 @@ Shader "Selene/Water" {
 
                 float _AlphaStrength;
                 float _DepthStrength;
+
+                float3 _ShallowColor;
+                float3 _DeepColor;
 
             CBUFFER_END
 
@@ -63,28 +69,23 @@ Shader "Selene/Water" {
 
             void WaterFragment( inout SurfaceData surfaceData, inout InputData inputData, VertexOutput input, half facing ) {
 
-                float3 deepColor = float3(0.04343182, 0.06204228, 0.1509434);
-                float3 shallowColor = float3(0.5613652, 0.7575701, 0.8207547);
-
                 if (facing > 0) {
 
                     float depth = - Linear01Depth(SampleSceneDepth(input.positionSS.xy / input.positionSS.w).r, _ZBufferParams) * _ProjectionParams.z + input.positionSS.w;
 
-                    // float depthColorFactor = saturate(1 - exp(depth * _DepthStrength));
                     float depthColorFactor = saturate(1 - exp(depth * _DepthStrength));
 
-                    surfaceData.albedo = lerp(shallowColor, deepColor, depthColorFactor);
+                    surfaceData.albedo = lerp(_ShallowColor, _DeepColor, depthColorFactor);
 
 
                     float alphaDepth = saturate(1 - exp(depth * _AlphaStrength));
-                    // float fresnel = 1;
                     float fresnel = pow(1 - saturate(dot(inputData.viewDirectionWS, inputData.normalWS)), _AlphaStrength);
                     
-                    surfaceData.alpha = saturate(alphaDepth * fresnel);
+                    surfaceData.alpha = saturate(alphaDepth * fresnel + 0.35);
 
                 } else {
 
-                    surfaceData.albedo = shallowColor;
+                    surfaceData.albedo = _ShallowColor;
                     surfaceData.alpha = saturate(length(input.positionWS - _WorldSpaceCameraPos) * _AlphaStrength * 0.5);
                 }
 

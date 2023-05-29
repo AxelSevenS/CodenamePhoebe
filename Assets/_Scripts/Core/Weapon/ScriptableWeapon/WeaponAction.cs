@@ -45,7 +45,7 @@ namespace SeleneGame.Core {
                         zone.transform.rotation = rotation;
                         zone.transform.localScale = Vector3.Scale(zone.transform.localScale, scale);
                     };
-                    DamageZone.Create(weapon.armedEntity, attackName, modifier);
+                    DamageZone.Create(weapon, attackName, modifier);
                     break;
                 case WeaponActionType.PlayAnimation:
                     break;

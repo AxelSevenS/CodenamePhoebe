@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: Character Table_fr
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: fr
+  m_SharedData: {fileID: 11400000, guid: 2b377ec0d859dbb448bf7bb6b45c819c, type: 2}
+  m_Metadata:
+    m_Items:
+    - rid: 985136688878059550
+  m_TableData:
+  - m_Id: 59346935808
+    m_Localized: "S\xE9l\xE9n\xE9"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 350595211264
+    m_Localized: '{name} {default_label}'
+    m_Metadata:
+      m_Items:
+      - rid: 985136688878059550
+  references:
+    version: 2
+    RefIds:
+    - rid: 985136688878059550
+      type: {class: SmartFormatTag, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_Entries: 00601aa151000000

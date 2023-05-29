@@ -39,7 +39,7 @@ namespace SeleneGame.Core.UI {
             _weaponData = data ?? AddressablesUtils.GetDefaultAsset<WeaponData>();
 
             portraitSprite = _weaponData.baseCostume?.portrait ?? nullPortrait;
-            nameText = _weaponData?.displayName ?? "None";
+            nameText = _weaponData?.displayName.GetLocalizedString() ?? "None";
         }
 
 

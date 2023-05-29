@@ -5,9 +5,9 @@ using UnityEngine;
 namespace SeleneGame.Core.UI {
     public interface IDialogueReader {
 
-        void StartDialogue(IDialogueSource source, GameObject newDialogueObject);
+        void StartDialogue(DialogueLine source, GameObject newDialogueObject = null);
         void EndDialogue();
-        void SkipToLine(IDialogueSource source);
+        // void SkipToLine(DialogueSource source);
         void InterruptDialogue();
 
     }

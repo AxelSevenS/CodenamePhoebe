@@ -9,14 +9,15 @@ namespace SeleneGame.Core {
     [System.Serializable]
     public class ConditionalDialogue {
 
-        public ScribeMultiCondition<FlagCondition> conditions;
+        public ScribeMultiCondition<GameCondition> conditions = new ScribeMultiCondition<GameCondition>();
         
         public DialogueSource dialogueSource;
 
         public bool Evaluate() {
             bool left = conditions.condition.Evaluate();
-            foreach (ScribeSubCondition<FlagCondition> subCondition in conditions.subConditions) {
-                left = subCondition.MultiConditionEvaluate(left, subCondition.condition.Evaluate());
+            foreach (ScribeSubCondition<GameCondition> subCondition in conditions.subConditions) {
+                bool right = subCondition.condition.Evaluate();
+                left = subCondition.MultiConditionEvaluate(left, right);
             }
             return left;
         }

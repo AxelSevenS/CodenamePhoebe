@@ -7,10 +7,10 @@ using Scribe;
 namespace SeleneGame.Core {
 
     [System.Serializable]
-    public sealed class GameEvent : ScribeEvent<GameAction, FlagCondition> {
+    public sealed class GameEvent : ScribeEvent<GameAction, GameCondition> {
         public bool Evaluate() {
             bool left = conditions.condition.Evaluate();
-            foreach (ScribeSubCondition<FlagCondition> subCondition in conditions.subConditions) {
+            foreach (ScribeSubCondition<GameCondition> subCondition in conditions.subConditions) {
                 bool right = subCondition.condition.Evaluate();
                 left = subCondition.MultiConditionEvaluate(left, right);
             }

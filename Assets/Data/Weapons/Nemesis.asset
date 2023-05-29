@@ -12,10 +12,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae0fe6850e0713b4ba8fc866bf1faa47, type: 3}
   m_Name: Nemesis
   m_EditorClassIdentifier: 
-  displayName: Nemesis
-  description: 'Lava Sword
-
-'
+  displayName:
+    m_TableReference:
+      m_TableCollectionName: GUID:7a1921cdc31e87745abe71471b3c9e6a
+    m_TableEntryReference:
+      m_KeyId: 389304442880
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  description:
+    m_TableReference:
+      m_TableCollectionName: GUID:7a1921cdc31e87745abe71471b3c9e6a
+    m_TableEntryReference:
+      m_KeyId: 544581771264
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   _baseCostume: {fileID: 11400000, guid: 88d05d19418b5cb4eb2b9561a0f90b20, type: 2}
   _weaponType: 4
   _weight: 1.25
@@ -65,3 +79,6 @@ MonoBehaviour:
         flagValue: 0
       subConditions: []
     actions: []
+  references:
+    version: 2
+    RefIds: []
