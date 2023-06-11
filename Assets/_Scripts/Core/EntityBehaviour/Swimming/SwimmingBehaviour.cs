@@ -35,17 +35,18 @@ namespace SeleneGame.Core {
 
 
 
-        public SwimmingBehaviour(Entity entity, EntityBehaviour previousBehaviour) : base(entity, previousBehaviour) {
+        public override void Initialize(Entity entity, EntityBehaviour previousBehaviour = null) {
+            _entity = entity;
             entity.gravityDown = Vector3.down;
-            _evadeBehaviour = new EvadeBehaviour(entity);
+
+            _evadeBehaviour = gameObject.AddComponent<EvadeBehaviour>();
+            _evadeBehaviour.Initialize(entity);
 
             if (previousBehaviour == null) return;
 
             moveDirection = previousBehaviour.direction;
             moveSpeed = previousBehaviour.speed;
         }
-
-
 
         protected internal override void HandleInput(Player controller){
 
@@ -56,7 +57,7 @@ namespace SeleneGame.Core {
 
             if (isOnWaterSurface && controller.jumpInput.started) {
                 JumpOutOfWater();
-                Dispose();
+                // Dispose();
                 return;
             }
             
@@ -106,11 +107,14 @@ namespace SeleneGame.Core {
             base.HeavyAttackAction();
         }
 
-        public override void Update() {
 
-            base.Update();
+        private void OnEnable() {
+            entity.gravityDown = Vector3.down;
+        }
 
-            distanceToWaterSurface = entity.physicsComponent.totalWaterHeight - entity.transform.position.y;
+        private void Update() {
+
+            distanceToWaterSurface = entity.physicsComponent.totalWaterHeight - entity.centerOfMass.y;
 
             bool canSwim = entity.weightCategory != Entity.WeightCategory.Heavy;
             if ( !entity.inWater || !canSwim )
@@ -150,7 +154,7 @@ namespace SeleneGame.Core {
             Vector3 movement = entity.absoluteForward * moveSpeed;
             if (isOnWaterSurface && !entity.onGround) {
                 _evadeBehaviour.currentDirection = _evadeBehaviour.currentDirection.NullifyInDirection(Vector3.up);
-                entity.rigidbody.velocity = entity.rigidbody.velocity.NullifyInDirection(Vector3.up);
+                entity.inertia = entity.inertia.NullifyInDirection(Vector3.up);
                 movement = movement.NullifyInDirection(Vector3.up);
             }
 

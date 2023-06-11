@@ -26,13 +26,22 @@ namespace SeleneGame.Content {
         protected override Vector3 evadeDirection => base.evadeDirection;
 
         protected override bool canParry => base.canParry;
-        
 
 
-        public VehicleBehaviour(Entity entity, EntityBehaviour previousBehaviour) : base(entity, previousBehaviour) {
 
-            _evadeBehaviour = new GroundedEvadeBehaviour(entity);
-            _jumpBehaviour = new GroundedJumpBehaviour(entity);
+        // public VehicleBehaviour(Entity entity, EntityBehaviour previousBehaviour) : base(entity, previousBehaviour) {
+
+        //     _evadeBehaviour = new GroundedEvadeBehaviour(entity);
+        //     _jumpBehaviour = new GroundedJumpBehaviour(entity);
+
+        //     if (previousBehaviour == null) return;
+
+        //     Move(previousBehaviour.direction);
+        //     moveSpeed = previousBehaviour.speed;
+        // }
+
+        public override void Initialize(Entity entity, EntityBehaviour previousBehaviour = null) {
+            _entity = entity;
 
             if (previousBehaviour == null) return;
 
@@ -83,10 +92,7 @@ namespace SeleneGame.Content {
         }
         
 
-        public override void Update(){
-
-            base.Update();
-
+        private void Update(){
             
             float newSpeed = Vector3.Dot(entity.absoluteForward, inputDirection) * entity.character.data.baseSpeed;
             float speedDelta = newSpeed > moveSpeed ? 1f : 0.25f;

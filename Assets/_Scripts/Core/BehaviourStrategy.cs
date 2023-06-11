@@ -5,8 +5,8 @@ using UnityEngine;
 
 namespace SeleneGame.Core {
 
-    [System.Serializable]
-    public abstract class BehaviourStrategy : IDisposable {
+    // [System.Serializable]
+    public abstract class BehaviourStrategy : MonoBehaviour {
 
         private bool disposedValue;
 
@@ -15,34 +15,34 @@ namespace SeleneGame.Core {
 
         public Entity entity => _entity;
 
-        public BehaviourStrategy(Entity entity) {
-            _entity = entity;
-        }
+        // public BehaviourStrategy(Entity entity) {
+        //     _entity = entity;
+        // }
 
         protected internal abstract void HandleInput(Player contoller);
 
 
-        public virtual void Update() {;}
-        public virtual void LateUpdate() {;}
-        public virtual void FixedUpdate() {;}
+        // public virtual void Update() {;}
+        // public virtual void LateUpdate() {;}
+        // public virtual void FixedUpdate() {;}
         
 
-        protected void Dispose(bool disposing) {
+        // protected void Dispose(bool disposing) {
 
-            if (!disposedValue) {
-                if (disposing)
-                    DisposeBehavior();
+        //     if (!disposedValue) {
+        //         if (disposing)
+        //             DisposeBehavior();
 
-                disposedValue = true;
-            }
-        }
+        //         disposedValue = true;
+        //     }
+        // }
 
-        protected virtual void DisposeBehavior() {
-        }
+        // protected virtual void DisposeBehavior() {
+        // }
 
-        public void Dispose() {
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
-        }
+        // public void Dispose() {
+        //     Dispose(disposing: true);
+        //     GC.SuppressFinalize(this);
+        // }
     }
 }

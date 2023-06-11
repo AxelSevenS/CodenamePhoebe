@@ -8,8 +8,14 @@ namespace SeleneGame.Core {
 
         [SerializeField] private ArmedEntity _armedEntity;
 
-        public ArmedGroundedBehaviour(ArmedEntity entity, EntityBehaviour previousBehaviour) : base(entity, previousBehaviour) {
-            _armedEntity = entity;
+        // public ArmedGroundedBehaviour(ArmedEntity entity, EntityBehaviour previousBehaviour) : base(entity, previousBehaviour) {
+        //     _armedEntity = entity;
+        // }
+
+        public override void Initialize(Entity entity, EntityBehaviour previousBehaviour) {
+            _armedEntity = entity as ArmedEntity;
+
+            base.Initialize(entity, previousBehaviour);
         }
 
         protected internal override void HandleInput(Player controller) {

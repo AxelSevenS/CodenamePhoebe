@@ -45,7 +45,7 @@ namespace SeleneGame.Core {
         [SerializeReference] private Character _character;
 
         [Tooltip("The current state of the Entity, can be changed using the SetState method.")]
-        [SerializeReference] private EntityBehaviour _behaviour;
+        [SerializeField] private EntityBehaviour _behaviour;
 
 
         [Header("Movement")]
@@ -155,6 +155,8 @@ namespace SeleneGame.Core {
                 return character.model.mainTransform;
             }
         }
+
+        public Vector3 centerOfMass => character.model?.costumeData?.centerOfMass.transform.position ?? transform.position;
 
         /// <summary>
         /// The current state (Behaviour) of the Entity.
@@ -318,9 +320,13 @@ namespace SeleneGame.Core {
             if ( _behaviour is T )
                 return;
 
-            EntityBehaviour newState = stateBuilder.Build(this, _behaviour);
-            _behaviour?.Dispose();
-            _behaviour = newState;
+            try {
+                EntityBehaviour newBehaviour = stateBuilder.Build(this, _behaviour, gameObject);
+                GameUtility.SafeDestroy( _behaviour );
+                _behaviour = newBehaviour;
+            } catch ( System.Exception e ) {
+                Debug.LogError( e );
+            }
         }
 
         public virtual void ResetBehaviour() {
@@ -693,7 +699,7 @@ namespace SeleneGame.Core {
             onGround.SetVal( closeToGround );
 
 
-            behaviour?.Update();
+            // behaviour?.Update();
             character?.Update();
 
         }
@@ -701,7 +707,7 @@ namespace SeleneGame.Core {
 
         protected virtual void LateUpdate(){
 
-            behaviour?.LateUpdate();
+            // behaviour?.LateUpdate();
             character?.LateUpdate();
 
             Gravity();
@@ -711,7 +717,7 @@ namespace SeleneGame.Core {
 
         protected virtual void FixedUpdate() {
 
-            behaviour?.FixedUpdate();
+            // behaviour?.FixedUpdate();
             character?.FixedUpdate();
         }
 

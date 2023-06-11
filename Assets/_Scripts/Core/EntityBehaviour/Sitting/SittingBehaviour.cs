@@ -28,25 +28,35 @@ namespace SeleneGame.Core {
 
 
 
-        public SittingBehaviour(Entity entity, EntityBehaviour previousBehaviour, Seat seat, Seat.SittingPose sittingPose) : base(entity, previousBehaviour) {
+        // public SittingBehaviour(Entity entity, EntityBehaviour previousBehaviour, Seat seat, Seat.SittingPose sittingPose) : base(entity, previousBehaviour) {
 
+        //     if (seat == null)
+        //         throw new System.ArgumentNullException("Seat cannot be null!");
+
+        //     seat.StopSitting();
+        //     _seat = seat;
+        //     seat.seatOccupant = entity;
+        //     _sittingPose = sittingPose;
+
+        //     entity.rigidbody.detectCollisions = false;
+        // }
+
+        public void SetSeat(Seat seat) {
             if (seat == null)
                 throw new System.ArgumentNullException("Seat cannot be null!");
 
             seat.StopSitting();
             _seat = seat;
             seat.seatOccupant = entity;
+        }
+
+        public void SetPose(Seat.SittingPose sittingPose) {
             _sittingPose = sittingPose;
-
-            entity.rigidbody.detectCollisions = false;
         }
 
-        protected override void DisposeBehavior() {
-            base.DisposeBehavior();
-            seat.seatOccupant = null;
-            entity.rigidbody.detectCollisions = true;
+        public override void Initialize(Entity entity, EntityBehaviour previousBehaviour = null) {
+            _entity = entity;
         }
-        
 
         protected internal override void HandleInput(Player controller) {
 
@@ -68,9 +78,11 @@ namespace SeleneGame.Core {
         
 
 
-        public override void LateUpdate() {
+        private void OnEnable() {
+            entity.rigidbody.detectCollisions = false;
+        }
 
-            base.LateUpdate();
+        private void Update() {
 
             Transform seatTransform = seat.seatEntity?.modelTransform ?? seat.transform;
 

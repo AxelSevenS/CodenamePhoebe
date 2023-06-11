@@ -27,7 +27,7 @@ namespace SeleneGame.Content {
 
         public bool faceState {
             get {
-                if (mask.maskedEntity.behaviour is MaskedBehaviour || mask.maskedEntity.behaviour is SwimmingBehaviour)
+                if (/* mask.maskedEntity.behaviour is MaskedBehaviour ||  */mask.maskedEntity.behaviour is SwimmingBehaviour)
                     return true;
 
                 else if (mask.maskedEntity.behaviour is GroundedBehaviour)

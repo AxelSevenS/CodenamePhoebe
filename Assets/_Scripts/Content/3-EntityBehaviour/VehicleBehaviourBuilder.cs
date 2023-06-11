@@ -12,8 +12,18 @@ namespace SeleneGame.Content {
 
         private VehicleBehaviourBuilder() { }
 
-        public override VehicleBehaviour Build(Entity entity, EntityBehaviour previousBehaviour) {
-            return new VehicleBehaviour(entity, previousBehaviour);
+        public override VehicleBehaviour Build(Entity entity, EntityBehaviour previousBehaviour, GameObject gameObject) {
+
+            bool wasEnabled = gameObject.activeSelf;
+            gameObject.SetActive(false);
+
+            VehicleBehaviour behaviour = gameObject.AddComponent<VehicleBehaviour>();
+            behaviour.Initialize(entity, previousBehaviour);
+
+            gameObject.SetActive(wasEnabled);
+
+
+            return behaviour;
         }
     }
 

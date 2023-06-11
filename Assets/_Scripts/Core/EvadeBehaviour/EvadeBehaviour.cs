@@ -16,7 +16,9 @@ namespace SeleneGame.Core {
         public Vector3 currentDirection = Vector3.forward;
         public TimeInterval timer;
 
-        private CartesianMixerState _evadeMixer;
+        private MixerTransition2DAsset.UnShared _evadeMixer;
+
+        protected Vector2 animationDirection;
 
         public float Time { get; protected set; }
         public float Speed { get; protected set; }
@@ -25,31 +27,20 @@ namespace SeleneGame.Core {
 
         public virtual bool canEvade => timer.isDone;
 
-        protected CartesianMixerState evadeMixer {
+        protected MixerTransition2DAsset.UnShared evadeMixer {
             get {
-                if (_evadeMixer == null) {
-                    // _evadeMixer = new CartesianMixerState();
-                    // _evadeMixer.Initialize(4);
-                    // _evadeMixer.CreateChild(0, entity.character.data.GetAnimation("EvadeFront"), new Vector2(0, 1));
-                    // _evadeMixer.CreateChild(1, entity.character.data.GetAnimation("EvadeBack"), new Vector2(0, -1));
-                    // _evadeMixer.CreateChild(2, entity.character.data.GetAnimation("EvadeRight"), new Vector2(1, 0));
-                    // _evadeMixer.CreateChild(3, entity.character.data.GetAnimation("EvadeLeft"), new Vector2(-1, 0));
-
-                    _evadeMixer = entity.character?.data.GetTransition("EvadeGrounded")?.CreateState() as CartesianMixerState;
-
-                    entity.animancer.Layers[0].AddChild(_evadeMixer);
-                    _evadeMixer.SetDebugName("Evade");
-                    _evadeMixer.Stop();
-                }
+                UpdateEvadeMixer();
                 return _evadeMixer;
             }
         }
 
 
 
-        public EvadeBehaviour(Entity entity) : base(entity) {;}
+        // public EvadeBehaviour(Entity entity) : base(entity) {;}
 
-
+        public virtual void Initialize(Entity entity) {
+            _entity = entity;
+        }
 
         protected internal override void HandleInput(Player contoller) {;}
 
@@ -61,17 +52,38 @@ namespace SeleneGame.Core {
             Animation();
         }
 
-        protected virtual void Animation() {
-            evadeMixer.Stop();
-            entity.animancer.Layers[0].Play(evadeMixer, 0.1f);
-            evadeMixer.Events.OnEnd = () => {
-                evadeMixer.Stop();
-            };
+        private void UpdateEvadeMixer(bool forceReload = false) {
+            _evadeMixer ??= new MixerTransition2DAsset.UnShared();
+            if ( forceReload || !_evadeMixer.HasAsset ) {
+                _evadeMixer.Asset = entity.character.data.GetTransition("EvadeGrounded") as MixerTransition2DAsset;
+                _evadeMixer.Events.OnEnd = () => {
+                    entity.animancer.Stop(_evadeMixer);
+                };
+            }
         }
 
-        public override void Update() {
+        protected virtual void Animation() {
+            entity.animancer.Layers[0].Play(evadeMixer);
+        }
 
-            // Debug.Log(entityState);
+        protected virtual void UpdateAnimations() {
+            UpdateEvadeMixer(true);
+        }
+
+
+        private void OnSetCharacter(Character character) {
+            UpdateAnimations();
+        }
+
+        private void OnEnable() {
+            entity.onSetCharacter += OnSetCharacter;
+        }
+
+        private void OnDisable() {
+            entity.onSetCharacter -= OnSetCharacter;
+        }
+
+        protected virtual void Update() {
 
             state.SetVal( timer > entity.character.data.evadeCooldown );
 
@@ -88,17 +100,13 @@ namespace SeleneGame.Core {
 
             float rightDirection = Vector3.Dot(currentDirection, entity.modelTransform.right);
             float forwardDirection = Vector3.Dot(currentDirection, entity.modelTransform.forward);
+            animationDirection = new Vector2(rightDirection, forwardDirection);
 
-            evadeMixer.Parameter = new Vector2(rightDirection, forwardDirection);
+            if (evadeMixer.State != null)
+                evadeMixer.State.Parameter = animationDirection;
 
             entity.Displace( Speed * entity.character.data.evadeSpeed * currentDirection );
         }
 
-        public override void LateUpdate() { 
-
-        }
-
-        public override void FixedUpdate() {
-        }
     }
 }

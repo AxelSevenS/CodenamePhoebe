@@ -15,8 +15,23 @@ namespace SeleneGame.Core {
             this.sittingPose = sittingPose;
         }
 
-        public override SittingBehaviour Build(Entity entity, EntityBehaviour previousBehaviour) {
-            return new SittingBehaviour(entity, previousBehaviour, seat, sittingPose);
+        public override SittingBehaviour Build(Entity entity, EntityBehaviour previousBehaviour, GameObject gameObject) {
+
+            if (seat == null)
+                throw new System.ArgumentNullException("Seat cannot be null!");
+
+            bool wasEnabled = gameObject.activeSelf;
+
+            gameObject.SetActive(false);
+
+            SittingBehaviour behaviour = gameObject.AddComponent<SittingBehaviour>();
+            behaviour.Initialize(entity, previousBehaviour);
+            behaviour.SetSeat(seat);
+            behaviour.SetPose(sittingPose);
+
+            gameObject.SetActive(wasEnabled);
+
+            return behaviour;
         }
     }
 }

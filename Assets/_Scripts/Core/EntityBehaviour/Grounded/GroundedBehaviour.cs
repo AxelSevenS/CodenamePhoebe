@@ -48,31 +48,36 @@ namespace SeleneGame.Core {
 
 
 
-        public GroundedBehaviour(Entity entity, EntityBehaviour previousBehaviour) : base(entity, previousBehaviour) {
+        // public GroundedBehaviour(Entity entity, EntityBehaviour previousBehaviour) : base(entity, previousBehaviour) {
 
-            _evadeBehaviour = new GroundedEvadeBehaviour(entity);
-            _jumpBehaviour = new GroundedJumpBehaviour(entity);
+        //     _evadeBehaviour = new GroundedEvadeBehaviour(entity);
+        //     _jumpBehaviour = new GroundedJumpBehaviour(entity);
 
-            AnimationInitialize();
+        //     UpdateAnimations();
 
+        //     IdleAnimation();
+
+        //     if (previousBehaviour == null) return;
+
+        //     Move(previousBehaviour.direction);
+        //     moveSpeed = previousBehaviour.speed;
+        // }
+
+        public override void Initialize(Entity entity, EntityBehaviour previousBehaviour = null) {
+            _entity = entity;
+
+            _evadeBehaviour = gameObject.AddComponent<GroundedEvadeBehaviour>();
+            _evadeBehaviour.Initialize(entity);
+            _jumpBehaviour = gameObject.AddComponent<GroundedJumpBehaviour>();
+            _jumpBehaviour.Initialize(entity);
+
+            UpdateAnimations();
             IdleAnimation();
 
             if (previousBehaviour == null) return;
 
             Move(previousBehaviour.direction);
             moveSpeed = previousBehaviour.speed;
-
-            entity.onSetCharacter += OnSetCharacter;
-        }
-
-        protected override void DisposeBehavior() {
-            base.DisposeBehavior();
-            
-            entity.onSetCharacter -= OnSetCharacter;
-        }
-
-        private void OnSetCharacter(Character character) {
-            AnimationInitialize();
         }
 
         protected internal override void HandleInput(Player controller){
@@ -148,10 +153,19 @@ namespace SeleneGame.Core {
             return false;
         }
 
+        private void OnSetCharacter(Character character) {
+            UpdateAnimations();
+        }
 
-        public override void Update(){
+        private void OnEnable() {
+            entity.onSetCharacter += OnSetCharacter;
+        }
 
-            base.Update();
+        private void OnDisable() {
+            entity.onSetCharacter -= OnSetCharacter;
+        }
+
+        public void Update() {
 
             // Update the Entity's up direction
             entity.transform.rotation = Quaternion.FromToRotation(entity.transform.up, -entity.gravityDown) * entity.transform.rotation;
@@ -163,7 +177,7 @@ namespace SeleneGame.Core {
 
             // If the entity can do it, swim in water
             bool canSwim = !waterHover && entity.weightCategory != Entity.WeightCategory.Heavy;
-            float distanceToWaterSurface = entity.physicsComponent.totalWaterHeight - entity.transform.position.y;
+            float distanceToWaterSurface = entity.physicsComponent.totalWaterHeight - entity.centerOfMass.y;
             
             if ( entity.inWater && canSwim && distanceToWaterSurface > 0f ) {
                 entity.SetBehaviour( SwimmingBehaviourBuilder.Default );
@@ -225,8 +239,7 @@ namespace SeleneGame.Core {
             
         }
 
-        public override void LateUpdate() {
-            base.LateUpdate();
+        public void LateUpdate() {
 
             moveDirection.SetVal(Vector3.zero);
             

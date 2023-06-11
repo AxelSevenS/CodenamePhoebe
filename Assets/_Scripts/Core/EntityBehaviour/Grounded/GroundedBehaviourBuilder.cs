@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,12 +10,19 @@ namespace SeleneGame.Core {
 
         private GroundedBehaviourBuilder() { }
 
-        public override GroundedBehaviour Build(Entity entity, EntityBehaviour previousBehaviour) {
+        public override GroundedBehaviour Build(Entity entity, EntityBehaviour previousBehaviour, GameObject gameObject) {
 
-            if (entity is ArmedEntity armedEntity)
-                return new ArmedGroundedBehaviour(armedEntity, previousBehaviour);
+            bool wasEnabled = gameObject.activeSelf;
+            gameObject.SetActive(false);
 
-            return new GroundedBehaviour(entity, previousBehaviour);
+            Type type = entity is ArmedEntity ? typeof(ArmedGroundedBehaviour) : typeof(GroundedBehaviour);
+            GroundedBehaviour behaviour = gameObject.AddComponent(type) as GroundedBehaviour;
+            behaviour.Initialize(entity, previousBehaviour);
+
+            gameObject.SetActive(wasEnabled);
+
+
+            return behaviour;
         }
     }
 }

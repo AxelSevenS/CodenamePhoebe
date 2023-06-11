@@ -6,10 +6,11 @@ using SevenGame.Utility;
 namespace SeleneGame.Core {
     
     [System.Serializable]
+    [DefaultExecutionOrder(10)]
     public abstract class EntityBehaviour : BehaviourStrategy {
 
-        [SerializeReference] [ReadOnly] protected EvadeBehaviour _evadeBehaviour;
-        [SerializeReference] [ReadOnly] protected JumpBehaviour _jumpBehaviour;
+        [SerializeField] [ReadOnly] protected EvadeBehaviour _evadeBehaviour;
+        [SerializeField] [ReadOnly] protected JumpBehaviour _jumpBehaviour;
 
 
         public EvadeBehaviour evadeBehaviour => _evadeBehaviour;
@@ -30,13 +31,7 @@ namespace SeleneGame.Core {
 
         
 
-        protected EntityBehaviour(Entity entity, EntityBehaviour previousBehaviour) : base(entity) {;}
-
-        protected override void DisposeBehavior() {
-            base.DisposeBehavior();
-            _jumpBehaviour?.Dispose();
-            _evadeBehaviour?.Dispose();
-        }
+        public abstract void Initialize(Entity entity, EntityBehaviour previousBehaviour = null);
 
         protected internal override void HandleInput(Player controller) {
             _jumpBehaviour?.HandleInput(controller);
@@ -75,12 +70,10 @@ namespace SeleneGame.Core {
         protected virtual void LightAttackAction() {;}
         protected virtual void HeavyAttackAction() {;}
 
+        protected virtual void OnDestroy() {
+            GameUtility.SafeDestroy(_jumpBehaviour);
+            GameUtility.SafeDestroy(_evadeBehaviour);
+        } 
 
-        public override void Update() {
-            base.Update();
-
-            _jumpBehaviour?.Update();
-            _evadeBehaviour?.Update();
-        }
     }
 }

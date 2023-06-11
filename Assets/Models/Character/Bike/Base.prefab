@@ -57,6 +57,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1f95818298e0bf94cbbfcba759c1aad9, type: 3}
+--- !u!1 &5686597808279122824 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8416272007918961125, guid: 1f95818298e0bf94cbbfcba759c1aad9, type: 3}
+  m_PrefabInstance: {fileID: 4190107280683774573}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7199377995995565975
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -64,6 +69,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc, type: 3}
+      propertyPath: centerOfMass
+      value: 
+      objectReference: {fileID: 5686597808279122824}
     - target: {fileID: 3397043582691127002, guid: de3ac70c02b680a4f84c03d58611b7cc, type: 3}
       propertyPath: colliders.Array.size
       value: 1

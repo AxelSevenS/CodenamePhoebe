@@ -10,8 +10,18 @@ namespace SeleneGame.Core {
 
         private SwimmingBehaviourBuilder() { }
         
-        public override SwimmingBehaviour Build(Entity entity, EntityBehaviour previousBehaviour) {
-            return new SwimmingBehaviour(entity, previousBehaviour);
+        public override SwimmingBehaviour Build(Entity entity, EntityBehaviour previousBehaviour, GameObject gameObject) {
+
+            bool wasEnabled = gameObject.activeSelf;
+
+            gameObject.SetActive(false);
+
+            SwimmingBehaviour behaviour = gameObject.AddComponent<SwimmingBehaviour>();
+            behaviour.Initialize(entity, previousBehaviour);
+
+            gameObject.SetActive(wasEnabled);
+
+            return behaviour;
         }
     }
 }

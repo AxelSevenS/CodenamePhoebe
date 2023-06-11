@@ -28,8 +28,11 @@ namespace SeleneGame.Core {
         }
 
 
-        public JumpBehaviour(Entity entity) : base(entity) {;}
+        // public JumpBehaviour(Entity entity) : base(entity) {;}
 
+        public virtual void Initialize(Entity entity) {
+            _entity = entity;
+        }
 
         protected internal override void HandleInput(Player contoller) {;}
 

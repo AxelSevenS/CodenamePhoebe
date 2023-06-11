@@ -2,18 +2,20 @@ Shader "Selene/Lit" {
     
     Properties {
         [NoScaleOffset] _MainTex ("Main Texture", 2D) = "white" {}
+        [HDR] _MainColor ("Main Color", Color) = (1,1,1,1)
 
         [NoScaleOffset] _NormalMap ("Normal Map", 2D) = "bump" {}
         _NormalIntensity ("Normal Intensity", Range(0,1)) = 0
 
         [NoScaleOffset] _SpecularMap ("Specular Map", 2D) = "white" {}
+        [HDR] _SpecularColor ("Specular Color", Color) = (0,0,0,0) 
         _Smoothness ("Smoothness", Range(0,1)) = 0
+
+        _EmissionIntensity ("Emission Intensity", Float) = 0
 
 
         [MaterialToggle] _ProximityDither ("Proximity Dither", Float) = 0
         [MaterialToggle] _Outline ("Outline", Float) = 1
-
-        _EmissionIntensity ("Emission Intensity", Float) = 1
 
         [IntRange] _StencilID ("Stencil ID", Range(0, 255)) = 0
         [Enum(UnityEngine.Rendering.CompareFunction)] _StencilComp ("Stencil Comparison", Int) = 0
@@ -33,11 +35,15 @@ Shader "Selene/Lit" {
 
                 sampler2D _MainTex;
                 float4 _MainTex_ST;
+                float4 _MainColor;
 
                 sampler2D _NormalMap;
+                float4 _NormalMap_ST;
                 float _NormalIntensity;
 
                 sampler2D _SpecularMap;
+                float4 _SpecularMap_ST;
+                float4 _SpecularColor;
                 float _Smoothness;
 
                 float _ProximityDither;
@@ -64,12 +70,12 @@ Shader "Selene/Lit" {
             void SimpleFragment( inout SurfaceData surfaceData, inout InputData inputData, VertexOutput input, half facing ) {
 
                 half4 baseColor = tex2D(_MainTex, input.uv);
-                surfaceData.albedo = baseColor.rgb;
+                surfaceData.albedo = baseColor.rgb * _MainColor;
                 surfaceData.alpha = baseColor.a;
-                surfaceData.specular = tex2D(_SpecularMap, input.uv);
+                surfaceData.specular = tex2D(_SpecularMap, input.uv) * _SpecularColor;
                 surfaceData.metallic = 0;
                 surfaceData.smoothness = _Smoothness;
-                surfaceData.emission = half3(0, 0, 0);
+                surfaceData.emission = baseColor.rgb * _EmissionIntensity;
 
                 if ( _NormalIntensity != 0) {
                     surfaceData.normalTS = UnpackNormal(tex2D(_NormalMap, input.uv));

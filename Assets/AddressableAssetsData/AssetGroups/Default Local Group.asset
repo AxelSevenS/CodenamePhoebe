@@ -62,71 +62,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - AnimationClip
-  - m_GUID: 7d216f7d24173e94fa74297becce9d23
-    m_Address: Default/HeavySword/Crouching
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: b05d9023f954bc04d89de6eb871a281f
-    m_Address: Default/HeavySword/CrouchingStart
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: 5e4c0642c7596b24b94102b155fe3a0c
-    m_Address: Default/HeavySword/CrouchingStop
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: 7160f8be91f25a04492d1e806ac5c224
-    m_Address: Default/HeavySword/Idle
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: 88e98ea9d9232074ca0e17f400dddfcd
-    m_Address: Default/HeavySword/Running
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: 4658a5f0cc23bff4ca897cd056797148
-    m_Address: Default/HeavySword/RunningStart
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: 2cd4d37526649e4459d5fedc39247c0b
-    m_Address: Default/HeavySword/RunningStop
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: 27fcad155c82de348b7cf127b58f3d1c
-    m_Address: Default/HeavySword/Sprinting
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: bad8756e37bb42a468d67749dbb61617
-    m_Address: Default/HeavySword/SprintingStart
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: 6398ab9b512ec2f4f89e5ccd009b8b97
-    m_Address: Default/HeavySword/SprintingStop
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: e950e4d351771a248afba20dd48a0510
-    m_Address: Default/HeavySword/Walking
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: 710a96bc0871ce3439a7a54eff85c7c9
-    m_Address: Default/HeavySword/WalkingStart
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: 690c7438101ba974aab322ed6af05e37
-    m_Address: Default/HeavySword/WalkingStop
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
   - m_GUID: df2b8d40d251e574d8197ecd180fc025
     m_Address: Default/Idle
     m_ReadOnly: 0
@@ -139,71 +74,6 @@ MonoBehaviour:
     - AnimationClip
   - m_GUID: 27bc7cbf7da835145b259be83c88cf51
     m_Address: Default/Land
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: dd245d8a17a75da468d517665c1e82c3
-    m_Address: Default/LightSword/Crouching
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: 8e8681aac2485eb47b99b9dbc8724e32
-    m_Address: Default/LightSword/CrouchingStart
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: b87c2e668b7769b449ccee141afee749
-    m_Address: Default/LightSword/CrouchingStop
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: be6901186c5fd7e41ad0041e31f5fa76
-    m_Address: Default/LightSword/Idle
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: 62d522408dc93d340949975e20c566f8
-    m_Address: Default/LightSword/Running
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: b18548467b3610141b2c98955b88bdff
-    m_Address: Default/LightSword/RunningStart
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: 0a6db8b75f8060946b1eaeb688ff3ff2
-    m_Address: Default/LightSword/RunningStop
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: 1d3af782018e95d4b892ab4da3473c9b
-    m_Address: Default/LightSword/Sprinting
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: 98f6060f343fae1468c08d97a3ccd70a
-    m_Address: Default/LightSword/SprintingStart
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: b22ba98f446069d448dc6f153ac12676
-    m_Address: Default/LightSword/SprintingStop
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: 9f00bf8be56dc8e4a9c8bf78d2b5296f
-    m_Address: Default/LightSword/Walking
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: 06ac1d563eb4e26498d6f771a74e74fd
-    m_Address: Default/LightSword/WalkingStart
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: e0c89b0e6668173458aa8d80717285fb
-    m_Address: Default/LightSword/WalkingStop
     m_ReadOnly: 0
     m_SerializedLabels:
     - AnimationClip
@@ -279,6 +149,279 @@ MonoBehaviour:
     - AnimationClip
   - m_GUID: 926a582c9fe460f4cbb84d08dfe8707e
     m_Address: Default/SittingStop
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: 12d7a0995cc235949be3d0147d56661d
+    m_Address: GravityBike/SittingCycle
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: b4e6ba22baaae7e4fbc6851c8fedd58e
+    m_Address: GravityBike/SittingStartLeft
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: faa1b250b5ec67d42ab5c17519c50f39
+    m_Address: GravityBike/SittingStartRight
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: e89ff38ef543cde4caf3adea8a5a2255
+    m_Address: GravityBike/SittingStopLeft
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: c4d3dc2b69a36414e9c570806bdda997
+    m_Address: GravityBike/SittingStopRight
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: bf7a8ef1468307a4a9a8de9112372277
+    m_Address: Attacks/Base
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - default
+    - GameObject
+    - Attacks
+  - m_GUID: 2d9be5b33d869ee4b9c289d335c718d3
+    m_Address: Attacks/FireSlashSmall
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - GameObject
+    - Attacks
+  - m_GUID: cd313caff2c2bc748a573e2cce861a9b
+    m_Address: Attacks/FireSlashStrong
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - GameObject
+    - Attacks
+  - m_GUID: 32c5215d78678094a90500600c9a8ab2
+    m_Address: GravityBike_Base
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - CharacterCostume
+  - m_GUID: 993c489841ef0fd4d974e79a4d014409
+    m_Address: Selene_Base
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - default
+    - CharacterCostume
+  - m_GUID: 6dd8fd82761438340bc1eb5136cc90fe
+    m_Address: Selene_Test
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - CharacterCostume
+  - m_GUID: 01507fe7b51003a4ebc926fba9781970
+    m_Address: Hypnos_Base
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - WeaponCostume
+  - m_GUID: f1c6cebfdf4f4554288c95a4539c3610
+    m_Address: Hypnos_Test
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - WeaponCostume
+  - m_GUID: 88d05d19418b5cb4eb2b9561a0f90b20
+    m_Address: Nemesis_Base
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - WeaponCostume
+  - m_GUID: 4fcb14e16ae7e7b4287ef3e8b382de17
+    m_Address: Unarmed_Base
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - default
+    - WeaponCostume
+  - m_GUID: 15f4e43bc39a90d47935e34a81aef004
+    m_Address: GravityBike
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - CharacterData
+  - m_GUID: 90bcfc725e5a2d64a9b6ddc58c3dd84f
+    m_Address: Selene
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - default
+    - CharacterData
+  - m_GUID: 64baa27970f036a4095a1ff04bdfb903
+    m_Address: Hypnos
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - WeaponData
+  - m_GUID: d0e937fdec003f14fb4a76ba534978a3
+    m_Address: Nemesis
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - WeaponData
+  - m_GUID: 16b2d29fdbb1b4c4c9373bf75e7f6272
+    m_Address: Unarmed
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - default
+    - WeaponData
+  - m_GUID: d5ec1e9e3d3967c4d94cd9bef418af32
+    m_Address: Erebus_Base
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - EidolonMaskCostume
+  - m_GUID: b00d13250c5955c4d9e8ff646130a19a
+    m_Address: Erebus
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - EidolonMaskData
+  - m_GUID: 53802976ffbb7794f852407439bb2d7c
+    m_Address: Default/MovementStop
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimancerTransitionAssetBase
+  - m_GUID: 49413c597a3d1624eb63f0d950f34a86
+    m_Address: Default/MovementCycle
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimancerTransitionAssetBase
+  - m_GUID: 3f8c58399d21d0e4cae7c94745d19fe2
+    m_Address: Default/MovementStart
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimancerTransitionAssetBase
+  - m_GUID: 67478296ddc1c15498ce8f65b37950cd
+    m_Address: Default/EvadeAerial
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimancerTransitionAssetBase
+  - m_GUID: c46444abfa947f148b79f41e7a5475a6
+    m_Address: Default/EvadeGrounded
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimancerTransitionAssetBase
+  - m_GUID: 7d216f7d24173e94fa74297becce9d23
+    m_Address: Default/HeavySword/Crouching
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: b05d9023f954bc04d89de6eb871a281f
+    m_Address: Default/HeavySword/CrouchingStart
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: 5e4c0642c7596b24b94102b155fe3a0c
+    m_Address: Default/HeavySword/CrouchingStop
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: 7160f8be91f25a04492d1e806ac5c224
+    m_Address: Default/HeavySword/Idle
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: 88e98ea9d9232074ca0e17f400dddfcd
+    m_Address: Default/HeavySword/Running
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: 4658a5f0cc23bff4ca897cd056797148
+    m_Address: Default/HeavySword/RunningStart
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: 2cd4d37526649e4459d5fedc39247c0b
+    m_Address: Default/HeavySword/RunningStop
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: 27fcad155c82de348b7cf127b58f3d1c
+    m_Address: Default/HeavySword/Sprinting
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: bad8756e37bb42a468d67749dbb61617
+    m_Address: Default/HeavySword/SprintingStart
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: 6398ab9b512ec2f4f89e5ccd009b8b97
+    m_Address: Default/HeavySword/SprintingStop
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: e950e4d351771a248afba20dd48a0510
+    m_Address: Default/HeavySword/Walking
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: 710a96bc0871ce3439a7a54eff85c7c9
+    m_Address: Default/HeavySword/WalkingStart
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: 690c7438101ba974aab322ed6af05e37
+    m_Address: Default/HeavySword/WalkingStop
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: dd245d8a17a75da468d517665c1e82c3
+    m_Address: Default/LightSword/Crouching
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: 8e8681aac2485eb47b99b9dbc8724e32
+    m_Address: Default/LightSword/CrouchingStart
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: b87c2e668b7769b449ccee141afee749
+    m_Address: Default/LightSword/CrouchingStop
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: be6901186c5fd7e41ad0041e31f5fa76
+    m_Address: Default/LightSword/Idle
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: 62d522408dc93d340949975e20c566f8
+    m_Address: Default/LightSword/Running
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: b18548467b3610141b2c98955b88bdff
+    m_Address: Default/LightSword/RunningStart
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: 0a6db8b75f8060946b1eaeb688ff3ff2
+    m_Address: Default/LightSword/RunningStop
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: 1d3af782018e95d4b892ab4da3473c9b
+    m_Address: Default/LightSword/Sprinting
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: 98f6060f343fae1468c08d97a3ccd70a
+    m_Address: Default/LightSword/SprintingStart
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: b22ba98f446069d448dc6f153ac12676
+    m_Address: Default/LightSword/SprintingStop
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: 9f00bf8be56dc8e4a9c8bf78d2b5296f
+    m_Address: Default/LightSword/Walking
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: 06ac1d563eb4e26498d6f771a74e74fd
+    m_Address: Default/LightSword/WalkingStart
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimationClip
+  - m_GUID: e0c89b0e6668173458aa8d80717285fb
+    m_Address: Default/LightSword/WalkingStop
     m_ReadOnly: 0
     m_SerializedLabels:
     - AnimationClip
@@ -477,164 +620,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - AnimationClip
-  - m_GUID: 12d7a0995cc235949be3d0147d56661d
-    m_Address: GravityBike/SittingCycle
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: b4e6ba22baaae7e4fbc6851c8fedd58e
-    m_Address: GravityBike/SittingStartLeft
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: faa1b250b5ec67d42ab5c17519c50f39
-    m_Address: GravityBike/SittingStartRight
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: e89ff38ef543cde4caf3adea8a5a2255
-    m_Address: GravityBike/SittingStopLeft
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: c4d3dc2b69a36414e9c570806bdda997
-    m_Address: GravityBike/SittingStopRight
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimationClip
-  - m_GUID: bf7a8ef1468307a4a9a8de9112372277
-    m_Address: Attacks/Base
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - default
-    - GameObject
-    - Attacks
-  - m_GUID: 2d9be5b33d869ee4b9c289d335c718d3
-    m_Address: Attacks/FireSlashSmall
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - GameObject
-    - Attacks
-  - m_GUID: cd313caff2c2bc748a573e2cce861a9b
-    m_Address: Attacks/FireSlashStrong
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - GameObject
-    - Attacks
-  - m_GUID: 32c5215d78678094a90500600c9a8ab2
-    m_Address: GravityBike_Base
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - CharacterCostume
-  - m_GUID: 993c489841ef0fd4d974e79a4d014409
-    m_Address: Selene_Base
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - default
-    - CharacterCostume
-  - m_GUID: 6dd8fd82761438340bc1eb5136cc90fe
-    m_Address: Selene_Test
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - CharacterCostume
-  - m_GUID: 01507fe7b51003a4ebc926fba9781970
-    m_Address: Hypnos_Base
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - WeaponCostume
-  - m_GUID: f1c6cebfdf4f4554288c95a4539c3610
-    m_Address: Hypnos_Test
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - WeaponCostume
-  - m_GUID: 88d05d19418b5cb4eb2b9561a0f90b20
-    m_Address: Nemesis_Base
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - WeaponCostume
-  - m_GUID: 4fcb14e16ae7e7b4287ef3e8b382de17
-    m_Address: Unarmed_Base
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - default
-    - WeaponCostume
-  - m_GUID: 15f4e43bc39a90d47935e34a81aef004
-    m_Address: GravityBike
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - CharacterData
-  - m_GUID: 90bcfc725e5a2d64a9b6ddc58c3dd84f
-    m_Address: Selene
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - default
-    - CharacterData
-  - m_GUID: 64baa27970f036a4095a1ff04bdfb903
-    m_Address: Hypnos
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - WeaponData
-  - m_GUID: d0e937fdec003f14fb4a76ba534978a3
-    m_Address: Nemesis
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - WeaponData
-  - m_GUID: 16b2d29fdbb1b4c4c9373bf75e7f6272
-    m_Address: Unarmed
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - default
-    - WeaponData
-  - m_GUID: d5ec1e9e3d3967c4d94cd9bef418af32
-    m_Address: Erebus_Base
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - EidolonMaskCostume
-  - m_GUID: b00d13250c5955c4d9e8ff646130a19a
-    m_Address: Erebus
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - EidolonMaskData
-  - m_GUID: 53802976ffbb7794f852407439bb2d7c
-    m_Address: Default/MovementStop
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimancerTransitionAssetBase
-  - m_GUID: 49413c597a3d1624eb63f0d950f34a86
-    m_Address: Default/MovementCycle
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimancerTransitionAssetBase
-  - m_GUID: 3f8c58399d21d0e4cae7c94745d19fe2
-    m_Address: Default/MovementStart
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimancerTransitionAssetBase
-  - m_GUID: 67478296ddc1c15498ce8f65b37950cd
-    m_Address: Default/EvadeAerial
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimancerTransitionAssetBase
-  - m_GUID: c46444abfa947f148b79f41e7a5475a6
-    m_Address: Default/EvadeGrounded
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimancerTransitionAssetBase
-  - m_GUID: bdf1f27c550524b4695cb52a8dcb2e15
-    m_Address: Default/SwordAndShield/MovementCycle
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimancerTransitionAssetBase
-  - m_GUID: 39c8b00f92e16f140bf2c4d91df3004f
-    m_Address: Default/SwordAndShield/MovementStart
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimancerTransitionAssetBase
-  - m_GUID: 80b936104344cd94b8bd34d69473919e
-    m_Address: Default/SwordAndShield/MovementStop
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - AnimancerTransitionAssetBase
   - m_GUID: 945376258d86da54eac018446505a08a
     m_Address: Default/HeavySword/MovementCycle
     m_ReadOnly: 0
@@ -692,6 +677,21 @@ MonoBehaviour:
     - AnimancerTransitionAssetBase
   - m_GUID: 169f2c8bd0cf02e488f87b008cce12c7
     m_Address: Default/Spear/MovementStop
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimancerTransitionAssetBase
+  - m_GUID: bdf1f27c550524b4695cb52a8dcb2e15
+    m_Address: Default/SwordAndShield/MovementCycle
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimancerTransitionAssetBase
+  - m_GUID: 39c8b00f92e16f140bf2c4d91df3004f
+    m_Address: Default/SwordAndShield/MovementStart
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AnimancerTransitionAssetBase
+  - m_GUID: 80b936104344cd94b8bd34d69473919e
+    m_Address: Default/SwordAndShield/MovementStop
     m_ReadOnly: 0
     m_SerializedLabels:
     - AnimancerTransitionAssetBase

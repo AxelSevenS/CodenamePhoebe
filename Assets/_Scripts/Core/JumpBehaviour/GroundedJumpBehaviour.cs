@@ -24,12 +24,12 @@ namespace SeleneGame.Core {
         public override bool canJump => base.canJump && entity.onGround.falseTimer < 0.2f && jumpCount > 0;
 
 
-        public GroundedJumpBehaviour(Entity entity, float maxInertia = 28f, float fallAcceleration = 1.25f, int maxJumpCount = 1) : base(entity) {
-            this.maxJumpCount = maxJumpCount;
-            this.maxInertia = maxInertia;
-            this.fallAcceleration = fallAcceleration;
-            jumpCount = maxJumpCount;
-        }
+        // public GroundedJumpBehaviour(Entity entity, float maxInertia = 28f, float fallAcceleration = 1.25f, int maxJumpCount = 1) : base(entity) {
+        //     this.maxJumpCount = maxJumpCount;
+        //     this.maxInertia = maxInertia;
+        //     this.fallAcceleration = fallAcceleration;
+        //     jumpCount = maxJumpCount;
+        // }
 
 
         protected internal override void HandleInput(Player contoller) {
@@ -44,7 +44,7 @@ namespace SeleneGame.Core {
             jumpCount--;
         }
 
-        public override void Update() {
+        private void Update() {
 
             if (entity.onGround) {
                 jumpCount = maxJumpCount;

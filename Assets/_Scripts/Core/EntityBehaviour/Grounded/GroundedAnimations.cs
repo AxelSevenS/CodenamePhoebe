@@ -11,9 +11,9 @@ namespace SeleneGame.Core {
     public partial class GroundedBehaviour {
 
         private float movementSpeedWeight;
-        [SerializeField] [HideInInspector] private LinearMixerState _movementStartMixer;
-        [SerializeField] [HideInInspector] private LinearMixerState _movementMixer;
-        [SerializeField] [HideInInspector] private LinearMixerState _movementStopMixer;
+        [SerializeField] [HideInInspector] private LinearMixerTransitionAsset.UnShared _movementStartMixer;
+        [SerializeField] [HideInInspector] private LinearMixerTransitionAsset.UnShared _movementMixer;
+        [SerializeField] [HideInInspector] private LinearMixerTransitionAsset.UnShared _movementStopMixer;
         [SerializeField] [HideInInspector] private AnimancerState _idleState;
 
         private AnimationClip _fallAnimation;
@@ -22,45 +22,38 @@ namespace SeleneGame.Core {
 
         private AnimancerLayer _layer => entity.animancer.Layers[0];
 
-        public LinearMixerState movementStartMixer {
+        public LinearMixerTransitionAsset.UnShared movementStartMixer {
             get {
-                if (_movementStartMixer == null) {
-
-                    _movementStartMixer = entity.character?.data.GetTransition("MovementStart").GetTransition().CreateState() as LinearMixerState;
-                    
-                    _layer.AddChild(_movementStartMixer);
-                    _movementStartMixer.SetDebugName("Movement Start");
-                    _movementStartMixer.Stop();
-                }
+                UpdateMovementStartMixer();
                 return _movementStartMixer;
             }
         }
 
-        public LinearMixerState movementMixer {
+        public LinearMixerTransitionAsset.UnShared movementMixer {
             get {
-                if (_movementMixer == null) {
-
-                    _movementMixer = entity.character?.data.GetTransition("MovementCycle").GetTransition().CreateState() as LinearMixerState;
-
-                    _layer.AddChild(_movementMixer);
-                    _movementMixer.SetDebugName("Movement");
-                    _movementMixer.Stop();
-                }
+                UpdateMovementMixer();
                 return _movementMixer;
             }
         }
 
-        public LinearMixerState movementStopMixer {
+        public LinearMixerTransitionAsset.UnShared movementStopMixer {
             get {
-                if (_movementStopMixer == null) {
-
-                    _movementStopMixer = entity.character?.data.GetTransition("MovementStop").GetTransition().CreateState() as LinearMixerState;
-
-                    _layer.AddChild(_movementStopMixer);
-                    _movementStopMixer.SetDebugName("Movement Stop");
-                    _movementStopMixer.Stop();
-                }
+                UpdateMovementStopMixer();
                 return _movementStopMixer;
+            }
+        }
+
+        public AnimationClip fallAnimation {
+            get {
+                UpdateFallAnimation();
+                return _fallAnimation;
+            }
+        }
+
+        public AnimationClip landAnimation {
+            get {
+                UpdateLandAnimation();
+                return _landAnimation;
             }
         }
 
@@ -72,10 +65,52 @@ namespace SeleneGame.Core {
             }
         }
 
-        private void AnimationInitialize() {
+        private void UpdateMovementStartMixer(bool forceReload = false) {
+            _movementStartMixer ??= new LinearMixerTransitionAsset.UnShared();
+            if ( forceReload || !_movementStartMixer.HasAsset ) {
+                _movementStartMixer.Asset = entity.character.data.GetTransition("MovementStart") as LinearMixerTransitionAsset;
+                _movementStartMixer.Events.OnEnd = () => {
+                    MovementCycleAnimation();
+                };
+            }
+        }
 
-            _fallAnimation = entity.character?.data.GetAnimation("Fall");
-            _landAnimation = entity.character?.data.GetAnimation("Land");
+        private void UpdateMovementMixer(bool forceReload = false) {
+            _movementMixer ??= new LinearMixerTransitionAsset.UnShared();
+            if ( forceReload || !_movementMixer.HasAsset) {
+                _movementMixer.Asset = entity.character.data.GetTransition("MovementCycle") as LinearMixerTransitionAsset;
+            }
+        }
+
+        private void UpdateMovementStopMixer(bool forceReload = false) {
+            _movementStopMixer ??= new LinearMixerTransitionAsset.UnShared();
+            if ( forceReload || !_movementStopMixer.HasAsset) {
+                _movementStopMixer.Asset = entity.character.data.GetTransition("MovementStop") as LinearMixerTransitionAsset;
+                _movementStopMixer.Events.OnEnd = () => {
+                    IdleAnimation();
+                };
+            }
+        }
+
+        private void UpdateFallAnimation(bool forceReload = false) {
+            if ( forceReload || _fallAnimation == null ) {
+                _fallAnimation = entity.character.data.GetAnimation("Fall");
+            }
+        }
+
+        private void UpdateLandAnimation(bool forceReload = false) {
+            if ( forceReload || _landAnimation == null ) {
+                _landAnimation = entity.character.data.GetAnimation("Land");
+            }
+        }
+
+        private void UpdateAnimations() {
+
+            UpdateFallAnimation(true);
+            UpdateLandAnimation(true);
+            UpdateMovementStartMixer(true);
+            UpdateMovementMixer(true);
+            UpdateMovementStopMixer(true);
 
         }
 
@@ -89,49 +124,30 @@ namespace SeleneGame.Core {
                     MovementStartAnimation(movementSpeed);
                 }
             } else {
-                _layer.Play(_fallAnimation, 0.3f);
+                _layer.Play(fallAnimation, 0.3f);
             }
         }
 
         private void MovementStartAnimation(Entity.MovementSpeed speed) {
-
-            // Debug.Log("start");
-
-            movementStartMixer.Parameter = (float)speed;
-            _layer.Play(_movementStartMixer, 0.15f);
-
-            _movementStartMixer.Events.OnEnd = () => {
-                // _movementStartMixer.Stop();
-                MovementCycleAnimation();
-            };
+            _layer.Play(movementStartMixer);
+            _movementStartMixer.State.Parameter = (float)speed;
         }
 
         private void MovementCycleAnimation() {
-
-            movementMixer.Parameter = (float)movementSpeed;
-            _layer.Play(_movementMixer, 0.15f);
-
-            // _movementMixer.Events.OnEnd = () => {
-            //     // _movementMixer.Stop();
-            //     MovementStopAnimation();
-            // };
+            _layer.Play(movementMixer);
+            _movementMixer.State.Parameter = (float)movementSpeed;
         }
 
         private void MovementStopAnimation() {
 
             if (movementSpeed == Entity.MovementSpeed.Idle) return;
 
-            movementStopMixer.Parameter = (float)movementSpeed;
-            _layer.Play(_movementStopMixer, 0.15f);
+            _layer.Play(movementStopMixer);
+            _movementStopMixer.State.Parameter = (float)movementSpeed;
 
-            _movementStopMixer.Events.OnEnd = () => {
-                // _movementStopMixer.Stop();
-                IdleAnimation();
-            };
         }
 
         private void IdleAnimation() {
-
             _layer.Play(idleState, 0.15f);
         }
 
@@ -142,19 +158,19 @@ namespace SeleneGame.Core {
 
             movementSpeedWeight = Mathf.MoveTowards(movementSpeedWeight, (float)movementSpeed, 5f * GameUtility.timeDelta);
 
-            movementMixer.Parameter = movementSpeedWeight;
+            if ( movementMixer.State != null )
+                _movementMixer.State.Parameter = movementSpeedWeight;
 
             if (!_layer.IsAnyStatePlaying()) {
                 DefaultAnimationState();
             }
 
             if ( entity.onGround.started ) {
-                AnimancerState landState = _layer.Play(_landAnimation, 0.1f);
+                AnimancerState landState = _layer.Play(landAnimation, 0.1f);
                 landState.Events.OnEnd = () => {
                     DefaultAnimationState();
                 };
             }
         }
-
     }
 }

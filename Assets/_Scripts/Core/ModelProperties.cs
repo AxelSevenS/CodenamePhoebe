@@ -11,6 +11,7 @@ namespace SeleneGame.Core{
         
         public SerializableDictionary<string, GameObject> bones;
         
+        public GameObject centerOfMass;
         public List<Collider> colliders;
 
         public Avatar animatorAvatar;
