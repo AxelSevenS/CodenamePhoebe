@@ -12,33 +12,34 @@ namespace SeleneGame.Core {
 
         public override void SetValue(SerializedProperty property, WeaponData data) {
 
+            WeaponInventory inventory = ((Weapon)property.managedReferenceValue).inventory;
             ((Weapon)property.managedReferenceValue)?.Dispose();
 
 
             // If the weapon has a reference to an ArmedEntity, use that; (This should always be the case as long as the weapon != null)
-            ArmedEntity entityRef = (targetCostumable as Weapon)?.armedEntity;
-            WeaponInventory inventory = entityRef?.weapons ??(WeaponInventory)GetParent(property);
+            ArmedEntity entity = (targetCostumable as Weapon)?.armedEntity;
+            inventory ??= entity?.weapons ?? (WeaponInventory)GetParent(property);
             
-            if (entityRef == null) {
+            if (entity == null) {
 
                 if (targetCostumable != null)
                     Debug.LogWarning($"Weapon {targetCostumable} has nulled-out Entity Reference.");
 
                 
                 // If the weapon is in a WeaponInventory, get the entity from the inventory
-                entityRef = inventory?.entity;
+                entity = inventory?.entity;
 
                 // If the weapon is on a MonoBehaviour, get the entity from the MonoBehaviour
-                entityRef ??= ((MonoBehaviour)property.serializedObject.targetObject).GetComponent<ArmedEntity>();
+                entity ??= ((MonoBehaviour)property.serializedObject.targetObject).GetComponent<ArmedEntity>();
             }
 
 
-            if (entityRef == null) {
+            if (entity == null) {
                 Debug.LogError($"No ArmedEntity found for Weapon {targetCostumable}");
                 // return;
             }
 
-            property.managedReferenceValue = data?.GetWeapon( entityRef );
+            property.managedReferenceValue = data?.CreateWeaponFor( entity );
             property.serializedObject.ApplyModifiedProperties();
 
             inventory?.UpdateDisplay();

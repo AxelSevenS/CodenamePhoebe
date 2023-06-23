@@ -8,7 +8,10 @@ namespace SeleneGame.Core {
 
     public class UnderwaterEffectPass : ScriptableRenderPass {
 
-        [SerializeField] private RenderTargetHandle _temporaryBuffer;
+// couldn't find a way to properly blit the effect to the camera using RTHandle so I just used the old way
+#pragma warning disable 618
+
+        private readonly RenderTargetHandle _temporaryBuffer;
         private readonly RenderTargetHandle _maskHandle;
         private List<ShaderTagId> _shaderTagIds;
         
@@ -27,7 +30,7 @@ namespace SeleneGame.Core {
             cmd.GetTemporaryRT(_temporaryBuffer.id, cameraTextureDescriptor);
             cmd.GetTemporaryRT(_maskHandle.id, cameraTextureDescriptor);
             ConfigureTarget(_maskHandle.Identifier());
-            ConfigureClear(ClearFlag.All, Color.black);
+            ConfigureClear(ClearFlag.All, Color.clear);
         }
 
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData) {
@@ -58,6 +61,8 @@ namespace SeleneGame.Core {
             cmd.ReleaseTemporaryRT(_maskHandle.id);
         }
     }
+
+#pragma warning restore 618
 
     
     [System.Serializable]

@@ -69,7 +69,7 @@ namespace SeleneGame.Core {
                 else
                     weapon.Dispose();
                     
-                weapon = data?.GetWeapon(entity, costume);
+                weapon = data?.CreateWeaponFor(entity, costume);
                 if (_currentIndex == index)
                     (weapon ?? defaultWeapon)?.Display();
             }

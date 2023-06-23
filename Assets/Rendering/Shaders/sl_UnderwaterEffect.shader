@@ -68,12 +68,13 @@ Shader "Selene/Underwater" {
                 float4 ForwardPassFragment(VertexOutput input) : SV_Target {
 
                     float4 sceneColor = tex2D(_MainTex, input.uv).rgba;
-                    float underwaterMask = tex2D(_UnderwaterMask, input.uv).r;
+                    float4 underwaterBuffer = tex2D(_UnderwaterMask, input.uv);
+                    float3 underwaterColor = underwaterBuffer.rgb;
+                    float4 underwaterMask = underwaterBuffer.a;
 
                     float depth = Linear01Depth(SampleSceneDepth(input.uv).r, _ZBufferParams) * _ProjectionParams.z;
                     
                     // fog effect for underwater
-                    float3 underwaterColor = float3(0.03, 0.065, 0.175);
 
                     float fogFactor = underwaterMask > 0 ? saturate((depth - _FogStart) / (_FogEnd - _FogStart)) * underwaterMask : 0;
 

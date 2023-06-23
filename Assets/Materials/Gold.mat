@@ -9,6 +9,8 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Gold
   m_Shader: {fileID: 4800000, guid: ec13ba290b05af042b4c6a3fa3fbadb7, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - _EMISSION
   - _SPECULAR_SETUP
@@ -21,6 +23,7 @@ Material:
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -244,7 +247,7 @@ Material:
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
-    - _EmissionIntensity: 0
+    - _EmissionIntensity: -0.05
     - _EnvironmentReflections: 1
     - _GlossMapScale: 0
     - _Glossiness: 0
@@ -276,7 +279,7 @@ Material:
     - _EmissionColor: {r: 0.05660379, g: 0.011635219, b: 0.0018689941, a: 1}
     - _MainColor: {r: 0.9056604, g: 0.37538505, b: 0.09825563, a: 1}
     - _SpecColor: {r: 1, g: 0.7294118, b: 0.59607846, a: 1}
-    - _SpecularColor: {r: 2.2540498, g: 0.6639349, b: 0.15948462, a: 1}
+    - _SpecularColor: {r: 1.1923773, g: 0.43018878, b: 0.18560591, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &2373480487462936889
 MonoBehaviour:

@@ -22,11 +22,13 @@ MonoBehaviour:
     m_ReadOnly: 1
     m_SerializedLabels:
     - Locale
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e372eb0ab5103c244b481428c4eba611
     m_Address: French (fr)
     m_ReadOnly: 1
     m_SerializedLabels:
     - Locale
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 1
   m_Settings: {fileID: 11400000, guid: 7258e2e04bac10d46b4f8c1803b38751, type: 2}
   m_SchemaSet:

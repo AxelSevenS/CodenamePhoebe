@@ -9,14 +9,16 @@ namespace SeleneGame.Core {
     public class Weapon : Costumable<WeaponData, WeaponCostume, WeaponModel>, IDamageDealer {
 
         [SerializeField] [ReadOnly] private ArmedEntity _armedEntity;
+        [SerializeReference] [ReadOnly] private WeaponInventory _inventory;
 
 
 
         public ArmedEntity armedEntity => _armedEntity;
+        public WeaponInventory inventory => _inventory;
         
 
 
-        public Weapon(ArmedEntity armedEntity, WeaponData data, WeaponCostume costume = null) : base(data){
+        public Weapon(ArmedEntity armedEntity, WeaponData data, WeaponCostume costume = null, WeaponInventory inventory = null) : base(data){
             _armedEntity = armedEntity;
             SetCostume(costume);
         }

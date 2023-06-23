@@ -34,7 +34,7 @@ namespace SeleneGame.Core {
         public override void Set(int index, WeaponData data, WeaponCostume costume = null){
             try {
                 items[index]?.Dispose();
-                items[index] = data?.GetWeapon(entity, costume);
+                items[index] = data?.CreateWeaponFor(entity, costume);
 
                 if (currentIndex != index)
                     items[index]?.Hide();

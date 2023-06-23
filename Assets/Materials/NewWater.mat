@@ -22,6 +22,8 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: NewWater
   m_Shader: {fileID: 4800000, guid: 4d9a2e57d116d4f4abd028a5d0e1b0c5, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
   m_InvalidKeywords:
   - _OUTLINE_ON
@@ -31,6 +33,7 @@ Material:
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -127,7 +130,7 @@ Material:
     - _ProximityDither: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _Smoothness: 0.6
+    - _Smoothness: 0.88
     - _SmoothnessTextureChannel: 0
     - _Specular: 4
     - _SpecularHighlights: 1
@@ -142,6 +145,6 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _DeepColor: {r: 0.17822173, g: 0.22641224, b: 0.42452827, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _ShallowColor: {r: 0.6823603, g: 0.751443, b: 0.7735849, a: 1}
+    - _ShallowColor: {r: 0.51023495, g: 0.595026, b: 0.735849, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []

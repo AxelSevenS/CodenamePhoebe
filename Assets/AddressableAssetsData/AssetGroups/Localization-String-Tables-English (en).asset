@@ -23,30 +23,35 @@ MonoBehaviour:
     m_SerializedLabels:
     - Locale-en
     - Preload
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1b854a6be9ffc6b41b04fbfba1d4cd3e
     m_Address: Mask Table_en
     m_ReadOnly: 1
     m_SerializedLabels:
     - Locale-en
     - Preload
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0332ebcb0cdeb704d81b52510122a09c
     m_Address: Vocabulary_en
     m_ReadOnly: 1
     m_SerializedLabels:
     - Locale-en
     - Preload
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 166654fdfcf8f2947a8c11faa1067251
     m_Address: Weapon Table_en
     m_ReadOnly: 1
     m_SerializedLabels:
     - Locale-en
     - Preload
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 316753ee601316248b436ca2e9f75569
     m_Address: Character Table_en
     m_ReadOnly: 1
     m_SerializedLabels:
     - Locale-en
     - Preload
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 1
   m_Settings: {fileID: 11400000, guid: 7258e2e04bac10d46b4f8c1803b38751, type: 2}
   m_SchemaSet:

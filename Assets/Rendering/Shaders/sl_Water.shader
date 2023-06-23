@@ -85,8 +85,10 @@ Shader "Selene/Water" {
 
                 } else {
 
-                    surfaceData.albedo = _ShallowColor;
-                    surfaceData.alpha = saturate(length(input.positionWS - _WorldSpaceCameraPos) * _AlphaStrength * 0.5);
+                    float fresnel = 1 - saturate(dot(inputData.viewDirectionWS, inputData.normalWS));
+                    float distance = length(input.positionWS - _WorldSpaceCameraPos);
+                    surfaceData.albedo = lerp(_ShallowColor, _DeepColor, saturate(/* fresnel *  */log(distance * 0.12)));
+                    surfaceData.alpha = saturate(distance * _AlphaStrength);
                 }
 
                 
@@ -187,11 +189,25 @@ Shader "Selene/Water" {
 
                 void UnderWaterMaskFragment( inout SurfaceData surfaceData, inout InputData inputData, VertexOutput input, half facing ) {
 
-                    float distance = saturate(length(input.positionWS - _WorldSpaceCameraPos) * _DepthStrength);
+                    // float distance = saturate(length(input.positionWS - _WorldSpaceCameraPos) * _DepthStrength);
 
-                    half3 baseColor = facing < 0 ? distance.xxx : half3(0,0,0);
-                    surfaceData.albedo = baseColor;
-                    surfaceData.alpha = 1;
+                    // float fresnel = 1 - saturate(dot(inputData.viewDirectionWS, inputData.normalWS));
+
+                    if (facing > 0) {
+                        surfaceData.albedo = half3(0,0,0);
+                        surfaceData.alpha = 0;
+                    } else {
+
+                        float distance = length(input.positionWS - _WorldSpaceCameraPos);
+                        distance = saturate(distance * 1.25);
+                        
+                        float fogStrength = 1 - log(distance * 0.5 + 1) / log(2);
+                        half3 baseColor = lerp(_ShallowColor, _DeepColor, distance);
+                        surfaceData.albedo = _DeepColor;
+                        // surfaceData.alpha = saturate(log(distance * 15));
+                        surfaceData.alpha = distance;
+                    }
+
 
                 }
 

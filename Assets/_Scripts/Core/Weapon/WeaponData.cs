@@ -24,7 +24,7 @@ namespace SeleneGame.Core {
 
         public abstract void HeavyAttack(Weapon weapon);
 
-        public abstract Weapon GetWeapon(ArmedEntity entity, WeaponCostume costume = null);
+        public abstract Weapon CreateWeaponFor(ArmedEntity entity, WeaponCostume costume = null);
 
         public virtual void WeaponUpdate(Weapon weapon) {;}
         public virtual void WeaponLateUpdate(Weapon weapon) {;}

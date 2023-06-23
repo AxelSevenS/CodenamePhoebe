@@ -8,6 +8,9 @@ namespace SeleneGame.Core {
 
     public class OutlineMaskPass : ScriptableRenderPass {
 
+// couldn't find a way to properly blit the effect to the camera using RTHandle so I just used the old way
+#pragma warning disable 618
+
         private readonly RenderTargetHandle _maskHandle;
         private List<ShaderTagId> _shaderTagIds;
 
@@ -49,4 +52,7 @@ namespace SeleneGame.Core {
             cmd.ReleaseTemporaryRT(_maskHandle.id);
         }
     }
+
+#pragma warning restore 618
+
 }

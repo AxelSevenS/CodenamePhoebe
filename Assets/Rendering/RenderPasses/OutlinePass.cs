@@ -8,6 +8,9 @@ namespace SeleneGame.Core {
 
     public class OutlinePass : ScriptableRenderPass {
 
+// couldn't find a way to properly blit the effect to the camera using RTHandle so I just used the old way
+#pragma warning disable 618
+
         [SerializeField] private RenderTargetHandle _temporaryBuffer;
         [SerializeField] private OutlinePassSettings _settings;
 
@@ -47,25 +50,9 @@ namespace SeleneGame.Core {
 
     [System.Serializable]
     public class OutlinePassSettings {
-        // [SerializeField] private Shader _outlineShader;
-        // public Shader outlineShader {
-        //     get {
-        //         _outlineShader ??= Shader.Find("Hidden/Outline");
-
-        //         return _outlineShader;
-        //     }
-        // }
-
-        // public Color outlineColor = Color.black;
-        // public float outlineWidthNormal = 0.1f;
-        // public float outlineCutoffNormal = 0.3f;
-
-        // public float outlineWidthDepth = 0.1f;
-        // public float outlineCutoffDepth = 0.3f;
-
-        // public float noiseScale = 0.1f;
-        // public float noiseIntensity = 0.1f;
-
         public Material outlineMaterial;
     }
+
+#pragma warning restore 618
+
 }

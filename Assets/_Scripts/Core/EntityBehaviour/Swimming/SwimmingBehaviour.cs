@@ -72,6 +72,8 @@ namespace SeleneGame.Core {
         protected internal override void Move(Vector3 direction) {
             moveDirection = direction;
         }
+
+        
         protected internal override void Jump() {
         }
 
