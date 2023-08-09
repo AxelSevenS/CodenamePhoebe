@@ -7,7 +7,7 @@ namespace SeleneGame.Core {
     public class AIController : EntityController {
 
         private void Update() {
-            entity?.HandleAI(this);
+            Entity?.HandleAI(this);
         }
     }
 }

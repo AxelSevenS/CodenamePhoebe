@@ -32,11 +32,11 @@ namespace SeleneGame.Core.UI {
         private void OnEnable() {
             SetCurrent();
             UIManager.UpdateMenuState();
-            Keybinds.onControllerTypeChange += OnControllerTypeChange;
+            Keybinds.OnControllerTypeChange += OnControllerTypeChange;
         }
 
         private void OnDisable() {
-            Keybinds.onControllerTypeChange += OnControllerTypeChange;
+            Keybinds.OnControllerTypeChange += OnControllerTypeChange;
         }
 
         private void Update() {

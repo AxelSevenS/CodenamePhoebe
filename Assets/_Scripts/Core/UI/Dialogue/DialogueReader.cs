@@ -55,7 +55,7 @@ namespace SeleneGame.Core.UI {
             }
 
             dialogueName.SetText( currentLine.entity.name );
-            dialoguePortrait.sprite = currentLine.entity.character.model.costume.GetPortrait(currentLine.emotion);
+            dialoguePortrait.sprite = currentLine.entity.Character.Model.costume.GetPortrait(currentLine.emotion);
             dialogueText.SetText(String.Empty);
             timeOfLastCharacter = Time.unscaledTime;
 
@@ -165,10 +165,10 @@ namespace SeleneGame.Core.UI {
             if (!Enabled || currentLine == null) return;
 
             int displayedTextLength = dialogueText.text.Length;
-            const float textDelta = 20 * 0.001f;
+            const float TEXT_DELTA = 20 * 0.001f;
             bool writingTag = false;
 
-            if (Time.unscaledTime >= timeOfLastCharacter + textDelta && displayedTextLength < displayText.Length) {
+            if (Time.unscaledTime >= timeOfLastCharacter + TEXT_DELTA && displayedTextLength < displayText.Length) {
 
                 do {
 
@@ -189,9 +189,9 @@ namespace SeleneGame.Core.UI {
                 
                 // TODO : play character sound effect
 
-                dialogueText.text = displayText.Substring(0, displayedTextLength);
+                dialogueText.text = displayText[..displayedTextLength];
 
-                timeOfLastCharacter += textDelta;
+                timeOfLastCharacter += TEXT_DELTA;
             }
         }
     }

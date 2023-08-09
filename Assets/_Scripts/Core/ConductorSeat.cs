@@ -6,7 +6,7 @@ using EasySplines;
 
 namespace SeleneGame.Core {
 
-    public class ConductorSeat : Seat {
+    public class ConductorSeat : EntitySeat {
 
         [SerializeField] private FollowSpline _splineFollower;
         [SerializeField] private FollowSpline.MovementDirection previousDirection = FollowSpline.MovementDirection.None;

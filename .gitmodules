@@ -1,3 +1,6 @@
 [submodule "Render-Pipeline"]
 	path = Packages/com.unity.render-pipelines.universal
 	url = https://github.com/AxelSevenS/Render-Pipeline.git
+[submodule "Packages/com.seven.lunar-render-pipeline"]
+	path = Packages/com.seven.lunar-render-pipeline
+	url = https://github.com/AxelSevenS/Lunar-RP.git

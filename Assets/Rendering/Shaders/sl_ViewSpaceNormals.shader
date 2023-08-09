@@ -9,6 +9,8 @@ Shader "Hidden/ViewSpaceNormals" {
 
         HLSLINCLUDE
 
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+
             struct VertexInput {
                 float4 positionOS : POSITION;
                 float3 normalOS : NORMAL;
@@ -44,8 +46,6 @@ Shader "Hidden/ViewSpaceNormals" {
                     
                 #pragma vertex ForwardPassVertex
                 #pragma fragment ForwardPassFragment
-
-                #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 
                 VertexOutput ForwardPassVertex(VertexInput input) {
                     

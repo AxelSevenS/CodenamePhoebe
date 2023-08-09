@@ -48,7 +48,7 @@ namespace SeleneGame.Core.UI {
                 if (!Enabled)
                     return;
 
-                armedEntity.weapons.Set(index, selectedWeapon);
+                armedEntity.Weapons.Set(index, selectedWeapon);
                 OnCancel();
             }
         }

@@ -16,9 +16,9 @@ namespace SeleneGame.Core {
 
 
 
-        public override float weight => base.weight * (weapons?.current?.data.weight ?? 1f); 
+        public override float Weight => base.Weight * (Weapons?.current?.Data.weight ?? 1f); 
 
-        public WeaponInventory weapons {
+        public WeaponInventory Weapons {
             get {
                 if (_weapons == null) {
                     ResetWeapons();
@@ -36,7 +36,7 @@ namespace SeleneGame.Core {
 
 
         public override void SetStyle(int newStyle) {
-            weapons.Switch(newStyle);
+            Weapons.Switch(newStyle);
         }
 
 
@@ -49,19 +49,19 @@ namespace SeleneGame.Core {
         protected override void Update(){
             base.Update();
             
-            weapons?.Update();
+            Weapons?.Update();
         }
 
         protected override void LateUpdate() {
             base.LateUpdate();
 
-            weapons?.LateUpdate();
+            Weapons?.LateUpdate();
         }
 
         protected override void FixedUpdate() {
             base.FixedUpdate();
 
-            weapons?.FixedUpdate();
+            Weapons?.FixedUpdate();
         }
 
     }

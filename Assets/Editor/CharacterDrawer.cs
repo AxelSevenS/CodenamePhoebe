@@ -16,7 +16,7 @@ namespace SeleneGame.Core {
             ((Character)property.managedReferenceValue)?.Dispose();
 
             
-            Entity entityRef = (targetCostumable as Character)?.entity;
+            Entity entityRef = (targetCostumable as Character)?.Entity;
             if (entityRef == null) {
 
                 if (targetCostumable != null)

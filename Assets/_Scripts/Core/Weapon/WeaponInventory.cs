@@ -67,7 +67,7 @@ namespace SeleneGame.Core {
         // }
         public void Replace(Weapon oldWeapon, WeaponData newWeaponData, WeaponCostume costume = null) {
 
-            if (oldWeapon.data == newWeaponData) return;
+            if (oldWeapon.Data == newWeaponData) return;
             
             try {
                 int index = IndexOf(oldWeapon);

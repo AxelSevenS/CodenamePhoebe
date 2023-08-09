@@ -72,7 +72,7 @@ namespace SeleneGame.Core.UI {
             }
 
             // Get the Default Costume (corresponds to an empty slot, should be in the first space)
-            CreateCharacterCostumeCase( character.data.baseCostume );
+            CreateCharacterCostumeCase( character.Data.baseCostume );
             ResetGamePadSelection();
 
             // and then get all the other costumes.
@@ -80,7 +80,7 @@ namespace SeleneGame.Core.UI {
 
                     if ( !costume.accessibleInGame ) return;
 
-                    if ( !costume.name.Contains(character.data.name) && costume.name.Contains("_Base") )
+                    if ( !costume.name.Contains(character.Data.name) && costume.name.Contains("_Base") )
                         return;
 
                     if ( characterCostumes.Exists( (obj) => { return obj.characterCostume == costume; }) ) 

@@ -23,11 +23,11 @@ namespace SeleneGame.Core {
         public static ControllerType controllerType = ControllerType.MouseKeyboard;
 
 
-        public static event Action<ControllerType> onControllerTypeChange;
-        public static event Action<Guid> onUpdateKeybind;
+        public static event Action<ControllerType> OnControllerTypeChange;
+        public static event Action<Guid> OnUpdateKeybind;
 
 
-        private static readonly InputControls inputControls = new InputControls();
+        private static readonly InputControls inputControls = new();
 
         public static readonly InputActionMap playerMap = inputControls.Player.Get();
         public static readonly InputActionMap uiMap = inputControls.UI.Get();
@@ -60,7 +60,7 @@ namespace SeleneGame.Core {
 
         public static void UpdateKeybind(Guid keybindId){
             Debug.Log("Update Keybind: " + keybindId);
-            onUpdateKeybind?.Invoke(keybindId);
+            OnUpdateKeybind?.Invoke(keybindId);
         }
 
         public static InputBinding GetInputBinding(string actionName) {
@@ -68,18 +68,13 @@ namespace SeleneGame.Core {
         }
 
         public static InputBinding GetInputBinding(InputAction action){
-            switch (controllerType) {
-                default:
-                    return GetMouseAndKeyboardInputBinding(action);
-                case ControllerType.Gamepad:
-                    return GetGamepadInputBinding(action);
-                case ControllerType.Dualshock:
-                    return GetDualshockInputBinding(action);
-                case ControllerType.Xbox:
-                    return GetXboxInputBinding(action);
-                case ControllerType.Switch:
-                    return GetSwitchInputBinding(action);
-            }
+            return controllerType switch {
+                ControllerType.Gamepad => GetGamepadInputBinding(action),
+                ControllerType.Dualshock => GetDualshockInputBinding(action),
+                ControllerType.Xbox => GetXboxInputBinding(action),
+                ControllerType.Switch => GetSwitchInputBinding(action),
+                _ => GetMouseAndKeyboardInputBinding(action),
+            };
         }
         public static InputBinding GetMouseAndKeyboardInputBinding(InputAction action){
             return action.bindings[0];
@@ -131,29 +126,20 @@ namespace SeleneGame.Core {
                 controllerType = ControllerType.MouseKeyboard;
                 
             } else if ( context.control.device is Gamepad gamepad ){
-                
-                switch ( gamepad.GetType() ) {
-                    case Type _ when gamepad is DualShockGamepad:
-                        newControllerType = ControllerType.Dualshock;
-                        break;
-                    case Type _ when gamepad is XInputController:
-                        newControllerType = ControllerType.Xbox;
-                        break;
-                    case Type _ when gamepad is SwitchProControllerHID:
-                        newControllerType = ControllerType.Switch;
-                        break;
-                    default:
-                        newControllerType = ControllerType.Gamepad;
-                        break;
-                }
 
+                newControllerType = gamepad.GetType() switch {
+                    Type _ when gamepad is DualShockGamepad => ControllerType.Dualshock,
+                    Type _ when gamepad is XInputController => ControllerType.Xbox,
+                    Type _ when gamepad is SwitchProControllerHID => ControllerType.Switch,
+                    _ => ControllerType.Gamepad,
+                };
             }
 
             if (controllerType == newControllerType) return;
 
             controllerType = newControllerType;
-            Debug.Log($"Switched to {newControllerType.ToString()} Controls");
-            onControllerTypeChange?.Invoke(controllerType);
+            Debug.Log($"Switched to {newControllerType} Controls");
+            OnControllerTypeChange?.Invoke(controllerType);
         }
 
         public static void EnableControls(){

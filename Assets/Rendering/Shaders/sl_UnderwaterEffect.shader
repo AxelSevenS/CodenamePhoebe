@@ -70,7 +70,9 @@ Shader "Selene/Underwater" {
                     float4 sceneColor = tex2D(_MainTex, input.uv).rgba;
                     float4 underwaterBuffer = tex2D(_UnderwaterMask, input.uv);
                     float3 underwaterColor = underwaterBuffer.rgb;
-                    float4 underwaterMask = underwaterBuffer.a;
+                    float4 underwaterMask = length(underwaterColor) > 0 ? 1 : 0;
+
+                    // return float4(underwaterColor, underwaterBuffer.a);
 
                     float depth = Linear01Depth(SampleSceneDepth(input.uv).r, _ZBufferParams) * _ProjectionParams.z;
                     

@@ -73,11 +73,11 @@ namespace SeleneGame.Core.UI {
         
         protected override void OnEnable() {
             base.OnEnable();
-            Keybinds.onUpdateKeybind += UpdateKeybind;
+            Keybinds.OnUpdateKeybind += UpdateKeybind;
         }
         protected override void OnDisable() {
             base.OnDisable();
-            Keybinds.onUpdateKeybind -= UpdateKeybind;
+            Keybinds.OnUpdateKeybind -= UpdateKeybind;
         }
 
         

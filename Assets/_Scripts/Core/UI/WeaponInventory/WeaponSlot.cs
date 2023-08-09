@@ -41,8 +41,8 @@ namespace SeleneGame.Core.UI {
                 return;
             }
 
-            portraitSprite = weapon.model?.costume?.portrait ?? nullPortrait;
-            nameText = weapon.data?.displayName.GetLocalizedString() ?? "None";
+            portraitSprite = weapon.Model?.costume?.portrait ?? nullPortrait;
+            nameText = weapon.Data?.displayName.GetLocalizedString() ?? "None";
         }
 
         public override void OnSubmit(BaseEventData eventData) {

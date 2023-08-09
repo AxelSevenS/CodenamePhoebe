@@ -20,8 +20,8 @@ namespace SeleneGame.Core {
 
 
 
-        public TData data => _data;
-        public TModel model => _model;
+        public TData Data => _data;
+        public TModel Model => _model;
         
 
 

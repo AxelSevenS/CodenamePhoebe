@@ -50,7 +50,7 @@ namespace SeleneGame.Core {
                 // Send Projectile back
             }
 
-            if (otherZone.owner == (IDamageDealer)Player.current.entity) {
+            if (otherZone.owner == (IDamageDealer)Player.Current.Entity) {
                 EntityManager.current.HardHitStop();
             }
             

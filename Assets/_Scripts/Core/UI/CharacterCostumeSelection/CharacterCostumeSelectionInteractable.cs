@@ -23,7 +23,7 @@ namespace SeleneGame.Core.UI {
         
 
         public void Interact(Entity entity){
-            CharacterCostumeSelectionMenuController.current.ReplaceCharacterCostume(entity.character);
+            CharacterCostumeSelectionMenuController.current.ReplaceCharacterCostume(entity.Character);
         }
     }
 }

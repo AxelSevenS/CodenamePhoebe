@@ -14,7 +14,7 @@ namespace SeleneGame.Core {
         
         public RuntimeAnimatorController entityAnimatorController;
         
-        public List<Entity> entityList = new List<Entity>();
+        public List<Entity> entityList = new();
 
         Coroutine hitStopCoroutine;
 

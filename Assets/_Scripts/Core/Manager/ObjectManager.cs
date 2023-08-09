@@ -13,7 +13,7 @@ namespace SeleneGame.Core {
             SetCurrent();
         }
         
-        public List<GameObject> objects = new List<GameObject>();
+        public List<GameObject> objects = new();
 
         public void DisableAllObjects(){
             /* foreach (GameObject obj in objects){

@@ -36,10 +36,10 @@ MonoBehaviour:
   stepHeight: 1
   weight: 40
   jumpHeight: 20
-  baseSpeed: 7.5
-  sprintSpeed: 13
+  baseSpeed: 9
+  sprintSpeed: 15
   slowSpeed: 5
-  acceleration: 85
+  acceleration: 95
   swimMultiplier: 0.85
   evadeSpeed: 40
   evadeDuration: 0.3

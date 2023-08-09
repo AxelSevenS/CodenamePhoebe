@@ -32,7 +32,7 @@ namespace SeleneGame.Core {
 
             EditorGUI.BeginChangeCheck();
 
-            TData selectedData = targetCostumable?.data ?? null;
+            TData selectedData = targetCostumable?.Data ?? null;
             selectedData = EditorGUI.ObjectField(dataRect, selectedData, typeof(TData), false) as TData;
 
             if ( nullSensitive && selectedData == null ) {
@@ -58,12 +58,12 @@ namespace SeleneGame.Core {
 
                     EditorGUI.BeginChangeCheck();
 
-                    TCostume selectedCostume = targetCostumable?.model?.costume ?? null;
+                    TCostume selectedCostume = targetCostumable?.Model?.costume ?? null;
                     selectedCostume = EditorGUI.ObjectField(rectType, new GUIContent("Costume"), selectedCostume, typeof(TCostume), false) as TCostume;
 
                     if ( EditorGUI.EndChangeCheck() ) {
                         Undo.RecordObject(property.serializedObject.targetObject, "Change Costumable Costume");
-                        targetCostumable.SetCostume( selectedCostume ?? targetCostumable.data.baseCostume);
+                        targetCostumable.SetCostume( selectedCostume ?? targetCostumable.Data.baseCostume);
                     }
 
                     rectType.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;

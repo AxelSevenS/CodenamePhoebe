@@ -40,7 +40,7 @@ namespace SeleneGame.Core {
 
 
 
-        private CameraType cameraType => Player.current?.entity?.behaviour?.cameraType ?? CameraType.ThirdPerson;
+        private CameraStyle CurrentStyle => Player.Current?.Entity?.Behaviour?.CameraType ?? CameraStyle.ThirdPerson;
 
 
 
@@ -60,15 +60,15 @@ namespace SeleneGame.Core {
 
         private void LateUpdate() {
             
-            if (Player.current?.entity == null) return;
+            if (Player.Current?.Entity == null) return;
             
 
-            Vector3 cameraRelativePosition = new Vector3(1f, 0f, -3.5f);
-            Vector3 cameraTargetVector = new Vector3( cameraRelativePosition.x, cameraRelativePosition.y, cameraRelativePosition.z * distanceToPlayer - additionalDistance);
+            Vector3 cameraRelativePosition = new(1f, 0f, -3.5f);
+            Vector3 cameraTargetVector = new( cameraRelativePosition.x, cameraRelativePosition.y, cameraRelativePosition.z * distanceToPlayer - additionalDistance);
 
             cameraVector = Vector3.Slerp(cameraVector, cameraTargetVector, 3f * GameUtility.timeUnscaledDelta);
             
-            transform.rotation = Player.current.worldCameraRotation;
+            transform.rotation = Player.Current.WorldCameraRotation;
 
 
 
@@ -82,18 +82,20 @@ namespace SeleneGame.Core {
 
 
 
-            Vector3 followPosition = Player.current.entity["head"].transform.position + cameraOriginPosition;
+            Vector3 followPosition = Player.Current.Entity["head"].transform.position + cameraOriginPosition;
 
             // Make The Camera Movement slower on the Y axis than on the X axis
-            Vector3 camHorizontalPos = Vector3.ProjectOnPlane( followPosition, Player.current.entity.gravityDown );
+            Vector3 camHorizontalPos = Vector3.ProjectOnPlane( followPosition, Player.Current.Entity.gravityDown );
             // delayedHorizontalPosition = camHorizontalPos;
             if ( delayedHorizontalPosition != camHorizontalPos)
                 delayedHorizontalPosition = Vector3.SmoothDamp( delayedHorizontalPosition, camHorizontalPos, ref horizontalVelocity, horizontalSmoothTime, Mathf.Infinity, Time.deltaTime );
 
             Vector3 camVerticalPos = followPosition - camHorizontalPos;
             // delayedVerticalPosition = camVerticalPos;
-            if ( delayedVerticalPosition != camVerticalPos)
-                delayedVerticalPosition = Vector3.SmoothDamp( delayedVerticalPosition, camVerticalPos, ref verticalVelocity, cameraType != CameraType.ThirdPersonGrounded ? horizontalSmoothTime : verticalTime );
+            if ( delayedVerticalPosition != camVerticalPos) {
+
+                delayedVerticalPosition = Vector3.SmoothDamp( delayedVerticalPosition, camVerticalPos, ref verticalVelocity, CurrentStyle != CameraStyle.ThirdPersonGrounded ? horizontalSmoothTime : verticalTime );
+            }
 
             Vector3 delayedPosition = delayedHorizontalPosition + delayedVerticalPosition;
 
@@ -104,17 +106,17 @@ namespace SeleneGame.Core {
                 cameraDistance = Mathf.SmoothDamp( cameraDistance, camPosition.magnitude, ref distanceVelocity, 0.2f );
 
             // Check for collision with the camera
-            const float distanceToWall = 0.4f;
-            if ( Physics.Raycast( delayedPosition, camPosition, out RaycastHit cameraCollisionHit, camPosition.magnitude + distanceToWall, CollisionUtils.EntityCollisionMask ) ){
+            const float CAM_MIN_DISTANCE_TO_WALL = 0.4f;
+            if ( Physics.Raycast( delayedPosition, camPosition, out RaycastHit cameraCollisionHit, camPosition.magnitude + CAM_MIN_DISTANCE_TO_WALL, CollisionUtils.EntityCollisionMask ) ){
 
                 Vector3 collisionToPlayer = delayedPosition - cameraCollisionHit.point;
-                Vector3 collisionTangent = Vector3.up;
+                // Vector3 collisionTangent = Vector3.up;
 
                 Debug.DrawRay( cameraCollisionHit.point, collisionToPlayer * 3f, Color.red );
                 float collisionAngle = 90 - Vector3.Angle( collisionToPlayer.normalized, cameraCollisionHit.normal );
 
                 // Fancy Trigonometry to keep the camera at least distanceToWall away from the wall
-                float camMargin = distanceToWall / Mathf.Sin(collisionAngle * Mathf.Deg2Rad);
+                float camMargin = CAM_MIN_DISTANCE_TO_WALL / Mathf.Sin(collisionAngle * Mathf.Deg2Rad);
                 
                 cameraDistance = collisionToPlayer.magnitude - camMargin;
             }
@@ -126,7 +128,7 @@ namespace SeleneGame.Core {
 
 
 
-        public enum CameraType {
+        public enum CameraStyle {
             ThirdPerson,
             ThirdPersonGrounded,
             Fixed

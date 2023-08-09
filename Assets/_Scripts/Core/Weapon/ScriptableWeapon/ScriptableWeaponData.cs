@@ -35,7 +35,7 @@ namespace SeleneGame.Core {
         }
 
         public override Weapon CreateWeaponFor(ArmedEntity entity, WeaponCostume costume = null) {
-            return new Weapon(entity, this, costume, entity.weapons);
+            return new Weapon(entity, this, costume, entity.Weapons);
         }
     }
 }

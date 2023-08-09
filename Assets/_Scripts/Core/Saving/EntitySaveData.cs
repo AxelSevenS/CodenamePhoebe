@@ -12,13 +12,13 @@ namespace SeleneGame.Core {
     public class EntitySaveData {
 
 
-        private const string entityDefaultTypeName = "SeleneGame.Core.Entity";
-        private const string characterDefaultTypeName = "SeleneGame.Content.SeleneCharacter";
-        private const string characterCostumeDefaultName = "Base";
+        private const string ENTITY_DEFAULT_TYPE_NAME = "SeleneGame.Core.Entity";
+        private const string CHARACTER_DEFAULT_TYPE_NAME = "SeleneGame.Content.SeleneCharacter";
+        private const string CHARACTER_COSTUME_DEFAULT_NAME = "Base";
 
-        public string entityTypeName = entityDefaultTypeName;
-        public string characterName = characterDefaultTypeName;
-        public string characterCostumeName = characterCostumeDefaultName;
+        public string entityTypeName = ENTITY_DEFAULT_TYPE_NAME;
+        public string characterName = CHARACTER_DEFAULT_TYPE_NAME;
+        public string characterCostumeName = CHARACTER_COSTUME_DEFAULT_NAME;
         public float[] position = new float[3]{0f, 0f, 0f};
         public float[] rotation = new float[4]{0f, 0f, 0f, 0f};
         public float[] gravity = new float[3]{0f, -1f, 0f};
@@ -27,12 +27,12 @@ namespace SeleneGame.Core {
 
         public void Save(Entity entity){
             System.Type entityType = entity?.GetType();
-            entityTypeName = entityType?.AssemblyQualifiedName ?? entityDefaultTypeName;
+            entityTypeName = entityType?.AssemblyQualifiedName ?? ENTITY_DEFAULT_TYPE_NAME;
 
-            System.Type characterType = entity?.character?.GetType();
+            System.Type characterType = entity?.Character?.GetType();
             characterName = characterType?.AssemblyQualifiedName ?? "";
 
-            characterCostumeName = entity.character?.model?.costume?.name ?? "";
+            characterCostumeName = entity.Character?.Model?.costume?.name ?? "";
             
             position = new float[3]{entity.transform.position.x, entity.transform.position.y, entity.transform.position.z};
             rotation = new float[4]{entity.transform.rotation.x, entity.transform.rotation.y, entity.transform.rotation.z, entity.transform.rotation.w};
@@ -42,10 +42,10 @@ namespace SeleneGame.Core {
             if ( typeof(ArmedEntity).IsAssignableFrom(entityType) ) {
                 ArmedEntity armed = entity as ArmedEntity;
 
-                int weaponCount = armed.weapons.Count;
+                int weaponCount = armed.Weapons.Count;
                 weaponData = new WeaponSaveData[weaponCount];
                 for (int i = 0; i < weaponCount; i++) {
-                    weaponData[i] = new WeaponSaveData(armed.weapons[i]);
+                    weaponData[i] = new WeaponSaveData(armed.Weapons[i]);
                 }
             }
 
@@ -74,14 +74,14 @@ namespace SeleneGame.Core {
                 ArmedEntity armed = (ArmedEntity)entity;
 
                 armed.ResetWeapons();
-                for (int i = 0; i < armed.weapons.Count; i++) {
+                for (int i = 0; i < armed.Weapons.Count; i++) {
                     
                     // We have to do this or the index will be wrong when the async operation is completed.
                     int currIndex = i;
                     WeaponSaveData currWeaponData = weaponData[currIndex];
                     
                     WeaponCostume costume = AddressablesUtils.GetAsset<WeaponCostume>(currWeaponData.costumeName);
-                    armed.weapons.Set(currIndex, AddressablesUtils.GetAsset<WeaponData>(currWeaponData.weaponName), costume);
+                    armed.Weapons.Set(currIndex, AddressablesUtils.GetAsset<WeaponData>(currWeaponData.weaponName), costume);
                 }
             }
             return entity;

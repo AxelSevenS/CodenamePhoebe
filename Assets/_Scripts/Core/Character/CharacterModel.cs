@@ -13,7 +13,7 @@ namespace SeleneGame.Core {
 
         [SerializeField] [ReadOnly] protected Entity _entity;
 
-        public Entity entity => _entity;
+        public Entity Entity => _entity;
 
         public CharacterModel(Entity entity, CharacterCostume costume) : base(costume) {
             _entity = entity;

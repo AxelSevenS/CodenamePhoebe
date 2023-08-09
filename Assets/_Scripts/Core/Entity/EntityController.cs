@@ -12,7 +12,7 @@ namespace SeleneGame.Core {
 
 
 
-        public Entity entity => _entity;
+        public Entity Entity => _entity;
 
         protected virtual void Reset() {
             _entity = GetComponent<Entity>();

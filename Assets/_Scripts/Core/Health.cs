@@ -15,15 +15,15 @@ namespace SeleneGame.Core {
         [Tooltip("The health, before it took damage. Slowly moves toward the true health.")]
         [SerializeField] private float _damagedHealth;
 
-        [SerializeField] private TimeInterval _damagedHealthTimer = new TimeInterval();
+        [SerializeField] private TimeInterval _damagedHealthTimer = new();
         [SerializeField] private float _damagedHealthVelocity = 0f;
 
 
-        public event Action<float> onUpdate;
+        public event Action<float> OnUpdate;
 
 
 
-        public float maxAmount {
+        public float MaxAmount {
             get => _maxAmount;
             set {
                 _maxAmount = Mathf.Max(value, 1f);
@@ -31,7 +31,7 @@ namespace SeleneGame.Core {
             }
         }
 
-        public float amount {
+        public float Amount {
             get => _amount;
             set {
                 _amount = Mathf.Clamp(value, 0f, _maxAmount);
@@ -39,7 +39,7 @@ namespace SeleneGame.Core {
                 const float damagedHealthDuration = 1.25f;
                 _damagedHealthTimer.SetDuration(damagedHealthDuration);
 
-                onUpdate?.Invoke(_amount);
+                OnUpdate?.Invoke(_amount);
             }
         }
 

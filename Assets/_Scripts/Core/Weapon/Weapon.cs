@@ -40,22 +40,22 @@ namespace SeleneGame.Core {
 
 
         public virtual void HandleInput(Player playerController) {
-            data?.HandleInput(this, playerController);
+            Data?.HandleInput(this, playerController);
         }
 
         public virtual void LightAttack() {
-            data?.LightAttack(this);
+            Data?.LightAttack(this);
         }
 
         public virtual void HeavyAttack() {
-            data?.HeavyAttack(this);
+            Data?.HeavyAttack(this);
         }
 
 
         public override void SetCostume(WeaponCostume costume) {
             _model?.Dispose();
 
-            costume ??= data.baseCostume ?? AddressablesUtils.GetDefaultAsset<WeaponCostume>();
+            costume ??= Data.baseCostume ?? AddressablesUtils.GetDefaultAsset<WeaponCostume>();
             _model = costume?.LoadModel(armedEntity, this);
 
             if (displayed)
@@ -75,23 +75,23 @@ namespace SeleneGame.Core {
         public override void Update() {
             base.Update();
 
-            data?.WeaponUpdate(this);
+            Data?.WeaponUpdate(this);
 
-            model?.Update();
+            Model?.Update();
         }
         public override void LateUpdate() {
             base.LateUpdate();
 
-            data?.WeaponLateUpdate(this);
+            Data?.WeaponLateUpdate(this);
 
-            model?.LateUpdate();
+            Model?.LateUpdate();
         }
         public override void FixedUpdate() {
             base.FixedUpdate();
 
-            data?.WeaponFixedUpdate(this);
+            Data?.WeaponFixedUpdate(this);
 
-            model?.FixedUpdate();
+            Model?.FixedUpdate();
         }
 
         [Flags]

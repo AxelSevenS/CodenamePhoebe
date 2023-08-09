@@ -21,6 +21,7 @@ namespace SeleneGame.Core {
 
         public const float LIGHTWEIGHT_THRESHOLD = 20f;
         public const float HEAVYWEIGHT_THRESHOLD = 50f;
+        public const float MAX_FALL_INERTIA = 10f;
 
         
     
@@ -63,14 +64,14 @@ namespace SeleneGame.Core {
 
 
 
-        public event Action<float> onHeal;
-        public event Action<float, DamageType> onDamage;
+        public event Action<float> OnHeal;
+        public event Action<float, DamageType> OnDamage;
 
-        public event Action<float> onHealed;
-        public event Action<DamageData> onDamaged;
-        public event Action onDeath;
+        public event Action<float> OnHealed;
+        public event Action<DamageData> OnDamaged;
+        public event Action OnDeath;
 
-        public event Action<Character> onSetCharacter;
+        public event Action<Character> OnSetCharacter;
 
 
     
@@ -88,35 +89,35 @@ namespace SeleneGame.Core {
         public RaycastHit groundHit;
         private Transform anchorTransform;
 
-        public event Action<Vector3> onJump;
-        public event Action<Vector3> onEvade;
-        public event Action<DamageData> onParry;
+        public event Action<Vector3> OnJump;
+        public event Action<Vector3> OnEvade;
+        public event Action<DamageData> OnParry;
         
 
         /// <summary>
         /// The entity's health system.
         /// </summary>
-        public Health health => _health;
+        public Health Health => _health;
 
         /// <summary>
         /// The entity's Animator system.
         /// </summary>
-        public Animator animator => _animator;
+        public Animator Animator => _animator;
 
         /// <summary>
         /// The entity's Animancer component.
         /// </summary>
-        public AnimancerComponent animancer => _animancer;
+        public AnimancerComponent Animancer => _animancer;
 
         /// <summary>
         /// The entity's Rigidbody.
         /// </summary>
-        public new Rigidbody rigidbody => _rigidbody;
+        public Rigidbody Rigidbody => _rigidbody;
 
         /// <summary>
         /// The entity's Physics Script.
         /// </summary>
-        public CustomPhysicsComponent physicsComponent => _physicsComponent;
+        public CustomPhysicsComponent PhysicsComponent => _physicsComponent;
 
         /// <summary>
         /// Returns an Armature Bone by name.
@@ -127,9 +128,9 @@ namespace SeleneGame.Core {
         public GameObject this[string key]{
             get { 
                 try { 
-                    return character.model.costumeData.bones[key]; 
+                    return Character.Model.costumeData.bones[key]; 
                 } catch { 
-                    return character?.model?.mainTransform?.gameObject ?? gameObject; 
+                    return Character?.Model?.mainTransform?.gameObject ?? gameObject; 
                 } 
             }
         }
@@ -141,22 +142,22 @@ namespace SeleneGame.Core {
         /// <remarks>
         /// You can set this value by calling <see cref="SetCharacter"/> and providing CharacterData.
         /// </remarks>
-        public Character character {
+        public Character Character {
             get => _character;
         }
         
         /// <summary>
         /// The main transform of the current Costume's model.
         /// </summary>
-        public Transform modelTransform { 
+        public Transform ModelTransform { 
             get {
-                if (character == null || character.model == null)
+                if (Character == null || Character.Model == null)
                     return null;
-                return character.model.mainTransform;
+                return Character.Model.mainTransform;
             }
         }
 
-        public Vector3 centerOfMass => character.model?.costumeData?.centerOfMass.transform.position ?? transform.position;
+        public Vector3 CenterOfMass => Character.Model?.costumeData?.centerOfMass.transform.position ?? transform.position;
 
         /// <summary>
         /// The current state (Behaviour) of the Entity.
@@ -164,7 +165,7 @@ namespace SeleneGame.Core {
         /// <remarks>
         /// You can change the State using <see cref="SetBehaviour"/>.
         /// </remarks>
-        public EntityBehaviour behaviour {
+        public EntityBehaviour Behaviour {
             get {
                 if ( _behaviour == null )
                     ResetBehaviour();
@@ -178,9 +179,9 @@ namespace SeleneGame.Core {
         /// The forward direction in absolute space of the Entity.
         /// </summary>
         /// <remarks>
-        /// Editing this value also changes <see cref="relativeForward"/> to match.
+        /// Editing this value also changes <see cref="RelativeForward"/> to match.
         /// </remarks>
-        public Vector3 absoluteForward { 
+        public Vector3 AbsoluteForward { 
             get => _absoluteForward; 
             set { 
                 _absoluteForward = value; 
@@ -192,9 +193,9 @@ namespace SeleneGame.Core {
         /// The forward direction in relative space of the Entity.
         /// </summary>
         /// <remarks>
-        /// Editing this value also changes <see cref="absoluteForward"/> to match.
+        /// Editing this value also changes <see cref="AbsoluteForward"/> to match.
         /// </remarks>
-        public Vector3 relativeForward { 
+        public Vector3 RelativeForward { 
             get => _relativeForward; 
             set { 
                 _relativeForward = value;
@@ -205,24 +206,24 @@ namespace SeleneGame.Core {
         /// <summary>
         /// Returns true if the Entity is not moving.
         /// </summary>
-        public bool isIdle => moveDirection.sqrMagnitude == 0;
+        public bool IsIdle => moveDirection.sqrMagnitude == 0;
 
         /// <summary>
         /// The strength of gravity applied to the Entity.
         /// </summary>
-        public float gravityMultiplier => weight * behaviour?.gravityMultiplier ?? 1f;
+        public float GravityMultiplier => Weight * Behaviour?.GravityMultiplier ?? 1f;
 
         /// <summary>
         /// The strength of gravity applied to the Entity.
         /// </summary>
-        public Vector3 gravityForce => gravityMultiplier * gravityDown;
+        public Vector3 GravityForce => GravityMultiplier * gravityDown;
 
-        public float fallVelocity => Vector3.Dot(inertia, -gravityDown);
+        public float FallVelocity => Vector3.Dot(Inertia, -gravityDown);
 
-        public virtual float jumpMultiplier => 1f;
+        public virtual float JumpMultiplier => 1f;
         
 
-        public Vector3 inertia {
+        public Vector3 Inertia {
             get => _inertia;
             set {
                 
@@ -230,25 +231,21 @@ namespace SeleneGame.Core {
             }
         }
 
-        public virtual float weight => character?.data?.weight ?? 1f;
-        public WeightCategory weightCategory {
+        public virtual float Weight => Character?.Data?.weight ?? 1f;
+        public EntityWeightCategory WeightCategory {
             get {
-                switch ( weight ) {
-                    case float i when (i <= LIGHTWEIGHT_THRESHOLD):
-                        return WeightCategory.Light;
-                    case float i when (i > LIGHTWEIGHT_THRESHOLD && i < HEAVYWEIGHT_THRESHOLD):
-                        return WeightCategory.Medium;
-                    case float i when (i >= HEAVYWEIGHT_THRESHOLD):
-                        return WeightCategory.Heavy;
-                    default:
-                        return WeightCategory.Medium;
-                }
+                return Weight switch {
+                    float i when i <= LIGHTWEIGHT_THRESHOLD => EntityWeightCategory.Light,
+                    float i when i > LIGHTWEIGHT_THRESHOLD && i < HEAVYWEIGHT_THRESHOLD => EntityWeightCategory.Medium,
+                    float i when i >= HEAVYWEIGHT_THRESHOLD => EntityWeightCategory.Heavy,
+                    _ => EntityWeightCategory.Medium,
+                };
             }
         }
 
-        public bool isPlayer => Player.current?.entity == this;
+        public bool IsPlayer => Player.Current?.Entity == this;
 
-        public bool inWater => physicsComponent.inWater;
+        public bool InWater => PhysicsComponent.inWater;
 
 
 
@@ -263,7 +260,7 @@ namespace SeleneGame.Core {
         /// <param name="costume">The costume of the entity, leave empty to use character's default costume</param>
         public static Entity CreateEntity(System.Type entityType, Vector3 position, Quaternion rotation, CharacterData data, CharacterCostume costume = null) {
 
-            GameObject entityGO = new GameObject("Entity");
+            GameObject entityGO = new("Entity");
             entityGO.SetActive(false);
 
             Entity entity = (Entity)entityGO.AddComponent(entityType);
@@ -288,7 +285,7 @@ namespace SeleneGame.Core {
         /// <param name="costume">The costume of the entity, leave empty to use character's default costume</param>
         public static Entity CreatePlayerEntity(System.Type entityType, Vector3 position, Quaternion rotation, CharacterData data, CharacterCostume costume = null) {
 
-            GameObject entityGO = new GameObject("Entity");
+            GameObject entityGO = new("Entity");
             entityGO.SetActive(false);
 
             Entity entity = (Entity)entityGO.AddComponent(entityType);
@@ -313,7 +310,7 @@ namespace SeleneGame.Core {
         }
 
 
-        public void SetBehaviour<T>(EntityBehaviourBuilder<T> stateBuilder) where T : EntityBehaviour {
+        public void SetBehaviour<T>(EntityBehaviour.Builder<T> stateBuilder) where T : EntityBehaviour {
             if ( stateBuilder == null )
                 throw new System.ArgumentNullException( nameof(stateBuilder) );
 
@@ -321,7 +318,7 @@ namespace SeleneGame.Core {
                 return;
 
             try {
-                EntityBehaviour newBehaviour = stateBuilder.Build(this, _behaviour, gameObject);
+                EntityBehaviour newBehaviour = stateBuilder.Build(this, _behaviour);
                 GameUtility.SafeDestroy( _behaviour );
                 _behaviour = newBehaviour;
             } catch ( System.Exception e ) {
@@ -329,9 +326,7 @@ namespace SeleneGame.Core {
             }
         }
 
-        public virtual void ResetBehaviour() {
-            SetBehaviour( GroundedBehaviourBuilder.Default );
-        }
+        public virtual void ResetBehaviour() => SetBehaviour( GroundedBehaviour.Builder.Default );
 
 
         /// <summary>
@@ -344,28 +339,24 @@ namespace SeleneGame.Core {
             _character?.Dispose();
             _character = characterData?.GetCharacter(this, costume) ?? null;
 
-            _health.maxAmount = _character?.data?.maxHealth ?? 1f;
+            _health.MaxAmount = _character?.Data?.maxHealth ?? 1f;
 
-            _physicsComponent.size = _character?.data?.size ?? Vector3.one;
+            _physicsComponent.size = _character?.Data?.size ?? Vector3.one;
 
-            onSetCharacter?.Invoke(_character);
+            OnSetCharacter?.Invoke(_character);
         }
 
         /// <summary>
         /// Set the Entity's current Character Costume.
         /// </summary>
         /// <param name="costumeName">The name of the new Character Costume</param>
-        public void SetCostume(string costumeName) {
-            _character?.SetCostume(costumeName);
-        }
+        public void SetCostume(string costumeName) => _character?.SetCostume(costumeName);
 
         /// <summary>
         /// Set the Entity's current Character Costume.
         /// </summary>
         /// <param name="costume">The new Character Costume</param>
-        public void SetCostume(CharacterCostume costume) {
-            _character?.SetCostume(costume);
-        }
+        public void SetCostume(CharacterCostume costume) => _character?.SetCostume(costume);
 
 
         /// <summary>
@@ -377,42 +368,35 @@ namespace SeleneGame.Core {
 
 
         public virtual void HandleInput(Player controller) {
-            behaviour?.HandleInput(controller);
+            Behaviour?.HandleInput(controller);
         }
         public virtual void HandleAI(AIController controller) {
-            behaviour?.HandleAI(controller);
+            Behaviour?.HandleAI(controller);
         }
 
 
         public virtual void Move(Vector3 direction) {
-            behaviour?.Move(direction);
+            Behaviour?.Move(direction);
         }
         public virtual void Jump() {
-            behaviour?.Jump();
+            Behaviour?.Jump();
         }
         public virtual void Evade(Vector3 direction) {
-            behaviour?.Evade(direction);
+            Behaviour?.Evade(direction);
         }
         public virtual void LightAttack() {
-            behaviour?.LightAttack();
+            Behaviour?.LightAttack();
         }
         public virtual void HeavyAttack() {
-            behaviour?.HeavyAttack();
+            Behaviour?.HeavyAttack();
         }
         public virtual void SetSpeed(MovementSpeed speed) {
-            behaviour?.SetSpeed(speed);
+            Behaviour?.SetSpeed(speed);
         }
 
-
-        private void OnHealthUpdate(float newHealth) {
-
-            if (newHealth == 0f)
-                Kill();
-
-        }
 
         public void PlayerHitStop(DamageData damageData) {
-            if (!isPlayer)
+            if (!IsPlayer)
                 return;
 
             if (damageData.damageType == DamageType.Critical) {
@@ -438,12 +422,12 @@ namespace SeleneGame.Core {
 
             owner?.AwardDamage(damageData);
 
-            _health.amount -= damageData.amount;
+            _health.Amount -= damageData.amount;
 
             // TODO: Add actual knockback animations
             
 
-            onDamaged?.Invoke(damageData);
+            OnDamaged?.Invoke(damageData);
         }
 
         /// <summary>
@@ -452,18 +436,23 @@ namespace SeleneGame.Core {
         /// <param name="amount">The amount of health the Entity is healed</param>
         public void Heal(float amount) {
 
-            _health.amount += amount;
+            _health.Amount += amount;
 
-            onHealed?.Invoke(amount);
+            OnHealed?.Invoke(amount);
+        }
+
+        private void OnHealthUpdate(float newHealth) {
+            if (newHealth == 0f)
+                Kill();
         }
 
         public void AwardDamage(DamageData damageData) {
             PlayerHitStop(damageData);
-            onDamage?.Invoke(damageData.amount, damageData.damageType);
+            OnDamage?.Invoke(damageData.amount, damageData.damageType);
         }
 
         public void AwardParry(DamageData damageData) {
-            onParry?.Invoke(damageData);
+            OnParry?.Invoke(damageData);
         }
 
         public bool IsValidTarget(IDamageable target) {
@@ -474,7 +463,7 @@ namespace SeleneGame.Core {
         /// Initiate the Entity's death sequence.
         /// </summary>
         public virtual void Kill(){
-            onDeath?.Invoke();
+            OnDeath?.Invoke();
         }
 
         const float DISPLACEMENT_SKIN_THICKNESS = 0.15f;
@@ -504,9 +493,7 @@ namespace SeleneGame.Core {
         private void DisplacePenetration(Collider entityCollider, Collider worldCollider) {
 
             // move the character out of the object it's clipping into
-            Vector3 penetrationDirection = default;
-            float penetrationDistance = default;
-            bool penetrationHit = Physics.ComputePenetration(entityCollider, entityCollider.transform.position, entityCollider.transform.rotation, worldCollider, worldCollider.transform.position, worldCollider.transform.rotation, out penetrationDirection, out penetrationDistance);
+            bool penetrationHit = Physics.ComputePenetration(entityCollider, entityCollider.transform.position, entityCollider.transform.rotation, worldCollider, worldCollider.transform.position, worldCollider.transform.rotation, out Vector3 penetrationDirection, out float penetrationDistance);
 
             if (penetrationHit) {
                 transform.position += penetrationDirection * penetrationDistance;
@@ -525,11 +512,11 @@ namespace SeleneGame.Core {
                 deltaTime = GameUtility.timeDelta;
 
             Vector3 displacement = direction * deltaTime;
-            Vector3 checkOffset = gravityDown * character.data.stepHeight;
+            Vector3 checkOffset = gravityDown * Character.Data.stepHeight;
             
 
             // Check for obstacle
-            bool obstacle = character.model.ColliderCast(Vector3.zero, displacement.normalized * (displacement.magnitude + DISPLACEMENT_SKIN_THICKNESS * 100f), out RaycastHit walkHit, out Collider castOrigin, DISPLACEMENT_SKIN_THICKNESS, CollisionUtils.EntityCollisionMask); 
+            bool obstacle = Character.Model.ColliderCast(Vector3.zero, displacement.normalized * (displacement.magnitude + DISPLACEMENT_SKIN_THICKNESS * 100f), out RaycastHit walkHit, out Collider castOrigin, DISPLACEMENT_SKIN_THICKNESS, CollisionUtils.EntityCollisionMask); 
             if ( !obstacle ) {
                 transform.position += displacement;
                 // Debug.Log("No obstacle");
@@ -537,7 +524,7 @@ namespace SeleneGame.Core {
             }
 
             // Check for valid step
-            bool validStep = character.model.ColliderCast(displacement - checkOffset, checkOffset, out RaycastHit stepHit, out _, 0f, CollisionUtils.EntityCollisionMask);
+            bool validStep = Character.Model.ColliderCast(displacement - checkOffset, checkOffset, out RaycastHit stepHit, out _, 0f, CollisionUtils.EntityCollisionMask);
             // bool validStep = Physics.Raycast(castOrigin.transform.position + displacement - checkOffset, checkOffset, out RaycastHit stepHit, character.data.stepHeight, CollisionUtils.EntityCollisionMask);
             if ( !validStep ) {
                 transform.position += displacement;
@@ -548,7 +535,7 @@ namespace SeleneGame.Core {
 
             // Check if the step is low enough
             Vector3 stepDisplacement = Vector3.Project(stepHit.point - transform.position, gravityDown);
-            bool stepAtCorrectHeight = stepDisplacement.sqrMagnitude <= character.data.stepHeight * character.data.stepHeight;
+            bool stepAtCorrectHeight = stepDisplacement.sqrMagnitude <= Character.Data.stepHeight * Character.Data.stepHeight;
             if ( !stepAtCorrectHeight ) {
                 transform.position += displacement;
                 DisplacePenetration(castOrigin, walkHit.collider);
@@ -568,7 +555,7 @@ namespace SeleneGame.Core {
 
 
             // stop the character from clipping into obstacles
-            bool castHit = character.model.ColliderCast(Vector3.zero, displacement.normalized * (displacement.magnitude + DISPLACEMENT_SKIN_THICKNESS * 100f), out RaycastHit walkHit, out Collider castOrigin, DISPLACEMENT_SKIN_THICKNESS, CollisionUtils.EntityCollisionMask);
+            bool castHit = Character.Model.ColliderCast(Vector3.zero, displacement.normalized * (displacement.magnitude + DISPLACEMENT_SKIN_THICKNESS * 100f), out RaycastHit walkHit, out Collider castOrigin, DISPLACEMENT_SKIN_THICKNESS, CollisionUtils.EntityCollisionMask);
 
             if ( !castHit ) {
                 transform.position += displacement;
@@ -592,18 +579,18 @@ namespace SeleneGame.Core {
         /// </summary>
         private void Gravity() {
 
-            if (gravityMultiplier == 0f || weight == 0f || gravityDown == Vector3.zero) return;
+            if (GravityMultiplier == 0f || Weight == 0f || gravityDown == Vector3.zero) return;
 
-            Vector3 verticalInertia = Vector3.Project( inertia, gravityDown );
-            Vector3 horizontalInertia = inertia - verticalInertia;
+            Vector3 verticalInertia = Vector3.Project( Inertia, gravityDown );
+            Vector3 horizontalInertia = Inertia - verticalInertia;
 
-            verticalInertia = Vector3.MoveTowards( verticalInertia, gravityForce, 35f * GameUtility.timeDelta );
+            verticalInertia = Vector3.MoveTowards( verticalInertia, GravityForce, 35f * GameUtility.timeDelta );
             horizontalInertia = Vector3.MoveTowards( horizontalInertia, Vector3.zero, 0.25f * GameUtility.timeDelta );
             
-            inertia = horizontalInertia + verticalInertia;
+            Inertia = horizontalInertia + verticalInertia;
 
             if (onGround)
-                inertia = inertia.NullifyInDirection(gravityDown);
+                Inertia = Inertia.NullifyInDirection(gravityDown);
 
         }
 
@@ -615,7 +602,7 @@ namespace SeleneGame.Core {
 
             moveDirection.SetVal( _totalMovement.normalized );
 
-            Vector3 totalDisplacement = _totalMovement + (inertia * GameUtility.timeDelta);
+            Vector3 totalDisplacement = _totalMovement + (Inertia * GameUtility.timeDelta);
 
             DisplaceImmediate(totalDisplacement);
 
@@ -626,9 +613,9 @@ namespace SeleneGame.Core {
 
         private void EntityCollision() {
                 
-            if (character.model == null) return;
+            if (Character.Model == null) return;
 
-            Collider[] overlaps = character.model.ColliderOverlap(0f, CollisionUtils.EntityObjectMask);
+            Collider[] overlaps = Character.Model.ColliderOverlap(0f, CollisionUtils.EntityObjectMask);
 
             foreach (Collider overlap in overlaps) {
                 
@@ -641,7 +628,7 @@ namespace SeleneGame.Core {
 
         public void Initialize() {
             transform.rotation = Quaternion.identity;
-            absoluteForward = transform.forward;
+            AbsoluteForward = transform.forward;
 
             _animator ??= GetComponent<Animator>();
             _animancer ??= GetComponent<AnimancerComponent>();
@@ -649,10 +636,10 @@ namespace SeleneGame.Core {
             _physicsComponent ??= GetComponent<CustomPhysicsComponent>();
             _health ??= GetComponent<Health>();
 
-            rigidbody.useGravity = false;
-            rigidbody.isKinematic = true;
-            rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
-            rigidbody.interpolation = RigidbodyInterpolation.None;
+            Rigidbody.useGravity = false;
+            Rigidbody.isKinematic = true;
+            Rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
+            Rigidbody.interpolation = RigidbodyInterpolation.None;
 
             GameUtility.SetLayerRecursively(gameObject, CollisionUtils.EntityObjectLayer);
         }
@@ -660,7 +647,7 @@ namespace SeleneGame.Core {
         protected virtual void Awake() {
             Initialize();
 
-            if (character == null) {
+            if (Character == null) {
                 Debug.LogError($"Entity {name} has no Character assigned!", this);
                 enabled = false;
             }
@@ -679,11 +666,11 @@ namespace SeleneGame.Core {
 
         protected virtual void OnEnable(){
             EntityManager.current.entityList.Add( this );
-            health.onUpdate += OnHealthUpdate;
+            Health.OnUpdate += OnHealthUpdate;
         }
         protected virtual void OnDisable(){
             EntityManager.current.entityList.Remove( this );
-            health.onUpdate -= OnHealthUpdate;
+            Health.OnUpdate -= OnHealthUpdate;
         }
         
         protected virtual void OnDestroy(){;}
@@ -691,7 +678,7 @@ namespace SeleneGame.Core {
         protected virtual void Update(){
 
             bool closeToGround = false;
-            bool castHit = character.model.ColliderCast(Vector3.zero, gravityDown.normalized * 0.35f, out groundHit, out Collider castOrigin, 0.15f, CollisionUtils.EntityCollisionMask);
+            bool castHit = Character.Model.ColliderCast(Vector3.zero, gravityDown.normalized * 0.35f, out groundHit, out Collider castOrigin, 0.15f, CollisionUtils.EntityCollisionMask);
             if (castHit) {
                 closeToGround = castOrigin.ColliderCast(castOrigin.transform.position, gravityDown.normalized * 0.1f, out _, 0.15f, CollisionUtils.EntityCollisionMask);
             }
@@ -700,7 +687,7 @@ namespace SeleneGame.Core {
 
 
             // behaviour?.Update();
-            character?.Update();
+            Character?.Update();
 
         }
         
@@ -708,7 +695,7 @@ namespace SeleneGame.Core {
         protected virtual void LateUpdate(){
 
             // behaviour?.LateUpdate();
-            character?.LateUpdate();
+            Character?.LateUpdate();
 
             Gravity();
             EntityCollision();
@@ -718,7 +705,7 @@ namespace SeleneGame.Core {
         protected virtual void FixedUpdate() {
 
             // behaviour?.FixedUpdate();
-            character?.FixedUpdate();
+            Character?.FixedUpdate();
         }
 
         // NOTE : this hasn't been tested yet. This is supposed to handle collisions for Root Motion Animations.
@@ -735,7 +722,7 @@ namespace SeleneGame.Core {
                 return;
 
             anchorTransform = collider.transform;
-            transform.SetParent(this.anchorTransform);
+            transform.SetParent(anchorTransform);
         }
 
         protected virtual void OnTriggerStay(Collider collider) {
@@ -750,7 +737,7 @@ namespace SeleneGame.Core {
             }
         }
 
-        public enum WeightCategory {
+        public enum EntityWeightCategory {
             Light,
             Medium,
             Heavy

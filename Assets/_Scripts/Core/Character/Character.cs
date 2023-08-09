@@ -16,7 +16,7 @@ namespace SeleneGame.Core {
         [SerializeField] [ReadOnly] private Entity _entity;
 
 
-        public Entity entity => _entity;
+        public Entity Entity => _entity;
 
         
 
@@ -29,8 +29,8 @@ namespace SeleneGame.Core {
         public override void SetCostume(CharacterCostume costume) {
             _model?.Dispose();
 
-            costume ??= data.baseCostume ?? AddressablesUtils.GetDefaultAsset<CharacterCostume>();
-            _model = costume?.LoadModel(entity);
+            costume ??= Data.baseCostume ?? AddressablesUtils.GetDefaultAsset<CharacterCostume>();
+            _model = costume?.LoadModel(Entity);
             
             if (displayed)
                 _model?.Display();
@@ -42,23 +42,23 @@ namespace SeleneGame.Core {
         public override void Update() {
             base.Update();
 
-            data?.CharacterUpdate(this);
+            Data?.CharacterUpdate(this);
 
-            model?.Update();
+            Model?.Update();
         }
         public override void LateUpdate() {
             base.LateUpdate();
 
-            data?.CharacterLateUpdate(this);
+            Data?.CharacterLateUpdate(this);
 
-            model?.LateUpdate();
+            Model?.LateUpdate();
         }
         public override void FixedUpdate() {
             base.FixedUpdate();
 
-            data?.CharacterFixedUpdate(this);
+            Data?.CharacterFixedUpdate(this);
 
-            model?.FixedUpdate();
+            Model?.FixedUpdate();
         }
 
     }

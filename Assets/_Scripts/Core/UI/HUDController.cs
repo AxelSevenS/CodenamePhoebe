@@ -76,20 +76,20 @@ namespace SeleneGame.Core.UI {
         protected void OnEnable(){
             SetCurrent();
             
-            Keybinds.onUpdateKeybind += UpdateKeybind;
-            Keybinds.onControllerTypeChange += UpdateControllerType;
+            Keybinds.OnUpdateKeybind += UpdateKeybind;
+            Keybinds.OnControllerTypeChange += UpdateControllerType;
         }
         private void OnDisable(){
-            Keybinds.onUpdateKeybind -= UpdateKeybind;
-            Keybinds.onControllerTypeChange -= UpdateControllerType;
+            Keybinds.OnUpdateKeybind -= UpdateKeybind;
+            Keybinds.OnControllerTypeChange -= UpdateControllerType;
         }
 
         private void LateUpdate() {
 
-            if ( Player.current == null ) return;
+            if ( Player.Current == null ) return;
             
-            IInteractable interactCandidate = Player.current.interactionCandidate;
-            bool playerCanInteract = Player.current.canInteract && interactCandidate.InteractDescription != String.Empty;
+            IInteractable interactCandidate = Player.Current.interactionCandidate;
+            bool playerCanInteract = Player.Current.CanInteract && interactCandidate.InteractDescription != String.Empty;
 
             interactCursor.gameObject.SetActive(playerCanInteract);
 

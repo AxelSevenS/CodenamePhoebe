@@ -18,7 +18,7 @@ namespace SeleneGame.Core {
 
             // If the weapon has a reference to an ArmedEntity, use that; (This should always be the case as long as the weapon != null)
             ArmedEntity entity = (targetCostumable as Weapon)?.armedEntity;
-            inventory ??= entity?.weapons ?? (WeaponInventory)GetParent(property);
+            inventory ??= entity?.Weapons ?? (WeaponInventory)GetParent(property);
             
             if (entity == null) {
 

@@ -20,7 +20,7 @@ namespace SeleneGame.Core {
 
 
 
-        public Entity entity => /* usePlayerEntity ?  */Player.current.entity/*  : _entity */;
+        public Entity entity => /* usePlayerEntity ?  */Player.Current.Entity/*  : _entity */;
 
 
         

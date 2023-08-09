@@ -20,8 +20,8 @@ namespace SeleneGame.Core {
             if (weapon == null)
                 return;
 
-            weaponName = weapon.data?.name;
-            costumeName = weapon.model?.costume?.name;
+            weaponName = weapon.Data?.name;
+            costumeName = weapon.Model?.costume?.name;
         }
     }
 

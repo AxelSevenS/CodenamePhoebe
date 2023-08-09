@@ -53,7 +53,7 @@ namespace SeleneGame.Core.UI {
             }
 
 
-            for (int i = 0; i < armedEntity.weapons.Count; i++) {
+            for (int i = 0; i < armedEntity.Weapons.Count; i++) {
                 CreateWeaponSlot(i, armedEntity);
 
                 if (i != 0) continue;
@@ -66,7 +66,7 @@ namespace SeleneGame.Core.UI {
             var slotObject = Instantiate(weaponSlotTemplate, weaponInventoryContainer.transform);
             var weaponSlot = slotObject.GetComponentInChildren<WeaponSlot>();
 
-            weaponSlot.SetDisplayWeapon(selectedEntity.weapons[index]);
+            weaponSlot.SetDisplayWeapon(selectedEntity.Weapons[index]);
             weaponSlot.primaryAction = () => {
                 WeaponSelectionMenuController.current.OpenSetEntityWeaponMenu(index, selectedEntity);
             };
