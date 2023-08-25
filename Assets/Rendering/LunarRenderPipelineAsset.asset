@@ -12,3 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe8a3ae1589ac154d8cd1843adba87cf, type: 3}
   m_Name: LunarRenderPipelineAsset
   m_EditorClassIdentifier: 
+  useSRPBatcher: 1
+  useDynamicBatching: 1
+  enableLODCrossFade: 1
+  supportsHDR: 1

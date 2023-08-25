@@ -58,11 +58,12 @@ namespace SeleneGame.Core {
 
 
         private void SetGlobals() {
-            Shader.SetGlobalFloat("_SnowAmount", snowAmount);
             sun.intensity = sunLight * lightLevel;
             moon.intensity = moonLight * lightLevel;
+            RenderSettings.sun = sun;
             RenderSettings.ambientLight = ambientLight;
             RenderSettings.fogColor = ambientLight;
+            Shader.SetGlobalFloat("_SnowAmount", snowAmount);
             Shader.SetGlobalVector("_WindDirection", windDirection);
         }
 

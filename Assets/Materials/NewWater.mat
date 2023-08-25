@@ -132,7 +132,7 @@ Material:
     - _ReceiveShadows: 1
     - _Smoothness: 0.88
     - _SmoothnessTextureChannel: 0
-    - _Specular: 4
+    - _Specular: 50
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _StencilComp: 0

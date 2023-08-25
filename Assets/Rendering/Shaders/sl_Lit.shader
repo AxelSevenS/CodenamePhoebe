@@ -26,9 +26,10 @@ Shader "Selene/Lit" {
         // LOD 100
 
         HLSLINCLUDE
- 
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitInput.hlsl"
-            #include "Packages/com.seven.utility/ShaderLibrary/MathUtility.hlsl"
+
+            #include "Packages/com.seven.lunar-render-pipeline/ShaderLibrary/Core.hlsl"
+
+            #pragma multi_compile _ _PROXIMITYDITHER_ON
 
 
             CBUFFER_START(UnityPerMaterial)
@@ -46,50 +47,17 @@ Shader "Selene/Lit" {
                 float4 _SpecularColor;
                 float _Smoothness;
 
-                float _ProximityDither;
-                float _Outline;
+                // float _ProximityDither;
+                // float _Outline;
 
                 float _EmissionIntensity;
 
             CBUFFER_END
 
-
-            // Define the custom Vertex and Fragment functions.
-            
-            void SimpleVertexDisplacement( inout VertexOutput output ) {
-                // output.positionWS += output.normalWS * 0.1;
-            }
-
-            bool ProximityClipping( in VertexOutput input, half facing ) {
-                if ( _ProximityDither == 1 )
-                    return ProximityDither(input.positionWS, input.positionSS);
-
-                return false;
-            }
-
-            void SimpleFragment( inout SurfaceData surfaceData, inout InputData inputData, VertexOutput input, half facing ) {
-
-                half4 baseColor = tex2D(_MainTex, input.uv);
-                surfaceData.albedo = baseColor.rgb * _MainColor;
-                surfaceData.alpha = baseColor.a;
-                surfaceData.specular = tex2D(_SpecularMap, input.uv) * _SpecularColor;
-                surfaceData.metallic = 0;
-                surfaceData.smoothness = _Smoothness;
-                surfaceData.emission = baseColor.rgb * _EmissionIntensity;
-
-                if ( _NormalIntensity != 0) {
-                    surfaceData.normalTS = UnpackNormal(tex2D(_NormalMap, input.uv));
-                    half3 mapNormal = mul( inputData.tangentToWorld, surfaceData.normalTS);
-                    inputData.normalWS = lerp(inputData.normalWS, mapNormal, _NormalIntensity);
-                }
-            }
-
-            #define CustomVertexDisplacement(output) SimpleVertexDisplacement(output)
-            #define CustomClipping(output, facing) ProximityClipping(output, facing)
-            #define CustomFragment(surfaceData, inputData, input, facing) SimpleFragment(surfaceData, inputData, input, facing)
+ 
 
         ENDHLSL
-        
+
         Pass {
             Stencil {
                 Ref [_StencilID]
@@ -98,12 +66,50 @@ Shader "Selene/Lit" {
 
             // Don't Edit this.
             Name "StandardSurface"
-            Tags { "LightMode" = "UniversalForward" }
+            Tags { "LightMode" = "LunarForward" }
 
             HLSLPROGRAM
+            
+                #include "Packages/com.seven.lunar-render-pipeline/ShaderLibrary/Input/LitInput.hlsl"
+                #include "Packages/com.seven.utility/ShaderLibrary/MathUtility.hlsl"
 
-                #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitSubShader.hlsl"
-                #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitForwardPass.hlsl"
+                // Define the custom Vertex and Fragment functions.
+                
+                void SimpleVertexDisplacement( inout VertexOutput output ) {
+                    // output.positionWS += output.normalWS * 0.1;
+                }
+
+                bool ProximityClipping( in VertexOutput input, half facing ) {
+                    #ifdef _PROXIMITYDITHER_ON
+                        return ProximityDither(input.positionWS, input.positionSS.xyz / input.positionCS.w);
+                    #endif
+
+                    return false;
+                }
+
+                void SimpleFragment( inout SurfaceData surfaceData, inout InputData inputData, VertexOutput input, half facing ) {
+
+                    half4 baseColor = tex2D(_MainTex, input.uv);
+                    surfaceData.albedo = baseColor.rgb * _MainColor;
+                    surfaceData.alpha = baseColor.a;
+                    surfaceData.specular = tex2D(_SpecularMap, input.uv) * _SpecularColor;
+                    // surfaceData.metallic = 0;
+                    surfaceData.smoothness = _Smoothness;
+                    surfaceData.emission = baseColor.rgb * _EmissionIntensity;
+
+                    if ( _NormalIntensity != 0) {
+                        surfaceData.normalTS = UnpackNormal(tex2D(_NormalMap, input.uv));
+                        half3 mapNormal = mul( inputData.tangentToWorld, surfaceData.normalTS);
+                        inputData.normalWS = lerp(inputData.normalWS, mapNormal, _NormalIntensity);
+                    }
+                }
+
+                #define CustomVertexDisplacement(output) SimpleVertexDisplacement(output)
+                #define CustomClipping(output, facing) ProximityClipping(output, facing)
+                #define CustomFragment(surfaceData, inputData, input, facing) SimpleFragment(surfaceData, inputData, input, facing)
+
+                #include "Packages/com.seven.lunar-render-pipeline/ShaderLibrary/Passes/Lit/LitSubShader.hlsl"
+                #include "Packages/com.seven.lunar-render-pipeline/ShaderLibrary/Passes/Lit/LitForwardPass.hlsl"
 
             ENDHLSL
         }
@@ -116,18 +122,167 @@ Shader "Selene/Lit" {
 
             // Don't Edit this.
             Name "StandardSurface"
-            Tags { "LightMode" = "UniversalGBuffer" }
+            Tags { "LightMode" = "LunarGBuffer" }
 
             HLSLPROGRAM
+            
+                #include "Packages/com.seven.lunar-render-pipeline/ShaderLibrary/Input/LitInput.hlsl"
+                #include "Packages/com.seven.utility/ShaderLibrary/MathUtility.hlsl"
 
-                #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitSubShader.hlsl"
-                #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitGBufferPass.hlsl"
+                // Define the custom Vertex and Fragment functions.
+                
+                void SimpleVertexDisplacement( inout VertexOutput output ) {
+                    // output.positionWS += output.normalWS * 0.1;
+                }
+
+                bool ProximityClipping( in VertexOutput input, half facing ) {
+                    #ifdef _PROXIMITYDITHER_ON
+                        return ProximityDither(input.positionWS, input.positionSS.xyz / input.positionCS.w);
+                    #endif
+
+                    return false;
+                }
+
+                void SimpleFragment( inout SurfaceData surfaceData, inout InputData inputData, VertexOutput input, half facing ) {
+
+                    half4 baseColor = tex2D(_MainTex, input.uv);
+                    surfaceData.albedo = baseColor.rgb * _MainColor;
+                    surfaceData.alpha = baseColor.a;
+                    surfaceData.specular = tex2D(_SpecularMap, input.uv) * _SpecularColor;
+                    // surfaceData.metallic = 0;
+                    surfaceData.smoothness = _Smoothness;
+                    surfaceData.emission = baseColor.rgb * _EmissionIntensity;
+
+                    if ( _NormalIntensity != 0) {
+                        surfaceData.normalTS = UnpackNormal(tex2D(_NormalMap, input.uv));
+                        half3 mapNormal = mul( inputData.tangentToWorld, surfaceData.normalTS);
+                        inputData.normalWS = lerp(inputData.normalWS, mapNormal, _NormalIntensity);
+                    }
+                }
+
+                #define CustomVertexDisplacement(output) SimpleVertexDisplacement(output)
+                #define CustomClipping(output, facing) ProximityClipping(output, facing)
+                #define CustomFragment(surfaceData, inputData, input, facing) SimpleFragment(surfaceData, inputData, input, facing)
+
+                #include "Packages/com.seven.lunar-render-pipeline/ShaderLibrary/Passes/Lit/LitSubShader.hlsl"
+                #include "Packages/com.seven.lunar-render-pipeline/ShaderLibrary/Passes/Lit/LitGBufferPass.hlsl"
 
             ENDHLSL
         }
+        
+        // Pass {
+        //     Stencil {
+        //         Ref [_StencilID]
+        //         Comp [_StencilComp]
+        //     }
 
-        // Pass
-        // {
+        //     // Don't Edit this.
+        //     Name "StandardSurface"
+        //     Tags { "LightMode" = "UniversalForward" }
+
+        //     HLSLPROGRAM
+
+        //         #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitInput.hlsl"
+        //         #include "Packages/com.seven.utility/ShaderLibrary/MathUtility.hlsl"
+
+        //         // Define the custom Vertex and Fragment functions.
+                
+        //         void SimpleVertexDisplacement( inout VertexOutput output ) {
+        //             // output.positionWS += output.normalWS * 0.1;
+        //         }
+
+        //         bool ProximityClipping( in VertexOutput input, half facing ) {
+        //             #ifdef _PROXIMITYDITHER_ON
+        //                 return ProximityDither(input.positionWS, input.positionSS.xyz / input.positionCS.w);
+        //             #endif
+
+        //             return false;
+        //         }
+
+        //         void SimpleFragment( inout SurfaceData surfaceData, inout InputData inputData, VertexOutput input, half facing ) {
+
+        //             half4 baseColor = tex2D(_MainTex, input.uv);
+        //             surfaceData.albedo = baseColor.rgb * _MainColor;
+        //             surfaceData.alpha = baseColor.a;
+        //             surfaceData.specular = tex2D(_SpecularMap, input.uv) * _SpecularColor;
+        //             // surfaceData.metallic = 0;
+        //             surfaceData.smoothness = _Smoothness;
+        //             surfaceData.emission = baseColor.rgb * _EmissionIntensity;
+
+        //             if ( _NormalIntensity != 0) {
+        //                 surfaceData.normalTS = UnpackNormal(tex2D(_NormalMap, input.uv));
+        //                 half3 mapNormal = mul( inputData.tangentToWorld, surfaceData.normalTS);
+        //                 inputData.normalWS = lerp(inputData.normalWS, mapNormal, _NormalIntensity);
+        //             }
+        //         }
+
+        //         #define CustomVertexDisplacement(output) SimpleVertexDisplacement(output)
+        //         #define CustomClipping(output, facing) ProximityClipping(output, facing)
+        //         #define CustomFragment(surfaceData, inputData, input, facing) SimpleFragment(surfaceData, inputData, input, facing)
+
+        //         #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitSubShader.hlsl"
+        //         #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitForwardPass.hlsl"
+
+        //     ENDHLSL
+        // }
+        
+        // Pass {
+        //     Stencil {
+        //         Ref [_StencilID]
+        //         Comp [_StencilComp]
+        //     }
+
+        //     // Don't Edit this.
+        //     Name "StandardSurface"
+        //     Tags { "LightMode" = "UniversalGBuffer" }
+
+        //     HLSLPROGRAM
+
+        //         #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitInput.hlsl"
+        //         #include "Packages/com.seven.utility/ShaderLibrary/MathUtility.hlsl"
+
+        //         // Define the custom Vertex and Fragment functions.
+                
+        //         void SimpleVertexDisplacement( inout VertexOutput output ) {
+        //             // output.positionWS += output.normalWS * 0.1;
+        //         }
+
+        //         bool ProximityClipping( in VertexOutput input, half facing ) {
+        //             #ifdef _PROXIMITYDITHER_ON
+        //                 return ProximityDither(input.positionWS, input.positionSS.xyz / input.positionCS.w);
+        //             #endif
+
+        //             return false;
+        //         }
+
+        //         void SimpleFragment( inout SurfaceData surfaceData, inout InputData inputData, VertexOutput input, half facing ) {
+
+        //             half4 baseColor = tex2D(_MainTex, input.uv);
+        //             surfaceData.albedo = baseColor.rgb * _MainColor;
+        //             surfaceData.alpha = baseColor.a;
+        //             surfaceData.specular = tex2D(_SpecularMap, input.uv) * _SpecularColor;
+        //             // surfaceData.metallic = 0;
+        //             surfaceData.smoothness = _Smoothness;
+        //             surfaceData.emission = baseColor.rgb * _EmissionIntensity;
+
+        //             if ( _NormalIntensity != 0) {
+        //                 surfaceData.normalTS = UnpackNormal(tex2D(_NormalMap, input.uv));
+        //                 half3 mapNormal = mul( inputData.tangentToWorld, surfaceData.normalTS);
+        //                 inputData.normalWS = lerp(inputData.normalWS, mapNormal, _NormalIntensity);
+        //             }
+        //         }
+
+        //         #define CustomVertexDisplacement(output) SimpleVertexDisplacement(output)
+        //         #define CustomClipping(output, facing) ProximityClipping(output, facing)
+        //         #define CustomFragment(surfaceData, inputData, input, facing) SimpleFragment(surfaceData, inputData, input, facing)
+
+        //         #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitSubShader.hlsl"
+        //         #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitGBufferPass.hlsl"
+
+        //     ENDHLSL
+        // }
+
+        // Pass {
         //     Name "OutlineMask"
         //     Tags{"LightMode" = "Outline"}
 
@@ -165,8 +320,7 @@ Shader "Selene/Lit" {
         //     ENDHLSL
         // }
 
-        Pass
-        {
+        Pass {
             Name "DepthOnly"
             Tags{"LightMode" = "DepthOnly"}
 
@@ -175,15 +329,14 @@ Shader "Selene/Lit" {
 
             HLSLPROGRAM
 
-                #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitSubShader.hlsl"
-                #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitDepthOnlyPass.hlsl"
+                #include "Packages/com.seven.lunar-render-pipeline/ShaderLibrary/Passes/Lit/LitSubShader.hlsl"
+                #include "Packages/com.seven.lunar-render-pipeline/ShaderLibrary/Passes/Lit/LitDepthOnlyPass.hlsl"
 
             ENDHLSL
         }
 
         // This pass is used when drawing to a _CameraNormalsTexture texture
-        Pass
-        {
+        Pass {
             Name "DepthNormals"
             Tags{"LightMode" = "DepthNormals"}
 
@@ -191,8 +344,8 @@ Shader "Selene/Lit" {
 
             HLSLPROGRAM
 
-                #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitSubShader.hlsl"
-                #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitDepthNormalsPass.hlsl"
+                #include "Packages/com.seven.lunar-render-pipeline/ShaderLibrary/Passes/Lit/LitSubShader.hlsl"
+                #include "Packages/com.seven.lunar-render-pipeline/ShaderLibrary/Passes/Lit/LitDepthNormalsPass.hlsl"
 
             ENDHLSL
         }
@@ -204,8 +357,8 @@ Shader "Selene/Lit" {
         
             HLSLPROGRAM
             
-                #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitSubShader.hlsl"
-                #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitShadowCasterPass.hlsl"
+                #include "Packages/com.seven.lunar-render-pipeline/ShaderLibrary/Passes/Lit/LitSubShader.hlsl"
+                #include "Packages/com.seven.lunar-render-pipeline/ShaderLibrary/Passes/ShadowCasterPass.hlsl"
         
             ENDHLSL
         }
@@ -219,7 +372,7 @@ Shader "Selene/Lit" {
 
             HLSLPROGRAM
 
-                #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitMetaInput.hlsl"
+                #include "Packages/com.seven.lunar-render-pipeline/ShaderLibrary/Input/MetaInput.hlsl"
 
                 void SimpleGIContribution( MetaVaryings varyings, inout half4 albedo, inout half4 specularColor) {
                     
@@ -229,7 +382,7 @@ Shader "Selene/Lit" {
                 }
                 #define CustomGIContribution(varyings, albedo, specularColor) SimpleGIContribution(varyings, albedo, specularColor)
 
-                #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Passes/Lit/LitMetaPass.hlsl"
+                #include "Packages/com.seven.lunar-render-pipeline/ShaderLibrary/MetaPass.hlsl"
 
             ENDHLSL
         }
